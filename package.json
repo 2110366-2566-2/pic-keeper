@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/mekintown/pic-keeper#readme",
   "dependencies": {
+    "@headlessui/react": "^1.7.18",
     "concurrently": "^8.2.2"
   }
 }

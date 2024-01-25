@@ -41,10 +41,7 @@ const RegisterForm = () => {
       return;
     }
     try {
-      const user = await userService.create({
-        email,
-        password,
-      });
+      const user = await userService.create({ email, password });
       setModalMessage(`${user.name} created successfully!`);
       setSuccess(true);
       setIsModalOpen(true);
@@ -55,17 +52,18 @@ const RegisterForm = () => {
       setIsModalOpen(true);
     }
   };
+
   return (
     <>
       <div className="w-screen h-screen">
         <div className="grid grid-cols-3 h-full items-center dark:bg-gray-900">
-          <div className=" flex px-5 h-full bg-white col-span-3 lg:col-span-2 dark:bg-gray-900 ">
+          <div className="flex px-5 h-full bg-white col-span-3 lg:col-span-2 dark:bg-gray-900">
             <div className="flex flex-col gap-5 w-full max-w-lg m-auto self-stretch">
               <div>
-                <h2 className="text-2xl font-bold leading-9  text-gray-900 dark:text-white">
+                <h2 className="text-title text-gray-900 dark:text-white">
                   New Here? Register now!
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-standard text-gray-500 dark:text-gray-400">
                   Already has an account?{" "}
                   <a
                     href="/auth/signin"
@@ -75,7 +73,7 @@ const RegisterForm = () => {
                   </a>
                 </p>
               </div>
-              <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5 ">
+              <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5">
                 <div className="flex flex-col gap-2 col-span-2 dark:text-white">
                   <label htmlFor="email">Email</label>
                   <input
@@ -84,8 +82,8 @@ const RegisterForm = () => {
                     placeholder="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="px-5 py-2 border-gray-300 border-[1px] rounded-2xl"
-                  ></input>
+                    className="form-input form-input-normal"
+                  />
                 </div>
                 <div className="flex flex-col gap-2 col-span-2">
                   <label htmlFor="password" className="dark:text-white">
@@ -97,10 +95,10 @@ const RegisterForm = () => {
                     placeholder="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`px-5 py-2 border-${
-                      passwordError ? "red-500" : "gray-300"
-                    } border-[1px] rounded-2xl`}
-                  ></input>
+                    className={`form-input ${
+                      passwordError ? "form-input-error" : "form-input-normal"
+                    }`}
+                  />
                 </div>
                 <div className="flex flex-col gap-2 col-span-2">
                   <label htmlFor="password2" className="dark:text-white">
@@ -112,18 +110,15 @@ const RegisterForm = () => {
                     placeholder="Type password again"
                     value={password2}
                     onChange={(e) => setPassword2(e.target.value)}
-                    className={`px-5 py-2 border-${
-                      passwordError ? "red-500" : "gray-300"
-                    } border-[1px] rounded-2xl`}
-                  ></input>
+                    className={`form-input ${
+                      passwordError ? "form-input-error" : "form-input-normal"
+                    }`}
+                  />
                   {passwordError && (
                     <p className="text-red-500">{passwordError}</p>
                   )}
                 </div>
-                <button
-                  type="submit"
-                  className="rounded-2xl bg-yellow-500 py-2 mt-2 text-white"
-                >
+                <button type="submit" className="btn btn-primary mt-2">
                   Sign up
                 </button>
               </form>
@@ -135,23 +130,19 @@ const RegisterForm = () => {
               src={"/images/signup.png"}
               alt="camping"
               fill={true}
-            ></Image>
+            />
           </div>
         </div>
       </div>
       <Modal
         isOpen={isModalOpen}
         closeModal={closeModal}
-        title={success ? "Register succesful" : "Register Error!"}
+        title={success ? "Register Successful" : "Register Error!"}
       >
-        <p className="text-sm text-gray-500">{modalMessage}</p>
+        <p className="text-standard text-gray-500">{modalMessage}</p>
         <button
           onClick={closeModal}
-          className={
-            success
-              ? "mt-4 py-2 px-4 text-white rounded-md bg-green-400 hover:bg-green-500"
-              : "mt-4 py-2 px-4 text-white rounded-md bg-red-400"
-          }
+          className={`btn ${success ? "btn-success" : "btn-danger"} mt-4 px-4`}
         >
           {success ? "Continue" : "Close"}
         </button>
