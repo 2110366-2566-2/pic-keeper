@@ -1,0 +1,23 @@
+{
+  "name": "pic-keeper",
+  "version": "1.0.0",
+  "description": "Because Every Memory Deserves the Perfect Photographer Your Match is Here. Parted of 2110336 Software Engineering II",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
+    "installAll": "concurrently \"npm install\" \"cd backend && npm install\" \"cd frontend && npm install\" "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mekintown/pic-keeper.git"
+  },
+  "author": "Maekin <maekin.nawmong@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mekintown/pic-keeper/issues"
+  },
+  "homepage": "https://github.com/mekintown/pic-keeper#readme",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
