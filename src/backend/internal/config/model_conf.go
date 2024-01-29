@@ -5,5 +5,10 @@ type App struct {
 }
 
 type Database struct {
+	Postgres BaseConfig `mapstructure:"postgres"`
+	MongoDB  BaseConfig `mapstructure:"mongodb"`
+}
+
+type BaseConfig struct {
 	DSN string `mapstructure:"dsn"`
 }

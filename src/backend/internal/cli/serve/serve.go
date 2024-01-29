@@ -1,11 +1,16 @@
 package serve
 
 import (
-	"net/http"
+	"database/sql"
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
+	"github.com/Roongkun/software-eng-ii/internal/controller/user"
+	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/driver/pgdriver"
 )
 
 var ServeCmd = &cobra.Command{
@@ -27,12 +32,14 @@ var ServeCmd = &cobra.Command{
 			printAppConfig(appCfg)
 		}
 
+		sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(appCfg.Database.Postgres.DSN)))
+		db := bun.NewDB(sqldb, pgdialect.New())
+		usecase.NewUserUseCase(db) // to be used later
+
 		r := gin.Default()
-		r.GET("/init", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{
-				"message": "hello world",
-			})
-		})
+
+		user.Register(r, db)
+
 		r.Run()
 
 		return nil
