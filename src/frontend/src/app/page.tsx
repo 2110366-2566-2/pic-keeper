@@ -4,6 +4,7 @@ export default function Home() {
   return (
     <main>
       <NavBar />
+      <div className=''>Pic-Keeper</div>
     </main>
   );
 }
