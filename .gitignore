@@ -3,3 +3,7 @@
 **/.DS_STORE
 
 **/values.yaml
+
+**/docker-compose.yml
+
+**/persistence-data
