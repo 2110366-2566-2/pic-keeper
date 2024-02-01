@@ -15,7 +15,7 @@ func (h *handler) Init(c *gin.Context) {
 
 	str := "33"
 	model := model.User{
-		Name:     "test2",
+		Name:     "test",
 		Email:    "test@mail.com",
 		Password: &str,
 	}

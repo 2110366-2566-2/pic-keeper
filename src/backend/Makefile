@@ -16,4 +16,8 @@ new-sql:
 
 .PHONY: clean
 clean: 
-	rm -rf ./internal/config/persistence-data
+	rm -rf ./internal/config/persistence-data; rm -rf ./bin
+
+.PHONY: up
+up: 
+	air -c .air.toml
