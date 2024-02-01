@@ -7,7 +7,7 @@ serve:
 
 .PHONY: initdb
 initdb: initPostgres
-	go run main.go migrate up -c $(VALUES_PATH)
+	scripts/initdb.sh
 
 .PHONY: initPostgres
 initPostgres:

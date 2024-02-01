@@ -6,19 +6,14 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
+	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
 
-type contextKey string
-
-const (
-	secretKey contextKey = "secretKey"
-)
-
 func retrieveSecretConf(appCfg *config.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), secretKey, appCfg.SecretKey))
+		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), model.ContextKey("secretKey"), appCfg.SecretKey))
 		c.Next()
 	}
 }
@@ -55,7 +50,10 @@ var ServeCmd = &cobra.Command{
 
 		validated := r.Group("/", middleware.AuthorizationMiddleware)
 
-		validated.Group("/users", handler.User.GetUserInstance)
+		users := validated.Group("/users", handler.User.GetUserInstance)
+		{
+			users.PUT("/v1/logout", handler.User.Logout)
+		}
 
 		r.Run()
 

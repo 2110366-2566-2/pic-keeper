@@ -1,6 +1,7 @@
 package user
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,7 +25,23 @@ func (r *Resolver) GetUserInstance(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"user": user,
-	})
+	if user.LoggedOut {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "you have logged out, please log in again",
+		})
+		c.Abort()
+		return
+	}
+
+	userJson, err := json.Marshal(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		c.Abort()
+		return
+	}
+
+	c.Set("user", userJson)
+	c.Next()
 }

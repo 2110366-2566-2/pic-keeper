@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +31,7 @@ func AuthorizationMiddleware(c *gin.Context) {
 	}
 
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey: c.Request.Context().Value("secretKey").(string),
+		SecretKey: c.Request.Context().Value(model.ContextKey("secretKey")).(string),
 		Issuer:    "AuthProvider",
 	}
 

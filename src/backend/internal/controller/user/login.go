@@ -47,10 +47,19 @@ func (r *Resolver) Login(c *gin.Context) {
 	}
 
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey:         c.Request.Context().Value("secretKey").(string),
+		SecretKey:         c.Request.Context().Value(model.ContextKey("secretKey")).(string),
 		Issuer:            "AuthProvider",
 		ExpirationMinutes: 5,
 		ExpirationHours:   12,
+	}
+
+	existedUser.LoggedOut = false
+	if err := r.UserUsecase.UserRepo.UpdateOne(c, existedUser); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		c.Abort()
+		return
 	}
 
 	token, err := jwtWrapper.GenerateToken(cred.Email)
