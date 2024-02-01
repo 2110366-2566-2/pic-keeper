@@ -13,7 +13,7 @@ func init() {
 
 func main() {
 	if err := cli.RootCmd.Execute(); err != nil {
-		log.Print(err.Error())
+		log.Fatal(err.Error())
 	}
 
 }
