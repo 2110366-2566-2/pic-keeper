@@ -6,8 +6,12 @@ serve:
 
 
 .PHONY: initdb
-initdb:
-	go run main.go migrate up -c $(VALUES_PATH)
+initdb: initPostgres
+	scripts/initdb.sh; go run main.go migrate up -c ./internal/config/values.yaml
+
+.PHONY: initPostgres
+initPostgres:
+	cd ./internal/config; docker compose up -d
 
 .PHONY: new-sql
 new-sql:
@@ -16,7 +20,7 @@ new-sql:
 
 .PHONY: clean
 clean: 
-	rm -rf ./internal/config/persistence-data; rm -rf ./bin
+	rm -rf ./internal/config/persistence-data; rm -rf ./bin; rm -rf ./tmp
 
 .PHONY: up
 up: 

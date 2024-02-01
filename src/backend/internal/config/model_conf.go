@@ -1,7 +1,8 @@
 package config
 
 type App struct {
-	Database Database `mapstructure:"database"`
+	Database  Database `mapstructure:"database"`
+	SecretKey string   `mapstructure:"secretKey"`
 }
 
 type Database struct {

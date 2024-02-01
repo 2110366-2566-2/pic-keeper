@@ -1,17 +1,22 @@
 package serve
 
 import (
-	"database/sql"
+	"context"
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
-	"github.com/Roongkun/software-eng-ii/internal/controller/user"
-	"github.com/Roongkun/software-eng-ii/internal/usecase"
+	"github.com/Roongkun/software-eng-ii/internal/controller"
+	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
+	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	"github.com/uptrace/bun/driver/pgdriver"
 )
+
+func retrieveSecretConf(appCfg *config.App) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), model.ContextKey("secretKey"), appCfg.SecretKey))
+		c.Next()
+	}
+}
 
 var ServeCmd = &cobra.Command{
 	Use:   "serve [FLAGS]...",
@@ -32,13 +37,23 @@ var ServeCmd = &cobra.Command{
 			printAppConfig(appCfg)
 		}
 
-		sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(appCfg.Database.Postgres.DSN)))
-		db := bun.NewDB(sqldb, pgdialect.New())
-		usecase.NewUserUseCase(db) // to be used later
+		db := connectSQLDB(appCfg.Database.Postgres.DSN)
+		handler := controller.NewHandler(db)
 
 		r := gin.Default()
+		r.Use(retrieveSecretConf(appCfg))
 
-		user.Register(r, db)
+		authen := r.Group("/authen")
+		{
+			authen.POST("/v1/login", handler.User.Login)
+		}
+
+		validated := r.Group("/", middleware.AuthorizationMiddleware)
+
+		users := validated.Group("/users", handler.User.GetUserInstance)
+		{
+			users.PUT("/v1/logout", handler.User.Logout)
+		}
 
 		r.Run()
 
