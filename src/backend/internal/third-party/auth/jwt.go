@@ -3,6 +3,7 @@ package auth
 import (
 	"errors"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -29,6 +30,8 @@ func (j *JwtWrapper) GenerateToken(email string) (signedToken string, err error)
 			Issuer:    j.Issuer,
 		},
 	}
+	log.Println("--------")
+	log.Println(claims.ExpiresAt.Time.String())
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err = token.SignedString([]byte(j.SecretKey))

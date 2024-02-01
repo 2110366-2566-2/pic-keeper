@@ -4,8 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
-	"github.com/Roongkun/software-eng-ii/internal/controller/user"
-	"github.com/Roongkun/software-eng-ii/internal/usecase"
+	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/uptrace/bun"
@@ -34,11 +33,13 @@ var ServeCmd = &cobra.Command{
 
 		sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(appCfg.Database.Postgres.DSN)))
 		db := bun.NewDB(sqldb, pgdialect.New())
-		usecase.NewUserUseCase(db) // to be used later
+		handler := controller.NewHandler(db)
 
 		r := gin.Default()
-
-		user.Register(r, db)
+		authen := r.Group("/authen")
+		{
+			authen.POST("/v1/login", handler.User.Login)
+		}
 
 		r.Run()
 

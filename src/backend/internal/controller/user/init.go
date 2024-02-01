@@ -1,31 +1,16 @@
 package user
 
 import (
-	"context"
-	"net/http"
-
-	"github.com/Roongkun/software-eng-ii/internal/model"
-	"github.com/gin-gonic/gin"
+	"github.com/Roongkun/software-eng-ii/internal/usecase"
+	"github.com/uptrace/bun"
 )
 
-func (h *handler) Init(c *gin.Context) {
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"message": "hello world",
-	// })
+type Resolver struct {
+	UserUsecase usecase.UserUseCase
+}
 
-	str := "33"
-	model := model.User{
-		Name:     "test",
-		Email:    "test@mail.com",
-		Password: &str,
+func NewResolver(db *bun.DB) *Resolver {
+	return &Resolver{
+		UserUsecase: *usecase.NewUserUseCase(db),
 	}
-
-	if err := h.UserUseCase.UserRepo.AddOne(context.Background(), &model); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, model)
 }

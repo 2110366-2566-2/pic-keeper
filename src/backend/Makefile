@@ -6,8 +6,12 @@ serve:
 
 
 .PHONY: initdb
-initdb:
+initdb: initPostgres
 	go run main.go migrate up -c $(VALUES_PATH)
+
+.PHONY: initPostgres
+initPostgres:
+	cd ./internal/config; docker compose up -d
 
 .PHONY: new-sql
 new-sql:
