@@ -17,6 +17,7 @@ func (r *Resolver) Login(c *gin.Context) {
 			"error":   err.Error(),
 			"message": "unable to bind request body with json, please recheck",
 		})
+		c.Abort()
 		return
 	}
 
@@ -24,6 +25,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"errors": util.JSONErrs(fieldErr),
 		})
+		c.Abort()
 		return
 	}
 
@@ -32,6 +34,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+		c.Abort()
 		return
 	}
 
@@ -39,12 +42,13 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.JSON(http.StatusConflict, gin.H{
 			"error": "incorrect password",
 		})
+		c.Abort()
 		return
 	}
 
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey:         cred.Password,
-		Issuer:            "administrator",
+		SecretKey:         c.Request.Context().Value("secretKey").(string),
+		Issuer:            "AuthProvider",
 		ExpirationMinutes: 5,
 		ExpirationHours:   12,
 	}
@@ -54,6 +58,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+		c.Abort()
 		return
 	}
 

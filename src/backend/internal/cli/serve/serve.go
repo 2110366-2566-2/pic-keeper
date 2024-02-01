@@ -1,16 +1,27 @@
 package serve
 
 import (
-	"database/sql"
+	"context"
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
+	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	"github.com/uptrace/bun/driver/pgdriver"
 )
+
+type contextKey string
+
+const (
+	secretKey contextKey = "secretKey"
+)
+
+func retrieveSecretConf(appCfg *config.App) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), secretKey, appCfg.SecretKey))
+		c.Next()
+	}
+}
 
 var ServeCmd = &cobra.Command{
 	Use:   "serve [FLAGS]...",
@@ -31,15 +42,20 @@ var ServeCmd = &cobra.Command{
 			printAppConfig(appCfg)
 		}
 
-		sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(appCfg.Database.Postgres.DSN)))
-		db := bun.NewDB(sqldb, pgdialect.New())
+		db := connectSQLDB(appCfg.Database.Postgres.DSN)
 		handler := controller.NewHandler(db)
 
 		r := gin.Default()
+		r.Use(retrieveSecretConf(appCfg))
+
 		authen := r.Group("/authen")
 		{
 			authen.POST("/v1/login", handler.User.Login)
 		}
+
+		validated := r.Group("/", middleware.AuthorizationMiddleware)
+
+		validated.Group("/users", handler.User.GetUserInstance)
 
 		r.Run()
 

@@ -20,7 +20,7 @@ new-sql:
 
 .PHONY: clean
 clean: 
-	rm -rf ./internal/config/persistence-data; rm -rf ./bin
+	rm -rf ./internal/config/persistence-data; rm -rf ./bin; rm -rf ./tmp
 
 .PHONY: up
 up: 
