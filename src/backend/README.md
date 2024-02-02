@@ -24,6 +24,8 @@ git push origin $(NAME_OF_YOUR_BRANCH)
 
 After finished, please open a PR (pull request) on GitHub, and ping me or Mek for code reviews.
 
+I recommend that you include a line says `this PR closes #xx`, in which `xx` correspond to your issue number. As the issue will be automatically closed when this PR is merged into the `main` branch.
+
 ## Let's move on to the development
 
 ## Here is where all the documentation reside, it might help you along the journey.
