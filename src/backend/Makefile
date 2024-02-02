@@ -7,7 +7,7 @@ serve:
 
 .PHONY: initdb
 initdb: initPostgres
-	scripts/initdb.sh; go run main.go migrate up -c ./internal/config/values.yaml
+	scripts/initdb.sh; sleep 5; go run main.go migrate up -c ./internal/config/values.yaml
 
 .PHONY: initPostgres
 initPostgres:
