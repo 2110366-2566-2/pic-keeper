@@ -19,6 +19,12 @@ type User struct {
 	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
 }
 
+type UserInput struct {
+	Name     string  `json:"name"`
+	Email    string  `json:"email"`
+	Password *string `json:"password"`
+}
+
 type Photographer struct {
 	bun.BaseModel `bun:"table:photographers,alias:ph"`
 	Id            uuid.UUID `bun:"id,pk,type:uuid, default:gen_random_uuid()" json:"id"`
