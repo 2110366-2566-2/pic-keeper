@@ -52,6 +52,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		return
 	}
 
+	var user *model.User
 	if !exist {
 		newUser := model.User{
 			Id:        uuid.New(),
@@ -63,6 +64,27 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 
 		if err := r.UserUsecase.UserRepo.AddOne(c, &newUser); err != nil {
 			c.JSON(http.StatusBadGateway, gin.H{
+				"status":  "fail",
+				"message": err.Error(),
+			})
+			c.Abort()
+			return
+		}
+		user = &newUser
+	} else {
+		var innerErr error
+		user, innerErr = r.UserUsecase.UserRepo.FindOneByEmail(c, googleUser.Email)
+		if innerErr != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"status":  "fail",
+				"message": err.Error(),
+			})
+			c.Abort()
+			return
+		}
+		user.LoggedOut = false
+		if err := r.UserUsecase.UserRepo.UpdateOne(c, user); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
 				"status":  "fail",
 				"message": err.Error(),
 			})

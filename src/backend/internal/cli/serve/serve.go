@@ -45,8 +45,9 @@ var ServeCmd = &cobra.Command{
 		}
 
 		validated := r.Group("/", middleware.AuthorizationMiddleware)
+		validated.Use(handler.User.GetUserInstance)
 
-		users := validated.Group("/users", handler.User.GetUserInstance)
+		users := validated.Group("/users")
 		{
 			users.PUT("/v1/logout", handler.User.Logout)
 		}
