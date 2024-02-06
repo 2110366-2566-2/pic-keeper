@@ -20,7 +20,7 @@
   }
 
   .form-input {
-    @apply px-5 py-2 border-[1px] rounded-md z-10 bg-white;
+    @apply px-5 py-2 border-[1px] rounded-md z-10 bg-white text-gray-800 dark:text-white placeholder:text-gray-500;
   }
 
   .form-input-error {
@@ -28,7 +28,7 @@
   }
 
   .form-input-normal {
-    @apply border-gray-200;
+    @apply border-gray-200 dark:bg-gray-800 dark:border-gray-600;
   }
 
   .text-title {
