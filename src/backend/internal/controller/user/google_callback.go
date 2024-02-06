@@ -18,15 +18,17 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 
 	if code == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"status":  "fail",
+			"status":  "failed",
 			"message": "Authorization code not provided",
 		})
+		c.Abort()
+		return
 	}
 
 	tokenRes, err := oauth2.GetGoogleOAuth2Token(config, code)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
-			"status":  "fail",
+			"status":  "failed",
 			"message": err.Error(),
 		})
 		c.Abort()
@@ -36,7 +38,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 	googleUser, err := oauth2.GetGoogleUser(tokenRes.AccessToken, tokenRes.IdToken)
 	if err != nil {
 		c.JSON(http.StatusBadGateway, gin.H{
-			"status":  "fail",
+			"status":  "failed",
 			"message": err.Error(),
 		})
 		c.Abort()
@@ -46,7 +48,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 	exist, err := r.UserUsecase.CheckExistenceByEmail(c, googleUser.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status":  "fail",
+			"status":  "failed",
 			"message": err.Error(),
 		})
 		c.Abort()
@@ -66,7 +68,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 
 		if err := r.UserUsecase.UserRepo.AddOne(c, &newUser); err != nil {
 			c.JSON(http.StatusBadGateway, gin.H{
-				"status":  "fail",
+				"status":  "failed",
 				"message": err.Error(),
 			})
 			c.Abort()
@@ -78,7 +80,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		user, innerErr = r.UserUsecase.UserRepo.FindOneByEmail(c, googleUser.Email)
 		if innerErr != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"status":  "fail",
+				"status":  "failed",
 				"message": err.Error(),
 			})
 			c.Abort()
@@ -87,7 +89,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		user.LoggedOut = false
 		if err := r.UserUsecase.UserRepo.UpdateOne(c, user); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"status":  "fail",
+				"status":  "failed",
 				"message": err.Error(),
 			})
 			c.Abort()
@@ -98,8 +100,11 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 	secretKey, exist := c.Get("secretKey")
 	if !exist {
 		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "failed",
 			"message": "secret key not found",
 		})
+		c.Abort()
+		return
 	}
 
 	jwtWrapper := auth.JwtWrapper{
@@ -112,7 +117,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 	token, err := jwtWrapper.GenerateToken(googleUser.Email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  "fail",
+			"status":  "failed",
 			"message": err.Error(),
 		})
 
@@ -124,5 +129,4 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		"status":        "success",
 		"session-token": token,
 	})
-
 }
