@@ -28,5 +28,13 @@ func (u *UserDB) FindOneByEmail(ctx context.Context, email string) (*model.User,
 }
 
 func (u *UserDB) CheckExistenceByEmail(ctx context.Context, email string) (bool, error) {
-	return true, nil
+	var user model.User
+
+	exist, err := u.db.NewSelect().Model(&user).Where("email = ?", email).Exists(ctx)
+
+	if err != nil {
+		return false, err
+	}
+
+	return exist, nil
 }

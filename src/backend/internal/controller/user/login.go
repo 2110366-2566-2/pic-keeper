@@ -46,8 +46,16 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
+	secretKey, exist := c.Get("secretKey")
+	if !exist {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "secret key not found",
+		})
+		c.Abort()
+		return
+	}
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey:         c.Request.Context().Value(model.ContextKey("secretKey")).(string),
+		SecretKey:         secretKey.(string),
 		Issuer:            "AuthProvider",
 		ExpirationMinutes: 5,
 		ExpirationHours:   12,
@@ -72,6 +80,7 @@ func (r *Resolver) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"status":        "success",
 		"session-token": token,
 	})
 

@@ -1,10 +1,7 @@
 package serve
 
 import (
-	"context"
-
 	"github.com/Roongkun/software-eng-ii/internal/config"
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -22,7 +19,7 @@ func getOAuth2GoogleConf(clientId, clientSecret, redirectURL string) oauth2.Conf
 
 func retrieveSecretConf(appCfg *config.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), model.ContextKey("secretKey"), appCfg.SecretKey))
+		c.Set("secretKey", appCfg.SecretKey)
 		c.Next()
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
 )
@@ -30,8 +29,14 @@ func AuthorizationMiddleware(c *gin.Context) {
 		return
 	}
 
+	secretKey, exist := c.Get("secretKey")
+	if !exist {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "secret key not found",
+		})
+	}
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey: c.Request.Context().Value(model.ContextKey("secretKey")).(string),
+		SecretKey: secretKey.(string),
 		Issuer:    "AuthProvider",
 	}
 
