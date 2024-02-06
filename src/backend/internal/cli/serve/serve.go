@@ -1,22 +1,12 @@
 package serve
 
 import (
-	"context"
-
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
-
-func retrieveSecretConf(appCfg *config.App) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), model.ContextKey("secretKey"), appCfg.SecretKey))
-		c.Next()
-	}
-}
 
 var ServeCmd = &cobra.Command{
 	Use:   "serve [FLAGS]...",
@@ -46,6 +36,12 @@ var ServeCmd = &cobra.Command{
 		authen := r.Group("/authen")
 		{
 			authen.POST("/v1/login", handler.User.Login)
+			google := authen.Group("/v1/google")
+			{
+				google.Use(setOAuth2GoogleConf(appCfg))
+				google.POST("/login", handler.User.GoogleLogin)
+				google.POST("/callback", handler.User.GoogleCallback)
+			}
 		}
 
 		validated := r.Group("/", middleware.AuthorizationMiddleware)

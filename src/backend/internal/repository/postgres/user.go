@@ -26,3 +26,7 @@ func (u *UserDB) FindOneByEmail(ctx context.Context, email string) (*model.User,
 	}
 	return &user, nil
 }
+
+func (u *UserDB) CheckExistenceByEmail(ctx context.Context, email string) (bool, error) {
+	return true, nil
+}

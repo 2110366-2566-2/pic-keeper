@@ -1,6 +1,10 @@
 package util
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/gin-gonic/gin"
+)
 
 type JSONErrs []error
 
@@ -14,4 +18,11 @@ func (je JSONErrs) MarshalJSON() ([]byte, error) {
 		}
 	}
 	return json.Marshal(res)
+}
+
+func ReturnErr(message string, err error) any {
+	return gin.H{
+		"message": message,
+		"error":   err.Error(),
+	}
 }

@@ -5,3 +5,8 @@ database:
     dsn: ""
 
 secretKey: ""
+
+oauth2_google:
+  client_id: ""
+  client_secret: ""
+  redirect_url: ""

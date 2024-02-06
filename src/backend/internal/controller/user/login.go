@@ -29,7 +29,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
-	existedUser, err := r.UserUsecase.UserRepo.FindOneByEmail(c, cred.Email)
+	existedUser, err := r.UserUsecase.FindOneByEmail(c, cred.Email)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

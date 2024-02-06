@@ -22,3 +22,7 @@ func NewUserUseCase(db *bun.DB) *UserUseCase {
 func (u *UserUseCase) FindOneByEmail(ctx context.Context, email string) (*model.User, error) {
 	return u.UserRepo.FindOneByEmail(ctx, email)
 }
+
+func (u *UserUseCase) CheckExistenceByEmail(ctx context.Context, email string) (bool, error) {
+	return u.UserRepo.CheckExistenceByEmail(ctx, email)
+}
