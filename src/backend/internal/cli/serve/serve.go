@@ -45,6 +45,7 @@ var ServeCmd = &cobra.Command{
 
 		authen := r.Group("/authen")
 		{
+			authen.POST("/v1/register/customer", handler.User.RegCustomer)
 			authen.POST("/v1/login", handler.User.Login)
 		}
 
