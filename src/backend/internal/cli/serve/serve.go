@@ -2,11 +2,13 @@ package serve
 
 import (
 	"context"
+	"log"
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/Roongkun/software-eng-ii/internal/third-party/profile"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
@@ -42,6 +44,10 @@ var ServeCmd = &cobra.Command{
 
 		r := gin.Default()
 		r.Use(retrieveSecretConf(appCfg))
+
+		if err := profile.InitializeS3(); err != nil {
+			log.Fatalf("Failed to initialize S3: %v", err)
+		}
 
 		authen := r.Group("/authen")
 		{
