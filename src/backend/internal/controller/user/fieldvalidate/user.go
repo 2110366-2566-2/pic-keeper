@@ -52,7 +52,7 @@ func RegCustomer(newUser model.UserInput) []error {
 	}
 
 	// empty password
-	if newUser.Password != nil || *newUser.Password == "" {
+	if newUser.Password == nil || *newUser.Password == "" {
 		fieldErrs = append(fieldErrs, errors.New(
 			"password must be specified",
 		))
