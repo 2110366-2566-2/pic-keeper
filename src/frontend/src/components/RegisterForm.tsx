@@ -63,15 +63,28 @@ const RegisterForm = () => {
                 <h2 className="text-title text-gray-900 dark:text-white">
                   New Here? Register now!
                 </h2>
-                <p className="text-standard text-gray-500 dark:text-gray-400">
-                  Already has an account?{" "}
-                  <a
-                    href="/auth/signin"
-                    className="font-semibold leading-6 text-yellow-600 hover:text-yellow-500"
-                  >
-                    Login
-                  </a>
-                </p>
+              </div>
+              <div className="w-full flex flex-col items-stretch gap-4">
+                <button className="px-4 py-2 text-center border-gray-200 border-[1px] rounded text-gray-500">
+                  <Image
+                    src={"/images/google-logo.svg"}
+                    alt="google"
+                    className="absolute"
+                    width={25}
+                    height={25}
+                  />
+                  Continue with Google
+                </button>
+                <button className="px-4 py-2 text-center border-gray-200 border-[1px] rounded text-gray-500">
+                  <Image
+                    src={"/images/facebook-logo.svg"}
+                    alt="google"
+                    className="absolute"
+                    width={25}
+                    height={25}
+                  />
+                  Continue with Facebook
+                </button>
               </div>
               <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5">
                 <div className="flex flex-col gap-2 col-span-2 dark:text-white">
@@ -118,20 +131,32 @@ const RegisterForm = () => {
                     <p className="text-red-500">{passwordError}</p>
                   )}
                 </div>
-                <button type="submit" className="btn btn-primary mt-2">
+                <button
+                  type="submit"
+                  className="btn btn-primary mt-2 col-span-2"
+                >
                   Sign up
                 </button>
               </form>
+              <p className="text-standard text-center text-gray-500 dark:text-gray-400">
+                Already has an account?{" "}
+                <a
+                  href="/auth/signin"
+                  className="font-semibold leading-6 text-yellow-600 hover:text-yellow-500"
+                >
+                  Login
+                </a>
+              </p>
             </div>
           </div>
-          <div className="relative h-full w-full flex flex-col items-center justify-center invisible lg:visible">
-            <Image
-              className="object-cover overflow-hidden"
-              src={"/images/signup.png"}
-              alt="camping"
-              fill={true}
-            />
-          </div>
+          <div className="relative h-full w-full flex flex-col items-center justify-center invisible lg:visible bg-amber-400"></div>
+          <Image
+            className="absolute right-96 hidden sm:block"
+            src={"/images/register.svg"}
+            alt="register"
+            width={300}
+            height={800}
+          />
         </div>
       </div>
       <Modal
