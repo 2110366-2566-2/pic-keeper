@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/user/fieldvalidate"
@@ -14,6 +15,7 @@ func (r *Resolver) Login(c *gin.Context) {
 	cred := model.LoginCredentials{}
 	if err := c.BindJSON(&cred); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failed",
 			"error":   err.Error(),
 			"message": "unable to bind request body with json, please recheck",
 		})
@@ -23,31 +25,52 @@ func (r *Resolver) Login(c *gin.Context) {
 
 	if fieldErr := fieldvalidate.LoginUser(cred); len(fieldErr) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "failed",
 			"errors": util.JSONErrs(fieldErr),
 		})
 		c.Abort()
 		return
 	}
 
-	existedUser, err := r.UserUsecase.UserRepo.FindOneByEmail(c, cred.Email)
+	existedUser, err := r.UserUsecase.FindOneByEmail(c, cred.Email)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": "failed",
+			"error":  err.Error(),
 		})
 		c.Abort()
 		return
 	}
 
-	if *existedUser.Password != cred.Password {
-		c.JSON(http.StatusConflict, gin.H{
-			"error": "incorrect password",
+	if existedUser.Provider == nil {
+		if *existedUser.Password != cred.Password {
+			c.JSON(http.StatusConflict, gin.H{
+				"status": "failed",
+				"error":  "incorrect password",
+			})
+			c.Abort()
+			return
+		}
+	} else {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": "failed",
+			"error":  fmt.Sprintf("Use %s OAuth2 instead", *existedUser.Provider),
 		})
 		c.Abort()
 		return
 	}
 
+	secretKey, exist := c.Get("secretKey")
+	if !exist {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "failed",
+			"message": "secret key not found",
+		})
+		c.Abort()
+		return
+	}
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey:         c.Request.Context().Value(model.ContextKey("secretKey")).(string),
+		SecretKey:         secretKey.(string),
 		Issuer:            "AuthProvider",
 		ExpirationMinutes: 5,
 		ExpirationHours:   12,
@@ -56,7 +79,8 @@ func (r *Resolver) Login(c *gin.Context) {
 	existedUser.LoggedOut = false
 	if err := r.UserUsecase.UserRepo.UpdateOne(c, existedUser); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"status": "failed",
+			"error":  err.Error(),
 		})
 		c.Abort()
 		return
@@ -65,13 +89,15 @@ func (r *Resolver) Login(c *gin.Context) {
 	token, err := jwtWrapper.GenerateToken(cred.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"status": "failed",
+			"error":  err.Error(),
 		})
 		c.Abort()
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
+		"status":        "success",
 		"session-token": token,
 	})
 

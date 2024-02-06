@@ -1,25 +1,28 @@
 package user
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
 func (r *Resolver) GetUserInstance(c *gin.Context) {
 	email, exist := c.Get("email")
 	if !exist {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "this user no longer existed",
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": "failed",
+			"error":  "this user no longer existed",
 		})
 		c.Abort()
 		return
 	}
+
 	user, err := r.UserUsecase.UserRepo.FindOneByEmail(c, email.(string))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"status": "failed",
+			"error":  err.Error(),
 		})
 		c.Abort()
 		return
@@ -27,21 +30,17 @@ func (r *Resolver) GetUserInstance(c *gin.Context) {
 
 	if user.LoggedOut {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"error": "you have logged out, please log in again",
+			"status": "failed",
+			"error":  "you have logged out, please log in again",
 		})
 		c.Abort()
 		return
 	}
 
-	userJson, err := json.Marshal(user)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		c.Abort()
-		return
-	}
-
-	c.Set("user", userJson)
+	c.Set("user", getUserInstance(user))
 	c.Next()
+}
+
+func getUserInstance(user *model.User) model.User {
+	return *user
 }

@@ -1,6 +1,8 @@
 package util
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type JSONErrs []error
 
