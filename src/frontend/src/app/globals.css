@@ -4,11 +4,11 @@
 
 @layer components {
   .btn {
-    @apply rounded-2xl py-2 text-white;
+    @apply rounded-md py-2 text-white;
   }
 
   .btn-primary {
-    @apply bg-yellow-500;
+    @apply bg-amber-500;
   }
 
   .btn-success {
@@ -20,7 +20,7 @@
   }
 
   .form-input {
-    @apply px-5 py-2 border-[1px] rounded-2xl;
+    @apply px-5 py-2 border-[1px] rounded-md z-10 bg-white;
   }
 
   .form-input-error {
@@ -28,14 +28,14 @@
   }
 
   .form-input-normal {
-    @apply border-gray-300;
+    @apply border-gray-200;
   }
 
   .text-title {
-    @apply text-2xl font-bold leading-9;
+    @apply text-2xl font-bold leading-9 tracking-wide;
   }
 
   .text-standard {
-    @apply text-sm;
+    @apply text-sm text-gray-400 dark:text-gray-400;
   }
 }
