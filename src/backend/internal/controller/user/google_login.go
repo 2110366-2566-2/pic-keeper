@@ -12,4 +12,7 @@ func (r *Resolver) GoogleLogin(c *gin.Context) {
 
 	url := config.AuthCodeURL("state")
 	c.Redirect(http.StatusTemporaryRedirect, url)
+	c.JSON(http.StatusOK, gin.H{
+		"url": url,
+	})
 }

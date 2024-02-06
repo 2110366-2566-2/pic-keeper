@@ -19,14 +19,14 @@ type GoogleOAuth2Token struct {
 }
 
 func GetGoogleOAuth2Token(config *oauth2.Config, code string) (*GoogleOAuth2Token, error) {
-	const rootURL = "https://oath2.googleapis.com/token"
+	const rootURL = "https://oauth2.googleapis.com/token"
 
 	values := url.Values{}
 	values.Add("grant_type", "authorization_code")
 	values.Add("code", code)
 	values.Add("client_id", config.ClientID)
 	values.Add("client_secret", config.ClientSecret)
-	values.Add("redirect_url", config.RedirectURL)
+	values.Add("redirect_uri", config.RedirectURL)
 
 	query := values.Encode()
 

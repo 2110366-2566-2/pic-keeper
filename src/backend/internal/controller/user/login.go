@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/user/fieldvalidate"
@@ -38,9 +39,18 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
-	if *existedUser.Password != cred.Password {
-		c.JSON(http.StatusConflict, gin.H{
-			"error": "incorrect password",
+	if existedUser.Provider == nil {
+		if *existedUser.Password != cred.Password {
+			c.JSON(http.StatusConflict, gin.H{
+				"error": "incorrect password",
+			})
+			c.Abort()
+			return
+		}
+	} else {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": "failed",
+			"error":  fmt.Sprintf("Use %s OAuth2 instead", *existedUser.Provider),
 		})
 		c.Abort()
 		return

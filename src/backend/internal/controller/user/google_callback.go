@@ -12,6 +12,7 @@ import (
 )
 
 func (r *Resolver) GoogleCallback(c *gin.Context) {
+	provider := "Google"
 	config := util.GetGoogleLibConfig(c)
 	code := c.Query("code")
 
@@ -58,6 +59,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 			Id:        uuid.New(),
 			Name:      googleUser.Name,
 			Email:     googleUser.Email,
+			Provider:  &provider,
 			Password:  nil,
 			LoggedOut: false,
 		}
@@ -101,8 +103,10 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 	}
 
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey: secretKey.(string),
-		Issuer:    "AuthProvider",
+		SecretKey:         secretKey.(string),
+		Issuer:            "AuthProvider",
+		ExpirationMinutes: 5,
+		ExpirationHours:   12,
 	}
 
 	token, err := jwtWrapper.GenerateToken(googleUser.Email)

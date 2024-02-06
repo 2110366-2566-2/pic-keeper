@@ -40,7 +40,7 @@ var ServeCmd = &cobra.Command{
 			{
 				google.Use(setOAuth2GoogleConf(appCfg))
 				google.POST("/login", handler.User.GoogleLogin)
-				google.POST("/callback", handler.User.GoogleCallback)
+				google.GET("/callback", handler.User.GoogleCallback)
 			}
 		}
 
