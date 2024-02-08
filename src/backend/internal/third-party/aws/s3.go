@@ -91,21 +91,14 @@ func InitializeS3() error {
 	return nil
 }
 
-func (basics BucketBasics) UploadFile(bucketName string, objectKey string, fileName string) error {
-	file, err := os.Open(fileName)
+func (basics BucketBasics) UploadFile(bucketName string, objectKey string, file *os.File) error {
+	_, err := basics.S3Client.PutObject(context.TODO(), &s3.PutObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(objectKey),
+		Body:   file,
+	})
 	if err != nil {
-		log.Printf("Couldn't open file %v to upload. Here's why: %v\n", fileName, err)
-	} else {
-		defer file.Close()
-		_, err = basics.S3Client.PutObject(context.TODO(), &s3.PutObjectInput{
-			Bucket: aws.String(bucketName),
-			Key:    aws.String(objectKey),
-			Body:   file,
-		})
-		if err != nil {
-			log.Printf("Couldn't upload file %v to %v:%v. Here's why: %v\n",
-				fileName, bucketName, objectKey, err)
-		}
+		log.Printf("Couldn't upload file %v to %v:%v. Here's why: %v\n",
+			bucketName, objectKey, err)
 	}
-	return err
 }
