@@ -14,6 +14,7 @@ func (r *Resolver) RegCustomer(c *gin.Context) {
 	newUser := model.UserInput{}
 	if err := c.BindJSON(&newUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "failed",
 			"error":   err.Error(),
 			"message": "unable to bind request body with json, please recheck",
 		})
@@ -24,6 +25,7 @@ func (r *Resolver) RegCustomer(c *gin.Context) {
 	// field validate
 	if fieldErr := fieldvalidate.RegCustomer(newUser); len(fieldErr) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "failed",
 			"errors": util.JSONErrs(fieldErr),
 		})
 		c.Abort()
@@ -42,9 +44,15 @@ func (r *Resolver) RegCustomer(c *gin.Context) {
 	// add to database
 	if err := r.UserUsecase.UserRepo.AddOne(c, &userModel); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"status": "failed",
+			"error":  err.Error(),
 		})
 		c.Abort()
 		return
 	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"status": "success",
+		"data":   userModel,
+	})
 }
