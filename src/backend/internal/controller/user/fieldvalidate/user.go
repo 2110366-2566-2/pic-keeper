@@ -2,6 +2,7 @@ package fieldvalidate
 
 import (
 	"errors"
+	"strings"
 
 	"regexp"
 
@@ -29,15 +30,15 @@ func LoginUser(cred model.LoginCredentials) []error {
 func RegCustomer(newUser model.UserInput) []error {
 	fieldErrs := []error{}
 
-	// empty name
-	if newUser.Name == "" {
+	// empty and whitespace name
+	if strings.TrimSpace(newUser.Name) == "" {
 		fieldErrs = append(fieldErrs, errors.New(
 			"Name must be specified",
 		))
 	}
 
 	// empty email
-	if newUser.Email == "" {
+	if strings.TrimSpace(newUser.Email) == "" {
 		fieldErrs = append(fieldErrs, errors.New(
 			"email must be specified",
 		))
@@ -51,8 +52,8 @@ func RegCustomer(newUser model.UserInput) []error {
 		}
 	}
 
-	// empty password
-	if newUser.Password == nil || *newUser.Password == "" {
+	// empty and whitespace password
+	if newUser.Password == nil || strings.TrimSpace(*newUser.Password) == "" {
 		fieldErrs = append(fieldErrs, errors.New(
 			"password must be specified",
 		))
