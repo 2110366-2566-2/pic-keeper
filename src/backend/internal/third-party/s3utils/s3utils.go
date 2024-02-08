@@ -1,9 +1,9 @@
-package profile
+package s3utils
 
 import (
 	"context"
+	"io"
 	"log"
-	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -91,14 +91,15 @@ func InitializeS3() error {
 	return nil
 }
 
-func (basics BucketBasics) UploadFile(bucketName string, objectKey string, file *os.File) error {
-	_, err := basics.S3Client.PutObject(context.TODO(), &s3.PutObjectInput{
+func (basics *BucketBasics) UploadFile(ctx context.Context, bucketName string, objectKey string, data io.Reader) error {
+	_, err := basics.S3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(bucketName),
 		Key:    aws.String(objectKey),
-		Body:   file,
+		Body:   data,
 	})
 	if err != nil {
-		log.Printf("Couldn't upload file %v to %v:%v. Here's why: %v\n",
-			bucketName, objectKey, err)
+		log.Printf("Couldn't upload file to %v:%v. Here's why: %v\n", bucketName, objectKey, err)
+		return err
 	}
+	return nil
 }
