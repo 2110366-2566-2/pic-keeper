@@ -24,6 +24,27 @@ func retrieveSecretConf(appCfg *config.App) gin.HandlerFunc {
 	}
 }
 
+func retrieveAdminSecretConf(appCfg *config.App) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Set("adminSecretKey", appCfg.AdministratorSecretKey)
+		c.Next()
+	}
+}
+
+func setAvailablePhysicalIPs(appCfg *config.App) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Set("AvailablePhysicalIPs", appCfg.AdministratorPhysicalIPs)
+		c.Next()
+	}
+}
+
+func setCurrentPhysicalIP(ip string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Set("CurrentPhysicalIP", ip)
+		c.Next()
+	}
+}
+
 func setOAuth2GoogleConf(appCfg *config.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("OAuth2GoogleConf", getOAuth2GoogleConf(

@@ -33,6 +33,20 @@ var ServeCmd = &cobra.Command{
 		r := gin.Default()
 		r.Use(retrieveSecretConf(appCfg))
 
+		admin := r.Group("/admin")
+		{
+			// TODO: add authen
+			physAddr := getHostPhysicalIP()
+			admin.Use(setAvailablePhysicalIPs(appCfg))
+			admin.Use(setCurrentPhysicalIP(physAddr))
+			admin.Use(retrieveAdminSecretConf(appCfg))
+			admin.Use(middleware.ValidateCredentials)
+			verification := admin.Group("/verifications")
+			{
+				verification.GET("/unverified-photographers", handler.Admin.ListUnverifiedPhotographers)
+			}
+		}
+
 		authen := r.Group("/authen")
 		{
 			authen.POST("/v1/register/customer", handler.User.RegCustomer)

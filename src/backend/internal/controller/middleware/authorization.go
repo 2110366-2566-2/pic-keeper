@@ -41,6 +41,8 @@ func AuthorizationMiddleware(c *gin.Context) {
 			"status":  "failed",
 			"message": "secret key not found",
 		})
+		c.Abort()
+		return
 	}
 	jwtWrapper := auth.JwtWrapper{
 		SecretKey: secretKey.(string),
