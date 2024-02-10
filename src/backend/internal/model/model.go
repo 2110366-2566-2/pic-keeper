@@ -28,6 +28,10 @@ type UserInput struct {
 	Password *string `json:"password"`
 }
 
+type UserIdInput struct {
+	UserID uuid.UUID `json:"user_id"`
+}
+
 type Photographer struct {
 	bun.BaseModel `bun:"table:photographers,alias:ph"`
 	Id            uuid.UUID `bun:"id,pk,type:uuid, default:gen_random_uuid()" json:"id"`
