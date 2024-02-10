@@ -1,13 +1,11 @@
 package serve
 
 import (
-	"context"
 	"log"
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
@@ -60,6 +58,7 @@ var ServeCmd = &cobra.Command{
 		users := validated.Group("/users")
 		{
 			users.PUT("/v1/logout", handler.User.Logout)
+			users.POST("/v1/uploadProfile", handler.User.UploadProfilePicture)
 		}
 
 		r.Run()

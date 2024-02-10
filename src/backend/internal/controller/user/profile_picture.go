@@ -10,8 +10,10 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/nfnt/resize"
 )
 
@@ -109,18 +111,43 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 		return
 	}
 
-	objectKey := fmt.Sprintf("profile-pictures/%s", hashEmail(email.(string)))
+	// Generate a UUID for the file
+	fileUUID := uuid.New().String()
+	objectKey := fmt.Sprintf("profile-pictures/%s-%s", hashEmail(email.(string)), fileUUID)
+
 	bucket, err := s3utils.GetInstance()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	if err := bucket.UploadFile(c.Request.Context(), "profile-picture", objectKey, buf); err != nil {
+	if err := bucket.UploadFile(c.Request.Context(), "profile-picture", objectKey, buf, contentType); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload the file"})
+		return
+	}
+
+	user, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user from context"})
+		return
+	}
+	userObj, ok := user.(model.User) // Replace YourUserType with the actual type
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user type in context"})
+		return
+	}
+
+	userObj.ProfilePicture = &objectKey
+	if err := r.UserUsecase.UserRepo.UpdateOne(c, &userObj); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+		c.Abort()
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":     "Profile picture uploaded successfully",
-		"picture_url": fmt.Sprintf("https://%s.s3.amazonaws.com/%s", "profile-picture", objectKey),
+		"picture_url": fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", objectKey),
 	})
 }

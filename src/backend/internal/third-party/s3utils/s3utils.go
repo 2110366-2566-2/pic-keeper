@@ -1,9 +1,9 @@
 package s3utils
 
 import (
+	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"sync"
 
@@ -110,11 +110,14 @@ func InitializeS3() error {
 	return nil
 }
 
-func (basics *BucketBasics) UploadFile(ctx context.Context, bucketName string, objectKey string, data io.Reader) error {
+func (basics *BucketBasics) UploadFile(ctx context.Context, bucketName string, objectKey string, data *bytes.Buffer, contentType string) error {
+	dataBytes := data.Bytes() // This returns a []byte slice of the buffer's contents
+	dataReader := bytes.NewReader(dataBytes)
 	_, err := basics.S3Client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(bucketName),
-		Key:    aws.String(objectKey),
-		Body:   data,
+		Bucket:      aws.String(bucketName),
+		Key:         aws.String(objectKey),
+		Body:        dataReader,
+		ContentType: aws.String(contentType),
 	})
 	if err != nil {
 		log.Printf("Couldn't upload file to %v:%v. Here's why: %v\n", bucketName, objectKey, err)
