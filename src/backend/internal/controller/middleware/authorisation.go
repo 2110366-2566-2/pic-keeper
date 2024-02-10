@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +13,10 @@ func AuthorizationMiddleware(c *gin.Context) {
 	authorizationHeader := c.Request.Header.Get("Authorization")
 	if authorizationHeader == "" {
 		// If the Authorization header is not present, return a 403 status code
-		c.JSON(http.StatusForbidden, gin.H{"error": "No Authorization header provided"})
+		c.JSON(http.StatusForbidden, gin.H{
+			"status": "failed",
+			"error":  "No Authorization header provided",
+		})
 		c.Abort()
 		return
 	}
@@ -25,20 +27,31 @@ func AuthorizationMiddleware(c *gin.Context) {
 		token = strings.TrimSpace(extractedToken[1])
 	} else {
 		// If the token is not in the correct format, return a 400 status code
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect Format of Authorization Token"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "failed",
+			"error":  "Incorrect Format of Authorization Token",
+		})
 		c.Abort()
 		return
 	}
 
+	secretKey, exist := c.Get("secretKey")
+	if !exist {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "failed",
+			"message": "secret key not found",
+		})
+	}
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey: c.Request.Context().Value(model.ContextKey("secretKey")).(string),
+		SecretKey: secretKey.(string),
 		Issuer:    "AuthProvider",
 	}
 
 	claims, err := jwtWrapper.ValidateToken(token)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
+			"status": "failed",
+			"error":  err.Error(),
 		})
 		c.Abort()
 		return

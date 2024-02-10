@@ -13,13 +13,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func retrieveSecretConf(appCfg *config.App) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), model.ContextKey("secretKey"), appCfg.SecretKey))
-		c.Next()
-	}
-}
-
 var ServeCmd = &cobra.Command{
 	Use:   "serve [FLAGS]...",
 	Short: "Serve application",
@@ -51,12 +44,20 @@ var ServeCmd = &cobra.Command{
 
 		authen := r.Group("/authen")
 		{
+			authen.POST("/v1/register/customer", handler.User.RegCustomer)
 			authen.POST("/v1/login", handler.User.Login)
+			google := authen.Group("/v1/google")
+			{
+				google.Use(setOAuth2GoogleConf(appCfg))
+				google.POST("/login", handler.User.GoogleLogin)
+				google.GET("/callback", handler.User.GoogleCallback)
+			}
 		}
 
 		validated := r.Group("/", middleware.AuthorizationMiddleware)
+		validated.Use(handler.User.GetUserInstance)
 
-		users := validated.Group("/users", handler.User.GetUserInstance)
+		users := validated.Group("/users")
 		{
 			users.PUT("/v1/logout", handler.User.Logout)
 		}

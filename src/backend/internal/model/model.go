@@ -15,8 +15,15 @@ type User struct {
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	Name          string    `bun:"name,type:varchar" json:"name"`
 	Email         string    `bun:"email,type:varchar" json:"email"`
+	Provider      *string   `bun:"provider,type:varchar" json:"provider"`
 	Password      *string   `bun:"password,type:varchar" json:"password"`
 	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
+}
+
+type UserInput struct {
+	Name     string  `json:"name"`
+	Email    string  `json:"email"`
+	Password *string `json:"password"`
 }
 
 type Photographer struct {
