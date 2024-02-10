@@ -59,6 +59,7 @@ var ServeCmd = &cobra.Command{
 		{
 			users.PUT("/v1/logout", handler.User.Logout)
 			users.POST("/v1/uploadProfile", handler.User.UploadProfilePicture)
+			users.GET("/v1/getProfile", handler.User.GetProfilePicture)
 		}
 
 		r.Run()

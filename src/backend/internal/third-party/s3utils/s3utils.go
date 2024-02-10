@@ -111,7 +111,7 @@ func InitializeS3() error {
 }
 
 func (basics *BucketBasics) UploadFile(ctx context.Context, bucketName string, objectKey string, data *bytes.Buffer, contentType string) error {
-	dataBytes := data.Bytes() // This returns a []byte slice of the buffer's contents
+	dataBytes := data.Bytes()
 	dataReader := bytes.NewReader(dataBytes)
 	_, err := basics.S3Client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(bucketName),

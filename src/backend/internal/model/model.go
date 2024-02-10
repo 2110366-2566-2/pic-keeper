@@ -10,6 +10,7 @@ type LoginCredentials struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
 type User struct {
 	bun.BaseModel  `bun:"table:users,alias:u"`
 	Id             uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
