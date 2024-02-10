@@ -2,8 +2,10 @@ package s3utils
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
+	"sync"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -20,6 +22,11 @@ const awsRegion = "us-east-1"
 var requiredBuckets = []string{
 	"profile-picture",
 }
+
+var (
+	instance *BucketBasics
+	once     sync.Once
+)
 
 func createS3Client() (*s3.Client, error) {
 	awsEndpoint := "http://localhost:4566"
@@ -53,7 +60,7 @@ func createS3Client() (*s3.Client, error) {
 	return client, nil
 }
 
-func NewBucketBasics() (*BucketBasics, error) {
+func newBucketBasics() (*BucketBasics, error) {
 	client, err := createS3Client()
 	if err != nil {
 		log.Printf("Failed to create S3 client: %v", err)
@@ -62,7 +69,20 @@ func NewBucketBasics() (*BucketBasics, error) {
 	return &BucketBasics{S3Client: client}, nil
 }
 
-func (basics BucketBasics) CreateBucket(name string, region string) error {
+func GetInstance() (*BucketBasics, error) {
+	var err error
+
+	once.Do(func() {
+		instance, err = newBucketBasics()
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("Failed to initialize S3 client: %v", err) // Return after once.Do
+	}
+	return instance, nil
+}
+
+func (basics *BucketBasics) CreateBucket(name string, region string) error {
 	_, err := basics.S3Client.CreateBucket(context.TODO(), &s3.CreateBucketInput{
 		Bucket: aws.String(name),
 	})
@@ -74,9 +94,8 @@ func (basics BucketBasics) CreateBucket(name string, region string) error {
 }
 
 func InitializeS3() error {
-	basics, err := NewBucketBasics()
+	basics, err := GetInstance()
 	if err != nil {
-		log.Printf("Failed to create S3 client: %v", err)
 		return err
 	}
 

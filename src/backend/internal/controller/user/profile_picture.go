@@ -110,7 +110,11 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	}
 
 	objectKey := fmt.Sprintf("profile-pictures/%s", hashEmail(email.(string)))
-	if err := s3utils.UploadFile(c.Request.Context(), "profile-picture", objectKey, buf); err != nil {
+	bucket, err := s3utils.GetInstance()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	if err := bucket.UploadFile(c.Request.Context(), "profile-picture", objectKey, buf); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload the file"})
 		return
 	}
