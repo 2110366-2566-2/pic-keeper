@@ -32,3 +32,11 @@ type Photographer struct {
 	UserId        uuid.UUID `bun:"user_id,type:uuid,default:gen_random_uuid()" json:"user_id"`
 	IsVerified    bool      `bun:"is_verified,type:boolean" json:"is_verified"`
 }
+
+type Administrator struct {
+	bun.BaseModel `bun:"table:administrators,alias:admin"`
+	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	Email         string    `bun:"email,type:varchar" json:"email"`
+	Password      string    `bun:"password,type:varchar" json:"password"`
+	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
+}

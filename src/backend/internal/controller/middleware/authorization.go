@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthorizationMiddleware(c *gin.Context) {
+func UserAuthorizationMiddleware(c *gin.Context) {
 	var token string
 	authorizationHeader := c.Request.Header.Get("Authorization")
 	if authorizationHeader == "" {
@@ -49,7 +49,7 @@ func AuthorizationMiddleware(c *gin.Context) {
 		Issuer:    "AuthProvider",
 	}
 
-	claims, err := jwtWrapper.ValidateToken(token)
+	claims, err := jwtWrapper.ValidateToken(token, false)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
