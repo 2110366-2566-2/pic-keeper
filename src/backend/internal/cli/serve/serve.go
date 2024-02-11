@@ -44,6 +44,7 @@ var ServeCmd = &cobra.Command{
 			verification := admin.Group("/verifications")
 			{
 				verification.GET("/unverified-photographers", handler.Admin.ListUnverifiedPhotographers)
+				verification.PUT("/verify/:id", handler.Admin.Verify)
 			}
 			admin.PUT("/logout", handler.Admin.Logout)
 		}
