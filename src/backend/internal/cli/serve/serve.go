@@ -58,9 +58,9 @@ var ServeCmd = &cobra.Command{
 		users := validated.Group("/users")
 		{
 			users.PUT("/v1/logout", handler.User.Logout)
-			users.POST("/v1/uploadProfile", handler.User.UploadProfilePicture)
-			users.GET("/v1/me", handler.User.Me)
-			users.POST("/v1/getUserInfo", handler.User.GetUserInfo)
+			users.POST("/v1/upload-profile", handler.User.UploadProfilePicture)
+			users.GET("/v1/get-my-user-info", handler.User.GetMyUserInfo)
+			users.POST("/v1/get-user/:id", handler.User.GetUserInfo)
 		}
 
 		r.Run()

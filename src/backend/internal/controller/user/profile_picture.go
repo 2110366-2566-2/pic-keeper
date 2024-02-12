@@ -83,6 +83,7 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	file, _, err := c.Request.FormFile("profilePicture")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Could not retrieve the file"})
+		c.Abort()
 		return
 	}
 	defer file.Close()
@@ -90,24 +91,28 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	contentType, err := validateImage(file)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error ": err.Error()})
+		c.Abort()
 		return
 	}
 
 	img, err := decodeImage(contentType, file)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error ": err.Error()})
+		c.Abort()
 		return
 	}
 
 	buf, err := processImage(img, contentType)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.Abort()
 		return
 	}
 
 	email, exists := c.Get("email")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user email from context"})
+		c.Abort()
 		return
 	}
 
@@ -118,25 +123,29 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	bucket, err := s3utils.GetInstance()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.Abort()
 		return
 	}
 	if err := bucket.UploadFile(c.Request.Context(), "profile-picture", objectKey, buf, contentType); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload the file"})
+		c.Abort()
 		return
 	}
 
 	user, exists := c.Get("user")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user from context"})
+		c.Abort()
 		return
 	}
 	userObj, ok := user.(model.User)
 	if !ok {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user type in context"})
+		c.Abort()
 		return
 	}
 
-	userObj.ProfilePicture = &objectKey
+	userObj.ProfilePictureKey = &objectKey
 	if err := r.UserUsecase.UserRepo.UpdateOne(c, &userObj); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "failed",

@@ -5,7 +5,7 @@ CREATE TABLE users(
     provider varchar(255),
     password varchar(2000),
     logged_out boolean NOT NULL,
-    profile_picture varchar(255)
+    profile_picture_key varchar(2000)
 );
 
 CREATE TABLE photographers(

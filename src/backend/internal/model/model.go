@@ -12,24 +12,20 @@ type LoginCredentials struct {
 }
 
 type User struct {
-	bun.BaseModel  `bun:"table:users,alias:u"`
-	Id             uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	Name           string    `bun:"name,type:varchar" json:"name"`
-	Email          string    `bun:"email,type:varchar" json:"email"`
-	Provider       *string   `bun:"provider,type:varchar" json:"provider"`
-	Password       *string   `bun:"password,type:varchar" json:"password"`
-	LoggedOut      bool      `bun:"logged_out,type:boolean" json:"logged_out"`
-	ProfilePicture *string   `bun:"profile_picture,type:varchar" json:"profile_picture"`
+	bun.BaseModel     `bun:"table:users,alias:u"`
+	Id                uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	Name              string    `bun:"name,type:varchar" json:"name"`
+	Email             string    `bun:"email,type:varchar" json:"email"`
+	Provider          *string   `bun:"provider,type:varchar" json:"provider"`
+	Password          *string   `bun:"password,type:varchar" json:"password"`
+	LoggedOut         bool      `bun:"logged_out,type:boolean" json:"logged_out"`
+	ProfilePictureKey *string   `bun:"profile_picture_key,type:varchar" json:"profile_picture_key"`
 }
 
 type UserInput struct {
 	Name     string  `json:"name"`
 	Email    string  `json:"email"`
 	Password *string `json:"password"`
-}
-
-type UserIdInput struct {
-	UserID uuid.UUID `json:"user_id"`
 }
 
 type Photographer struct {

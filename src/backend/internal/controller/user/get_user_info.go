@@ -4,29 +4,31 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func (r *Resolver) GetUserInfo(c *gin.Context) {
-	UserIdInput := model.UserIdInput{}
-	// Parse JSON body to extract user ID
-	if err := c.BindJSON(&UserIdInput); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to parse request body"})
+	id := c.Param("id")
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "UUID not provided or invalid"})
+		c.Abort()
 		return
 	}
 
 	// Use the extracted user ID to find the user
-	userObj, err := r.UserUsecase.UserRepo.FindOneById(c, UserIdInput.UserID)
+	userObj, err := r.UserUsecase.UserRepo.FindOneById(c, uuid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find user"})
+		c.Abort()
 		return
 	}
 
 	// Construct the URL for the profile picture if it's available
 	pictureURL := ""
-	if userObj.ProfilePicture != nil {
-		pictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", *userObj.ProfilePicture)
+	if userObj.ProfilePictureKey != nil {
+		pictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", *userObj.ProfilePictureKey)
 	}
 
 	// Return the user's information in the response

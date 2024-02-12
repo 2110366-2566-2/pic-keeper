@@ -8,22 +8,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *Resolver) Me(c *gin.Context) {
+func (r *Resolver) GetMyUserInfo(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve user from context"})
+		c.Abort()
 		return
 	}
 	userObj, ok := user.(model.User)
 	if !ok {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user type in context"})
+		c.Abort()
 		return
 	}
 
 	// Construct the URL for the profile picture
 	pictureURL := ""
-	if userObj.ProfilePicture != nil {
-		pictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", *userObj.ProfilePicture)
+	if userObj.ProfilePictureKey != nil {
+		pictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", *userObj.ProfilePictureKey)
 	}
 
 	// Return the URL in the response

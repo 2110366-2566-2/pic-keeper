@@ -44,7 +44,7 @@ func createS3Client() (*s3.Client, error) {
 		return aws.Endpoint{}, &aws.EndpointNotFoundError{}
 	})
 
-	awsCfg, err := config.LoadDefaultConfig(context.TODO(),
+	awsCfg, err := config.LoadDefaultConfig(context.Background(),
 		config.WithRegion(awsRegion),
 		config.WithEndpointResolverWithOptions(customResolver),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider("test", "test", "test")),
