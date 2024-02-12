@@ -1,24 +1,59 @@
-import { NewUser } from "@/types";
+import axios from "axios";
 
-const create = async (newUser: NewUser) => {
-  //   const { data } = await axios.post<User>(
-  //     `${apiBaseUrl}/auth/register`,
-  //     newUser
-  //   );
-  return { name: "Test" };
+const authBaseUrl = "http://localhost:8080/users/v1";
+
+const logout = async () => {
+  try {
+    const response = await axios.post(`${authBaseUrl}/logout`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
-const me = async (token: string) => {
-  //   const config = {
-  //     headers: { Authorization: `Bearer ${token}` },
-  //   };
-  //   const { data } = await axios.get<User>(`${apiBaseUrl}/auth/me`, config);
-  //   return data;
+const uploadProfile = async (file: File) => {
+  try {
+    const formData = new FormData();
+
+    formData.append("profilePicture", file);
+    const response = await axios.post(
+      `${authBaseUrl}/upload-profile`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getMyUserProfile = async () => {
+  try {
+    const response = await axios.post(`${authBaseUrl}/get-my-user-profile`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getUserById = async (id: string) => {
+  try {
+    const response = await axios.post(`${authBaseUrl}/get-user/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const userService = {
-  create,
-  me,
+  logout,
+  uploadProfile,
+  getMyUserProfile,
+  getUserById,
 };
 
 export default userService;
