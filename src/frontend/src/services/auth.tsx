@@ -16,7 +16,7 @@ const registerCustomer = async (newUser: NewUser) => {
 
 const login = async (loginCredentials: LoginCredentials) => {
   try {
-    const response = await axios.post(`${authBaseUrl}/login`);
+    const response = await axios.post(`${authBaseUrl}/login`, loginCredentials);
     return response.data;
   } catch (error) {
     throw error;

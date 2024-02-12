@@ -1,23 +1,23 @@
-import axios from "axios";
+import { Axios } from "axios";
 
-const authBaseUrl = "http://localhost:8080/users/v1";
+const userBaseUrl = "/users/v1";
 
-const logout = async () => {
+const logout = async (axiosInstance: Axios) => {
   try {
-    const response = await axios.post(`${authBaseUrl}/logout`);
+    const response = await axiosInstance.post(`${userBaseUrl}/logout`);
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-const uploadProfile = async (file: File) => {
+const uploadProfile = async (axiosInstance: Axios, file: File) => {
   try {
     const formData = new FormData();
 
     formData.append("profilePicture", file);
-    const response = await axios.post(
-      `${authBaseUrl}/upload-profile`,
+    const response = await axiosInstance.post(
+      `${userBaseUrl}/upload-profile`,
       formData,
       {
         headers: {
@@ -31,18 +31,20 @@ const uploadProfile = async (file: File) => {
   }
 };
 
-const getMyUserProfile = async () => {
+const getMyUserProfile = async (axiosInstance: Axios) => {
   try {
-    const response = await axios.post(`${authBaseUrl}/get-my-user-profile`);
+    const response = await axiosInstance.post(
+      `${userBaseUrl}/get-my-user-profile`
+    );
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-const getUserById = async (id: string) => {
+const getUserById = async (axiosInstance: Axios, id: string) => {
   try {
-    const response = await axios.post(`${authBaseUrl}/get-user/${id}`);
+    const response = await axiosInstance.post(`${userBaseUrl}/get-user/${id}`);
     return response.data;
   } catch (error) {
     throw error;
