@@ -7,6 +7,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
@@ -35,6 +36,14 @@ var ServeCmd = &cobra.Command{
 
 		r := gin.Default()
 		r.Use(retrieveSecretConf(appCfg))
+
+		r.Use(cors.New(cors.Config{
+			AllowOrigins:     []string{"http://localhost:3000"},
+			AllowMethods:     []string{"GET", "PUT", "PATCH", "OPTIONS"},
+			AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+			ExposeHeaders:    []string{"Content-Length"},
+			AllowCredentials: true,
+		}))
 
 		if err := s3utils.InitializeS3(); err != nil {
 			log.Fatalf("Failed to initialize S3: %v", err)
