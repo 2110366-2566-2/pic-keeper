@@ -57,7 +57,7 @@ func (j *JwtWrapper) ValidateToken(signedToken string, isAdmin bool) (claims *Jw
 		return nil, err
 	} else if claims, ok := token.Claims.(*JwtClaim); ok {
 		if claims.ExpiresAt.Time.Unix() < time.Now().Unix() {
-			return nil, errors.New("the session has expired, please login again")
+			return nil, errors.New("the session has expired, token refreshing is needed")
 		} else {
 			if isAdmin && !claims.IsAdmin {
 				return nil, errors.New("the email provided is not an administrator email")

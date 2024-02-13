@@ -38,7 +38,7 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 		ExpirationHours:   12,
 	}
 
-	token, err := jwtWrapper.GenerateToken(c, adminEmail, false)
+	token, err := jwtWrapper.GenerateToken(c, adminEmail, true)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

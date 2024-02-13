@@ -40,7 +40,7 @@ var ServeCmd = &cobra.Command{
 			admin := admin.Group("/v1")
 			admin.Use(retrieveAdminSecretConf(appCfg))
 			admin.POST("/login", handler.Admin.Login)
-			admin.POST("/refresh", handler.Admin.RefreshToken)
+			admin.GET("/refresh", handler.Admin.RefreshToken)
 			admin.Use(middleware.ValidateCredentials)
 			admin.Use(handler.Admin.GetAdminInstance)
 

@@ -45,7 +45,7 @@ func LookupTokenInRedis(c *gin.Context) string {
 	if err == redis.Nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status":  "failed",
-			"message": "the given session token has never been created",
+			"message": "please login again",
 		})
 		c.Abort()
 		return ""
