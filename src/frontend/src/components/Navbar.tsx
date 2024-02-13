@@ -15,7 +15,6 @@ const NavBar = () => {
   const pathName = usePathname();
 
   const { data: session } = useSession();
-  console.log(session);
   const navigation = [
     {
       name: "Search",
@@ -96,14 +95,20 @@ const NavBar = () => {
                           <Menu.Button className="relative flex pr-2 rounded-full items-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
-                            <Image
-                              className="rounded-full"
-                              height={32}
-                              width={32}
-                              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                              alt=""
-                            />
-                            <h2>Tom Jones</h2>
+                            <div className="relative w-8 h-8 rounded-full">
+                              <Image
+                                className="object-cover rounded-full"
+                                fill={true}
+                                src={
+                                  session
+                                    ? session.user.profile_picture_url
+                                    : "/images/no-picture.jpeg"
+                                }
+                                alt=""
+                              />
+                            </div>
+
+                            <h2>{session ? session.user.name : "Guest"}</h2>
                             {open ? (
                               <MdArrowDropUp />
                             ) : (
@@ -160,19 +165,35 @@ const NavBar = () => {
                                 </a>
                               )}
                             </Menu.Item>
-                            <Menu.Item>
-                              {({ active }) => (
-                                <a
-                                  href="#"
-                                  className={classNames(
-                                    active ? "bg-gray-100" : "",
-                                    "block px-4 py-2 text-sm text-gray-700"
-                                  )}
-                                >
-                                  Sign out
-                                </a>
-                              )}
-                            </Menu.Item>
+                            {session ? (
+                              <Menu.Item>
+                                {({ active }) => (
+                                  <a
+                                    href="#"
+                                    className={classNames(
+                                      active ? "bg-gray-100" : "",
+                                      "block px-4 py-2 text-sm text-gray-700"
+                                    )}
+                                  >
+                                    Logout
+                                  </a>
+                                )}
+                              </Menu.Item>
+                            ) : (
+                              <Menu.Item>
+                                {({ active }) => (
+                                  <a
+                                    href="/auth/login"
+                                    className={classNames(
+                                      active ? "bg-gray-100" : "",
+                                      "block px-4 py-2 text-sm text-gray-700"
+                                    )}
+                                  >
+                                    Login
+                                  </a>
+                                )}
+                              </Menu.Item>
+                            )}
                           </Menu.Items>
                         </Transition>
                       </>
