@@ -9,7 +9,15 @@ import (
 )
 
 func (r *Resolver) RefreshToken(c *gin.Context) {
-	adminEmail := util.LookupTokenInRedis(c)
+	adminEmail, ok := util.LookupTokenInRedis(c)
+	if !ok {
+		c.JSON(c.GetInt("errorStatus"), gin.H{
+			"status":  "failed",
+			"message": c.GetString("errorMessage"),
+		})
+		c.Abort()
+		return
+	}
 
 	exist, err := r.AdminUsecase.CheckExistenceByEmail(c, adminEmail)
 	if err != nil {
@@ -24,7 +32,7 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 	if !exist {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status":  "failed",
-			"message": "the user is no longer existed",
+			"message": "the admin is no longer existed",
 		})
 		c.Abort()
 		return
@@ -50,6 +58,6 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":                  "success",
-		"refreshed-session-token": token,
+		"refreshed_session_token": token,
 	})
 }

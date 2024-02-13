@@ -9,7 +9,15 @@ import (
 )
 
 func UserAuthorizationMiddleware(c *gin.Context) {
-	token := util.ExtractToken(c)
+	token, ok := util.ExtractToken(c)
+	if !ok {
+		c.JSON(c.GetInt("errorStatus"), gin.H{
+			"status":  "failed",
+			"message": c.GetString("errorMessage"),
+		})
+		c.Abort()
+		return
+	}
 
 	secretKey, exist := c.Get("secretKey")
 	if !exist {

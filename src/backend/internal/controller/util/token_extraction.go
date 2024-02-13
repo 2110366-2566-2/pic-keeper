@@ -9,17 +9,13 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func ExtractToken(c *gin.Context) string {
-	var token string
+func ExtractToken(c *gin.Context) (token string, ok bool) {
 	authorizationHeader := c.Request.Header.Get("Authorization")
 	if authorizationHeader == "" {
 		// If the Authorization header is not present, return a 403 status code
-		c.JSON(http.StatusForbidden, gin.H{
-			"status": "failed",
-			"error":  "No Authorization header provided",
-		})
-		c.Abort()
-		return ""
+		c.Set("errorStatus", http.StatusForbidden)
+		c.Set("errorMessage", "No Authorization header provided")
+		return "", false
 	}
 
 	// Split the Authorization header to get the token
@@ -29,35 +25,30 @@ func ExtractToken(c *gin.Context) string {
 		token = strings.TrimSpace(extractedToken[1])
 	} else {
 		// If the token is not in the correct format, return a 400 status code
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  "Incorrect Format of Authorization Token",
-		})
-		c.Abort()
-		return ""
+		c.Set("errorStatus", http.StatusBadRequest)
+		c.Set("errorMessage", "Incorrect Format of Authorization Token")
+		return "", false
 	}
 
-	return token
+	return token, true
 }
 
-func LookupTokenInRedis(c *gin.Context) string {
-	email, err := databases.RedisClient.Get(c, ExtractToken(c)).Result()
+func LookupTokenInRedis(c *gin.Context) (token string, ok bool) {
+	token, ok = ExtractToken(c)
+	if !ok {
+		return "", false
+	}
+	email, err := databases.RedisClient.Get(c, token).Result()
 	if err == redis.Nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"status":  "failed",
-			"message": "please login again",
-		})
-		c.Abort()
-		return ""
+		c.Set("errorStatus", http.StatusNotFound)
+		c.Set("errorMessage", "please do re-login")
+		return "", false
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status":  "failed",
-			"message": err.Error(),
-		})
-		c.Abort()
-		return ""
+		c.Set("errorStatus", http.StatusInternalServerError)
+		c.Set("errorMessage", err.Error())
+		return "", false
 	}
 
-	return email
+	return email, true
 }

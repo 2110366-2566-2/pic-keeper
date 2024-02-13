@@ -9,7 +9,15 @@ import (
 )
 
 func ValidateCredentials(c *gin.Context) {
-	token := util.ExtractToken(c)
+	token, ok := util.ExtractToken(c)
+	if !ok {
+		c.JSON(c.GetInt("errorStatus"), gin.H{
+			"status":  "failed",
+			"message": c.GetString("errorMessage"),
+		})
+		c.Abort()
+		return
+	}
 
 	adminSecretKey, exist := c.Get("adminSecretKey")
 	if !exist {

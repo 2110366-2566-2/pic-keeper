@@ -9,7 +9,15 @@ import (
 )
 
 func (r *Resolver) RefreshToken(c *gin.Context) {
-	userEmail := util.LookupTokenInRedis(c)
+	userEmail, ok := util.LookupTokenInRedis(c)
+	if !ok {
+		c.JSON(c.GetInt("errorStatus"), gin.H{
+			"status":  "failed",
+			"message": c.GetString("errorMessage"),
+		})
+		c.Abort()
+		return
+	}
 
 	exist, err := r.UserUsecase.CheckExistenceByEmail(c, userEmail)
 	if err != nil {
@@ -50,6 +58,6 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":                  "success",
-		"refreshed-session-token": token,
+		"refreshed_session_token": token,
 	})
 }
