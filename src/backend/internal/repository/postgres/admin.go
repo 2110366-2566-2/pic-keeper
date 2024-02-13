@@ -26,3 +26,15 @@ func (a *AdminDB) FindOneByEmail(ctx context.Context, email string) (*model.Admi
 	}
 	return &admin, nil
 }
+
+func (a *AdminDB) CheckExistenceByEmail(ctx context.Context, email string) (bool, error) {
+	var admin model.Administrator
+
+	exist, err := a.db.NewSelect().Model(&admin).Where("email = ?", email).Exists(ctx)
+
+	if err != nil {
+		return false, err
+	}
+
+	return exist, nil
+}

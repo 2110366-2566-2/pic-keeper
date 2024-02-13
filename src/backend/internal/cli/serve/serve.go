@@ -40,6 +40,7 @@ var ServeCmd = &cobra.Command{
 			admin := admin.Group("/v1")
 			admin.Use(retrieveAdminSecretConf(appCfg))
 			admin.POST("/login", handler.Admin.Login)
+			admin.POST("/refresh", handler.Admin.RefreshToken)
 			admin.Use(middleware.ValidateCredentials)
 			admin.Use(handler.Admin.GetAdminInstance)
 
@@ -53,9 +54,11 @@ var ServeCmd = &cobra.Command{
 
 		authen := r.Group("/authen")
 		{
-			authen.POST("/v1/register/customer", handler.User.RegCustomer)
-			authen.POST("/v1/login", handler.User.Login)
-			google := authen.Group("/v1/google")
+			authen := authen.Group("/v1")
+			authen.POST("/register/customer", handler.User.RegCustomer)
+			authen.POST("/login", handler.User.Login)
+			authen.GET("/refresh", handler.User.RefreshToken)
+			google := authen.Group("/google")
 			{
 				google.Use(setOAuth2GoogleConf(appCfg))
 				google.POST("/login", handler.User.GoogleLogin)

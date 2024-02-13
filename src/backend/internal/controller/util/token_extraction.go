@@ -4,7 +4,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 )
 
 func ExtractToken(c *gin.Context) string {
@@ -36,4 +38,26 @@ func ExtractToken(c *gin.Context) string {
 	}
 
 	return token
+}
+
+func LookupTokenInRedis(c *gin.Context) string {
+	email, err := databases.RedisClient.Get(c, ExtractToken(c)).Result()
+	if err == redis.Nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"status":  "failed",
+			"message": "the given session token has never been created",
+		})
+		c.Abort()
+		return ""
+	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+		c.Abort()
+		return ""
+	}
+
+	return email
 }

@@ -1,4 +1,4 @@
-package user
+package admin
 
 import (
 	"net/http"
@@ -9,9 +9,9 @@ import (
 )
 
 func (r *Resolver) RefreshToken(c *gin.Context) {
-	userEmail := util.LookupTokenInRedis(c)
+	adminEmail := util.LookupTokenInRedis(c)
 
-	exist, err := r.UserUsecase.CheckExistenceByEmail(c, userEmail)
+	exist, err := r.AdminUsecase.CheckExistenceByEmail(c, adminEmail)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "failed",
@@ -30,7 +30,7 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 		return
 	}
 
-	secretKey := c.GetString("secretKey")
+	secretKey := c.GetString("adminSecretKey")
 	jwtWrapper := auth.JwtWrapper{
 		SecretKey:         secretKey,
 		Issuer:            "AuthProvider",
@@ -38,7 +38,7 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 		ExpirationHours:   12,
 	}
 
-	token, err := jwtWrapper.GenerateToken(c, userEmail, false)
+	token, err := jwtWrapper.GenerateToken(c, adminEmail, false)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
