@@ -69,6 +69,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
 	jwtWrapper := auth.JwtWrapper{
 		SecretKey:         secretKey.(string),
 		Issuer:            "AuthProvider",
