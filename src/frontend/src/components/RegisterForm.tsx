@@ -5,11 +5,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "./Modal";
+import authService from "@/services/auth";
 
 const RegisterForm = () => {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
 
@@ -41,7 +43,11 @@ const RegisterForm = () => {
       return;
     }
     try {
-      const user = await userService.create({ email, password });
+      const user = await authService.registerCustomer({
+        email,
+        name,
+        password,
+      });
       setModalMessage(`${user.name} created successfully!`);
       setSuccess(true);
       setIsModalOpen(true);
@@ -103,6 +109,16 @@ const RegisterForm = () => {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="form-input form-input-normal"
+                  />
+                </div>
+                <div className="flex flex-col gap-2 col-span-2 dark:text-white">
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     className="form-input form-input-normal"
                   />
                 </div>
