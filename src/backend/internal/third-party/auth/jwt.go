@@ -1,10 +1,12 @@
 package auth
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"time"
 
+	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -21,7 +23,7 @@ type JwtClaim struct {
 	jwt.RegisteredClaims
 }
 
-func (j *JwtWrapper) GenerateToken(email string, isAdmin bool) (signedToken string, err error) {
+func (j *JwtWrapper) GenerateToken(ctx context.Context, email string, isAdmin bool) (signedToken string, err error) {
 	claims := &JwtClaim{
 		Email:   email,
 		IsAdmin: isAdmin,
@@ -35,6 +37,9 @@ func (j *JwtWrapper) GenerateToken(email string, isAdmin bool) (signedToken stri
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err = token.SignedString([]byte(j.SecretKey))
 	if err != nil {
+		return "", err
+	}
+	if err := databases.RedisClient.Set(ctx, signedToken, email, 60*time.Minute).Err(); err != nil {
 		return "", err
 	}
 

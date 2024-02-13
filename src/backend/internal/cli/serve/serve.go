@@ -4,6 +4,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
+	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
@@ -27,8 +28,9 @@ var ServeCmd = &cobra.Command{
 			printAppConfig(appCfg)
 		}
 
-		db := connectSQLDB(appCfg.Database.Postgres.DSN)
+		db := databases.ConnectSQLDB(appCfg.Database.Postgres.DSN)
 		handler := controller.NewHandler(db)
+		databases.ConnectRedis(appCfg.Database.Redis.DSN)
 
 		r := gin.Default()
 		r.Use(retrieveSecretConf(appCfg))
