@@ -6,7 +6,7 @@ database:
 
 secretKey: ""
 
-administrator_secretKey: "p%h198~34#Or"
+administrator_secretKey: ""
 
 administrator_ip: []
 
