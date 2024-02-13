@@ -54,14 +54,17 @@ const NavBar = () => {
                   </Disclosure.Button>
                 </div>
                 <div className="flex flex-1 gap-2 items-center justify-center sm:items-stretch sm:justify-start">
-                  <div className="flex flex-shrink-0 items-center px-2">
+                  <Link
+                    href="/"
+                    className="flex flex-shrink-0 items-center px-2"
+                  >
                     <Image
                       src={"/images/logo-white.svg"}
                       alt="picKeeper"
                       width={120}
                       height={10}
                     />
-                  </div>
+                  </Link>
                   <div className="hidden sm:flex items-center">
                     <nav className="flex space-x-4">
                       {navigation.map((item) => (
