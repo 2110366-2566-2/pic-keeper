@@ -97,7 +97,7 @@ func (r *Resolver) Login(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":              "success",
-		"session-token":       token,
+		"session_token":       token,
 		"email":               existedUser.Email,
 		"id":                  existedUser.Id,
 		"name":                existedUser.Name,
