@@ -1,2 +1,16 @@
 database:
-  dsn: ""
+  postgres:
+    dsn: ""
+  mongodb:
+    dsn: ""
+
+secretKey: ""
+
+administrator_secretKey: ""
+
+administrator_ip: []
+
+oauth2_google:
+  client_id: ""
+  client_secret: ""
+  redirect_url: ""

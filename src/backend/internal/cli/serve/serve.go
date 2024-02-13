@@ -1,9 +1,13 @@
 package serve
 
 import (
-	"net/http"
+	"log"
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
+	"github.com/Roongkun/software-eng-ii/internal/controller"
+	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
+	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
@@ -27,12 +31,63 @@ var ServeCmd = &cobra.Command{
 			printAppConfig(appCfg)
 		}
 
+		db := connectSQLDB(appCfg.Database.Postgres.DSN)
+		handler := controller.NewHandler(db)
+
 		r := gin.Default()
-		r.GET("/init", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{
-				"message": "hello world",
-			})
-		})
+		r.Use(retrieveSecretConf(appCfg))
+
+		r.Use(cors.New(cors.Config{
+			AllowOrigins:     []string{"http://localhost:3000"},
+			AllowMethods:     []string{"GET", "PUT", "PATCH", "OPTIONS"},
+			AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+			ExposeHeaders:    []string{"Content-Length"},
+			AllowCredentials: true,
+		}))
+
+		if err := s3utils.InitializeS3(); err != nil {
+			log.Fatalf("Failed to initialize S3: %v", err)
+		}
+
+		admin := r.Group("/admin")
+		{
+			admin := admin.Group("/v1")
+			admin.Use(retrieveAdminSecretConf(appCfg))
+			admin.POST("/login", handler.Admin.Login)
+			admin.Use(middleware.ValidateCredentials)
+			admin.Use(handler.Admin.GetAdminInstance)
+
+			verification := admin.Group("/verifications")
+			{
+				verification.GET("/unverified-photographers", handler.Admin.ListUnverifiedPhotographers)
+				verification.PUT("/verify/:id", handler.Admin.Verify)
+			}
+			admin.PUT("/logout", handler.Admin.Logout)
+		}
+
+		authen := r.Group("/authen")
+		{
+			authen.POST("/v1/register/customer", handler.User.RegCustomer)
+			authen.POST("/v1/login", handler.User.Login)
+			google := authen.Group("/v1/google")
+			{
+				google.Use(setOAuth2GoogleConf(appCfg))
+				google.POST("/login", handler.User.GoogleLogin)
+				google.GET("/callback", handler.User.GoogleCallback)
+			}
+		}
+
+		validated := r.Group("/", middleware.UserAuthorizationMiddleware)
+		validated.Use(handler.User.GetUserInstance)
+
+		users := validated.Group("/users")
+		{
+			users.PUT("/v1/logout", handler.User.Logout)
+			users.POST("/v1/upload-profile", handler.User.UploadProfilePicture)
+			users.GET("/v1/get-my-user-info", handler.User.GetMyUserInfo)
+			users.GET("/v1/get-user/:id", handler.User.GetUserInfo)
+		}
+
 		r.Run()
 
 		return nil

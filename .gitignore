@@ -1,3 +1,16 @@
-/node_modules
+**/node_modules
 
 **/.DS_STORE
+
+**/values.yaml
+
+**/docker-compose.yml
+
+**/persistence-data
+
+**/bin/*
+**/tmp/*
+
+**/volume
+
+backend/internal/config/volume/cache/

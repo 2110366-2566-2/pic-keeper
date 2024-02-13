@@ -1,0 +1,15 @@
+{
+  "name": "pic-keeper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"cd backend && make initdb && make up \" \"cd frontend && npm start\" ",
+    "installAll": "concurrently \"npm install\" \"cd backend && go get\" \"cd frontend && npm install\" "
+  },
+  "author": "Maekin <maekin.nawmong@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

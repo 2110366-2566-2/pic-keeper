@@ -5,11 +5,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "./Modal";
+import authService from "@/services/auth";
 
 const RegisterForm = () => {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
 
@@ -41,7 +43,11 @@ const RegisterForm = () => {
       return;
     }
     try {
-      const user = await userService.create({ email, password });
+      const user = await authService.registerCustomer({
+        email,
+        name,
+        password,
+      });
       setModalMessage(`${user.name} created successfully!`);
       setSuccess(true);
       setIsModalOpen(true);
@@ -60,39 +66,67 @@ const RegisterForm = () => {
           <div className="flex px-5 h-full bg-white col-span-3 lg:col-span-2 dark:bg-gray-900">
             <div className="flex flex-col gap-5 w-full max-w-lg m-auto self-stretch">
               <div>
-                <h2 className="text-title text-gray-900 dark:text-white">
+                <Image
+                  src={"/images/logo.svg"}
+                  alt="picKeeper"
+                  width={150}
+                  height={10}
+                />
+                <h2 className="text-title mt-2 text-gray-900 dark:text-white">
                   New Here? Register now!
                 </h2>
-                <p className="text-standard text-gray-500 dark:text-gray-400">
-                  Already has an account?{" "}
-                  <a
-                    href="/auth/signin"
-                    className="font-semibold leading-6 text-yellow-600 hover:text-yellow-500"
-                  >
-                    Login
-                  </a>
-                </p>
               </div>
+              <div className="w-full flex flex-col items-stretch gap-4">
+                <button className="text-center form-input form-input-normal text-gray-500">
+                  <Image
+                    src={"/images/google-logo.svg"}
+                    alt="google"
+                    className="absolute"
+                    width={25}
+                    height={25}
+                  />
+                  Continue with Google
+                </button>
+                <button className="text-center form-input form-input-normal text-gray-500">
+                  <Image
+                    src={"/images/facebook-logo.svg"}
+                    alt="google"
+                    className="absolute"
+                    width={25}
+                    height={25}
+                  />
+                  Continue with Facebook
+                </button>
+              </div>
+              <p className="text-standard text-center m-1">
+                or continue with email
+              </p>
               <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5">
                 <div className="flex flex-col gap-2 col-span-2 dark:text-white">
-                  <label htmlFor="email">Email</label>
                   <input
                     id="email"
                     type="text"
-                    placeholder="email"
+                    placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="form-input form-input-normal"
                   />
                 </div>
+                <div className="flex flex-col gap-2 col-span-2 dark:text-white">
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="form-input form-input-normal"
+                  />
+                </div>
                 <div className="flex flex-col gap-2 col-span-2">
-                  <label htmlFor="password" className="dark:text-white">
-                    Password
-                  </label>
                   <input
                     id="password"
                     type="password"
-                    placeholder="password"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={`form-input ${
@@ -101,13 +135,10 @@ const RegisterForm = () => {
                   />
                 </div>
                 <div className="flex flex-col gap-2 col-span-2">
-                  <label htmlFor="password2" className="dark:text-white">
-                    Confirm your password
-                  </label>
                   <input
                     id="password2"
                     type="password"
-                    placeholder="Type password again"
+                    placeholder="Confirm your password"
                     value={password2}
                     onChange={(e) => setPassword2(e.target.value)}
                     className={`form-input ${
@@ -118,20 +149,30 @@ const RegisterForm = () => {
                     <p className="text-red-500">{passwordError}</p>
                   )}
                 </div>
-                <button type="submit" className="btn btn-primary mt-2">
+                <button
+                  type="submit"
+                  className="btn btn-primary mt-2 col-span-2"
+                >
                   Sign up
                 </button>
               </form>
+              <a
+                className="text-standard text-center hover:text-amber-500"
+                href="/auth/signin"
+              >
+                Already have an account?{" "}
+              </a>
             </div>
           </div>
-          <div className="relative h-full w-full flex flex-col items-center justify-center invisible lg:visible">
-            <Image
-              className="object-cover overflow-hidden"
-              src={"/images/signup.png"}
-              alt="camping"
-              fill={true}
-            />
-          </div>
+          <div className="relative h-full w-full flex flex-col items-center justify-center invisible lg:visible bg-amber-400"></div>
+          <Image
+            className="absolute invisible lg:visible "
+            style={{ right: "calc(20vw + 10px)" }}
+            src={"/images/register.svg"}
+            alt="register"
+            width={300}
+            height={800}
+          />
         </div>
       </div>
       <Modal
