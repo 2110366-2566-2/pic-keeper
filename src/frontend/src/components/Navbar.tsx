@@ -151,7 +151,7 @@ const NavBar = () => {
                               <Menu.Item>
                                 {({ active }) => (
                                   <a
-                                    href="/auth/login"
+                                    href="/auth/signin"
                                     className={classNames(
                                       "text-amber-700",
                                       active ? "bg-gray-100" : "",
