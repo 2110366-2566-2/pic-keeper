@@ -5,9 +5,14 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/redis/go-redis/v9"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+)
+
+var (
+	RedisClient *redis.Client
 )
 
 func printAppConfig(appCfg any) {
@@ -21,4 +26,14 @@ func printAppConfig(appCfg any) {
 func connectSQLDB(dsn string) *bun.DB {
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	return bun.NewDB(sqldb, pgdialect.New())
+}
+
+func connectRedis(dsn string) {
+	// ctx := context.Background()
+
+	RedisClient = redis.NewClient(&redis.Options{
+		Addr: dsn,
+	})
+
+	// if _, err := RedisClient.ping
 }
