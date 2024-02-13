@@ -114,7 +114,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		ExpirationHours:   12,
 	}
 
-	token, err := jwtWrapper.GenerateToken(googleUser.Email)
+	token, err := jwtWrapper.GenerateToken(googleUser.Email, false)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",

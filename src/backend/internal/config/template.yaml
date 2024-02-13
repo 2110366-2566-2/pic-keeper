@@ -6,6 +6,10 @@ database:
 
 secretKey: ""
 
+administrator_secretKey: ""
+
+administrator_ip: []
+
 oauth2_google:
   client_id: ""
   client_secret: ""
