@@ -28,6 +28,24 @@ const NavBar = () => {
     },
   ];
 
+  // const profileMenuItem = [
+  //   {
+  //     name: "View Profile",
+  //     href: "/user/my-profile",
+  //     current: pathName === "/user/my-profile"
+  //   },
+  //   {
+  //     name: "Report issues",
+  //     href: "/report-issues",
+  //     current: pathName === "/report-issues"
+  //   },
+  //   {
+  //     name: "Settings",
+  //     href: "/settings",
+  //     current: pathName === "/settings"
+  //   },
+  // ]
+
   const classNames = (...classes: string[]) =>
     classes.filter(Boolean).join(" ");
 
@@ -129,6 +147,24 @@ const NavBar = () => {
                           leaveTo="transform opacity-0 scale-95"
                         >
                           <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            {!session ? (
+                              <Menu.Item>
+                                {({ active }) => (
+                                  <a
+                                    href="/auth/login"
+                                    className={classNames(
+                                      "text-amber-700",
+                                      active ? "bg-gray-100" : "",
+                                      "block px-4 py-2 text-sm text-gray-700"
+                                    )}
+                                  >
+                                    Login / Register
+                                  </a>
+                                )}
+                              </Menu.Item>
+                            ) : (
+                              ""
+                            )}
                             <Menu.Item>
                               {({ active }) => (
                                 <a
@@ -183,19 +219,7 @@ const NavBar = () => {
                                 )}
                               </Menu.Item>
                             ) : (
-                              <Menu.Item>
-                                {({ active }) => (
-                                  <a
-                                    href="/auth/login"
-                                    className={classNames(
-                                      active ? "bg-gray-100" : "",
-                                      "block px-4 py-2 text-sm text-gray-700"
-                                    )}
-                                  >
-                                    Login
-                                  </a>
-                                )}
-                              </Menu.Item>
+                              ""
                             )}
                           </Menu.Items>
                         </Transition>
