@@ -9,10 +9,13 @@ import { HiOutlineBars3 } from "react-icons/hi2";
 import Image from "next/image";
 import { Fragment } from "react";
 import { MdOutlineArrowDropDown, MdArrowDropUp } from "react-icons/md";
+import { useSession } from "next-auth/react";
 
 const NavBar = () => {
   const pathName = usePathname();
 
+  const { data: session } = useSession();
+  console.log(session);
   const navigation = [
     {
       name: "Search",
