@@ -49,6 +49,22 @@ var ServeCmd = &cobra.Command{
 			log.Fatalf("Failed to initialize S3: %v", err)
 		}
 
+		admin := r.Group("/admin")
+		{
+			admin := admin.Group("/v1")
+			admin.Use(retrieveAdminSecretConf(appCfg))
+			admin.POST("/login", handler.Admin.Login)
+			admin.Use(middleware.ValidateCredentials)
+			admin.Use(handler.Admin.GetAdminInstance)
+
+			verification := admin.Group("/verifications")
+			{
+				verification.GET("/unverified-photographers", handler.Admin.ListUnverifiedPhotographers)
+				verification.PUT("/verify/:id", handler.Admin.Verify)
+			}
+			admin.PUT("/logout", handler.Admin.Logout)
+		}
+
 		authen := r.Group("/authen")
 		{
 			authen.POST("/v1/register/customer", handler.User.RegCustomer)
@@ -61,7 +77,7 @@ var ServeCmd = &cobra.Command{
 			}
 		}
 
-		validated := r.Group("/", middleware.AuthorizationMiddleware)
+		validated := r.Group("/", middleware.UserAuthorizationMiddleware)
 		validated.Use(handler.User.GetUserInstance)
 
 		users := validated.Group("/users")
