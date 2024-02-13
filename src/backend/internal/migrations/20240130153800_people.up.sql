@@ -13,3 +13,10 @@ CREATE TABLE photographers(
     user_id uuid REFERENCES users(id) ON DELETE CASCADE,
     is_verified boolean NOT NULL
 );
+
+CREATE TABLE administrators(
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    email varchar(2000) UNIQUE NOT NULL,
+    password varchar(2000) NOT NULL,
+    logged_out boolean NOT NULL
+);

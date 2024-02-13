@@ -1,10 +1,9 @@
-package user
+package admin
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/Roongkun/software-eng-ii/internal/controller/user/fieldvalidate"
+	"github.com/Roongkun/software-eng-ii/internal/controller/admin/fieldvalidate"
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
@@ -23,7 +22,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
-	if fieldErr := fieldvalidate.LoginUser(cred); len(fieldErr) > 0 {
+	if fieldErr := fieldvalidate.LoginAdmin(cred); len(fieldErr) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
 			"errors": util.JSONErrs(fieldErr),
@@ -32,7 +31,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
-	existedUser, err := r.UserUsecase.FindOneByEmail(c, cred.Email)
+	existedAdmin, err := r.AdminUsecase.FindOneByEmail(c, cred.Email)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": "failed",
@@ -42,25 +41,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
-	if existedUser.Provider == nil {
-		if *existedUser.Password != cred.Password {
-			c.JSON(http.StatusConflict, gin.H{
-				"status": "failed",
-				"error":  "incorrect password",
-			})
-			c.Abort()
-			return
-		}
-	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status": "failed",
-			"error":  fmt.Sprintf("Use %s OAuth2 instead", *existedUser.Provider),
-		})
-		c.Abort()
-		return
-	}
-
-	secretKey, exist := c.Get("secretKey")
+	secretKey, exist := c.Get("adminSecretKey")
 	if !exist {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "failed",
@@ -76,8 +57,8 @@ func (r *Resolver) Login(c *gin.Context) {
 		ExpirationHours:   12,
 	}
 
-	existedUser.LoggedOut = false
-	if err := r.UserUsecase.UserRepo.UpdateOne(c, existedUser); err != nil {
+	existedAdmin.LoggedOut = false
+	if err := r.AdminUsecase.AdminRepo.UpdateOne(c, existedAdmin); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
@@ -86,7 +67,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := jwtWrapper.GenerateToken(cred.Email, false)
+	token, err := jwtWrapper.GenerateToken(cred.Email, true)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

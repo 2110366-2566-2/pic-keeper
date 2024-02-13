@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthorizationMiddleware(c *gin.Context) {
+func ValidateCredentials(c *gin.Context) {
 	var token string
 	authorizationHeader := c.Request.Header.Get("Authorization")
 	if authorizationHeader == "" {
@@ -35,19 +35,22 @@ func AuthorizationMiddleware(c *gin.Context) {
 		return
 	}
 
-	secretKey, exist := c.Get("secretKey")
+	adminSecretKey, exist := c.Get("adminSecretKey")
 	if !exist {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  "failed",
 			"message": "secret key not found",
 		})
+		c.Abort()
+		return
 	}
+
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey: secretKey.(string),
+		SecretKey: adminSecretKey.(string),
 		Issuer:    "AuthProvider",
 	}
 
-	claims, err := jwtWrapper.ValidateToken(token)
+	claims, err := jwtWrapper.ValidateToken(token, true)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

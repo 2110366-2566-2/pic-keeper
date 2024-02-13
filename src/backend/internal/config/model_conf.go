@@ -1,9 +1,11 @@
 package config
 
 type App struct {
-	Database     Database     `mapstructure:"database"`
-	SecretKey    string       `mapstructure:"secretKey"`
-	OAuth2Google OAuth2Google `mapstructure:"oauth2_google"`
+	Database                 Database     `mapstructure:"database"`
+	SecretKey                string       `mapstructure:"secretKey"`
+	AdministratorSecretKey   string       `mapstructure:"administrator_secretKey"`
+	AdministratorPhysicalIPs []string     `mapstructure:"administrator_ip"`
+	OAuth2Google             OAuth2Google `mapstructure:"oauth2_google"`
 }
 
 type Database struct {
