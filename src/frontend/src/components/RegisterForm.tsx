@@ -130,7 +130,7 @@ const RegisterForm = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={`form-input ${
-                      passwordError ? "form-input-error" : "form-input-normal"
+                      passwordError ? "form-input-error" : ""
                     }`}
                   />
                 </div>
@@ -142,7 +142,7 @@ const RegisterForm = () => {
                     value={password2}
                     onChange={(e) => setPassword2(e.target.value)}
                     className={`form-input ${
-                      passwordError ? "form-input-error" : "form-input-normal"
+                      passwordError ? "form-input-error" : ""
                     }`}
                   />
                   {passwordError && (
@@ -166,7 +166,7 @@ const RegisterForm = () => {
           </div>
           <div className="relative h-full w-full flex flex-col items-center justify-center invisible lg:visible bg-amber-400"></div>
           <Image
-            className="absolute invisible lg:visible "
+            className="absolute top-[30vh] invisible lg:visible "
             style={{ right: "calc(20vw + 10px)" }}
             src={"/images/register.svg"}
             alt="register"
