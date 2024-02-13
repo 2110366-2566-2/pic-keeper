@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from "@/libs/axios";
 
-const authBaseUrl = "http://localhost:8080/authen/v1";
+const authBaseUrl = "/authen/v1";
 
 const registerCustomer = async (newUser: NewUser) => {
   try {
