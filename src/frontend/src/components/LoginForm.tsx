@@ -5,39 +5,47 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "./Modal";
+import authService from "@/services/auth";
 
 const LoginForm = () => {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loginError, setLoginError] = useState(false);
   const closeModal = () => {
     setIsModalOpen(false);
     if (success) {
-      router.push("/auth/login");
+      router.push("/");
     }
   };
 
   const [passwordError, setPasswordError] = useState("");
 
-  const onSubmit = async (event: React.SyntheticEvent) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
+    setLoginError(false); // Reset login error state
+    setErrorMessage(""); // Reset the error message
+
     try {
-      const user = await userService.create({ email, password });
-      setModalMessage(`Welcome back ${user.name}!`);
+      const response = await authService.login({ email, password });
+      setModalMessage(`Welcome back ${response.name}!`);
       setSuccess(true);
       setIsModalOpen(true);
+      // Navigate to dashboard or other protected route as needed
+      router.push("/"); // Adjust the route as needed
     } catch (error) {
-      const errorMessage = "Incorrect username or password.";
-      setModalMessage(errorMessage);
+      setModalMessage("Incorrect username or password.");
       setSuccess(false);
+      setErrorMessage("Incorrect username or password."); // Set the error message`
+      setLoginError(true); // Set login error state
       setIsModalOpen(true);
     }
   };
@@ -108,6 +116,11 @@ const LoginForm = () => {
                 onSubmit={onSubmit}
                 className="grid grid-cols-2 gap-5 w-full"
               >
+                {loginError && (
+                  <div className="col-span-2 text-red-500 text-sm my-2">
+                    Incorrect username or password.
+                  </div>
+                )}
                 <div className="flex flex-col gap-2 col-span-2 dark:text-white">
                   <input
                     id="email"
@@ -115,7 +128,9 @@ const LoginForm = () => {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="form-input form-input-normal"
+                    className={`form-input ${
+                      loginError ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
                 </div>
                 <div className="flex flex-col gap-2 col-span-2">
@@ -126,7 +141,7 @@ const LoginForm = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={`form-input ${
-                      passwordError ? "form-input-error" : "form-input-normal"
+                      loginError ? "border-red-500" : "border-gray-300"
                     }`}
                   />
                 </div>
