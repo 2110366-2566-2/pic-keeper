@@ -1,11 +1,10 @@
 "use client";
 
-import userService from "@/services/user";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "./Modal";
-import authService from "@/services/auth";
+import { signIn } from "next-auth/react";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -29,28 +28,29 @@ const LoginForm = () => {
 
   const [passwordError, setPasswordError] = useState("");
 
-  const onSubmit = async (event) => {
+  const onSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     setLoginError(false); // Reset login error state
     setErrorMessage(""); // Reset the error message
 
-    try {
-      const response = await authService.login({ email, password });
-      setModalMessage(`Welcome back ${response.name}!`);
-      setSuccess(true);
-      setIsModalOpen(true);
-      // Navigate to dashboard or other protected route as needed
-      router.push("/"); // Adjust the route as needed
-    } catch (error) {
+    const res = await signIn("credentials", {
+      email: email,
+      password: password,
+      redirect: false,
+    });
+
+    if (res?.error) {
       setModalMessage("Incorrect username or password.");
       setSuccess(false);
       setErrorMessage("Incorrect username or password."); // Set the error message`
       setLoginError(true); // Set login error state
       setIsModalOpen(true);
+    } else {
+      router.push("/");
     }
   };
 
-  const handleForgotPasswordClick = (event) => {
+  const handleForgotPasswordClick = (event: React.MouseEvent) => {
     event.preventDefault();
     // Here you can set the message for the forgot password modal
     setModalMessage(
@@ -166,7 +166,7 @@ const LoginForm = () => {
                 className="text-standard text-center hover:text-amber-500"
                 href="/auth/register"
               >
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
               </a>
             </div>
           </div>
@@ -192,19 +192,6 @@ const LoginForm = () => {
           className={`btn ${success ? "btn-success" : "btn-danger"} mt-4 px-4`}
         >
           {success ? "Continue" : "Close"}
-        </button>
-      </Modal>
-      <Modal
-        isOpen={isForgotPasswordModalOpen}
-        closeModal={closeForgotPasswordModal}
-        title="Oops!"
-      >
-        <p className="text-standard text-gray-500">{modalMessage}</p>
-        <button
-          onClick={closeForgotPasswordModal}
-          className="btn btn-primary mt-4 px-4"
-        >
-          Got it, thanks!
         </button>
       </Modal>
     </>

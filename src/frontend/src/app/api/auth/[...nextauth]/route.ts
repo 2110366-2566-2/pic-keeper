@@ -24,6 +24,7 @@ export const authOptions: AuthOptions = {
           email: credentials.email,
           password: credentials.password,
         });
+
         if (user) {
           return user;
         } else {
@@ -35,9 +36,9 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-  // pages: {
-  //   signIn: "/auth/login",
-  // },
+  pages: {
+    signIn: "/auth/login",
+  },
   session: { strategy: "jwt" },
   callbacks: {
     async jwt({ token, user }) {

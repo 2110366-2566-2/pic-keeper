@@ -1,6 +1,4 @@
 import EditProfilePage from "@/components/EditProfilePage";
-import NavBar from "@/components/Navbar";
-import SideNavbar from "@/components/SideNavbar";
 
 const Home = () => {
   return (
