@@ -10,3 +10,7 @@
 
 **/bin/*
 **/tmp/*
+
+**/volume
+
+backend/internal/config/volume/cache/
