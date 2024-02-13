@@ -95,10 +95,13 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
-		"status":        "success",
-		"session-token": token,
+		"status":          "success",
+		"session-token":   token,
+		"email":           existedUser.Email,
+		"id":              existedUser.Id,
+		"name":            existedUser.Name,
+		"profile-picture": GetProfilePictureUrl(existedUser.ProfilePictureKey),
 	})
 
 }

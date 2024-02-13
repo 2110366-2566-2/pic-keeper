@@ -78,6 +78,15 @@ func processImage(img image.Image, contentType string) (*bytes.Buffer, error) {
 	return &buf, nil
 }
 
+func GetProfilePictureUrl(profilePictureKey *string) *string {
+	if profilePictureKey == nil {
+		return nil
+	}
+	// TODO: Add aws endpoint to config
+	url := fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", *profilePictureKey)
+	return &url
+}
+
 // UploadProfilePicture handles the HTTP request for uploading a profile picture.
 func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	file, _, err := c.Request.FormFile("profilePicture")
