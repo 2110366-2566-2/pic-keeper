@@ -22,3 +22,7 @@ func NewAdminUseCase(db *bun.DB) *AdminUseCase {
 func (a *AdminUseCase) FindOneByEmail(ctx context.Context, email string) (*model.Administrator, error) {
 	return a.AdminRepo.FindOneByEmail(ctx, email)
 }
+
+func (a *AdminUseCase) CheckExistenceByEmail(ctx context.Context, email string) (bool, error) {
+	return a.AdminRepo.CheckExistenceByEmail(ctx, email)
+}

@@ -7,56 +7,67 @@ import { useState } from "react";
 import Modal from "./Modal";
 import authService from "@/services/auth";
 
-const RegisterForm = () => {
+const LoginForm = () => {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [success, setSuccess] = useState(false);
-
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loginError, setLoginError] = useState(false);
   const closeModal = () => {
     setIsModalOpen(false);
     if (success) {
-      router.push("/auth/signin");
+      router.push("/");
     }
   };
 
   const [passwordError, setPasswordError] = useState("");
 
-  const validatePasswords = () => {
-    if (password !== password2) {
-      setPasswordError("Passwords do not match!");
-      return false;
-    }
-    setPasswordError("");
-    return true;
-  };
-
-  const onSubmit = async (event: React.SyntheticEvent) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    if (!validatePasswords()) {
-      return;
-    }
+    setLoginError(false); // Reset login error state
+    setErrorMessage(""); // Reset the error message
+
     try {
-      const user = await authService.registerCustomer({
-        email,
-        name,
-        password,
-      });
-      setModalMessage(`${user.name} created successfully!`);
+      const response = await authService.login({ email, password });
+      setModalMessage(`Welcome back ${response.name}!`);
       setSuccess(true);
       setIsModalOpen(true);
+      // Navigate to dashboard or other protected route as needed
+      router.push("/"); // Adjust the route as needed
     } catch (error) {
-      const errorMessage = "An error occurred while creating the user.";
-      setModalMessage(errorMessage);
+      setModalMessage("Incorrect username or password.");
       setSuccess(false);
+      setErrorMessage("Incorrect username or password."); // Set the error message`
+      setLoginError(true); // Set login error state
       setIsModalOpen(true);
     }
+  };
+
+  const handleForgotPasswordClick = (event) => {
+    event.preventDefault();
+    // Here you can set the message for the forgot password modal
+    setModalMessage(
+      "Sadly, we have not implemented a system for this function yet. We would gladly advise you to create a new account. 😅"
+    );
+    setIsForgotPasswordModalOpen(true);
+  };
+
+  const closeForgotPasswordModal = () => {
+    setIsForgotPasswordModalOpen(false);
+  };
+
+  const onForgotPassword = (event: React.MouseEvent) => {
+    event.preventDefault(); // Prevent the default anchor behavior
+    setModalMessage("Sorry to hear that!"); // Set the joke message
+    setSuccess(false); // It's not a success event
+    setIsModalOpen(true); // Show the modal
   };
 
   return (
@@ -73,7 +84,7 @@ const RegisterForm = () => {
                   height={10}
                 />
                 <h2 className="text-title mt-2 text-gray-900 dark:text-white">
-                  New Here? Register now!
+                  Login to your Account
                 </h2>
               </div>
               <div className="w-full flex flex-col items-stretch gap-4">
@@ -101,7 +112,15 @@ const RegisterForm = () => {
               <p className="text-standard text-center m-1">
                 or continue with email
               </p>
-              <form onSubmit={onSubmit} className="grid grid-cols-2 gap-5">
+              <form
+                onSubmit={onSubmit}
+                className="grid grid-cols-2 gap-5 w-full"
+              >
+                {loginError && (
+                  <div className="col-span-2 text-red-500 text-sm my-2">
+                    Incorrect username or password.
+                  </div>
+                )}
                 <div className="flex flex-col gap-2 col-span-2 dark:text-white">
                   <input
                     id="email"
@@ -109,17 +128,9 @@ const RegisterForm = () => {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="form-input form-input-normal"
-                  />
-                </div>
-                <div className="flex flex-col gap-2 col-span-2 dark:text-white">
-                  <input
-                    id="name"
-                    type="text"
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="form-input form-input-normal"
+                    className={`form-input ${
+                      loginError ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
                 </div>
                 <div className="flex flex-col gap-2 col-span-2">
@@ -130,43 +141,38 @@ const RegisterForm = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={`form-input ${
-                      passwordError ? "form-input-error" : ""
+                      loginError ? "border-red-500" : "border-gray-300"
                     }`}
                   />
                 </div>
-                <div className="flex flex-col gap-2 col-span-2">
-                  <input
-                    id="password2"
-                    type="password"
-                    placeholder="Confirm your password"
-                    value={password2}
-                    onChange={(e) => setPassword2(e.target.value)}
-                    className={`form-input ${
-                      passwordError ? "form-input-error" : ""
-                    }`}
-                  />
-                  {passwordError && (
-                    <p className="text-red-500">{passwordError}</p>
-                  )}
+                <div className="col-span-2 flex justify-end">
+                  <a
+                    href="#"
+                    onClick={handleForgotPasswordClick}
+                    className="text-orange-400 text-sm font-semibold hover:text-orange-500 mt-2"
+                  >
+                    Forgot password?
+                  </a>
                 </div>
+
                 <button
                   type="submit"
                   className="btn btn-primary mt-2 col-span-2"
                 >
-                  Sign up
+                  Login
                 </button>
               </form>
               <a
                 className="text-standard text-center hover:text-amber-500"
-                href="/auth/signin"
+                href="/auth/register"
               >
-                Already have an account?{" "}
+                Don't have an account?{" "}
               </a>
             </div>
           </div>
           <div className="relative h-full w-full flex flex-col items-center justify-center invisible lg:visible bg-amber-400"></div>
           <Image
-            className="absolute top-[30vh] invisible lg:visible "
+            className="absolute invisible lg:visible "
             style={{ right: "calc(20vw + 10px)" }}
             src={"/images/register.svg"}
             alt="register"
@@ -178,7 +184,7 @@ const RegisterForm = () => {
       <Modal
         isOpen={isModalOpen}
         closeModal={closeModal}
-        title={success ? "Register Successful" : "Register Error!"}
+        title={success ? "Login Successful" : "Login Error!"}
       >
         <p className="text-standard text-gray-500">{modalMessage}</p>
         <button
@@ -188,8 +194,21 @@ const RegisterForm = () => {
           {success ? "Continue" : "Close"}
         </button>
       </Modal>
+      <Modal
+        isOpen={isForgotPasswordModalOpen}
+        closeModal={closeForgotPasswordModal}
+        title="Oops!"
+      >
+        <p className="text-standard text-gray-500">{modalMessage}</p>
+        <button
+          onClick={closeForgotPasswordModal}
+          className="btn btn-primary mt-4 px-4"
+        >
+          Got it, thanks!
+        </button>
+      </Modal>
     </>
   );
 };
 
-export default RegisterForm;
+export default LoginForm;

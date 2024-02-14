@@ -67,7 +67,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := jwtWrapper.GenerateToken(cred.Email, true)
+	token, err := jwtWrapper.GenerateToken(c, cred.Email, true)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

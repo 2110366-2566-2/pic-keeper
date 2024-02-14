@@ -9,4 +9,5 @@ import (
 type Admin interface {
 	BaseRepo[model.Administrator]
 	FindOneByEmail(ctx context.Context, email string) (*model.Administrator, error)
+	CheckExistenceByEmail(ctx context.Context, email string) (bool, error)
 }
