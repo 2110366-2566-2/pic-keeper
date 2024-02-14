@@ -45,7 +45,7 @@ const LoginForm = () => {
         password: password,
         redirect: false,
       });
-      console.log("response", response);
+      
       if (response?.error) {
         throw new Error("An error occurred");
       }
