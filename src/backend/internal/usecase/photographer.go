@@ -26,3 +26,7 @@ func (u *PhotographerUseCase) FindOneByEmail(ctx context.Context, email string) 
 func (u *PhotographerUseCase) CheckExistenceByEmail(ctx context.Context, email string) (bool, error) {
 	return u.PhotographerRepo.CheckExistenceByEmail(ctx, email)
 }
+
+func (p *PhotographerUseCase) ListUnverifiedPhotographers(ctx context.Context) ([]*model.Photographer, error) {
+	return p.PhotographerRepo.ListUnverifiedPhotographers(ctx)
+}

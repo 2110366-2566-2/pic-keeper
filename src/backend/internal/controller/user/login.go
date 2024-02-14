@@ -69,6 +69,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
 	jwtWrapper := auth.JwtWrapper{
 		SecretKey:         secretKey.(string),
 		Issuer:            "AuthProvider",
@@ -86,7 +87,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := jwtWrapper.GenerateToken(cred.Email)
+	token, err := jwtWrapper.GenerateToken(c, cred.Email, false)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -95,10 +96,14 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
-		"status":        "success",
-		"session-token": token,
+		"status":              "success",
+		"session_token":       token,
+		"email":               existedUser.Email,
+		"id":                  existedUser.Id,
+		"name":                existedUser.Name,
+		"provider":            existedUser.Provider,
+		"profile_picture_url": GetProfilePictureUrl(existedUser.ProfilePictureKey),
 	})
 
 }

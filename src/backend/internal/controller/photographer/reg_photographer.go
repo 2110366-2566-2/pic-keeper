@@ -40,9 +40,8 @@ func (r *Resolver) RegPhotographer(c *gin.Context) {
 		LoggedOut: false,
 	}
 
-	// add to user database
 	if err := r.UserUsecase.UserRepo.AddOne(c, &userModel); err != nil {
-		c.JSON(http.StatuInternalServerError, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
 		})
@@ -50,7 +49,6 @@ func (r *Resolver) RegPhotographer(c *gin.Context) {
 		return
 	}
 
-	/* add to photographer table */
 	photographerModel := model.Photographer{
 		Id:         uuid.New(),
 		UserId:     userModel.Id,

@@ -3,8 +3,14 @@ database:
     dsn: ""
   mongodb:
     dsn: ""
+  redis:
+    dsn: ""
 
 secretKey: ""
+
+administrator_secretKey: ""
+
+administrator_ip: []
 
 oauth2_google:
   client_id: ""

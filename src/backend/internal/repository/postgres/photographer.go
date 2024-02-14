@@ -38,3 +38,12 @@ func (u *PhotographerDB) CheckExistenceByEmail(ctx context.Context, email string
 
 	return exist, nil
 }
+
+func (p *PhotographerDB) ListUnverifiedPhotographers(ctx context.Context) ([]*model.Photographer, error) {
+	var unvrfPhotographers []*model.Photographer
+	if err := p.db.NewSelect().Model(&unvrfPhotographers).Where("is_verified = FALSE").Scan(ctx, &unvrfPhotographers); err != nil {
+		return nil, err
+	}
+
+	return unvrfPhotographers, nil
+}
