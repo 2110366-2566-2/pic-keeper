@@ -3,6 +3,8 @@ database:
     dsn: ""
   mongodb:
     dsn: ""
+  redis:
+    dsn: ""
 
 secretKey: ""
 

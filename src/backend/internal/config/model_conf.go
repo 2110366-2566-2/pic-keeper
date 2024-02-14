@@ -11,6 +11,7 @@ type App struct {
 type Database struct {
 	Postgres BaseConfig `mapstructure:"postgres"`
 	MongoDB  BaseConfig `mapstructure:"mongodb"`
+	Redis    BaseConfig `mapstructure:"redis"`
 }
 
 type BaseConfig struct {
