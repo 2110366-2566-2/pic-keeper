@@ -23,7 +23,7 @@ func (r *Resolver) RegCustomer(c *gin.Context) {
 	}
 
 	// field validate
-	if fieldErr := fieldvalidate.RegCustomer(newUser); len(fieldErr) > 0 {
+	if fieldErr := fieldvalidate.Register(newUser); len(fieldErr) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
 			"errors": util.JSONErrs(fieldErr),

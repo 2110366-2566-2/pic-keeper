@@ -23,7 +23,7 @@ func (r *Resolver) RegPhotographer(c *gin.Context) {
 	}
 
 	/* add to user table*/
-	if fieldErr := fieldvalidate.RegCustomer(newPhotographer); len(fieldErr) > 0 {
+	if fieldErr := fieldvalidate.Register(newPhotographer); len(fieldErr) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
 			"errors": util.JSONErrs(fieldErr),
