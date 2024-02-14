@@ -10,6 +10,7 @@ import Image from "next/image";
 import { Fragment } from "react";
 import { MdOutlineArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { useSession } from "next-auth/react";
+import authService from "@/services/auth";
 
 const NavBar = () => {
   const pathName = usePathname();
@@ -151,7 +152,7 @@ const NavBar = () => {
                               <Menu.Item>
                                 {({ active }) => (
                                   <a
-                                    href="/auth/login"
+                                    href="/auth/signin"
                                     className={classNames(
                                       "text-amber-700",
                                       active ? "bg-gray-100" : "",
@@ -207,8 +208,8 @@ const NavBar = () => {
                             {session ? (
                               <Menu.Item>
                                 {({ active }) => (
-                                  <a
-                                    href="#"
+                                  <a     
+                                    onClick={()=>{authService.logOut(session.user.session_token)}}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700"

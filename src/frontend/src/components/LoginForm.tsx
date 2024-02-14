@@ -5,7 +5,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "./Modal";
-import authService from "@/services/auth";
+import { signIn } from "next-auth/react";
+
+
 
 const LoginForm = () => {
   const router = useRouter();
@@ -20,6 +22,8 @@ const LoginForm = () => {
     useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loginError, setLoginError] = useState(false);
+
+
   const closeModal = () => {
     setIsModalOpen(false);
     if (success) {
@@ -29,14 +33,24 @@ const LoginForm = () => {
 
   const [passwordError, setPasswordError] = useState("");
 
+
   const onSubmit = async (event) => {
     event.preventDefault();
     setLoginError(false); // Reset login error state
     setErrorMessage(""); // Reset the error message
 
     try {
-      const response = await authService.login({ email, password });
-      setModalMessage(`Welcome back ${response.name}!`);
+      const response = await signIn('credentials', {
+        email: email,
+        password: password,
+        redirect: false,
+      });
+      console.log("response", response);
+      if (response?.error) {
+        throw new Error("An error occurred");
+      }
+    
+      setModalMessage(`Welcome back!`);
       setSuccess(true);
       setIsModalOpen(true);
       // Navigate to dashboard or other protected route as needed
@@ -88,7 +102,7 @@ const LoginForm = () => {
                 </h2>
               </div>
               <div className="w-full flex flex-col items-stretch gap-4">
-                <button className="text-center form-input form-input-normal text-gray-500">
+                <button className="text-center form-input form-input-normal text-gray-500" onClick={()=>{signIn('google')}}>
                   <Image
                     src={"/images/google-logo.svg"}
                     alt="google"

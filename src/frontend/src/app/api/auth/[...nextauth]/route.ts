@@ -2,8 +2,13 @@ import authService from "@/services/auth";
 import NextAuth from "next-auth";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
+
+
+
 
 export const authOptions: AuthOptions = {
+
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
@@ -20,10 +25,11 @@ export const authOptions: AuthOptions = {
         // Add logic here to look up the user from the credentials supplied
         if (!credentials) return null;
 
-        const user = await authService.login({
+        const user = await authService.logIn({
           email: credentials.email,
           password: credentials.password,
         });
+        console.log(user);
         if (user) {
           return user;
         } else {
