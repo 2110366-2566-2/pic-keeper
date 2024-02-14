@@ -36,7 +36,7 @@ func LoginUser(cred model.LoginCredentials) []error {
 	return fieldErrs
 }
 
-func RegCustomer(newUser model.UserInput) []error {
+func Register(newUser model.UserInput) []error {
 	fieldErrs := []error{}
 
 	// empty and whitespace name

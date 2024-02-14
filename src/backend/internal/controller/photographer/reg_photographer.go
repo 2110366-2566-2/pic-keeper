@@ -1,4 +1,4 @@
-package user
+package photographer
 
 import (
 	"net/http"
@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) RegCustomer(c *gin.Context) {
-	newUser := model.UserInput{}
-	if err := c.BindJSON(&newUser); err != nil {
+func (r *Resolver) RegPhotographer(c *gin.Context) {
+	newPhotographer := model.UserInput{}
+	if err := c.BindJSON(&newPhotographer); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
 			"error":   err.Error(),
@@ -22,8 +22,8 @@ func (r *Resolver) RegCustomer(c *gin.Context) {
 		return
 	}
 
-	// field validate
-	if fieldErr := fieldvalidate.Register(newUser); len(fieldErr) > 0 {
+	/* add to user table*/
+	if fieldErr := fieldvalidate.Register(newPhotographer); len(fieldErr) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
 			"errors": util.JSONErrs(fieldErr),
@@ -32,17 +32,30 @@ func (r *Resolver) RegCustomer(c *gin.Context) {
 		return
 	}
 
-	// change type
 	userModel := model.User{
 		Id:        uuid.New(),
-		Name:      newUser.Name,
-		Email:     newUser.Email,
-		Password:  newUser.Password,
+		Name:      newPhotographer.Name,
+		Email:     newPhotographer.Email,
+		Password:  newPhotographer.Password,
 		LoggedOut: false,
 	}
 
-	// add to database
 	if err := r.UserUsecase.UserRepo.AddOne(c, &userModel); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": "failed",
+			"error":  err.Error(),
+		})
+		c.Abort()
+		return
+	}
+
+	photographerModel := model.Photographer{
+		Id:         uuid.New(),
+		UserId:     userModel.Id,
+		IsVerified: false,
+	}
+
+	if err := r.PhotographerUsecase.PhotographerRepo.AddOne(c, &photographerModel); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
@@ -53,6 +66,6 @@ func (r *Resolver) RegCustomer(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"status": "success",
-		"data":   userModel,
+		"data":   photographerModel,
 	})
 }
