@@ -42,7 +42,7 @@ func (r *Resolver) RegPhotographer(c *gin.Context) {
 
 	// add to user database
 	if err := r.UserUsecase.UserRepo.AddOne(c, &userModel); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatuInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
 		})
