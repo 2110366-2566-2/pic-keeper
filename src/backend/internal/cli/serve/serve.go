@@ -72,7 +72,7 @@ var ServeCmd = &cobra.Command{
 		{
 			authen := authen.Group("/v1")
 			authen.POST("/register/customer", handler.User.RegCustomer)
-			authen.POST("/register/photographer", handler.Photographer.RegPhotographer)
+			authen.POST("/register/photographer", handler.User.RegPhotographer)
 			authen.POST("/login", handler.User.Login)
 			authen.GET("/refresh", handler.User.RefreshToken)
 			google := authen.Group("/google")
