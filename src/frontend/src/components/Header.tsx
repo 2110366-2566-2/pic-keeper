@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FaBell } from "react-icons/fa6";
 import { IoIosMail } from "react-icons/io";
 
@@ -32,11 +33,14 @@ const Header = () => {
                 <span className="font-semibold">Napat Niti</span>
                 <span className="text-sm text-gray-500 block">#admin1234</span>
               </div>
-              <img
-                className="h-8 w-8 rounded-full border border-gray-300"
-                src="/path-to-your-profile-image.jpg"
-                alt="Profile"
-              />
+              <div className="relative bg-gray-300 rounded-full w-8 h-8">
+                <Image
+                  src={""}
+                  alt="Profile Preview"
+                  fill={true}
+                  className="rounded-full object-cover" // Make the image circular
+                />
+              </div>
             </button>
             {/* Dropdown menu, show/hide based on dropdown state */}
             {/* Dropdown goes here */}
