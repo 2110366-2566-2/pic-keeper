@@ -17,7 +17,6 @@ const LoginForm = () => {
   const [success, setSuccess] = useState(false);
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [loginError, setLoginError] = useState(false);
   const closeModal = () => {
     setIsModalOpen(false);
@@ -26,12 +25,9 @@ const LoginForm = () => {
     }
   };
 
-  const [passwordError, setPasswordError] = useState("");
-
   const onSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     setLoginError(false); // Reset login error state
-    setErrorMessage(""); // Reset the error message
 
     const res = await signIn("credentials", {
       email: email,
@@ -42,7 +38,6 @@ const LoginForm = () => {
     if (res?.error) {
       setModalMessage("Incorrect username or password.");
       setSuccess(false);
-      setErrorMessage("Incorrect username or password."); // Set the error message`
       setLoginError(true); // Set login error state
       setIsModalOpen(true);
     } else {
@@ -192,6 +187,19 @@ const LoginForm = () => {
           className={`btn ${success ? "btn-success" : "btn-danger"} mt-4 px-4`}
         >
           {success ? "Continue" : "Close"}
+        </button>
+      </Modal>
+      <Modal
+        isOpen={isForgotPasswordModalOpen}
+        closeModal={closeForgotPasswordModal}
+        title="Oops!"
+      >
+        <p className="text-standard text-gray-500">{modalMessage}</p>
+        <button
+          onClick={closeForgotPasswordModal}
+          className="btn btn-primary mt-4 px-4"
+        >
+          Got it, thanks!
         </button>
       </Modal>
     </>

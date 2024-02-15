@@ -69,6 +69,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
 	jwtWrapper := auth.JwtWrapper{
 		SecretKey:         secretKey.(string),
 		Issuer:            "AuthProvider",
@@ -86,7 +87,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := jwtWrapper.GenerateToken(cred.Email, false)
+	token, err := jwtWrapper.GenerateToken(c, cred.Email, false)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
