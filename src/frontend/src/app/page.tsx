@@ -9,6 +9,7 @@ export default function Home() {
     <main>
       <NavBar />
       <div className=''>Pic-Keeper</div>
+      <div className="bg-black">TEST</div>
     </main>
   );
 }
