@@ -1,0 +1,26 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the back-end documentation of the pic-keeper project
+  license:
+    name: Apache 2.0
+  title: Pic-keeper APIs
+  version: "1.0"
+paths:
+  /authen/v1/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: status":"success", "session-token":"xxxxx"}
+          schema:
+            type: json
+      summary: Login via email and password
+      tags:
+      - users
+swagger: "2.0"

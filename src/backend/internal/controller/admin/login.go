@@ -10,6 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Login Logins to the existing account via email and password
+//
+//	@Summary      Login via email and password
+//	@Description  Login
+//	@Tags         users
+//	@Accept       json
+//	@Produce      json
+//	@Success      200 {"status":"success", "session-token":"xxxxx"}
+//	@Router       /authen/v1/login [post]
 func (r *Resolver) Login(c *gin.Context) {
 	cred := model.LoginCredentials{}
 	if err := c.BindJSON(&cred); err != nil {
