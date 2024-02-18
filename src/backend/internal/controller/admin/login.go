@@ -10,20 +10,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Login Logins to the existing account via email and password
+// Admin Login to the existing ADMIN account via email and password
 //
-//	@Summary      Login via email and password
-//	@Description  Login
-//	@Tags         authen
-//	@Param Credentials body model.LoginCredentials true "email and password of the user"
+//	@Summary      Admin login via email and password
+//	@Description  Admin login
+//	@Tags         admin
+//	@Param Credentials body model.LoginCredentials true "email and password of the administrator"
 //	@Accept       json
 //	@Produce      json
 //	@Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The token will be returned inside the data field"
 //	@Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
-//	@Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "User does not exist"
+//	@Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "Administrator does not exist"
 //	@Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
 //
-//	@Router       /authen/v1/login [post]
+//	@Router       /admin/v1/login [post]
 func (r *Resolver) Login(c *gin.Context) {
 	cred := model.LoginCredentials{}
 	if err := c.BindJSON(&cred); err != nil {

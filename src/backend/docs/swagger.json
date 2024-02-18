@@ -12,9 +12,9 @@
     "host": "localhost:8080",
     "basePath": "/",
     "paths": {
-        "/authen/v1/login": {
+        "/admin/v1/login": {
             "post": {
-                "description": "Login",
+                "description": "Admin login",
                 "consumes": [
                     "application/json"
                 ],
@@ -22,12 +22,12 @@
                     "application/json"
                 ],
                 "tags": [
-                    "authen"
+                    "admin"
                 ],
-                "summary": "Login via email and password",
+                "summary": "Admin login via email and password",
                 "parameters": [
                     {
-                        "description": "email and password of the user",
+                        "description": "email and password of the administrator",
                         "name": "Credentials",
                         "in": "body",
                         "required": true,
@@ -80,7 +80,7 @@
                         }
                     },
                     "404": {
-                        "description": "User does not exist",
+                        "description": "Administrator does not exist",
                         "schema": {
                             "allOf": [
                                 {
@@ -102,6 +102,390 @@
                     },
                     "500": {
                         "description": "Unhandled internal server error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/v1/logout": {
+            "put": {
+                "description": "Logout endpoint for administrators",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Logout endpoint for administrators",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session token is required",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONSuccessResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Administrator is no longer existed",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Unhandled internal server error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/v1/refresh": {
+            "get": {
+                "description": "Refresh session token for administrators",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Refresh session token for administrators",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Expired token is required",
+                        "name": "ExpiredToken",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The refreshed session token will be returned inside the data field",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONSuccessResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Incorrect input",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "403": {
+                        "description": "No Authorization header provided",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Re-login is needed or the administrator may no longer exist",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Unhandled internal server error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/v1/verifications/unverified-photographers": {
+            "get": {
+                "description": "List all unverified photographers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "List all unverified photographers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session token is required",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of unverified photographers will be located inside the data field",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONSuccessResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "Administrator is no longer existed",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Unhandled internal server error OR session token cannot be verified",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/v1/verifications/verify/:id": {
+            "get": {
+                "description": "Verify the specified photographer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Verify the specified photographer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Session token is required",
+                        "name": "Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The ID of the to-be-verified photographer",
+                        "name": "photographerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully verified the photographer",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONSuccessResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Issues with finding the photographer in the database",
                         "schema": {
                             "allOf": [
                                 {
