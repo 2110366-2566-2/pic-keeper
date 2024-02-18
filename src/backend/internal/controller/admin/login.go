@@ -14,10 +14,15 @@ import (
 //
 //	@Summary      Login via email and password
 //	@Description  Login
-//	@Tags         users
+//	@Tags         authen
+//	@Param Credentials body model.LoginCredentials true "email and password of the user"
 //	@Accept       json
 //	@Produce      json
-//	@Success      200 {"status":"success", "session-token":"xxxxx"}
+//	@Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The token will be returned inside the data field"
+//	@Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
+//	@Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "User does not exist"
+//	@Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+//
 //	@Router       /authen/v1/login [post]
 func (r *Resolver) Login(c *gin.Context) {
 	cred := model.LoginCredentials{}

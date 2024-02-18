@@ -7,8 +7,8 @@ import (
 
 type ContextKey string
 type LoginCredentials struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" example:"test@mail.com"`
+	Password string `json:"password" example:"abc123"`
 }
 
 type User struct {

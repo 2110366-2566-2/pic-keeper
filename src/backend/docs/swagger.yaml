@@ -1,4 +1,28 @@
 basePath: /
+definitions:
+  model.JSONErrorResult:
+    properties:
+      error: {}
+      status:
+        example: failed
+        type: string
+    type: object
+  model.JSONSuccessResult:
+    properties:
+      data: {}
+      status:
+        example: success
+        type: string
+    type: object
+  model.LoginCredentials:
+    properties:
+      email:
+        example: test@mail.com
+        type: string
+      password:
+        example: abc123
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -13,14 +37,61 @@ paths:
       consumes:
       - application/json
       description: Login
+      parameters:
+      - description: email and password of the user
+        in: body
+        name: Credentials
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginCredentials'
       produces:
       - application/json
       responses:
         "200":
-          description: status":"success", "session-token":"xxxxx"}
+          description: The token will be returned inside the data field
           schema:
-            type: json
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "400":
+          description: Incorrect input
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "404":
+          description: User does not exist
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
       summary: Login via email and password
       tags:
-      - users
+      - authen
 swagger: "2.0"

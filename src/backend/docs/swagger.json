@@ -22,16 +22,140 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "authen"
                 ],
                 "summary": "Login via email and password",
-                "responses": {
-                    "200": {
-                        "description": "status\":\"success\", \"session-token\":\"xxxxx\"}",
+                "parameters": [
+                    {
+                        "description": "email and password of the user",
+                        "name": "Credentials",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "json"
+                            "$ref": "#/definitions/model.LoginCredentials"
                         }
                     }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The token will be returned inside the data field",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONSuccessResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Incorrect input",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "404": {
+                        "description": "User does not exist",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Unhandled internal server error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/model.JSONErrorResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "object"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.JSONErrorResult": {
+            "type": "object",
+            "properties": {
+                "error": {},
+                "status": {
+                    "type": "string",
+                    "example": "failed"
+                }
+            }
+        },
+        "model.JSONSuccessResult": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "model.LoginCredentials": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "test@mail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "abc123"
                 }
             }
         }
