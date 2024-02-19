@@ -7,6 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary      Get my user information
+// @Description  Get my user information
+// @Tags         users
+// @Param Token header string true "Session token is required"
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The user information will be returned in the data section"
+// @Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+// @Router /users/v1/get-my-user-info [get]
 func (r *Resolver) GetMyUserInfo(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {

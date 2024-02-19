@@ -23,9 +23,9 @@ type User struct {
 }
 
 type UserInput struct {
-	Name     string  `json:"name"`
-	Email    string  `json:"email"`
-	Password *string `json:"password"`
+	Name     string  `json:"name" example:"test"`
+	Email    string  `json:"email" example:"test@mail.com"`
+	Password *string `json:"password" example:"root"`
 }
 
 type Photographer struct {

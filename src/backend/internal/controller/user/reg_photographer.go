@@ -9,6 +9,16 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary      Register for photographers
+// @Description  Register for photographers
+// @Param CustomerData body model.UserInput true "The photographer's data"
+// @Tags authen
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "Successfully registered"
+// @Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+// @Router /authen/v1/register/photographer [post]
 func (r *Resolver) RegPhotographer(c *gin.Context) {
 	userModel, errs := util.UserConstructor(c)
 	if len(errs) > 0 {

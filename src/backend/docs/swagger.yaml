@@ -23,6 +23,18 @@ definitions:
         example: abc123
         type: string
     type: object
+  model.UserInput:
+    properties:
+      email:
+        example: test@mail.com
+        type: string
+      name:
+        example: test
+        type: string
+      password:
+        example: root
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -313,4 +325,530 @@ paths:
       summary: Verify the specified photographer
       tags:
       - admin
+  /authen/v1/google/callback:
+    get:
+      consumes:
+      - application/json
+      description: This will be automatically called when the Google OAuth2 login
+        process is completed
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The session token will be returned in the data field
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: This will be automatically called when the Google OAuth2 login process
+        is completed
+      tags:
+      - google
+  /authen/v1/google/login:
+    post:
+      consumes:
+      - application/json
+      description: User login via Google OAuth2
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The URL to the Google OAuth2 will be returned in the data field
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: User login via Google OAuth2
+      tags:
+      - google
+  /authen/v1/login:
+    post:
+      consumes:
+      - application/json
+      description: User login
+      parameters:
+      - description: email and password of the user
+        in: body
+        name: Credentials
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginCredentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The token and user data will be returned inside the data field
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "400":
+          description: Incorrect input
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "404":
+          description: User does not exist
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: User login via email and password
+      tags:
+      - authen
+  /authen/v1/refresh:
+    get:
+      consumes:
+      - application/json
+      description: Refresh session token for users
+      parameters:
+      - description: Expired token is required
+        in: header
+        name: ExpiredToken
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The refreshed session token will be returned inside the data
+            field
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "400":
+          description: Incorrect input
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "403":
+          description: No Authorization header provided
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "404":
+          description: Re-login is needed or the user may no longer exist
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: Refresh session token for users
+      tags:
+      - authen
+  /authen/v1/register/customer:
+    post:
+      consumes:
+      - application/json
+      description: Register for customers
+      parameters:
+      - description: The customer's data
+        in: body
+        name: CustomerData
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully registered
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "400":
+          description: Incorrect input
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: Register for customers
+      tags:
+      - authen
+  /authen/v1/register/photographer:
+    post:
+      consumes:
+      - application/json
+      description: Register for photographers
+      parameters:
+      - description: The photographer's data
+        in: body
+        name: CustomerData
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully registered
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "400":
+          description: Incorrect input
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: Register for photographers
+      tags:
+      - authen
+  /users/v1/get-my-user-info:
+    get:
+      consumes:
+      - application/json
+      description: Get my user information
+      parameters:
+      - description: Session token is required
+        in: header
+        name: Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The user information will be returned in the data section
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "400":
+          description: Incorrect input
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: Get my user information
+      tags:
+      - users
+  /users/v1/get-user/:id:
+    get:
+      consumes:
+      - application/json
+      description: Get user information
+      parameters:
+      - description: Session token is required
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: The ID of the user you want to look up
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: The user information will be returned in the data section
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "400":
+          description: Incorrect input
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "404":
+          description: The user does not exist
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: Get user information
+      tags:
+      - users
+  /users/v1/logout:
+    put:
+      consumes:
+      - application/json
+      description: Logout endpoint for users
+      parameters:
+      - description: Session token is required
+        in: header
+        name: Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Logged out successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "404":
+          description: User is no longer existed
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: Logout endpoint for users
+      tags:
+      - users
+  /users/v1/upload-profile:
+    post:
+      consumes:
+      - application/json
+      description: Upload profile picture
+      parameters:
+      - description: Session token is required
+        in: header
+        name: Token
+        required: true
+        type: string
+      - description: The profile picture file is required
+        in: formData
+        name: ProfilePicture
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully uploaded the profile picture
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONSuccessResult'
+            - properties:
+                data:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "400":
+          description: Incorrect input
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+        "500":
+          description: Unhandled internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/model.JSONErrorResult'
+            - properties:
+                error:
+                  type: object
+                status:
+                  type: string
+              type: object
+      summary: Upload profile picture
+      tags:
+      - users
 swagger: "2.0"

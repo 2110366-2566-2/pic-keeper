@@ -11,6 +11,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary      User login via email and password
+// @Description  User login
+// @Tags         authen
+// @Param Credentials body model.LoginCredentials true "email and password of the user"
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The token and user data will be returned inside the data field"
+// @Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
+// @Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "User does not exist"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+//
+// @Router       /authen/v1/login [post]
 func (r *Resolver) Login(c *gin.Context) {
 	cred := model.LoginCredentials{}
 	if err := c.BindJSON(&cred); err != nil {
