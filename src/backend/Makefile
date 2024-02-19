@@ -37,5 +37,5 @@ clean:
 	rm -rf ./internal/config/persistence-data; rm -rf ./bin; rm -rf ./tmp
 
 .PHONY: up
-up: document
+up:
 	air -c .air.toml
