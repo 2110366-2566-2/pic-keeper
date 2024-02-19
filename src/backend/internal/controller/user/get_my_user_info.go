@@ -34,11 +34,7 @@ func (r *Resolver) GetMyUserInfo(c *gin.Context) {
 	// Return the URL in the response
 	c.JSON(http.StatusOK, gin.H{
 		"status":              "success",
-		"id":                  userObj.Id,
-		"name":                userObj.Name,
-		"email":               userObj.Email,
-		"provider":            userObj.Provider,
-		"logged_out":          userObj.LoggedOut,
+		"data":                userObj,
 		"profile_picture_url": GetProfilePictureUrl(userObj.ProfilePictureKey),
 	})
 

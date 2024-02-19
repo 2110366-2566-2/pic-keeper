@@ -111,10 +111,7 @@ func (r *Resolver) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":              "success",
 		"session_token":       token,
-		"email":               existedUser.Email,
-		"id":                  existedUser.Id,
-		"name":                existedUser.Name,
-		"provider":            existedUser.Provider,
+		"data":                existedUser,
 		"profile_picture_url": GetProfilePictureUrl(existedUser.ProfilePictureKey),
 	})
 

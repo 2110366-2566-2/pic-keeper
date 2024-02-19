@@ -17,7 +17,7 @@ type User struct {
 	Name              string    `bun:"name,type:varchar" json:"name"`
 	Email             string    `bun:"email,type:varchar" json:"email"`
 	Provider          *string   `bun:"provider,type:varchar" json:"provider"`
-	Password          *string   `bun:"password,type:varchar" json:"password"`
+	Password          *string   `bun:"password,type:varchar" json:"-"`
 	LoggedOut         bool      `bun:"logged_out,type:boolean" json:"logged_out"`
 	ProfilePictureKey *string   `bun:"profile_picture_key,type:varchar" json:"profile_picture_key"`
 }
