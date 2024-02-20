@@ -8,6 +8,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Admin Login to the existing ADMIN account via email and password
@@ -50,6 +51,16 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
+		})
+		c.Abort()
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(existedAdmin.Password), []byte(cred.Password)); err != nil {
+		c.JSON(http.StatusConflict, gin.H{
+			"status":  "failed",
+			"error":   err.Error(),
+			"message": "incorrect password",
 		})
 		c.Abort()
 		return

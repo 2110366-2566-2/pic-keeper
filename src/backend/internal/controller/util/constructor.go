@@ -1,12 +1,14 @@
 package util
 
 import (
+	"math/rand"
 	"net/http"
 
 	userFieldValidate "github.com/Roongkun/software-eng-ii/internal/controller/user/fieldvalidate"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func UserConstructor(c *gin.Context) (model.User, []error) {
@@ -27,11 +29,17 @@ func UserConstructor(c *gin.Context) (model.User, []error) {
 		return result, errors
 	}
 
+	hashed, err := bcrypt.GenerateFromPassword(([]byte)(*newUser.Password), rand.Intn(bcrypt.MaxCost-bcrypt.MinCost)+bcrypt.MinCost)
+	if err != nil {
+		errors = append(errors, err)
+		return result, errors
+	}
+	hashedStr := string(hashed)
 	result = model.User{
 		Id:        uuid.New(),
 		Name:      newUser.Name,
 		Email:     newUser.Email,
-		Password:  newUser.Password,
+		Password:  &hashedStr,
 		LoggedOut: false,
 	}
 
