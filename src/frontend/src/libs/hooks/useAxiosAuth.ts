@@ -8,10 +8,10 @@ const useAxiosAuth = () => {
   useEffect(() => {
     const requestInterceptor = axios.interceptors.request.use(
       (config) => {
-        if (session?.user?.sessionToken) {
+        if (session?.user?.session_token) {
           config.headers[
             "Authorization"
-          ] = `Bearer ${session.user.sessionToken}`;
+          ] = `Bearer ${session.user.session_token}`;
         }
         return config;
       },

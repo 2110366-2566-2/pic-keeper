@@ -10,11 +10,15 @@ import Image from "next/image";
 import { Fragment } from "react";
 import { MdOutlineArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { useSession } from "next-auth/react";
+import userService from "@/services/user";
+import useAxiosAuth from "@/libs/hooks/useAxiosAuth";
 
 const NavBar = () => {
   const pathName = usePathname();
 
   const { data: session } = useSession();
+
+  const axiosAuth = useAxiosAuth();
   const navigation = [
     {
       name: "Search",
@@ -168,7 +172,7 @@ const NavBar = () => {
                             <Menu.Item>
                               {({ active }) => (
                                 <a
-                                  href="user/my-profile"
+                                  href="user/edit-profile"
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
                                     "block px-4 py-2 text-sm text-gray-700"
@@ -207,15 +211,17 @@ const NavBar = () => {
                             {session ? (
                               <Menu.Item>
                                 {({ active }) => (
-                                  <a
-                                    href="#"
+                                  <button
+                                    onClick={() =>
+                                      userService.logout(axiosAuth)
+                                    }
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700"
                                     )}
                                   >
                                     Logout
-                                  </a>
+                                  </button>
                                 )}
                               </Menu.Item>
                             ) : (

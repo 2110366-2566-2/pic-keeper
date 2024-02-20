@@ -1,4 +1,5 @@
 import axios from "@/libs/axios";
+import { LoginCredentials, NewUser } from "@/types";
 
 const authBaseUrl = "/authen/v1";
 
@@ -23,8 +24,24 @@ const login = async (loginCredentials: LoginCredentials) => {
   }
 };
 
-// TODO googleLogin googleCallback
+const googleLogin = async () => {
+  try {
+    const response = await axios.post(`${authBaseUrl}/google/login`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
-const authService = { registerCustomer, login };
+const googleCallback = async () => {
+  try {
+    const response = await axios.get(`${authBaseUrl}/google/callback`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const authService = { registerCustomer, login, googleLogin, googleCallback };
 
 export default authService;
