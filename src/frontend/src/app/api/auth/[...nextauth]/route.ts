@@ -1,4 +1,3 @@
-import { apiBaseUrl } from "@/constants";
 import authService from "@/services/auth";
 import userService from "@/services/user";
 import axios from "axios";
@@ -40,7 +39,7 @@ export const authOptions: AuthOptions = {
           if (authToken) {
             // Retrieve user information
             const axiosInstance = axios.create({
-              baseURL: apiBaseUrl,
+              baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
               headers: { Authorization: `Bearer ${authToken}` },
             });
             try {
@@ -48,7 +47,9 @@ export const authOptions: AuthOptions = {
                 axiosInstance
               );
 
-              return userProfile ? userProfile : null;
+              return userProfile
+                ? { ...userProfile, session_token: authToken }
+                : null;
             } catch (error) {
               return null;
             }

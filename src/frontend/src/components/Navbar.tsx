@@ -17,8 +17,11 @@ const NavBar = () => {
   const pathName = usePathname();
 
   const { data: session } = useSession();
-
   const axiosAuth = useAxiosAuth();
+  if (session) {
+    console.log(axiosAuth);
+  }
+
   const navigation = [
     {
       name: "Search",

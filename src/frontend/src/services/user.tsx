@@ -1,10 +1,12 @@
 import { Axios } from "axios";
+import { signOut } from "next-auth/react";
 
 const userBaseUrl = "/users/v1";
 
 const logout = async (axiosInstance: Axios) => {
   try {
     const response = await axiosInstance.put(`${userBaseUrl}/logout`);
+    signOut();
     return response.data;
   } catch (error) {
     throw error;
