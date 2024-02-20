@@ -93,7 +93,7 @@ var ServeCmd = &cobra.Command{
 			users.GET("/v1/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/v1/get-user/:id", handler.User.GetUserInfo)
 		}
-		//test github
+
 		r.Run()
 
 		return nil
