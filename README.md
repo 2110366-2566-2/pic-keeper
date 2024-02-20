@@ -30,10 +30,10 @@ After finishing the previous command, please run `make serve` to start up the se
 
 Now, the back-end server will be available at `localhost:8080/`.
 
-You're good to go!
+### Documentation
 
----
+If you, by any chance, wish to read some documetation -- which I **strongly** recommended, please refer to `http://localhost:8080/swagger/index.html` for the documentation of each APIs, the input and output data fields, and etc.
 
----
+## Have fun coding!
 
-Despite the optionality of visiting the full version of the documentation at `./src/backend/README.md`, I strongly recommend you to take a look at it to have a deep understanding of how we, the back-end devs, work and able to solve some trivial problems that may occur.
+Despite the optionality of visiting the full version of the documentation at `./src/backend/README.md`, I, however, heartfully recommend you to take a look at it to have a deep understanding of how we, the back-end devs, work and able to solve some trivial problems that may occur.
