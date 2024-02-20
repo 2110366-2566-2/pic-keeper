@@ -7,12 +7,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary      Logout endpoint for administrators
+// @Description Logout endpoint for administrators
+// @Tags         admin
+// @Param Token header string true "Session token is required"
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "Logged out successfully"
+// @Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "Administrator is no longer existed"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+//
+// @Router       /admin/v1/logout [put]
 func (r *Resolver) Logout(c *gin.Context) {
 	admin, exist := c.Get("admin")
 	if !exist {
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": "failed",
-			"error":  "the user is no longer existed",
+			"error":  "the administrator is no longer existed",
 		})
 		c.Abort()
 		return

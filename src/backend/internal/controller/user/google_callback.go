@@ -12,6 +12,15 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary      This will be automatically called when the Google OAuth2 login process is completed
+// @Description  This will be automatically called when the Google OAuth2 login process is completed
+// @Tags         google
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The session token will be returned in the data field"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+//
+// @Router       /authen/v1/google/callback [get]
 func (r *Resolver) GoogleCallback(c *gin.Context) {
 	provider := "Google"
 	config := util.GetGoogleLibConfig(c)

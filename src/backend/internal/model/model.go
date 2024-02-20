@@ -7,8 +7,8 @@ import (
 
 type ContextKey string
 type LoginCredentials struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" example:"test@mail.com"`
+	Password string `json:"password" example:"abc123"`
 }
 
 type User struct {
@@ -17,15 +17,15 @@ type User struct {
 	Name              string    `bun:"name,type:varchar" json:"name"`
 	Email             string    `bun:"email,type:varchar" json:"email"`
 	Provider          *string   `bun:"provider,type:varchar" json:"provider"`
-	Password          *string   `bun:"password,type:varchar" json:"password"`
+	Password          *string   `bun:"password,type:varchar" json:"-"`
 	LoggedOut         bool      `bun:"logged_out,type:boolean" json:"logged_out"`
 	ProfilePictureKey *string   `bun:"profile_picture_key,type:varchar" json:"profile_picture_key"`
 }
 
 type UserInput struct {
-	Name     string  `json:"name"`
-	Email    string  `json:"email"`
-	Password *string `json:"password"`
+	Name     string  `json:"name" example:"test"`
+	Email    string  `json:"email" example:"test@mail.com"`
+	Password *string `json:"password" example:"root"`
 }
 
 type Photographer struct {
