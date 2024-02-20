@@ -2,6 +2,7 @@ package user
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
@@ -11,6 +12,15 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary      This will be automatically called when the Google OAuth2 login process is completed
+// @Description  This will be automatically called when the Google OAuth2 login process is completed
+// @Tags         google
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The session token will be returned in the data field"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+//
+// @Router       /authen/v1/google/callback [get]
 func (r *Resolver) GoogleCallback(c *gin.Context) {
 	provider := "Google"
 	config := util.GetGoogleLibConfig(c)
@@ -125,8 +135,12 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":        "success",
-		"session_token": token,
-	})
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"status":        "success",
+	// 	"session_token": token,
+	// })
+
+	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+	location := url.URL{Path: "http://localhost:3000/auth/handle-login"}
+	c.Redirect(http.StatusFound, location.RequestURI())
 }

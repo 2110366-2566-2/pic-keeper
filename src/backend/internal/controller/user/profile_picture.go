@@ -88,6 +88,18 @@ func GetProfilePictureUrl(profilePictureKey *string) string {
 }
 
 // UploadProfilePicture handles the HTTP request for uploading a profile picture.
+//
+// @Summary      Upload profile picture
+// @Description  Upload profile picture
+// @Tags         users
+// @Param Token header string true "Session token is required"
+// @Param ProfilePicture formData file true "The profile picture file is required"
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "Successfully uploaded the profile picture"
+// @Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+// @Router /users/v1/upload-profile [post]
 func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	file, _, err := c.Request.FormFile("profilePicture")
 	if err != nil {

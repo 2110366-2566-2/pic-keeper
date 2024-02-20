@@ -8,6 +8,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Refresh session token for administrators
+//
+//	@Summary      Refresh session token for administrators
+//	@Description  Refresh session token for administrators
+//	@Tags         admin
+//	@Param ExpiredToken header string true "Expired token is required"
+//	@Accept       json
+//	@Produce      json
+//	@Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The refreshed session token will be returned inside the data field"
+//	@Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
+//	@Failure 403 {object} model.JSONErrorResult{status=string,error=nil} "No Authorization header provided"
+//	@Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "Re-login is needed or the administrator may no longer exist"
+//	@Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+//
+//	@Router       /admin/v1/refresh [get]
 func (r *Resolver) RefreshToken(c *gin.Context) {
 	adminEmail, ok := util.LookupTokenInRedis(c)
 	if !ok {

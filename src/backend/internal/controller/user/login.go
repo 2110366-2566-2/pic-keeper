@@ -9,8 +9,21 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
+// @Summary      User login via email and password
+// @Description  User login
+// @Tags         authen
+// @Param Credentials body model.LoginCredentials true "email and password of the user"
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The token and user data will be returned inside the data field"
+// @Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
+// @Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "User does not exist"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+//
+// @Router       /authen/v1/login [post]
 func (r *Resolver) Login(c *gin.Context) {
 	cred := model.LoginCredentials{}
 	if err := c.BindJSON(&cred); err != nil {
@@ -43,10 +56,11 @@ func (r *Resolver) Login(c *gin.Context) {
 	}
 
 	if existedUser.Provider == nil {
-		if *existedUser.Password != cred.Password {
+		if err := bcrypt.CompareHashAndPassword([]byte(*existedUser.Password), []byte(cred.Password)); err != nil {
 			c.JSON(http.StatusConflict, gin.H{
-				"status": "failed",
-				"error":  "incorrect password",
+				"status":  "failed",
+				"error":   err.Error(),
+				"message": "incorrect password",
 			})
 			c.Abort()
 			return
@@ -100,10 +114,7 @@ func (r *Resolver) Login(c *gin.Context) {
 	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"status":              "success",
-		"email":               existedUser.Email,
-		"id":                  existedUser.Id,
-		"name":                existedUser.Name,
-		"provider":            existedUser.Provider,
+		"data":                existedUser,
 		"profile_picture_url": GetProfilePictureUrl(existedUser.ProfilePictureKey),
 	})
 
