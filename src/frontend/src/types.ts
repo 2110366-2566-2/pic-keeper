@@ -10,7 +10,7 @@ export interface User {
   id: UUID;
   name: string;
   email: string;
-  provider: string;
+  provider: string | null;
   logged_out: string;
   profile_picture_key: string;
 }
@@ -37,6 +37,11 @@ export interface BaseResponse {
   message?: string;
 }
 
-export interface registerCustomerResponse extends BaseResponse {
-  data: User;
+export interface RegisterCustomerResponse extends BaseResponse {
+  data?: User;
+}
+
+export interface LoginResponse extends BaseResponse {
+  data?: User;
+  profile_picture_url?: string;
 }
