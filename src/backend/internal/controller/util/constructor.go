@@ -29,7 +29,7 @@ func UserConstructor(c *gin.Context) (model.User, []error) {
 		return result, errors
 	}
 
-	hashed, err := bcrypt.GenerateFromPassword(([]byte)(*newUser.Password), rand.Intn(bcrypt.MaxCost-bcrypt.MinCost)+bcrypt.MinCost)
+	hashed, err := bcrypt.GenerateFromPassword(([]byte)(*newUser.Password), rand.Intn(bcrypt.MinCost))
 	if err != nil {
 		errors = append(errors, err)
 		return result, errors
