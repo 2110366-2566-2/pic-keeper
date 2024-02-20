@@ -10,16 +10,15 @@ import (
 )
 
 func ExtractToken(c *gin.Context) (token string, ok bool) {
-	authorizationHeader := c.Request.Header.Get("Authorization")
-	if authorizationHeader == "" {
-		// If the Authorization header is not present, return a 403 status code
+	authorizationCookie, err := c.Cookie("token")
+	if err != nil || authorizationCookie == "" {
 		c.Set("errorStatus", http.StatusForbidden)
 		c.Set("errorMessage", "No Authorization header provided")
 		return "", false
 	}
 
 	// Split the Authorization header to get the token
-	extractedToken := strings.Split(authorizationHeader, "Bearer ")
+	extractedToken := strings.Split(authorizationCookie, "Bearer ")
 	if len(extractedToken) == 2 {
 		// Trim the token
 		token = strings.TrimSpace(extractedToken[1])
