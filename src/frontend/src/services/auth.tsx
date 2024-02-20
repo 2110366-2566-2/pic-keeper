@@ -1,11 +1,11 @@
 import axios from "@/libs/axios";
-import { LoginCredentials, NewUser } from "@/types";
+import { LoginCredentials, NewUser, registerCustomerResponse } from "@/types";
 
 const authBaseUrl = "/authen/v1";
 
 const registerCustomer = async (newUser: NewUser) => {
   try {
-    const response = await axios.post(
+    const response = await axios.post<registerCustomerResponse>(
       `${authBaseUrl}/register/customer`,
       newUser
     );
