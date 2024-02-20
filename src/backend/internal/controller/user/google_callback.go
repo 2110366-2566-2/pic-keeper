@@ -2,6 +2,7 @@ package user
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
@@ -125,8 +126,12 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":        "success",
-		"session_token": token,
-	})
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"status":        "success",
+	// 	"session_token": token,
+	// })
+
+	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+	location := url.URL{Path: "http://localhost:3000/auth/handle-login"}
+	c.Redirect(http.StatusFound, location.RequestURI())
 }

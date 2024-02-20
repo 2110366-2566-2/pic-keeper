@@ -1,10 +1,12 @@
 import { Axios } from "axios";
+import { signOut } from "next-auth/react";
 
 const userBaseUrl = "/users/v1";
 
 const logout = async (axiosInstance: Axios) => {
   try {
-    const response = await axiosInstance.post(`${userBaseUrl}/logout`);
+    const response = await axiosInstance.put(`${userBaseUrl}/logout`);
+    signOut();
     return response.data;
   } catch (error) {
     throw error;
@@ -31,11 +33,9 @@ const uploadProfile = async (axiosInstance: Axios, file: File) => {
   }
 };
 
-const getMyUserProfile = async (axiosInstance: Axios) => {
+const getMyUserInfo = async (axiosInstance: Axios) => {
   try {
-    const response = await axiosInstance.post(
-      `${userBaseUrl}/get-my-user-profile`
-    );
+    const response = await axiosInstance.get(`${userBaseUrl}/get-my-user-info`);
     return response.data;
   } catch (error) {
     throw error;
@@ -54,7 +54,7 @@ const getUserById = async (axiosInstance: Axios, id: string) => {
 const userService = {
   logout,
   uploadProfile,
-  getMyUserProfile,
+  getMyUserInfo,
   getUserById,
 };
 

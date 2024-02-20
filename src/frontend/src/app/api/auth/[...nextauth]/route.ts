@@ -1,7 +1,10 @@
 import authService from "@/services/auth";
+import userService from "@/services/user";
+import axios from "axios";
 import NextAuth from "next-auth";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { parse } from "cookie";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -17,22 +20,43 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // Add logic here to look up the user from the credentials supplied
         if (!credentials) return null;
 
-        const user = await authService.login({
-          email: credentials.email,
-          password: credentials.password,
-        });
+        if (credentials.email && credentials.password) {
+          const user = await authService.login({
+            email: credentials.email,
+            password: credentials.password,
+          });
 
-        if (user) {
-          return user;
+          if (user) {
+            return user;
+          }
+          // Attempt to authenticate using a cookie if credentials are not provided
         } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
+          const cookies = parse(req.headers?.cookie || ""); // Safely parse cookies
+          const sessionToken = cookies["session_token"];
 
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+          if (sessionToken) {
+            // Retrieve user information
+            const axiosInstance = axios.create({
+              baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+              headers: { Authorization: `Bearer ${sessionToken}` },
+            });
+            try {
+              const userProfile = await userService.getMyUserInfo(
+                axiosInstance
+              );
+
+              return userProfile
+                ? { ...userProfile, session_token: sessionToken }
+                : null;
+            } catch (error) {
+              return null;
+            }
+          }
         }
+        // If neither method succeeds, return null to indicate authentication failure
+        return null;
       },
     }),
   ],
