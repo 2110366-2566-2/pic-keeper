@@ -9,6 +9,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // @Summary      User login via email and password
@@ -55,10 +56,11 @@ func (r *Resolver) Login(c *gin.Context) {
 	}
 
 	if existedUser.Provider == nil {
-		if *existedUser.Password != cred.Password {
+		if err := bcrypt.CompareHashAndPassword([]byte(*existedUser.Password), []byte(cred.Password)); err != nil {
 			c.JSON(http.StatusConflict, gin.H{
-				"status": "failed",
-				"error":  "incorrect password",
+				"status":  "failed",
+				"error":   err.Error(),
+				"message": "incorrect password",
 			})
 			c.Abort()
 			return
