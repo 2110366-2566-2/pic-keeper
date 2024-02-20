@@ -47,7 +47,7 @@ export const authOptions: AuthOptions = {
               const userProfile = await userService.getMyUserInfo(
                 axiosInstance
               );
-              console.log(userProfile);
+
               return userProfile ? userProfile : null;
             } catch (error) {
               return null;

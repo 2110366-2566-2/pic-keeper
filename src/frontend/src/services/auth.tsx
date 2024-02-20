@@ -33,15 +33,6 @@ const googleLogin = async () => {
   }
 };
 
-const googleCallback = async () => {
-  try {
-    const response = await axios.get(`${authBaseUrl}/google/callback`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const authService = { registerCustomer, login, googleLogin, googleCallback };
+const authService = { registerCustomer, login, googleLogin };
 
 export default authService;
