@@ -34,13 +34,13 @@ export const authOptions: AuthOptions = {
           // Attempt to authenticate using a cookie if credentials are not provided
         } else {
           const cookies = parse(req.headers?.cookie || ""); // Safely parse cookies
-          const authToken = cookies["token"];
+          const sessionToken = cookies["session_token"];
 
-          if (authToken) {
+          if (sessionToken) {
             // Retrieve user information
             const axiosInstance = axios.create({
               baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-              headers: { Authorization: `Bearer ${authToken}` },
+              headers: { Authorization: `Bearer ${sessionToken}` },
             });
             try {
               const userProfile = await userService.getMyUserInfo(
@@ -48,7 +48,7 @@ export const authOptions: AuthOptions = {
               );
 
               return userProfile
-                ? { ...userProfile, session_token: authToken }
+                ? { ...userProfile, session_token: sessionToken }
                 : null;
             } catch (error) {
               return null;
