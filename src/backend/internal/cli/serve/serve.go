@@ -92,6 +92,8 @@ var ServeCmd = &cobra.Command{
 			users.POST("/v1/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/v1/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/v1/get-user/:id", handler.User.GetUserInfo)
+			// new endpoint * not sure what to use -> handler.Photographer or handler.User
+			users.POST("/v1/get-photographer-role", handler.Photographer.GetPhotographerRole)
 		}
 
 		r.Run()
