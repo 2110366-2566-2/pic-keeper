@@ -42,3 +42,6 @@ type Administrator struct {
 	Password      string    `bun:"password,type:varchar" json:"password"`
 	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
 }
+
+type Chat struct {
+}
