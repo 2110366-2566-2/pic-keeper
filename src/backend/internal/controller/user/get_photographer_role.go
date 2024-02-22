@@ -1,4 +1,4 @@
-package photographer
+package user
 
 import (
 	"net/http"

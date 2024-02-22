@@ -11,7 +11,20 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
+
+	_ "github.com/Roongkun/software-eng-ii/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title           Pic-keeper APIs
+// @version         1.0
+// @description     This is the back-end documentation of the pic-keeper project
+
+// @license.name  Apache 2.0
+
+// @host      localhost:8080
+// @BasePath  /
 
 var ServeCmd = &cobra.Command{
 	Use:   "serve [FLAGS]...",
@@ -72,7 +85,7 @@ var ServeCmd = &cobra.Command{
 		{
 			authen := authen.Group("/v1")
 			authen.POST("/register/customer", handler.User.RegCustomer)
-			authen.POST("/register/photographer", handler.Photographer.RegPhotographer)
+			authen.POST("/register/photographer", handler.User.RegPhotographer)
 			authen.POST("/login", handler.User.Login)
 			authen.GET("/refresh", handler.User.RefreshToken)
 			google := authen.Group("/google")
@@ -96,6 +109,7 @@ var ServeCmd = &cobra.Command{
 			users.POST("/v1/get-photographer-role", handler.Photographer.GetPhotographerRole)
 		}
 
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 
 		return nil

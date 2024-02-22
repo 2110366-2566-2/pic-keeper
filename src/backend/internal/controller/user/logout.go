@@ -7,6 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary      Logout endpoint for users
+// @Description Logout endpoint for users
+// @Tags         users
+// @Param Token header string true "Session token is required"
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "Logged out successfully"
+// @Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "User is no longer existed"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+// @Router /users/v1/logout [put]
 func (r *Resolver) Logout(c *gin.Context) {
 	user, exist := c.Get("user")
 	if !exist {

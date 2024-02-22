@@ -8,6 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary      Refresh session token for users
+// @Description  Refresh session token for users
+// @Tags         authen
+// @Param ExpiredToken header string true "Expired token is required"
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The refreshed session token will be returned inside the data field"
+// @Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
+// @Failure 403 {object} model.JSONErrorResult{status=string,error=nil} "No Authorization header provided"
+// @Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "Re-login is needed or the user may no longer exist"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+//
+// @Router       /authen/v1/refresh [get]
 func (r *Resolver) RefreshToken(c *gin.Context) {
 	userEmail, ok := util.LookupTokenInRedis(c)
 	if !ok {
