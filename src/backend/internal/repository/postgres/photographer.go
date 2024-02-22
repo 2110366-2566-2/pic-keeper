@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 )
 
@@ -26,4 +27,15 @@ func (p *PhotographerDB) ListUnverifiedPhotographers(ctx context.Context) ([]*mo
 	}
 
 	return unvrfPhotographers, nil
+}
+
+func (p *PhotographerDB) CheckExistenceByUserId(ctx context.Context, userId uuid.UUID) (bool, error) {
+	var exist bool
+	var err error
+	model := new(model.Photographer)
+	if exist, err = p.db.NewSelect().Model(&model).Where("user_id = ?", userId).Exists(ctx); err != nil {
+		return false, err
+	}
+
+	return exist, nil
 }
