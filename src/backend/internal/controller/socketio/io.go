@@ -45,8 +45,18 @@ func (io *IO[T]) ServeWS(w http.ResponseWriter, r *http.Request) (*Socket[T], er
 	io.register(socket)
 
 	return socket, nil, func() {
-		stringio.deregister(socket)
+		io.deregister(socket)
 	}
 }
 
-func (io *IO[T]) Error(socketId)
+func (io *IO[T]) Error(socketId uuid.UUID, err error) bool {
+	io.mu.RLock()
+	socket, ok := io.sockets[socketId]
+	io.mu.RUnlock()
+
+	if !ok {
+		return false
+	}
+
+	return socket.Error(NewError(err.Error()))
+}
