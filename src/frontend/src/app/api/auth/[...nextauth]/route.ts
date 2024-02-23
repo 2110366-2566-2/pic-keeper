@@ -1,6 +1,6 @@
 import authService from "@/services/auth";
 import userService from "@/services/user";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import NextAuth from "next-auth";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -21,7 +21,6 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials, req) {
         if (!credentials) return null;
-
         if (credentials.email && credentials.password) {
           const user = await authService.login({
             email: credentials.email,
@@ -46,11 +45,15 @@ export const authOptions: AuthOptions = {
               const userProfile = await userService.getMyUserInfo(
                 axiosInstance
               );
-
               return userProfile
                 ? { ...userProfile, session_token: sessionToken }
                 : null;
             } catch (error) {
+              if (error instanceof AxiosError) {
+                console.log(error.response?.data);
+              } else {
+                console.log(error);
+              }
               return null;
             }
           }
