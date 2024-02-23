@@ -1,7 +1,5 @@
-import ApiError from "@/libs/ApiError";
 import apiClient from "@/libs/apiClient";
 import {
-  ErrorResponse,
   GoogleLoginResponse,
   LoginCredentials,
   LoginResponse,
@@ -9,9 +7,8 @@ import {
   RefreshTokenResponse,
   RegisterCustomerResponse,
   RegisterPhotoGrapherResponse,
-  Status,
 } from "@/types";
-import { Axios, AxiosError } from "axios";
+import { Axios } from "axios";
 
 const authBaseUrl = "/authen/v1";
 
@@ -51,9 +48,9 @@ const login = async (loginCredentials: LoginCredentials) => {
   }
 };
 
-const refreshToken = async (axiosInstance: Axios) => {
+const refreshToken = async (apiClientWithAuth: Axios) => {
   try {
-    const response = await axiosInstance.post<RefreshTokenResponse>(
+    const response = await apiClientWithAuth.post<RefreshTokenResponse>(
       `${authBaseUrl}/refresh`
     );
     return response.data;

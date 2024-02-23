@@ -51,11 +51,15 @@ export interface BaseResponse {
 export interface ErrorResponse extends BaseResponse {
   error?: string;
   errors?: string[];
-  message: string;
+  message?: string;
 }
 
 export interface RegisterCustomerResponse extends BaseResponse {
   data: User;
+}
+
+export interface RegisterPhotoGrapherResponse extends BaseResponse {
+  data: Photographer;
 }
 
 export interface LoginResponse extends BaseResponse {
@@ -68,19 +72,19 @@ export interface RefreshTokenResponse extends BaseResponse {
   refreshed_session_token: string;
 }
 
-export interface RegisterPhotoGrapherResponse extends BaseResponse {
-  data: Photographer;
+export interface GoogleLoginResponse extends BaseResponse {
+  url: string;
 }
 
-export interface UploadProfilePicture extends BaseResponse {
+export interface LogoutResponse extends BaseResponse {
+  message: string;
+}
+
+export interface UploadProfilePictureResponse extends BaseResponse {
   profile_picture_url: string;
 }
 
 export interface GetUserInfoResponse extends BaseResponse {
   data: User;
   profile_picture_url: string;
-}
-
-export interface GoogleLoginResponse extends BaseResponse {
-  url: string;
 }

@@ -28,7 +28,7 @@ export const authOptions: AuthOptions = {
           });
 
           if (user) {
-            return user;
+            return user as any;
           }
           // Attempt to authenticate using a cookie if credentials are not provided
         } else {
