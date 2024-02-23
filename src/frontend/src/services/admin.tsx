@@ -1,4 +1,5 @@
 import apiClient from "@/libs/apiClient";
+import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
   ListUnverifiedPhotographerResponse,
   LoginCredentials,
@@ -6,14 +7,13 @@ import {
   RefreshTokenResponse,
   VerifyResponse,
 } from "@/types";
-import axios, { Axios } from "axios";
 
 const adminBaseUrl = "/admin/v1";
 
 const login = async (loginCredentials: LoginCredentials) => {
   try {
-    const response = await axios.post<LoginResponse>(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/${adminBaseUrl}/login`,
+    const response = await apiClient.post<LoginResponse>(
+      `${adminBaseUrl}/login`,
       loginCredentials
     );
     return response.data;
@@ -24,7 +24,7 @@ const login = async (loginCredentials: LoginCredentials) => {
 
 const refresh = async (token: string) => {
   try {
-    const response = await axios.get<RefreshTokenResponse>(
+    const response = await apiClient.get<RefreshTokenResponse>(
       `${adminBaseUrl}/refresh`,
       {
         headers: {
@@ -40,9 +40,10 @@ const refresh = async (token: string) => {
 
 const listUnverifiedPhotographer = async () => {
   try {
-    const response = await apiClient.get<ListUnverifiedPhotographerResponse>(
-      `${adminBaseUrl}/verifications/unverified-photographers`
-    );
+    const response =
+      await apiClientWithAuth.get<ListUnverifiedPhotographerResponse>(
+        `${adminBaseUrl}/verifications/unverified-photographers`
+      );
     return response.data;
   } catch (error) {
     throw error;
@@ -51,7 +52,7 @@ const listUnverifiedPhotographer = async () => {
 
 const verify = async (id: string) => {
   try {
-    const response = await apiClient.put<VerifyResponse>(
+    const response = await apiClientWithAuth.put<VerifyResponse>(
       `${adminBaseUrl}/verifications/${id}`
     );
     return response.data;

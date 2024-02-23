@@ -1,17 +1,16 @@
-import apiClient from "@/libs/apiClient";
+import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
   GetUserInfoResponse,
   LogoutResponse,
   UploadProfilePictureResponse,
 } from "@/types";
-import { Axios } from "axios";
 import { signOut } from "next-auth/react";
 
 const userBaseUrl = "/users/v1";
 
 const logout = async () => {
   try {
-    const response = await apiClient.put<LogoutResponse>(
+    const response = await apiClientWithAuth.put<LogoutResponse>(
       `${userBaseUrl}/logout`
     );
     signOut();
@@ -26,7 +25,7 @@ const uploadProfile = async (file: File) => {
     const formData = new FormData();
 
     formData.append("profilePicture", file);
-    const response = await apiClient.post<UploadProfilePictureResponse>(
+    const response = await apiClientWithAuth.post<UploadProfilePictureResponse>(
       `${userBaseUrl}/upload-profile`,
       formData,
       {
@@ -43,7 +42,7 @@ const uploadProfile = async (file: File) => {
 
 const getMyUserInfo = async () => {
   try {
-    const response = await apiClient.get<GetUserInfoResponse>(
+    const response = await apiClientWithAuth.get<GetUserInfoResponse>(
       `${userBaseUrl}/get-my-user-info`
     );
     return response.data;
@@ -54,7 +53,7 @@ const getMyUserInfo = async () => {
 
 const getUserById = async (id: string) => {
   try {
-    const response = await apiClient.get<GetUserInfoResponse>(
+    const response = await apiClientWithAuth.get<GetUserInfoResponse>(
       `${userBaseUrl}/get-user/${id}`
     );
     return response.data;
