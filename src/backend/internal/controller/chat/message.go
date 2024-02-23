@@ -1,7 +1,9 @@
 package chat
 
+import "github.com/google/uuid"
+
 type Message struct {
-	From string `json:"from"`
-	To   string `json:"to"`
-	Text string `json:"text,omitempty"`
+	From uuid.UUID `json:"from"`
+	To   uuid.UUID `json:"to"`
+	Text string    `json:"text,omitempty"`
 }
