@@ -18,9 +18,6 @@ const NavBar = () => {
 
   const { data: session } = useSession();
   const apiClientWithAuth = useApiClientWithAuth();
-  if (session) {
-    console.log(apiClientWithAuth);
-  }
 
   const navigation = [
     {

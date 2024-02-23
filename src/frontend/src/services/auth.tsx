@@ -48,10 +48,15 @@ const login = async (loginCredentials: LoginCredentials) => {
   }
 };
 
-const refreshToken = async (apiClientWithAuth: Axios) => {
+const refreshToken = async (token: string) => {
   try {
-    const response = await apiClientWithAuth.get<RefreshTokenResponse>(
-      `${authBaseUrl}/refresh`
+    const response = await apiClient.get<RefreshTokenResponse>(
+      `${authBaseUrl}/refresh`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     return response.data;
   } catch (error) {
