@@ -53,7 +53,7 @@ const getMyUserInfo = async (apiClientWithAuth: Axios) => {
 
 const getUserById = async (apiClientWithAuth: Axios, id: string) => {
   try {
-    const response = await apiClientWithAuth.post<GetUserInfoResponse>(
+    const response = await apiClientWithAuth.get<GetUserInfoResponse>(
       `${userBaseUrl}/get-user/${id}`
     );
     return response.data;

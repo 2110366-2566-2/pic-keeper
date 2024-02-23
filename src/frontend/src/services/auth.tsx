@@ -50,7 +50,7 @@ const login = async (loginCredentials: LoginCredentials) => {
 
 const refreshToken = async (apiClientWithAuth: Axios) => {
   try {
-    const response = await apiClientWithAuth.post<RefreshTokenResponse>(
+    const response = await apiClientWithAuth.get<RefreshTokenResponse>(
       `${authBaseUrl}/refresh`
     );
     return response.data;

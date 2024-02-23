@@ -1,5 +1,3 @@
-import { UUID } from "crypto";
-
 export interface NewUser {
   name: string;
   email: string;
@@ -7,7 +5,7 @@ export interface NewUser {
 }
 
 export interface User {
-  id: UUID;
+  id: string;
   name: string;
   email: string;
   provider: string | null;
@@ -32,13 +30,13 @@ export enum Status {
 }
 
 export interface Photographer {
-  id: UUID;
-  user_id: UUID;
+  id: string;
+  user_id: string;
   is_verified: boolean;
 }
 
 export interface Administrator {
-  id: UUID;
+  id: string;
   email: string;
   password: string;
   logged_out: boolean;
@@ -87,4 +85,12 @@ export interface UploadProfilePictureResponse extends BaseResponse {
 export interface GetUserInfoResponse extends BaseResponse {
   data: User;
   profile_picture_url: string;
+}
+
+export interface ListUnverifiedPhotographerResponse extends BaseResponse {
+  data: Photographer[];
+}
+
+export interface VerifyResponse extends BaseResponse {
+  data: Photographer;
 }
