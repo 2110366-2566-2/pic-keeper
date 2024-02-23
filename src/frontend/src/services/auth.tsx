@@ -8,6 +8,7 @@ import {
   NewUser,
   RefreshTokenResponse,
   RegisterCustomerResponse,
+  RegisterPhotoGrapherResponse,
   Status,
 } from "@/types";
 import { Axios, AxiosError } from "axios";
@@ -19,6 +20,18 @@ const registerCustomer = async (newUser: NewUser) => {
     const response = await apiClient.post<RegisterCustomerResponse>(
       `${authBaseUrl}/register/customer`,
       newUser
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const registerPhotographer = async (newPhotographer: NewUser) => {
+  try {
+    const response = await apiClient.post<RegisterPhotoGrapherResponse>(
+      `${authBaseUrl}/register/photographer`,
+      newPhotographer
     );
     return response.data;
   } catch (error) {
@@ -60,6 +73,12 @@ const googleLogin = async () => {
   }
 };
 
-const authService = { registerCustomer, login, refreshToken, googleLogin };
+const authService = {
+  registerCustomer,
+  registerPhotographer,
+  login,
+  refreshToken,
+  googleLogin,
+};
 
 export default authService;

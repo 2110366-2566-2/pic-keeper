@@ -49,7 +49,9 @@ export interface BaseResponse {
 }
 
 export interface ErrorResponse extends BaseResponse {
-  error: string;
+  error?: string;
+  errors?: string[];
+  message: string;
 }
 
 export interface RegisterCustomerResponse extends BaseResponse {
