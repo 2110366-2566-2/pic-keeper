@@ -1,3 +1,4 @@
+import apiClient from "@/libs/apiClient";
 import {
   GetUserInfoResponse,
   LogoutResponse,
@@ -8,9 +9,9 @@ import { signOut } from "next-auth/react";
 
 const userBaseUrl = "/users/v1";
 
-const logout = async (apiClientWithAuth: Axios) => {
+const logout = async () => {
   try {
-    const response = await apiClientWithAuth.put<LogoutResponse>(
+    const response = await apiClient.put<LogoutResponse>(
       `${userBaseUrl}/logout`
     );
     signOut();
@@ -20,12 +21,12 @@ const logout = async (apiClientWithAuth: Axios) => {
   }
 };
 
-const uploadProfile = async (apiClientWithAuth: Axios, file: File) => {
+const uploadProfile = async (file: File) => {
   try {
     const formData = new FormData();
 
     formData.append("profilePicture", file);
-    const response = await apiClientWithAuth.post<UploadProfilePictureResponse>(
+    const response = await apiClient.post<UploadProfilePictureResponse>(
       `${userBaseUrl}/upload-profile`,
       formData,
       {
@@ -40,9 +41,9 @@ const uploadProfile = async (apiClientWithAuth: Axios, file: File) => {
   }
 };
 
-const getMyUserInfo = async (apiClientWithAuth: Axios) => {
+const getMyUserInfo = async () => {
   try {
-    const response = await apiClientWithAuth.get<GetUserInfoResponse>(
+    const response = await apiClient.get<GetUserInfoResponse>(
       `${userBaseUrl}/get-my-user-info`
     );
     return response.data;
@@ -51,9 +52,9 @@ const getMyUserInfo = async (apiClientWithAuth: Axios) => {
   }
 };
 
-const getUserById = async (apiClientWithAuth: Axios, id: string) => {
+const getUserById = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.get<GetUserInfoResponse>(
+    const response = await apiClient.get<GetUserInfoResponse>(
       `${userBaseUrl}/get-user/${id}`
     );
     return response.data;

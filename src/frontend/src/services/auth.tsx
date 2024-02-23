@@ -8,13 +8,13 @@ import {
   RegisterCustomerResponse,
   RegisterPhotoGrapherResponse,
 } from "@/types";
-import { Axios } from "axios";
+import axios from "axios";
 
-const authBaseUrl = "/authen/v1";
+const authBaseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/authen/v1`;
 
 const registerCustomer = async (newUser: NewUser) => {
   try {
-    const response = await apiClient.post<RegisterCustomerResponse>(
+    const response = await axios.post<RegisterCustomerResponse>(
       `${authBaseUrl}/register/customer`,
       newUser
     );
@@ -26,7 +26,7 @@ const registerCustomer = async (newUser: NewUser) => {
 
 const registerPhotographer = async (newPhotographer: NewUser) => {
   try {
-    const response = await apiClient.post<RegisterPhotoGrapherResponse>(
+    const response = await axios.post<RegisterPhotoGrapherResponse>(
       `${authBaseUrl}/register/photographer`,
       newPhotographer
     );
@@ -38,7 +38,7 @@ const registerPhotographer = async (newPhotographer: NewUser) => {
 
 const login = async (loginCredentials: LoginCredentials) => {
   try {
-    const response = await apiClient.post<LoginResponse>(
+    const response = await axios.post<LoginResponse>(
       `${authBaseUrl}/login`,
       loginCredentials
     );
@@ -50,7 +50,7 @@ const login = async (loginCredentials: LoginCredentials) => {
 
 const refreshToken = async (token: string) => {
   try {
-    const response = await apiClient.get<RefreshTokenResponse>(
+    const response = await axios.get<RefreshTokenResponse>(
       `${authBaseUrl}/refresh`,
       {
         headers: {
@@ -66,7 +66,7 @@ const refreshToken = async (token: string) => {
 
 const googleLogin = async () => {
   try {
-    const response = await apiClient.post<GoogleLoginResponse>(
+    const response = await axios.post<GoogleLoginResponse>(
       `${authBaseUrl}/google/login`
     );
     return response.data;

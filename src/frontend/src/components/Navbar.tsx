@@ -11,13 +11,11 @@ import { Fragment } from "react";
 import { MdOutlineArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import userService from "@/services/user";
-import useApiClientWithAuth from "@/libs/hooks/useApiClientWithAuth";
 
 const NavBar = () => {
   const pathName = usePathname();
 
   const { data: session } = useSession();
-  const apiClientWithAuth = useApiClientWithAuth();
 
   const navigation = [
     {
@@ -214,9 +212,7 @@ const NavBar = () => {
                               <Menu.Item>
                                 {({ active }) => (
                                   <button
-                                    onClick={() =>
-                                      userService.logout(apiClientWithAuth)
-                                    }
+                                    onClick={() => userService.logout()}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700"
