@@ -77,8 +77,8 @@ func (r *Resolver) Login(c *gin.Context) {
 	secretKey, exist := c.Get("secretKey")
 	if !exist {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status":  "failed",
-			"message": "secret key not found",
+			"status": "failed",
+			"error":  "secret key not found",
 		})
 		c.Abort()
 		return

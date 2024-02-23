@@ -12,8 +12,8 @@ func ValidateCredentials(c *gin.Context) {
 	token, ok := util.ExtractToken(c)
 	if !ok {
 		c.JSON(c.GetInt("errorStatus"), gin.H{
-			"status":  "failed",
-			"message": c.GetString("errorMessage"),
+			"status": "failed",
+			"error":  c.GetString("errorMessage"),
 		})
 		c.Abort()
 		return
@@ -22,8 +22,8 @@ func ValidateCredentials(c *gin.Context) {
 	adminSecretKey, exist := c.Get("adminSecretKey")
 	if !exist {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status":  "failed",
-			"message": "secret key not found",
+			"status": "failed",
+			"error":  "secret key not found",
 		})
 		c.Abort()
 		return
