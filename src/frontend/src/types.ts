@@ -27,8 +27,8 @@ export enum Gender {
 }
 
 export enum Status {
-  Failed = "Failed",
-  Success = "Success",
+  Failed = "failed",
+  Success = "success",
 }
 
 export interface BaseResponse {
