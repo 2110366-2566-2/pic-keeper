@@ -31,8 +31,8 @@ func (r *Resolver) Logout(c *gin.Context) {
 	userModel, ok := user.(model.User)
 	if !ok {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "please check the model of the user",
-			"error":   "cannot do type assertion",
+			"status": "failed",
+			"error":  "cannot do type assertion : please check the model of the user",
 		})
 		c.Abort()
 		return

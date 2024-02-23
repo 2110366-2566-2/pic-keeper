@@ -25,8 +25,8 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 	userEmail, ok := util.LookupTokenInRedis(c)
 	if !ok {
 		c.JSON(c.GetInt("errorStatus"), gin.H{
-			"status":  "failed",
-			"message": c.GetString("errorMessage"),
+			"status": "failed",
+			"error":  c.GetString("errorMessage"),
 		})
 		c.Abort()
 		return
@@ -35,8 +35,8 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 	exist, err := r.UserUsecase.CheckExistenceByEmail(c, userEmail)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status":  "failed",
-			"message": err.Error(),
+			"status": "failed",
+			"error":  err.Error(),
 		})
 		c.Abort()
 		return
@@ -44,8 +44,8 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 
 	if !exist {
 		c.JSON(http.StatusNotFound, gin.H{
-			"status":  "failed",
-			"message": "the user is no longer existed",
+			"status": "failed",
+			"error":  "the user is no longer existed",
 		})
 		c.Abort()
 		return
