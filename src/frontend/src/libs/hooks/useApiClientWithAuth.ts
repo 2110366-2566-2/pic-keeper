@@ -1,12 +1,12 @@
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import axios from "../axios";
+import apiClient from "../apiClient";
 
-const useAxiosAuth = () => {
+const useApiClientWithAuth = () => {
   const { data: session } = useSession();
 
   useEffect(() => {
-    const requestInterceptor = axios.interceptors.request.use(
+    const requestInterceptor = apiClient.interceptors.request.use(
       (config) => {
         if (session?.user?.session_token) {
           config.headers[
@@ -21,11 +21,11 @@ const useAxiosAuth = () => {
     );
 
     return () => {
-      axios.interceptors.request.eject(requestInterceptor);
+      apiClient.interceptors.request.eject(requestInterceptor);
     };
   }, [session]);
 
-  return axios;
+  return apiClient;
 };
 
-export default useAxiosAuth;
+export default useApiClientWithAuth;

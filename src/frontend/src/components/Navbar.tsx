@@ -11,15 +11,15 @@ import { Fragment } from "react";
 import { MdOutlineArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import userService from "@/services/user";
-import useAxiosAuth from "@/libs/hooks/useAxiosAuth";
+import useApiClientWithAuth from "@/libs/hooks/useApiClientWithAuth";
 
 const NavBar = () => {
   const pathName = usePathname();
 
   const { data: session } = useSession();
-  const axiosAuth = useAxiosAuth();
+  const apiClientWithAuth = useApiClientWithAuth();
   if (session) {
-    console.log(axiosAuth);
+    console.log(apiClientWithAuth);
   }
 
   const navigation = [
@@ -136,7 +136,9 @@ const NavBar = () => {
                               />
                             </div>
 
-                            <h2>{session ? session.user.name : "Guest"}</h2>
+                            <h2>
+                              {session ? session.user.data.name : "Guest"}
+                            </h2>
                             {open ? (
                               <MdArrowDropUp />
                             ) : (
@@ -216,7 +218,7 @@ const NavBar = () => {
                                 {({ active }) => (
                                   <button
                                     onClick={() =>
-                                      userService.logout(axiosAuth)
+                                      userService.logout(apiClientWithAuth)
                                     }
                                     className={classNames(
                                       active ? "bg-gray-100" : "",

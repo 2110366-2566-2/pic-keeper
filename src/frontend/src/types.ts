@@ -31,17 +31,54 @@ export enum Status {
   Success = "success",
 }
 
+export interface Photographer {
+  id: UUID;
+  user_id: UUID;
+  is_verified: boolean;
+}
+
+export interface Administrator {
+  id: UUID;
+  email: string;
+  password: string;
+  logged_out: boolean;
+}
+
 export interface BaseResponse {
   status: Status;
-  error?: string;
-  message?: string;
+}
+
+export interface ErrorResponse extends BaseResponse {
+  error: string;
 }
 
 export interface RegisterCustomerResponse extends BaseResponse {
-  data?: User;
+  data: User;
 }
 
 export interface LoginResponse extends BaseResponse {
-  data?: User;
-  profile_picture_url?: string;
+  data: User;
+  profile_picture_url: string;
+  session_token: string;
+}
+
+export interface RefreshTokenResponse extends BaseResponse {
+  refreshed_session_token: string;
+}
+
+export interface RegisterPhotoGrapherResponse extends BaseResponse {
+  data: Photographer;
+}
+
+export interface UploadProfilePicture extends BaseResponse {
+  profile_picture_url: string;
+}
+
+export interface GetUserInfoResponse extends BaseResponse {
+  data: User;
+  profile_picture_url: string;
+}
+
+export interface GoogleLoginResponse extends BaseResponse {
+  url: string;
 }
