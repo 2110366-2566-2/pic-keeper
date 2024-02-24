@@ -140,7 +140,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 	// 	"session_token": token,
 	// })
 
-	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+	c.SetCookie("session_token", token, 3600, "/", "localhost", false, true)
 	location := url.URL{Path: "http://localhost:3000/auth/handle-login"}
 	c.Redirect(http.StatusFound, location.RequestURI())
 }

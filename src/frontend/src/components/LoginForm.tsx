@@ -62,7 +62,6 @@ const LoginForm = () => {
   const handleGoogleLogin = async () => {
     try {
       const response = await authService.googleLogin();
-      console.log(response);
       if (response.status == "success") {
         router.push(response.url);
       }

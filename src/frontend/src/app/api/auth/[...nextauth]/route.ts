@@ -1,6 +1,6 @@
 import authService from "@/services/auth";
 import userService from "@/services/user";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import NextAuth from "next-auth";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -21,16 +21,23 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials, req) {
         if (!credentials) return null;
-
         if (credentials.email && credentials.password) {
-          const user = await authService.login({
-            email: credentials.email,
-            password: credentials.password,
-          });
-
-          if (user) {
-            return user;
+          try {
+            const user = await authService.login({
+              email: credentials.email,
+              password: credentials.password,
+            });
+            if (user) {
+              return user as any;
+            }
+          } catch (error) {
+            if (error instanceof AxiosError) {
+              console.log(error.response?.data);
+            } else {
+              console.log(error);
+            }
           }
+
           // Attempt to authenticate using a cookie if credentials are not provided
         } else {
           const cookies = parse(req.headers?.cookie || ""); // Safely parse cookies
@@ -43,14 +50,18 @@ export const authOptions: AuthOptions = {
               headers: { Authorization: `Bearer ${sessionToken}` },
             });
             try {
-              const userProfile = await userService.getMyUserInfo(
-                axiosInstance
+              const { data: userProfile } = await axiosInstance.get(
+                `/users/v1/get-my-user-info`
               );
-
               return userProfile
                 ? { ...userProfile, session_token: sessionToken }
                 : null;
             } catch (error) {
+              if (error instanceof AxiosError) {
+                console.log(error.response?.data);
+              } else {
+                console.log(error);
+              }
               return null;
             }
           }

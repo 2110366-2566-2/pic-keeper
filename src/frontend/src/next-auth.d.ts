@@ -1,15 +1,14 @@
 import { UUID } from "crypto";
 import NextAuth from "next-auth";
+import { Status, User } from "./types";
 
 declare module "next-auth" {
   interface Session {
     user: {
-      session_token: UUID;
-      status: string;
-      profile_picture_url: string;
-      name: string;
-      provider: string;
-      id: UUID;
+      data: User;
+      profile_picture_url: "";
+      status: Status;
+      session_token: string;
     };
   }
 }
