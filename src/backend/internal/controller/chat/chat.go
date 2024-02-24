@@ -1,10 +1,15 @@
 package chat
 
 import (
+	"fmt"
+	"log"
+	"net/http"
 	"sync"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/socketio"
+	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
+	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -35,33 +40,36 @@ func New(channel string, client *redis.Client, auth auth.JwtWrapper) (*Chat, fun
 	return chat, close
 }
 
-// func (c *Chat) ServeWS(w http.ResponseWriter, r *http.Request, userId uuid.UUID) {
-// 	socket, err, flush := c.local.ServeWS(w, r)
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusBadRequest)
-// 		return
-// 	}
+// TODO: check contacts
+func (c *Chat) ServeWS(ctx *gin.Context) {
+	user := ctx.MustGet("user")
+	userModel := user.(model.User)
+	socket, err, flush := c.local.ServeWS(ctx.Writer, ctx.Request)
+	if err != nil {
+		http.Error(ctx.Writer, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-// 	defer flush()
+	defer flush()
 
-// 	c.eventCh <- Connected{
-// 		userId:    userId,
-// 		sessionId: socket.ID,
-// 	}
+	c.eventCh <- Connected{
+		userId:    userModel.Id,
+		sessionId: socket.ID,
+	}
 
-// 	defer func(){
-// 		c.eventCh <- Disconnected{
-// 			userId: userId,
-// 			sessionId: socket.ID,
-// 		}
-// 	}()
+	defer func() {
+		c.eventCh <- Disconnected{
+			userId:    userModel.Id,
+			sessionId: socket.ID,
+		}
+	}()
 
-// 	for msg := range socket.Listen() {
-// 		msg.From = userId
+	for msg := range socket.Listen() {
+		msg.From = userModel.Id
 
-// 		user
-// 	}
-// }
+		user
+	}
+}
 
 func (c *Chat) loop() {
 	ch, stop := c.remote.Subscribe()
@@ -86,4 +94,15 @@ func (c *Chat) loopAsync() {
 		defer c.waitGroup.Done()
 		c.loop()
 	}()
+}
+
+func (c *Chat) eventProcessor(evt event) {
+	switch e := evt.(type) {
+	case Connected:
+		c.connected(e)
+	case Disconnected:
+		c.disconnected(e)
+	default:
+		log.Panicln(fmt.Errorf("chat: unhandled event processor: %+v", evt))
+	}
 }
