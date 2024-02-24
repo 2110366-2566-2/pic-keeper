@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/redis/go-redis/v9"
@@ -35,6 +36,20 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+type Resolver struct {
+	RoomUsecase         usecase.RoomUseCase
+	LookupUsecase       usecase.LookupUseCase
+	ConversationUsecase usecase.ConversationUseCase
+}
+
+func NewResolver(db *bun.DB) *Resolver {
+	return &Resolver{
+		RoomUsecase:         *usecase.NewRoomUseCase(db),
+		LookupUsecase:       *usecase.NewLookupUseCase(db),
+		ConversationUsecase: *usecase.NewConversationUseCase(db),
+	}
+}
+
 type Chat struct {
 	// this sends message to a room
 	broadcast chan Message
@@ -50,17 +65,17 @@ type Chat struct {
 	lookup *Table
 	// maps roomIds <-> userIds; many-to-many
 	rooms *TableCache
-	db    *bun.DB
+	r     *Resolver
 }
 
-func New(db *bun.DB, client *redis.Client) *Chat {
+func NewChat(db *bun.DB, client *redis.Client) *Chat {
 	c := Chat{
 		broadcast: make(chan Message, defaultBroadcastQueueSize),
 		quit:      make(chan struct{}),
 		sessions:  NewSessions(),
 		lookup:    NewTableInMemory(),
 		rooms:     NewTableCache(client),
-		db:        db,
+		r:         NewResolver(db),
 	}
 
 	log.Println("starting event loop")
