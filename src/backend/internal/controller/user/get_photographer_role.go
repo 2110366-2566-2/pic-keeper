@@ -11,13 +11,13 @@ import (
 func (r *Resolver) GetPhotographerRole(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Failed to retrieve user from context"})
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to retrieve user from context"})
 		c.Abort()
 		return
 	}
 	userObj, ok := user.(model.User)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Invalid user type in context"})
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Invalid user type in context"})
 		c.Abort()
 		return
 	}
@@ -25,12 +25,12 @@ func (r *Resolver) GetPhotographerRole(c *gin.Context) {
 	// database validate
 	exist, err := r.PhotographerUsecase.PhotographerRepo.CheckExistenceByUserId(c, userObj.Id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": err.Error()})
 		c.Abort()
 		return
 	}
 	if exist {
-		c.JSON(http.StatusForbidden, gin.H{"status": "failed", "message": "User is already a photographer"})
+		c.JSON(http.StatusForbidden, gin.H{"status": "failed", "error": "User is already a photographer"})
 		c.Abort()
 		return
 	}
