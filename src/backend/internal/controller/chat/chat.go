@@ -1,10 +1,13 @@
 package chat
 
 import (
+	"log"
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
+	"github.com/redis/go-redis/v9"
 	"github.com/uptrace/bun"
 )
 
@@ -41,11 +44,70 @@ type Chat struct {
 
 	// in-memory ds, will fetch from db if it does not exist
 	// maps sessionId -> session; one-to-one
-	session *Sessions
+	sessions *Sessions
 
-	// map sessionIds <-> userIds
+	// maps sessionIds <-> userId; many-to-one
 	lookup *Table
-
+	// maps roomIds <-> userIds; many-to-many
 	rooms *TableCache
 	db    *bun.DB
+}
+
+func New(db *bun.DB, client *redis.Client) *Chat {
+	c := Chat{
+		broadcast: make(chan Message, defaultBroadcastQueueSize),
+		quit:      make(chan struct{}),
+		sessions:  NewSessions(),
+		lookup:    NewTableInMemory(),
+		rooms:     NewTableCache(client),
+		db:        db,
+	}
+
+	log.Println("starting event loop")
+	go c.eventloop()
+	return &c
+}
+
+func (c *Chat) eventloop() {
+	log.Println("event loop started")
+	getStatus := func(userId uuid.UUID) string {
+		sessions := c.Get(UserId(userId))
+		// no sessions existed
+		if len(sessions) == 0 {
+			return "0"
+		}
+
+		return "1'"
+	}
+
+loop:
+	for {
+		select {
+		case <-c.quit:
+			log.Println("quit")
+			break loop
+		case msg, ok := <-c.broadcast:
+			if !ok {
+				break loop
+			}
+
+			log.Println()
+			log.Println("processing message:")
+			log.Println("type: %s", msg.Type)
+			log.Println("receiver: %s", msg.Receiver)
+			log.Println("sender: %s", msg.Sender)
+			log.Println("text: %s", msg.Text)
+
+			switch msg.Type {
+			case MessageTypeStatus:
+				// requesting the status of a particular user
+				// msg.Text is the userId in question
+				msg.Text = getStatus(uuid.MustParse(msg.Text))
+			case MessageTypeAuth:
+				msg.Text = msg.Sender.String()
+			case MessageTypeMessage:
+
+			}
+		}
+	}
 }
