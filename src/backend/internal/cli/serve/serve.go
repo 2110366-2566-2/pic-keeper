@@ -105,6 +105,7 @@ var ServeCmd = &cobra.Command{
 			users.POST("/v1/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/v1/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/v1/get-user/:id", handler.User.GetUserInfo)
+			users.POST("/v1/get-photographer-role", handler.User.GetPhotographerRole)
 		}
 
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
