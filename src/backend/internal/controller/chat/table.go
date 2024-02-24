@@ -60,3 +60,21 @@ func (t *Table) add(one any, many uuid.UUID) {
 	t.data[one][many] = struct{}{}
 	t.mu.Unlock()
 }
+
+// delete by session id
+func (t *Table) Delete(sid SessionId) error {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	if users, exist := t.data[sid]; exist {
+		for user := range users {
+			delete(t.data[UserId(user)], uuid.UUID(sid))
+			if len(t.data[user]) == 0 {
+				delete(t.data, user)
+			}
+		}
+	}
+
+	delete(t.data, sid)
+	return nil
+}
