@@ -8,7 +8,6 @@ import (
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/socketio"
 	"github.com/Roongkun/software-eng-ii/internal/model"
-	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 )
@@ -19,11 +18,10 @@ type Chat struct {
 	waitGroup sync.WaitGroup
 	done      chan struct{}
 	eventCh   chan event
-	auth      auth.JwtWrapper
 	mu        sync.RWMutex
 }
 
-func New(channel string, client *redis.Client, auth auth.JwtWrapper) (*Chat, func()) {
+func New(channel string, client *redis.Client) (*Chat, func()) {
 	io := socketio.NewIO[Message]()
 	ioredis, close := socketio.NewIORedis[Message](channel, client)
 
@@ -32,7 +30,6 @@ func New(channel string, client *redis.Client, auth auth.JwtWrapper) (*Chat, fun
 		local:   io,
 		done:    make(chan struct{}),
 		eventCh: make(chan event),
-		auth:    auth,
 	}
 
 	chat.loopAsync()
