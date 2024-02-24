@@ -33,7 +33,7 @@ func (p *PhotographerDB) CheckExistenceByUserId(ctx context.Context, userId uuid
 	var exist bool
 	var err error
 	model := new(model.Photographer)
-	if exist, err = p.db.NewSelect().Model(&model).Where("user_id = ?", userId).Exists(ctx); err != nil {
+	if exist, err = p.db.NewSelect().Model(model).Where("user_id = ?", userId).Exists(ctx); err != nil {
 		return false, err
 	}
 
