@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/Roongkun/software-eng-ii/internal/model"
-	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -38,20 +37,6 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-type Resolver struct {
-	RoomUsecase         usecase.RoomUseCase
-	LookupUsecase       usecase.LookupUseCase
-	ConversationUsecase usecase.ConversationUseCase
-}
-
-func NewResolver(db *bun.DB) *Resolver {
-	return &Resolver{
-		RoomUsecase:         *usecase.NewRoomUseCase(db),
-		LookupUsecase:       *usecase.NewLookupUseCase(db),
-		ConversationUsecase: *usecase.NewConversationUseCase(db),
-	}
-}
-
 type Chat struct {
 	// this sends message to a room
 	broadcast chan Message
@@ -64,20 +49,20 @@ type Chat struct {
 	sessions *Sessions
 
 	// maps sessionIds <-> userId; many-to-one
-	lookup *Table
+	lookupTable *Table
 	// maps roomIds <-> userIds; many-to-many
-	rooms *TableCache
-	r     *Resolver
+	rooms    *TableCache
+	Resolver *Resolver
 }
 
-func NewChat(db *bun.DB, client *redis.Client) *Chat {
+func NewChat(db *bun.DB, client *redis.Client, resolver *Resolver) *Chat {
 	c := Chat{
-		broadcast: make(chan Message, defaultBroadcastQueueSize),
-		quit:      make(chan struct{}),
-		sessions:  NewSessions(),
-		lookup:    NewTableInMemory(),
-		rooms:     NewTableCache(client),
-		r:         NewResolver(db),
+		broadcast:   make(chan Message, defaultBroadcastQueueSize),
+		quit:        make(chan struct{}),
+		sessions:    NewSessions(),
+		lookupTable: NewTableInMemory(),
+		rooms:       NewTableCache(client),
+		Resolver:    resolver,
 	}
 
 	log.Println("starting event loop")
@@ -102,7 +87,7 @@ func (c *Chat) Bind(uid UserId, sid SessionId) func() {
 		c.Join(uid)
 	}
 
-	c.lookup.Add(uuid.UUID(uid), uuid.UUID(sid))
+	c.lookupTable.Add(uuid.UUID(uid), uuid.UUID(sid))
 
 	return func() {
 		session := c.sessions.Get(uuid.UUID(sid))
@@ -120,7 +105,7 @@ func (c *Chat) Join(uid UserId) {
 	log.Println("method: join")
 	log.Printf("user: %s\n", uid)
 
-	rooms, err := c.r.RoomUsecase.FindByUserId(ctx, uuid.UUID(uid))
+	rooms, err := c.Resolver.RoomUsecase.FindByUserId(ctx, uuid.UUID(uid))
 	if err != nil {
 		log.Panicf("error getting rooms: %s\n", err.Error())
 	}
@@ -198,10 +183,10 @@ loop:
 
 			log.Println()
 			log.Println("processing message:")
-			log.Println("type: %s", msg.Type)
-			log.Println("receiver: %s", msg.Receiver)
-			log.Println("sender: %s", msg.Sender)
-			log.Println("text: %s", msg.Text)
+			log.Printf("type: %s\n", msg.Type)
+			log.Printf("receiver: %s\n", msg.Receiver)
+			log.Printf("sender: %s\n", msg.Sender)
+			log.Printf("text: %s\n", msg.Text)
 
 			switch msg.Type {
 			case MessageTypeStatus:
@@ -220,7 +205,7 @@ loop:
 					UpdatedAt: time.Now(),
 					DeletedAt: nil,
 				}
-				if err := c.r.ConversationUsecase.ConversationRepo.AddOne(ctx, &conversation); err != nil {
+				if err := c.Resolver.ConversationUsecase.ConversationRepo.AddOne(ctx, &conversation); err != nil {
 					log.Panicf("error creating reply: %s\n", err.Error())
 					continue
 				}
@@ -238,7 +223,7 @@ func (c *Chat) Broadcast(msg Message) error {
 	// get all users in the room
 	users := c.rooms.GetUsers(msg.Receiver)
 	for _, user := range users {
-		sessionIds := c.lookup.Get(UserId(user))
+		sessionIds := c.lookupTable.Get(UserId(user))
 		for _, sid := range sessionIds {
 			sess := c.sessions.Get(sid)
 			if sess == nil {
@@ -282,7 +267,7 @@ func (c *Chat) Get(key interface{}) []*Session {
 		return []*Session{sess}
 	case UserId:
 		var result []*Session
-		sessions := c.lookup.Get(key)
+		sessions := c.lookupTable.Get(key)
 		for _, sess := range sessions {
 			session := c.sessions.Get(sess)
 			if session != nil {
@@ -318,7 +303,6 @@ func ping(ws *websocket.Conn) {
 }
 
 func (c *Chat) ServeWS(gc *gin.Context) {
-
 	if gc.Request.Method != http.MethodGet {
 		gc.JSON(http.StatusMethodNotAllowed, gin.H{
 			"status": "failed",
