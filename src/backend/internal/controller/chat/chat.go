@@ -44,12 +44,12 @@ type Chat struct {
 	// this signals termination of the goroutine handling the broadcast
 	quit chan struct{}
 
-	// in-memory ds, will fetch from db if it does not exist
 	// maps sessionId -> session; one-to-one
 	sessions *Sessions
 
 	// maps sessionIds <-> userId; many-to-one
 	lookupTable *Table
+
 	// maps roomIds <-> userIds; many-to-many
 	rooms    *TableCache
 	Resolver *Resolver
