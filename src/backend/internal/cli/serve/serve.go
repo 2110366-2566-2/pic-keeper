@@ -114,7 +114,7 @@ var ServeCmd = &cobra.Command{
 		{
 			chat := chat.Group("/v1")
 			chat.GET("/ws", chatEntity.ServeWS)
-			chat.GET("/rooms/:id", handler.Chat.GetRooms)
+			// chat.GET("/rooms/:id", handler.Chat.GetRooms)
 		}
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
