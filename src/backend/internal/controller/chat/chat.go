@@ -7,6 +7,7 @@ import (
 
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/usecase"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/redis/go-redis/v9"
@@ -316,6 +317,54 @@ func ping(ws *websocket.Conn) {
 	}
 }
 
-func (c *Chat) ServeWS() {
+func (c *Chat) ServeWS(gc *gin.Context) {
 
+	if gc.Request.Method != http.MethodGet {
+		gc.JSON(http.StatusMethodNotAllowed, gin.H{
+			"status": "failed",
+			"error":  "method not allowed",
+		})
+		gc.Abort()
+		return
+	}
+
+	ws, err := upgrader.Upgrade(gc.Writer, gc.Request, nil)
+	if err != nil {
+		gc.JSON(http.StatusBadRequest, gin.H{
+			"status": "failed",
+			"error":  err.Error(),
+		})
+	}
+
+	defer ws.Close()
+
+	user := gc.MustGet("user")
+	userModel := user.(model.User)
+
+	session := c.newSession(ws)
+	close := c.Bind(UserId(userModel.Id), SessionId(session.id))
+	defer close()
+
+	// notify that a user went online
+	ws.SetReadLimit(maxMessageSize)
+	ws.SetReadDeadline(time.Now().Add(pongWait))
+	ws.SetPongHandler(func(string) error {
+		ws.SetReadDeadline(time.Now().Add(pongWait))
+		return nil
+	})
+
+	go ping(ws)
+
+	for {
+		var msg Message
+		if err := ws.ReadJSON(&msg); err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+				log.Printf("error: %v, user-agent: %v", err, gc.Request.Header.Get("User-Agent"))
+			}
+			break
+		}
+
+		msg.Sender = userModel.Id
+		c.broadcast <- msg
+	}
 }
