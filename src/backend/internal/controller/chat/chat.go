@@ -300,3 +300,22 @@ func (c *Chat) Close() {
 	close(c.quit)
 	log.Println("closing")
 }
+
+func ping(ws *websocket.Conn) {
+	ticker := time.NewTicker(pingPeriod)
+	defer func() {
+		ticker.Stop()
+		ws.Close()
+	}()
+
+	for range ticker.C {
+		ws.SetWriteDeadline(time.Now().Add(writeWait))
+		if err := ws.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
+			break
+		}
+	}
+}
+
+func (c *Chat) ServeWS() {
+
+}
