@@ -20,10 +20,10 @@ var (
 	maxMessageSize int64 = 512
 
 	// time allowed to read the next pong message from the peer
-	pongWait = 60 * time.Second
+	pongWait = 10 * time.Second
 
 	// send pings to peer with this period, it must be less than the pongWait above
-	pingPeriod = (pongWait * 9) / 10
+	pingPeriod = (pongWait * 7) / 10
 
 	defaultBroadcastQueueSize = 10000
 )
@@ -103,7 +103,7 @@ func (c *Chat) Bind(uid UserId, sid SessionId) func() {
 // add user to an existing room
 func (c *Chat) Join(uid UserId) {
 	log.Println("method: join")
-	log.Printf("user: %s\n", uid)
+	log.Printf("user: %s\n", uid.String())
 
 	lookups, err := c.Resolver.LookupUsecase.FindByUserId(ctx, uuid.UUID(uid))
 	if err != nil {
@@ -136,12 +136,12 @@ func (c *Chat) Join(uid UserId) {
 // clear the user's session from the room
 func (c *Chat) Leave(uid UserId) {
 	log.Println("method: leave")
-	log.Printf("user: %s\n", uid)
+	log.Printf("user: %s\n", uid.String())
 
 	// delete user for each room
 	onDelete := func(roomId uuid.UUID) {
 		log.Println("delete user from room")
-		log.Printf("room: %s\n", roomId)
+		log.Printf("room: %s\n", roomId.String())
 
 		sender, receiver := uuid.UUID(uid), roomId
 		c.broadcast <- Message{
@@ -217,7 +217,11 @@ loop:
 				msg.Timestamp = conversation.CreatedAt
 			default:
 			}
-			c.Broadcast(msg)
+			if err := c.Broadcast(msg); err != nil {
+				log.Println("error occured")
+				log.Println(err.Error())
+				log.Println()
+			}
 		}
 	}
 }
