@@ -145,6 +145,7 @@ func (c *Chat) Leave(uid UserId) {
 
 		sender, receiver := uuid.UUID(uid), roomId
 		c.broadcast <- Message{
+			ID:        uuid.New(),
 			Type:      MessageTypePresence,
 			Sender:    sender,
 			Receiver:  receiver,
