@@ -88,10 +88,22 @@ func GetProfilePictureUrl(profilePictureKey *string) string {
 }
 
 // UploadProfilePicture handles the HTTP request for uploading a profile picture.
+//
+// @Summary      Upload profile picture
+// @Description  Upload profile picture
+// @Tags         users
+// @Param Token header string true "Session token is required"
+// @Param ProfilePicture formData file true "The profile picture file is required"
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "Successfully uploaded the profile picture"
+// @Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+// @Router /users/v1/upload-profile [post]
 func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	file, _, err := c.Request.FormFile("profilePicture")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "message": "Could not retrieve the file"})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": "Could not retrieve the file"})
 		c.Abort()
 		return
 	}
@@ -99,28 +111,28 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 
 	contentType, err := validateImage(file)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "message": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
 		c.Abort()
 		return
 	}
 
 	img, err := decodeImage(contentType, file)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "message": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
 		c.Abort()
 		return
 	}
 
 	buf, err := processImage(img, contentType)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": err.Error()})
 		c.Abort()
 		return
 	}
 
 	email, exists := c.Get("email")
 	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Failed to retrieve user email from context"})
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to retrieve user email from context"})
 		c.Abort()
 		return
 	}
@@ -131,25 +143,25 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 
 	bucket, err := s3utils.GetInstance()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": err.Error()})
 		c.Abort()
 		return
 	}
 	if err := bucket.UploadFile(c.Request.Context(), "profile-picture", objectKey, buf, contentType); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Failed to upload the file"})
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to upload the file"})
 		c.Abort()
 		return
 	}
 
 	user, exists := c.Get("user")
 	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Failed to retrieve user from context"})
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to retrieve user from context"})
 		c.Abort()
 		return
 	}
 	userObj, ok := user.(model.User)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Invalid user type in context"})
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Invalid user type in context"})
 		c.Abort()
 		return
 	}
@@ -157,8 +169,8 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	userObj.ProfilePictureKey = &objectKey
 	if err := r.UserUsecase.UserRepo.UpdateOne(c, &userObj); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"status":  "failed",
-			"message": err.Error(),
+			"status": "failed",
+			"error":  err.Error(),
 		})
 		c.Abort()
 		return

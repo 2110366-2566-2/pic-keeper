@@ -107,6 +107,7 @@ func InitializeS3() error {
 		}
 	}
 
+	log.Println("✅ Localstack connected successfully")
 	return nil
 }
 

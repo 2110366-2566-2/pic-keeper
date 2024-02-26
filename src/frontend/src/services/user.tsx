@@ -1,22 +1,31 @@
-import { Axios } from "axios";
+import apiClientWithAuth from "@/libs/apiClientWithAuth";
+import {
+  GetUserInfoResponse,
+  LogoutResponse,
+  UploadProfilePictureResponse,
+} from "@/types";
+import { signOut } from "next-auth/react";
 
 const userBaseUrl = "/users/v1";
 
-const logout = async (axiosInstance: Axios) => {
+const logout = async () => {
   try {
-    const response = await axiosInstance.post(`${userBaseUrl}/logout`);
+    const response = await apiClientWithAuth.put<LogoutResponse>(
+      `${userBaseUrl}/logout`
+    );
+    signOut();
     return response.data;
   } catch (error) {
     throw error;
   }
 };
 
-const uploadProfile = async (axiosInstance: Axios, file: File) => {
+const uploadProfile = async (file: File) => {
   try {
     const formData = new FormData();
 
     formData.append("profilePicture", file);
-    const response = await axiosInstance.post(
+    const response = await apiClientWithAuth.post<UploadProfilePictureResponse>(
       `${userBaseUrl}/upload-profile`,
       formData,
       {
@@ -31,10 +40,10 @@ const uploadProfile = async (axiosInstance: Axios, file: File) => {
   }
 };
 
-const getMyUserProfile = async (axiosInstance: Axios) => {
+const getMyUserInfo = async () => {
   try {
-    const response = await axiosInstance.post(
-      `${userBaseUrl}/get-my-user-profile`
+    const response = await apiClientWithAuth.get<GetUserInfoResponse>(
+      `${userBaseUrl}/get-my-user-info`
     );
     return response.data;
   } catch (error) {
@@ -42,9 +51,11 @@ const getMyUserProfile = async (axiosInstance: Axios) => {
   }
 };
 
-const getUserById = async (axiosInstance: Axios, id: string) => {
+const getUserById = async (id: string) => {
   try {
-    const response = await axiosInstance.post(`${userBaseUrl}/get-user/${id}`);
+    const response = await apiClientWithAuth.get<GetUserInfoResponse>(
+      `${userBaseUrl}/get-user/${id}`
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -54,7 +65,7 @@ const getUserById = async (axiosInstance: Axios, id: string) => {
 const userService = {
   logout,
   uploadProfile,
-  getMyUserProfile,
+  getMyUserInfo,
   getUserById,
 };
 

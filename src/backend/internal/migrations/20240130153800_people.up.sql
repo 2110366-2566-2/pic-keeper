@@ -20,3 +20,4 @@ CREATE TABLE administrators(
     password varchar(2000) NOT NULL,
     logged_out boolean NOT NULL
 );
+

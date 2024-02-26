@@ -6,11 +6,13 @@ import (
 )
 
 type Resolver struct {
-	UserUsecase usecase.UserUseCase
+	UserUsecase         usecase.UserUseCase
+	PhotographerUsecase usecase.PhotographerUseCase
 }
 
 func NewResolver(db *bun.DB) *Resolver {
 	return &Resolver{
-		UserUsecase: *usecase.NewUserUseCase(db),
+		UserUsecase:         *usecase.NewUserUseCase(db),
+		PhotographerUsecase: *usecase.NewPhotographerUseCase(db),
 	}
 }
