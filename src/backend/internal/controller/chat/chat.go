@@ -105,29 +105,31 @@ func (c *Chat) Join(uid UserId) {
 	log.Println("method: join")
 	log.Printf("user: %s\n", uid)
 
-	rooms, err := c.Resolver.RoomUsecase.FindByUserId(ctx, uuid.UUID(uid))
+	lookups, err := c.Resolver.LookupUsecase.FindByUserId(ctx, uuid.UUID(uid))
 	if err != nil {
 		log.Panicf("error getting rooms: %s\n", err.Error())
 	}
 
-	for _, room := range rooms {
+	for _, lookup := range lookups {
 		// notify other user in the room
-		sender, receiver := uuid.UUID(uid), room.Id
+		sender, receiver := uuid.UUID(uid), lookup.RoomId
 
 		c.broadcast <- Message{
-			Type:     MessageTypePresence,
-			Sender:   sender,
-			Receiver: receiver,
-			Text:     MessageTypeOnline,
+			ID:        uuid.New(),
+			Type:      MessageTypePresence,
+			Sender:    sender,
+			Receiver:  receiver,
+			Text:      MessageTypeOnline,
+			Timestamp: time.Now(),
 		}
 
 		// then add the user after broadcast to avoid notifying themselves
-		if err := c.rooms.Add(uuid.UUID(uid), room.Id); err != nil {
+		if err := c.rooms.Add(uuid.UUID(uid), lookup.RoomId); err != nil {
 			log.Panicf("join error: %s\n", err.Error())
 		}
 
 		log.Println("joined room")
-		log.Printf("room: %s\n", room.Id)
+		log.Printf("room: %s\n", lookup.RoomId.String())
 	}
 }
 
@@ -138,15 +140,16 @@ func (c *Chat) Leave(uid UserId) {
 
 	// delete user for each room
 	onDelete := func(roomId uuid.UUID) {
-		log.Println("delete room")
+		log.Println("delete user from room")
 		log.Printf("room: %s\n", roomId)
 
 		sender, receiver := uuid.UUID(uid), roomId
 		c.broadcast <- Message{
-			Type:     MessageTypePresence,
-			Sender:   sender,
-			Receiver: receiver,
-			Text:     MessageTypeOffline,
+			Type:      MessageTypePresence,
+			Sender:    sender,
+			Receiver:  receiver,
+			Text:      MessageTypeOffline,
+			Timestamp: time.Now(),
 		}
 	}
 
@@ -209,6 +212,8 @@ loop:
 					log.Panicf("error creating reply: %s\n", err.Error())
 					continue
 				}
+				msg.ID = conversation.Id
+				msg.Timestamp = conversation.CreatedAt
 			default:
 			}
 			c.Broadcast(msg)
@@ -223,6 +228,9 @@ func (c *Chat) Broadcast(msg Message) error {
 	// get all users in the room
 	users := c.rooms.GetUsers(msg.Receiver)
 	for _, user := range users {
+		if user == msg.Sender {
+			continue
+		}
 		sessionIds := c.lookupTable.Get(UserId(user))
 		for _, sid := range sessionIds {
 			sess := c.sessions.Get(sid)
@@ -250,6 +258,7 @@ func (c *Chat) Clear(sess *Session) {
 	sess.Conn().Close()
 	sessionId := sess.SessionID()
 	c.sessions.Delete(sessionId)
+	c.lookupTable.Delete(SessionId(sessionId))
 
 	log.Println("cleared session")
 	log.Println("method: clear")

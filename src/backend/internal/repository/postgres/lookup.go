@@ -1,7 +1,10 @@
 package postgres
 
 import (
+	"context"
+
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 )
 
@@ -20,8 +23,12 @@ func NewLookupDB(db *bun.DB) *LookupDB {
 // return list of rooms
 
 // and return of user in the room except self
-// func (l *LookupDB) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*uuid.UUID, error) {
-// 	var roomIds []*uuid.UUID
-// 	var lookupModel model.UserRoomLookup
-// 	if err := l.db.NewSelect().Model(&lookupModel).Where()
-// }
+
+func (l *LookupDB) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.UserRoomLookup, error) {
+	var subscriptions []*model.UserRoomLookup
+	if err := l.db.NewSelect().Model(&subscriptions).Where("user_id = ?", userId).Scan(ctx, &subscriptions); err != nil {
+		return nil, err
+	}
+
+	return subscriptions, nil
+}
