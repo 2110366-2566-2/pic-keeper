@@ -75,6 +75,7 @@ func (j *JwtWrapper) ValidateToken(c *gin.Context, signedToken string, isAdmin b
 				c.Set("errorMessage", "the email provided is an administrator email, please use the /admin path instead")
 				return nil, errors.New("the email provided is an administrator email, please use the /admin path instead")
 			}
+
 			return claims, nil
 		}
 	} else {
