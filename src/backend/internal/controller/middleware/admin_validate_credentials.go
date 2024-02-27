@@ -34,11 +34,11 @@ func ValidateCredentials(c *gin.Context) {
 		Issuer:    "AuthProvider",
 	}
 
-	claims, err := jwtWrapper.ValidateToken(token, true)
+	claims, err := jwtWrapper.ValidateToken(c, token, true)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(c.GetInt("errorStatus"), gin.H{
 			"status": "failed",
-			"error":  err.Error(),
+			"error":  c.GetString("errorMessage"),
 		})
 		c.Abort()
 		return
