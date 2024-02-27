@@ -243,6 +243,7 @@ func (c *Chat) Broadcast(msg Message) error {
 				log.Println("session does not exist")
 				continue
 			}
+			sess.Conn().SetWriteDeadline(time.Now().Add(writeWait))
 			err := sess.Conn().WriteJSON(msg)
 			if err != nil {
 				c.Clear(sess)
