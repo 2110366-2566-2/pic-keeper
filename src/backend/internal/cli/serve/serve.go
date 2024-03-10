@@ -113,6 +113,7 @@ var ServeCmd = &cobra.Command{
 			photographers.POST("/create-package", handler.Photographer.CreatePackage)
 			photographers.PUT("/update-package", handler.Photographer.UpdatePackage)
 			photographers.DELETE("/delete-package/:id", handler.Photographer.DeletePackage)
+			photographers.GET("/package/:id", handler.Photographer.GetOnePackage)
 		}
 
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
