@@ -42,3 +42,10 @@ type Administrator struct {
 	Password      string    `bun:"password,type:varchar" json:"password"`
 	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
 }
+
+type Package struct {
+	bun.BaseModel  `bun:"table:packages,alias:packages"`
+	Id             uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	PhotographerId uuid.UUID `bun:"photographer_id,type:uuid" json:"photographer_id"`
+	Price          int       `bun:"price,type:integer" json:"price"`
+}
