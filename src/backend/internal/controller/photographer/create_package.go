@@ -3,6 +3,8 @@ package photographer
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/photographer/fieldvalidate"
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -26,7 +28,7 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 	if !photographerObj.IsVerified {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
-			"error":  "You have not yet verified, only verified photographers can create packages",
+			"error":  "You have not yet been verified, only verified photographers can create packages",
 		})
 		c.Abort()
 		return
@@ -43,11 +45,20 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 		return
 	}
 
+	if fieldErrs := fieldvalidate.CreatePackage(packageInput); len(fieldErrs) > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "failed",
+			"error":  util.JSONErrs(fieldErrs),
+		})
+		c.Abort()
+		return
+	}
+
 	newPackage := model.Package{
 		Id:             uuid.New(),
 		PhotographerId: photographerObj.Id,
-		Name:           packageInput.Name,
-		Price:          packageInput.Price,
+		Name:           *packageInput.Name,
+		Price:          *packageInput.Price,
 	}
 
 	if err := r.PackageUsecase.PackageRepo.AddOne(c, &newPackage); err != nil {

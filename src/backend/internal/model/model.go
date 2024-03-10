@@ -52,6 +52,7 @@ type Package struct {
 }
 
 type PackageInput struct {
-	Name  string `bun:"name,type:varchar" json:"name"`
-	Price int    `bun:"price,type:integer" json:"price"`
+	Id    *uuid.UUID `bun:"id,pk,type:uuid" json:"id"`
+	Name  *string    `bun:"name,type:varchar" json:"name"`
+	Price *int       `bun:"price,type:integer" json:"price"`
 }

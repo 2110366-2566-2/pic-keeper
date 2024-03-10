@@ -111,6 +111,7 @@ var ServeCmd = &cobra.Command{
 			photographers := users.Group("/photographers", handler.Photographer.GetPhotographerInstance)
 			photographers.GET("/list-own-packages", handler.Photographer.ListOwnPackages)
 			photographers.POST("/create-package", handler.Photographer.CreatePackage)
+			photographers.PUT("/update-package", handler.Photographer.UpdatePackage)
 		}
 
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
