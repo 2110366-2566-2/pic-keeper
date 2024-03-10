@@ -39,3 +39,12 @@ func (p *PhotographerDB) CheckExistenceByUserId(ctx context.Context, userId uuid
 
 	return exist, nil
 }
+
+func (p *PhotographerDB) FindOneByUserId(ctx context.Context, userId uuid.UUID) (*model.Photographer, error) {
+	photographer := new(model.Photographer)
+	if err := p.db.NewSelect().Model(photographer).Where("user_id = ?", userId).Scan(ctx, photographer); err != nil {
+		return nil, err
+	}
+
+	return photographer, nil
+}

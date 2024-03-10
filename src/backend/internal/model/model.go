@@ -47,5 +47,11 @@ type Package struct {
 	bun.BaseModel  `bun:"table:packages,alias:packages"`
 	Id             uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	PhotographerId uuid.UUID `bun:"photographer_id,type:uuid" json:"photographer_id"`
+	Name           string    `bun:"name,type:varchar" json:"name"`
 	Price          int       `bun:"price,type:integer" json:"price"`
+}
+
+type PackageInput struct {
+	Name  string `bun:"name,type:varchar" json:"name"`
+	Price int    `bun:"price,type:integer" json:"price"`
 }

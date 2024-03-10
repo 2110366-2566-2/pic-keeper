@@ -101,11 +101,15 @@ var ServeCmd = &cobra.Command{
 
 		users := validated.Group("/users")
 		{
-			users.PUT("/v1/logout", handler.User.Logout)
-			users.POST("/v1/upload-profile", handler.User.UploadProfilePicture)
-			users.GET("/v1/get-my-user-info", handler.User.GetMyUserInfo)
-			users.GET("/v1/get-user/:id", handler.User.GetUserInfo)
-			users.POST("/v1/get-photographer-role", handler.User.GetPhotographerRole)
+			users := users.Group("/v1")
+			users.PUT("/logout", handler.User.Logout)
+			users.POST("/upload-profile", handler.User.UploadProfilePicture)
+			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
+			users.GET("/get-user/:id", handler.User.GetUserInfo)
+			users.POST("/get-photographer-role", handler.User.GetPhotographerRole)
+
+			photographers := users.Group("/photographers", handler.Photographer.GetPhotographerInstance)
+			photographers.POST("/create-package", handler.Photographer.CreatePackage)
 		}
 
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
