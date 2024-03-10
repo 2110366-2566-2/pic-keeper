@@ -23,6 +23,15 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 		return
 	}
 
+	if !photographerObj.IsVerified {
+		c.JSON(http.StatusForbidden, gin.H{
+			"status": "failed",
+			"error":  "You have not yet verified, only verified photographers can create packages",
+		})
+		c.Abort()
+		return
+	}
+
 	packageInput := model.PackageInput{}
 	if err := c.BindJSON(&packageInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
