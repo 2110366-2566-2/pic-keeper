@@ -109,6 +109,7 @@ var ServeCmd = &cobra.Command{
 			users.POST("/get-photographer-role", handler.User.GetPhotographerRole)
 
 			photographers := users.Group("/photographers", handler.Photographer.GetPhotographerInstance)
+			photographers.GET("/list-own-packages", handler.Photographer.ListOwnPackages)
 			photographers.POST("/create-package", handler.Photographer.CreatePackage)
 		}
 
