@@ -130,6 +130,7 @@ var ServeCmd = &cobra.Command{
 			commonBookings.GET("/pending-confirmations", handler.User.ListPendingConfirmationBookings)
 			commonBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
 			commonBookings.GET("/my-bookings", handler.User.MyBookings)
+			commonBookings.GET("/:id", handler.User.GetOneBooking)
 			commonBookings.PUT("/confirm/:id", handler.User.ConfirmBooking)
 			commonBookings.PUT("/cancel/:id", handler.User.CancelBooking)
 			commonBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
