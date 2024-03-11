@@ -84,3 +84,10 @@ type Booking struct {
 	CreatedAt     time.Time `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
 	UpdatedAt     time.Time `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
 }
+
+type SearchFilter struct {
+	PhotographerId *uuid.UUID `json:"photographer_id"`
+	Location       *string    `json:"location"`
+	MinPrice       *int       `json:"min_price"`
+	MaxPrice       *int       `json:"max_price"`
+}

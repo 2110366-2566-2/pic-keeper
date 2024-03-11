@@ -10,4 +10,5 @@ import (
 type Package interface {
 	BaseRepo[model.Package]
 	FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Package, error)
+	SearchWithFilter(ctx context.Context, filter *model.SearchFilter) ([]*model.Package, error)
 }

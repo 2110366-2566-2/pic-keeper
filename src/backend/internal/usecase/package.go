@@ -23,3 +23,7 @@ func NewPackageUseCase(db *bun.DB) *PackageUseCase {
 func (p *PackageUseCase) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Package, error) {
 	return p.PackageRepo.FindByPhotographerId(ctx, photographerId)
 }
+
+func (p *PackageUseCase) SearchWithFilter(ctx context.Context, filter *model.SearchFilter) ([]*model.Package, error) {
+	return p.PackageRepo.SearchWithFilter(ctx, filter)
+}

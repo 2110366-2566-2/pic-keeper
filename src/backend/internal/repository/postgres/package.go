@@ -28,3 +28,35 @@ func (p *PackageDB) FindByPhotographerId(ctx context.Context, photographerId uui
 
 	return packages, nil
 }
+
+func (p *PackageDB) SearchWithFilter(ctx context.Context, filter *model.SearchFilter) ([]*model.Package, error) {
+	var pkgs []*model.Package
+	query := p.db.NewSelect().Model(&pkgs)
+
+	if filter.PhotographerId != nil {
+		query.Where("photographer_id = ?", *filter.PhotographerId)
+	}
+
+	if filter.Location != nil {
+		var photographer model.Photographer
+		var locatedPhotographerIds []*uuid.UUID
+		if err := p.db.NewSelect().Model(&photographer).Where("location = ?", *filter.Location).Column("id").Scan(ctx, &locatedPhotographerIds); err != nil {
+			return nil, err
+		}
+
+		query.Where("photographer_id IN (?)", bun.In(locatedPhotographerIds))
+	}
+
+	if filter.MinPrice != nil {
+		query.Where("price >= ?", *filter.MinPrice)
+	}
+	if filter.MaxPrice != nil {
+		query.Where("price <= ?", *filter.MinPrice)
+	}
+
+	if err := query.Scan(ctx, &pkgs); err != nil {
+		return nil, err
+	}
+
+	return pkgs, nil
+}
