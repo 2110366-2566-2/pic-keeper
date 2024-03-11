@@ -11,4 +11,6 @@ type Booking interface {
 	BaseRepo[model.Booking]
 	FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Booking, error)
 	FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, status string) ([]*model.Booking, error)
+	FindByPhotographerId(ctx context.Context, phtgId uuid.UUID) ([]*model.Booking, error)
+	FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, status string) ([]*model.Booking, error)
 }

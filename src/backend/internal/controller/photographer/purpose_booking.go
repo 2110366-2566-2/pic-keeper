@@ -70,7 +70,6 @@ func (r *Resolver) PurposeBooking(c *gin.Context) {
 		Status:     model.BookingPendingStatus,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
-		DeletedAt:  nil,
 	}
 
 	if err := r.BookingUsecase.BookingRepo.AddOne(c, &newBooking); err != nil {

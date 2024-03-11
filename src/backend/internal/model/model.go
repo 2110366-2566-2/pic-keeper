@@ -59,11 +59,11 @@ type PackageInput struct {
 }
 
 const (
-	BookingPendingStatus                = "PENDING"
-	BookingConfirmedStatus              = "CONFIRMED"
-	BookingCancelledStatus              = "CANCELLED"
-	BookingCustomerReqChangesStatus     = "C_REQ_CHANGES"
-	BookingPhotographerReqChangesStatus = "P_REQ_CHANGES"
+	BookingPendingStatus               = "PENDING"
+	BookingConfirmedStatus             = "CONFIRMED"
+	BookingCancelledStatus             = "CANCELLED"
+	BookingCustomerReqCancelStatus     = "C_REQ_CANCEL"
+	BookingPhotographerReqCancelStatus = "P_REQ_CANCEL"
 )
 
 type BookingPurposal struct {
@@ -75,13 +75,12 @@ type BookingPurposal struct {
 
 type Booking struct {
 	bun.BaseModel `bun:"table:bookings,alias:bookings"`
-	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	CustomerId    uuid.UUID  `bun:"customer_id,type:uuid" json:"customer_id"`
-	PackageId     uuid.UUID  `bun:"package_id,type:uuid" json:"package_id"`
-	StartTime     time.Time  `bun:"start_time,type:timestamptz" json:"start_time"`
-	EndTime       time.Time  `bun:"end_time,type:timestamptz" json:"end_time"`
-	Status        string     `bun:"status,type:varchar" json:"status"`
-	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
-	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
-	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`
+	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	CustomerId    uuid.UUID `bun:"customer_id,type:uuid" json:"customer_id"`
+	PackageId     uuid.UUID `bun:"package_id,type:uuid" json:"package_id"`
+	StartTime     time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
+	EndTime       time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
+	Status        string    `bun:"status,type:varchar" json:"status"`
+	CreatedAt     time.Time `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+	UpdatedAt     time.Time `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
 }

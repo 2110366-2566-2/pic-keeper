@@ -9,8 +9,8 @@ CREATE TYPE booking_status AS enum(
     'PENDING',
     'CONFIRMED',
     'CANCELLED',
-    'C_REQ_CHANGES',
-    'P_REQ_CHANGES',
+    'C_REQ_CANCEL',
+    'P_REQ_CANCEL',
 );
 
 CREATE TABLE bookings(
@@ -21,7 +21,6 @@ CREATE TABLE bookings(
     end_time timestamptz NOT NULL,
     status booking_status NOT NULL DEFAULT 'PENDING',
     created_at timestamptz NOT NULL DEFAULT now(),
-    updated_at timestamptz NOT NULL DEFAULT now(),
-    deleted_at timestamptz
+    updated_at timestamptz NOT NULL DEFAULT now()
 );
 
