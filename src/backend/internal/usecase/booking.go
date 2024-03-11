@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/repository"
@@ -26,4 +27,9 @@ func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid
 
 func (b *BookingUseCase) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, status ...string) ([]*model.Booking, error) {
 	return b.BookingRepo.FindByPhotographerIdWithStatus(ctx, phtgId, status...)
+}
+
+func (b *BookingUseCase) UpdateStatusRoutine() error {
+	currentTime := time.Now()
+	return b.BookingRepo.UpdateStatusRoutine(context.Background(), currentTime)
 }

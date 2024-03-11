@@ -49,6 +49,8 @@ var ServeCmd = &cobra.Command{
 		handler := controller.NewHandler(db)
 		databases.ConnectRedis(appCfg.Database.Redis.DSN)
 
+		autoUpdateBookingStatus(handler)
+
 		r := gin.Default()
 		r.Use(retrieveSecretConf(appCfg))
 
