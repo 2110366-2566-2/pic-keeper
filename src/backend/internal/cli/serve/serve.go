@@ -121,6 +121,12 @@ var ServeCmd = &cobra.Command{
 			bookings.POST("/", handler.Photographer.PurposeBooking)
 		}
 
+		commonBookings := validated.Group("/bookings")
+		{
+			commonBookings.GET("/pending-confirmations", handler.User.ListPendingConfirmationBookings)
+			commonBookings.GET("/my-bookings", handler.User.MyBookings)
+		}
+
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 
