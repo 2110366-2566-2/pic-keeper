@@ -121,6 +121,8 @@ var ServeCmd = &cobra.Command{
 			bookings.POST("/", handler.Photographer.PurposeBooking)
 			bookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
 			bookings.GET("/my-bookings", handler.Photographer.MyBookings)
+			bookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
+			bookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
 		}
 
 		commonBookings := validated.Group("/bookings")
