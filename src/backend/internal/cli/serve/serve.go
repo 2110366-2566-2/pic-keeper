@@ -125,6 +125,7 @@ var ServeCmd = &cobra.Command{
 		{
 			commonBookings.GET("/pending-confirmations", handler.User.ListPendingConfirmationBookings)
 			commonBookings.GET("/my-bookings", handler.User.MyBookings)
+			commonBookings.PUT("/:id", handler.User.ConfirmBooking)
 		}
 
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
