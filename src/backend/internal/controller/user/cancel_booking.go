@@ -30,6 +30,15 @@ func (r *Resolver) CancelBooking(c *gin.Context) {
 		return
 	}
 
+	if booking.Status != model.BookingPaidStatus {
+		c.JSON(http.StatusForbidden, gin.H{
+			"status": "failed",
+			"error":  "this booking cannot be cancelled anymore",
+		})
+		c.Abort()
+		return
+	}
+
 	if booking.CustomerId != userObj.Id {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",

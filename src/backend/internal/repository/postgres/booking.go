@@ -65,14 +65,14 @@ func (b *BookingDB) FindByPhotographerIdWithStatus(ctx context.Context, phtgId u
 
 func (b *BookingDB) UpdateStatusRoutine(ctx context.Context, currentTime time.Time) error {
 	var booking model.Booking
-	paidOutTime := currentTime.Add(time.Hour * 24 * 3)
+	paidOutTime := currentTime.Add(-time.Hour * 24 * 3)
 
 	_, err := b.db.NewUpdate().Model(&booking).Set("status = ?", model.BookingCompletedStatus).Where("status = ? AND end_time <= ?", model.BookingPaidStatus, currentTime).Exec(ctx)
 	if err != nil {
 		return err
 	}
 
-	_, err = b.db.NewUpdate().Model(&booking).Set("status = ?", model.BookingPaidOutStatus).Where("status != ? AND end_time <= ?", model.BookingPaidOutStatus, paidOutTime).Exec(ctx)
+	_, err = b.db.NewUpdate().Model(&booking).Set("status = ?", model.BookingPaidOutStatus).Where("status = ? AND end_time <= ?", model.BookingCompletedStatus, paidOutTime).Exec(ctx)
 	if err != nil {
 		return err
 	}

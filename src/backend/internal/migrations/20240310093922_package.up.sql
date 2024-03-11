@@ -20,7 +20,7 @@ CREATE TABLE bookings(
     package_id uuid NOT NULL REFERENCES packages(id),
     start_time timestamptz NOT NULL,
     end_time timestamptz NOT NULL,
-    status booking_status NOT NULL DEFAULT 'PENDING',
+    status booking_status NOT NULL DEFAULT 'USER_PAID',
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now()
 );

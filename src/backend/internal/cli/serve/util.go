@@ -26,4 +26,6 @@ func autoUpdateBookingStatus(handler *controller.Handler) {
 	scheduler.AddFunc("@every 1m", func() {
 		handler.User.BookingUsecase.UpdateStatusRoutine()
 	})
+
+	scheduler.Start()
 }
