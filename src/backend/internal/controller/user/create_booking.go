@@ -1,4 +1,4 @@
-package photographer
+package user
 
 import (
 	"net/http"
@@ -9,8 +9,8 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) PurposeBooking(c *gin.Context) {
-	photographer, exists := c.Get("photographer")
+func (r *Resolver) CreateBooking(c *gin.Context) {
+	user, exists := c.Get("user")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -20,7 +20,7 @@ func (r *Resolver) PurposeBooking(c *gin.Context) {
 		return
 	}
 
-	photographerObj, ok := photographer.(model.Photographer)
+	userObj, ok := user.(model.User)
 	if !ok {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -30,8 +30,8 @@ func (r *Resolver) PurposeBooking(c *gin.Context) {
 		return
 	}
 
-	bookingPurposal := model.BookingPurposal{}
-	if err := c.BindJSON(&bookingPurposal); err != nil {
+	bookingProposal := model.BookingProposal{}
+	if err := c.BindJSON(&bookingProposal); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
 			"error":   err.Error(),
@@ -41,33 +41,13 @@ func (r *Resolver) PurposeBooking(c *gin.Context) {
 		return
 	}
 
-	// dbvalidate
-	existingPackage, err := r.PackageUsecase.PackageRepo.FindOneById(c, bookingPurposal.PackageId)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
-		return
-	}
-
-	if existingPackage.PhotographerId != photographerObj.Id {
-		c.JSON(http.StatusForbidden, gin.H{
-			"status": "failed",
-			"error":  "the package you have purposed is not yours",
-		})
-		c.Abort()
-		return
-	}
-
 	newBooking := model.Booking{
 		Id:         uuid.New(),
-		CustomerId: bookingPurposal.CustomerId,
-		PackageId:  bookingPurposal.PackageId,
-		StartTime:  bookingPurposal.StartTime,
-		EndTime:    bookingPurposal.EndTime,
-		Status:     model.BookingPendingStatus,
+		CustomerId: userObj.Id,
+		PackageId:  bookingProposal.PackageId,
+		StartTime:  bookingProposal.StartTime,
+		EndTime:    bookingProposal.EndTime,
+		Status:     model.BookingPaidStatus,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}

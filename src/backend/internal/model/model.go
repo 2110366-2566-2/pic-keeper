@@ -59,18 +59,18 @@ type PackageInput struct {
 }
 
 const (
-	BookingPendingStatus               = "PENDING"
-	BookingConfirmedStatus             = "CONFIRMED"
+	BookingPaidStatus                  = "USER_PAID"
 	BookingCancelledStatus             = "CANCELLED"
 	BookingCustomerReqCancelStatus     = "C_REQ_CANCEL"
 	BookingPhotographerReqCancelStatus = "P_REQ_CANCEL"
+	BookingCompletedStatus             = "COMPLETED"
+	BookingPaidOutStatus               = "PAID_OUT"
 )
 
-type BookingPurposal struct {
-	CustomerId uuid.UUID `bun:"customer_id,type:uuid" json:"customer_id"`
-	PackageId  uuid.UUID `bun:"package_id,type:uuid" json:"package_id"`
-	StartTime  time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
-	EndTime    time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
+type BookingProposal struct {
+	PackageId uuid.UUID `bun:"package_id,type:uuid" json:"package_id"`
+	StartTime time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
+	EndTime   time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 }
 
 type Booking struct {

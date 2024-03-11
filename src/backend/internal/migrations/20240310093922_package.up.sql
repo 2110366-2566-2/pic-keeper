@@ -6,11 +6,12 @@ CREATE TABLE packages(
 );
 
 CREATE TYPE booking_status AS enum(
-    'PENDING',
-    'CONFIRMED',
+    'USER_PAID',
     'CANCELLED',
     'C_REQ_CANCEL',
-    'P_REQ_CANCEL'
+    'P_REQ_CANCEL',
+    'COMPLETED',
+    'PAID_OUT'
 );
 
 CREATE TABLE bookings(

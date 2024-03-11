@@ -120,8 +120,8 @@ var ServeCmd = &cobra.Command{
 			packages.GET("/:id", handler.Photographer.GetOnePackage)
 
 			bookings := photographers.Group("/bookings")
-			bookings.POST("/", handler.Photographer.PurposeBooking)
 			bookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
+			bookings.GET("/upcoming", handler.Photographer.ListUpcomingBookings)
 			bookings.GET("/my-bookings", handler.Photographer.MyBookings)
 			bookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
 			bookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
@@ -129,11 +129,11 @@ var ServeCmd = &cobra.Command{
 
 		commonBookings := validated.Group("/bookings/v1")
 		{
-			commonBookings.GET("/pending-confirmations", handler.User.ListPendingConfirmationBookings)
+			commonBookings.POST("/", handler.User.CreateBooking)
 			commonBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
+			commonBookings.GET("/upcoming", handler.User.ListUpcomingBookings)
 			commonBookings.GET("/my-bookings", handler.User.MyBookings)
 			commonBookings.GET("/:id", handler.User.GetOneBooking)
-			commonBookings.PUT("/confirm/:id", handler.User.ConfirmBooking)
 			commonBookings.PUT("/cancel/:id", handler.User.CancelBooking)
 			commonBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
