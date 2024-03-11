@@ -136,6 +136,11 @@ var ServeCmd = &cobra.Command{
 			commonBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
+		commonPackages := validated.Group("/packages")
+		{
+			commonPackages.GET("/search", handler.User.SearchPackages)
+		}
+
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 
