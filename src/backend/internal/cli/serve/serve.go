@@ -107,9 +107,11 @@ var ServeCmd = &cobra.Command{
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/get-user/:id", handler.User.GetUserInfo)
 			users.POST("/get-photographer-role", handler.User.GetPhotographerRole)
+		}
 
-			photographers := users.Group("/photographers", handler.Photographer.GetPhotographerInstance)
-
+		photographers := validated.Group("/photographers", handler.Photographer.GetPhotographerInstance)
+		{
+			photographers := photographers.Group("/v1")
 			packages := photographers.Group("/packages")
 			packages.GET("/list", handler.Photographer.ListOwnPackages)
 			packages.POST("/", handler.Photographer.CreatePackage)
@@ -125,7 +127,7 @@ var ServeCmd = &cobra.Command{
 			bookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
 		}
 
-		commonBookings := validated.Group("/bookings")
+		commonBookings := validated.Group("/bookings/v1")
 		{
 			commonBookings.GET("/pending-confirmations", handler.User.ListPendingConfirmationBookings)
 			commonBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
@@ -136,7 +138,7 @@ var ServeCmd = &cobra.Command{
 			commonBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
-		commonPackages := validated.Group("/packages")
+		commonPackages := validated.Group("/packages/v1")
 		{
 			commonPackages.GET("/search", handler.User.SearchPackages)
 		}

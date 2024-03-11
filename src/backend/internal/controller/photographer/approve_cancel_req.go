@@ -30,6 +30,15 @@ func (r *Resolver) ApproveCancelReq(c *gin.Context) {
 		return
 	}
 
+	if booking.Status != model.BookingCustomerReqCancelStatus {
+		c.JSON(http.StatusForbidden, gin.H{
+			"status": "failed",
+			"error":  "this booking is not waiting for your confirmation",
+		})
+		c.Abort()
+		return
+	}
+
 	pkg, err := r.PackageUsecase.PackageRepo.FindOneById(c, booking.PackageId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

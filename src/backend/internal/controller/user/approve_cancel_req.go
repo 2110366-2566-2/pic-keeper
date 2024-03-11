@@ -29,6 +29,14 @@ func (r *Resolver) ApproveCancelReq(c *gin.Context) {
 		c.Abort()
 		return
 	}
+	if booking.Status != model.BookingPhotographerReqCancelStatus {
+		c.JSON(http.StatusForbidden, gin.H{
+			"status": "failed",
+			"error":  "this booking is not waiting for your confirmation",
+		})
+		c.Abort()
+		return
+	}
 
 	if booking.CustomerId != userObj.Id {
 		c.JSON(http.StatusForbidden, gin.H{

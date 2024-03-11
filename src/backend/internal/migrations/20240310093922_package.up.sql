@@ -10,7 +10,7 @@ CREATE TYPE booking_status AS enum(
     'CONFIRMED',
     'CANCELLED',
     'C_REQ_CANCEL',
-    'P_REQ_CANCEL',
+    'P_REQ_CANCEL'
 );
 
 CREATE TABLE bookings(
