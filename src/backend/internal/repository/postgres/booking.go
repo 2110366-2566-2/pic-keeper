@@ -20,44 +20,42 @@ func NewBookingDB(db *bun.DB) *BookingDB {
 	}
 }
 
-func (b *BookingDB) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Booking, error) {
+func (b *BookingDB) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, status ...string) ([]*model.Booking, error) {
 	var bookings []*model.Booking
-	if err := b.db.NewSelect().Model(&bookings).Where("customer_id = ?", userId).Scan(ctx, &bookings); err != nil {
+	query := b.db.NewSelect().Model(&bookings)
+
+	for _, acceptedStatus := range status {
+		query = query.WhereOr("status = ?", acceptedStatus)
+	}
+
+	query = query.WhereGroup(" AND ", func(q *bun.SelectQuery) *bun.SelectQuery {
+		return q.Where("customer_id = ?", userId)
+	})
+
+	if err := query.Scan(ctx, &bookings); err != nil {
 		return nil, err
 	}
 
 	return bookings, nil
 }
 
-func (b *BookingDB) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, status string) ([]*model.Booking, error) {
-	var bookings []*model.Booking
-	if err := b.db.NewSelect().Model(&bookings).Where("customer_id = ? AND status = ?", userId, status).Scan(ctx, &bookings); err != nil {
-		return nil, err
-	}
-
-	return bookings, nil
-}
-
-func (b *BookingDB) FindByPhotographerId(ctx context.Context, phtgId uuid.UUID) ([]*model.Booking, error) {
+func (b *BookingDB) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, status ...string) ([]*model.Booking, error) {
 	var bookings []*model.Booking
 	var pkg model.Package
 
 	subq := b.db.NewSelect().Model(&pkg).Where("photographer_id = ?", phtgId).Column("id")
 
-	if err := b.db.NewSelect().Model(&bookings).Where("package_id IN (?)", subq).Scan(ctx, &bookings); err != nil {
-		return nil, err
+	query := b.db.NewSelect().Model(&bookings)
+
+	for _, acceptedStatus := range status {
+		query = query.WhereOr("status = ?", acceptedStatus)
 	}
 
-	return bookings, nil
-}
+	query = query.WhereGroup(" AND ", func(q *bun.SelectQuery) *bun.SelectQuery {
+		return q.Where("package_id IN (?)", subq)
+	})
 
-func (b *BookingDB) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, status string) ([]*model.Booking, error) {
-	var bookings []*model.Booking
-	var pkg model.Package
-
-	subq := b.db.NewSelect().Model(&pkg).Where("photographer_id = ?", phtgId).Column("id")
-
-	if err := b.db.NewSelect().Model(&bookings).Where("package_id IN (?) AND status = ?", subq, status).Scan(ctx, &bookings); err != nil {
+	if err := query.Scan(ctx, &bookings); err != nil {
 		return nil, err
 	}
 

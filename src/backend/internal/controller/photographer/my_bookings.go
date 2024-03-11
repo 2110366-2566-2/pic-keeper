@@ -16,7 +16,7 @@ func (r *Resolver) MyBookings(c *gin.Context) {
 		return
 	}
 
-	bookings, err := r.BookingUsecase.FindByPhotographerId(c, photographerObj.Id)
+	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, photographerObj.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

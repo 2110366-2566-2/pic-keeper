@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *Resolver) MyBookings(c *gin.Context) {
+func (r *Resolver) ListPastBookings(c *gin.Context) {
 	user := c.MustGet("user")
 	userObj, ok := user.(model.User)
 	if !ok {
@@ -16,7 +16,8 @@ func (r *Resolver) MyBookings(c *gin.Context) {
 		return
 	}
 
-	bookings, err := r.BookingUsecase.FindByUserIdWithStatus(c, userObj.Id)
+	acceptedStatus := []string{model.BookingCompletedStatus, model.BookingPaidOutStatus}
+	bookings, err := r.BookingUsecase.FindByUserIdWithStatus(c, userObj.Id, acceptedStatus...)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

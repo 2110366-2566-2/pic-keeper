@@ -1,4 +1,4 @@
-package user
+package photographer
 
 import (
 	"net/http"
@@ -7,16 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *Resolver) MyBookings(c *gin.Context) {
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+func (r *Resolver) ListUpcomingBookings(c *gin.Context) {
+	photographer := c.MustGet("photographer")
+	photographerObj, ok := photographer.(model.Photographer)
 	if !ok {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Invalid user type in context"})
 		c.Abort()
 		return
 	}
 
-	bookings, err := r.BookingUsecase.FindByUserIdWithStatus(c, userObj.Id)
+	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, photographerObj.Id, model.BookingPaidStatus)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

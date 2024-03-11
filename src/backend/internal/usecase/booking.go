@@ -20,18 +20,10 @@ func NewBookingUseCase(db *bun.DB) *BookingUseCase {
 	}
 }
 
-func (b *BookingUseCase) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Booking, error) {
-	return b.BookingRepo.FindByUserId(ctx, userId)
+func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, bkStatus ...string) ([]*model.Booking, error) {
+	return b.BookingRepo.FindByUserIdWithStatus(ctx, userId, bkStatus...)
 }
 
-func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, bkStatus string) ([]*model.Booking, error) {
-	return b.BookingRepo.FindByUserIdWithStatus(ctx, userId, bkStatus)
-}
-
-func (b *BookingUseCase) FindByPhotographerId(ctx context.Context, phtgId uuid.UUID) ([]*model.Booking, error) {
-	return b.BookingRepo.FindByPhotographerId(ctx, phtgId)
-}
-
-func (b *BookingUseCase) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, status string) ([]*model.Booking, error) {
-	return b.BookingRepo.FindByPhotographerIdWithStatus(ctx, phtgId, status)
+func (b *BookingUseCase) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, status ...string) ([]*model.Booking, error) {
+	return b.BookingRepo.FindByPhotographerIdWithStatus(ctx, phtgId, status...)
 }
