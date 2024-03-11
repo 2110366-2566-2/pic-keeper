@@ -8,11 +8,13 @@ import (
 type Resolver struct {
 	PhotographerUsecase usecase.PhotographerUseCase
 	PackageUsecase      usecase.PackageUseCase
+	BookingUsecase      usecase.BookingUseCase
 }
 
 func NewResolver(db *bun.DB) *Resolver {
 	return &Resolver{
 		PhotographerUsecase: *usecase.NewPhotographerUseCase(db),
 		PackageUsecase:      *usecase.NewPackageUseCase(db),
+		BookingUsecase:      *usecase.NewBookingUseCase(db),
 	}
 }

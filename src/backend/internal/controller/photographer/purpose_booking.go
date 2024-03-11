@@ -2,15 +2,14 @@ package photographer
 
 import (
 	"net/http"
+	"time"
 
-	"github.com/Roongkun/software-eng-ii/internal/controller/photographer/fieldvalidate"
-	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) UpdatePackage(c *gin.Context) {
+func (r *Resolver) PurposeBooking(c *gin.Context) {
 	photographer, exists := c.Get("photographer")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -31,8 +30,8 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 		return
 	}
 
-	updatingPackageInput := model.PackageInput{}
-	if err := c.BindJSON(&updatingPackageInput); err != nil {
+	bookingPurposal := model.BookingPurposal{}
+	if err := c.BindJSON(&bookingPurposal); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
 			"error":   err.Error(),
@@ -42,19 +41,8 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 		return
 	}
 
-	if fieldErrs := fieldvalidate.UpdatePackage(updatingPackageInput); len(fieldErrs) > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  util.JSONErrs(fieldErrs),
-		})
-		c.Abort()
-		return
-	}
-
-	paramId := c.Param("id")
-	packageId := uuid.MustParse(paramId)
-
-	existingPackage, err := r.PackageUsecase.PackageRepo.FindOneById(c, packageId)
+	// dbvalidate
+	existingPackage, err := r.PackageUsecase.PackageRepo.FindOneById(c, bookingPurposal.PackageId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -64,25 +52,28 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 		return
 	}
 
-	// dbValidate
-	if photographerObj.Id != existingPackage.PhotographerId {
+	if existingPackage.PhotographerId != photographerObj.Id {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
-			"error":  "You have no permission to edit this package",
+			"error":  "the package you have purposed is not yours",
 		})
 		c.Abort()
 		return
 	}
 
-	// editing
-	if updatingPackageInput.Name != nil {
-		existingPackage.Name = *updatingPackageInput.Name
-	}
-	if updatingPackageInput.Price != nil {
-		existingPackage.Price = *updatingPackageInput.Price
+	newBooking := model.Booking{
+		Id:         uuid.New(),
+		CustomerId: bookingPurposal.CustomerId,
+		PackageId:  bookingPurposal.PackageId,
+		StartTime:  bookingPurposal.StartTime,
+		EndTime:    bookingPurposal.EndTime,
+		Status:     model.BookingPendingStatus,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+		DeletedAt:  nil,
 	}
 
-	if err := r.PackageUsecase.PackageRepo.UpdateOne(c, existingPackage); err != nil {
+	if err := r.BookingUsecase.BookingRepo.AddOne(c, &newBooking); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
@@ -93,6 +84,6 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   existingPackage,
+		"data":   newBooking,
 	})
 }

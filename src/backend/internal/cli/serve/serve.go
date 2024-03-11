@@ -109,11 +109,16 @@ var ServeCmd = &cobra.Command{
 			users.POST("/get-photographer-role", handler.User.GetPhotographerRole)
 
 			photographers := users.Group("/photographers", handler.Photographer.GetPhotographerInstance)
-			photographers.GET("/list-own-packages", handler.Photographer.ListOwnPackages)
-			photographers.POST("/create-package", handler.Photographer.CreatePackage)
-			photographers.PUT("/update-package", handler.Photographer.UpdatePackage)
-			photographers.DELETE("/delete-package/:id", handler.Photographer.DeletePackage)
-			photographers.GET("/package/:id", handler.Photographer.GetOnePackage)
+
+			packages := photographers.Group("/packages")
+			packages.GET("/list", handler.Photographer.ListOwnPackages)
+			packages.POST("/", handler.Photographer.CreatePackage)
+			packages.PUT("/:id", handler.Photographer.UpdatePackage)
+			packages.DELETE("/:id", handler.Photographer.DeletePackage)
+			packages.GET("/:id", handler.Photographer.GetOnePackage)
+
+			bookings := photographers.Group("/bookings")
+			bookings.POST("/", handler.Photographer.PurposeBooking)
 		}
 
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

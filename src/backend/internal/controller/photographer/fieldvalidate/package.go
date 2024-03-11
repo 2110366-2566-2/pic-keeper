@@ -8,11 +8,6 @@ import (
 
 func CreatePackage(input model.PackageInput) []error {
 	fieldErrs := []error{}
-	if input.Id != nil {
-		fieldErrs = append(fieldErrs, errors.New(
-			"the id of the new package must be auto-generated",
-		))
-	}
 
 	if input.Name == nil {
 		fieldErrs = append(fieldErrs, errors.New(
@@ -30,11 +25,6 @@ func CreatePackage(input model.PackageInput) []error {
 
 func UpdatePackage(input model.PackageInput) []error {
 	fieldErrs := []error{}
-	if input.Id == nil {
-		fieldErrs = append(fieldErrs, errors.New(
-			"the id of the package that will be updated must be provided",
-		))
-	}
 
 	if input.Name == nil && input.Price == nil {
 		fieldErrs = append(fieldErrs, errors.New(
