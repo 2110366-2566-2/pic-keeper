@@ -23,3 +23,7 @@ func NewLookupUseCase(db *bun.DB) *LookupUseCase {
 func (l *LookupUseCase) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.UserRoomLookup, error) {
 	return l.LookupRepo.FindByUserId(ctx, userId)
 }
+
+func (l *LookupUseCase) CheckRoomMembership(ctx context.Context, userId uuid.UUID, roomId uuid.UUID) (bool, error) {
+	return l.LookupRepo.CheckRoomMembership(ctx, userId, roomId)
+}

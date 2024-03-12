@@ -73,3 +73,7 @@ type Conversation struct {
 	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
 	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`
 }
+
+type RoomMemberInput struct {
+	MemberIds []uuid.UUID `binding:"required" json:"member_ids"`
+}
