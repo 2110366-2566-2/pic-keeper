@@ -94,3 +94,7 @@ export interface ListUnverifiedPhotographerResponse extends BaseResponse {
 export interface VerifyResponse extends BaseResponse {
   data: Photographer;
 }
+
+export interface RequestUserRoleResposne extends BaseResponse {
+  data: Photographer;
+}
