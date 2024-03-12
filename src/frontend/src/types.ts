@@ -124,3 +124,74 @@ export interface NewPackage {
 export interface DeleteResponse extends BaseResponse {
   data: string;
 }
+
+export enum BookingStatus {
+  BookingPaidStatus = "USER_PAID",
+  BookingCancelledStatus = "CANCELLED",
+  BookingCustomerReqCancelStatus = "C_REQ_CANCEL",
+  BookingPhotographerReqCancelStatus = "P_REQ_CANCEL",
+  BookingCompletedStatus = "COMPLETED",
+  BookingPaidOutStatus = "PAID_OUT",
+}
+
+export interface BookingProposal {
+  package_id: string;
+  start_time: string;
+  end_time: string;
+}
+
+export interface Booking {
+  id: string;
+  customer_id: string;
+  package_id: string;
+  start_time: string;
+  end_time: string;
+  status: BookingStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SearchFilter {
+  photographer_id?: string;
+  location?: string;
+  min_price?: number;
+  max_price?: number;
+}
+
+export interface Room {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string;
+}
+
+export interface UserRoomLookup {
+  id: string;
+  user_id: string;
+  room_id: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string;
+}
+
+export interface Conversation {
+  id: string;
+  text: string;
+  user_id: string;
+  room_id: string;
+  created_at: Date;
+  updated_at: Date;
+  deleted_at: Date | null; // Use Date or null for optional properties
+}
+
+export interface RoomMemberInput {
+  member_ids: string[];
+}
+
+export interface BookingListResponse {
+  data: Booking[];
+}
+
+export interface BookingResponse {
+  data: Booking;
+}

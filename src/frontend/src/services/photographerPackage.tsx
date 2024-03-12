@@ -64,7 +64,7 @@ const getPackage = async (id: string) => {
     return error;
   }
 };
-const photographerService = {
+const photographerPackageService = {
   getAllPackages,
   createPackage,
   updatePackage,
@@ -72,4 +72,4 @@ const photographerService = {
   getPackage,
 };
 
-export default photographerService;
+export default photographerPackageService;
