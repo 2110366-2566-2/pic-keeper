@@ -21,8 +21,8 @@ func (r *Resolver) InitializeRoom(c *gin.Context) {
 		return
 	}
 
-	roomMemberIds := []uuid.UUID{}
-	if err := c.BindJSON(&roomMemberIds); err != nil {
+	input := model.RoomMemberInput{}
+	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
@@ -31,7 +31,7 @@ func (r *Resolver) InitializeRoom(c *gin.Context) {
 		return
 	}
 
-	roomMemberIds = append(roomMemberIds, userObj.Id)
+	input.MemberIds = append(input.MemberIds, userObj.Id)
 	roomId := uuid.New()
 	newRoom := &model.Room{
 		Id:        roomId,
@@ -50,7 +50,7 @@ func (r *Resolver) InitializeRoom(c *gin.Context) {
 	}
 
 	lookups := []*model.UserRoomLookup{}
-	for _, memberId := range roomMemberIds {
+	for _, memberId := range input.MemberIds {
 		lookups = append(lookups, &model.UserRoomLookup{
 			Id:        uuid.New(),
 			UserId:    memberId,
