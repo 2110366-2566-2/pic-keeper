@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -318,6 +319,7 @@ func ping(ws *websocket.Conn) {
 }
 
 func (c *Chat) ServeWS(gc *gin.Context) {
+
 	if gc.Request.Method != http.MethodGet {
 		gc.JSON(http.StatusMethodNotAllowed, gin.H{
 			"status": "failed",
@@ -337,11 +339,62 @@ func (c *Chat) ServeWS(gc *gin.Context) {
 
 	defer ws.Close()
 
-	user := gc.MustGet("user")
-	userModel := user.(model.User)
+	token := gc.Param("session-token")
+	if token == "" {
+		gc.JSON(gc.GetInt("errorStatus"), gin.H{
+			"status": "failed",
+			"error":  gc.GetString("errorMessage"),
+		})
+		gc.Abort()
+		return
+	}
+
+	secretKey, exist := gc.Get("secretKey")
+	if !exist {
+		gc.JSON(http.StatusInternalServerError, gin.H{
+			"status": "failed",
+			"error":  "secret key not found",
+		})
+		gc.Abort()
+		return
+	}
+	jwtWrapper := auth.JwtWrapper{
+		SecretKey: secretKey.(string),
+		Issuer:    "AuthProvider",
+	}
+
+	claims, err := jwtWrapper.ValidateToken(gc, token, false)
+	if err != nil {
+		gc.JSON(gc.GetInt("errorStatus"), gin.H{
+			"status": "failed",
+			"error":  gc.GetString("errorMessage"),
+		})
+		gc.Abort()
+		return
+	}
+
+	user, err := c.Resolver.UserUsecase.UserRepo.FindOneByEmail(gc, claims.Email)
+	log.Println("Here1")
+	if err != nil {
+		gc.JSON(http.StatusInternalServerError, gin.H{
+			"status": "failed",
+			"error":  err.Error(),
+		})
+		gc.Abort()
+		return
+	}
+
+	if user.LoggedOut {
+		gc.JSON(http.StatusUnauthorized, gin.H{
+			"status": "failed",
+			"error":  "you have logged out, please log in again",
+		})
+		gc.Abort()
+		return
+	}
 
 	session := c.newSession(ws)
-	close := c.Bind(UserId(userModel.Id), SessionId(session.id))
+	close := c.Bind(UserId(user.Id), SessionId(session.id))
 	defer close()
 
 	// notify that a user went online
@@ -363,7 +416,7 @@ func (c *Chat) ServeWS(gc *gin.Context) {
 			break
 		}
 
-		msg.Sender = userModel.Id
+		msg.Sender = user.Id
 		c.broadcast <- msg
 	}
 }

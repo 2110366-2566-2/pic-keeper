@@ -97,6 +97,14 @@ var ServeCmd = &cobra.Command{
 			}
 		}
 
+		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
+		defer chatEntity.Close()
+		chats := r.Group("/chat")
+		{
+			chats := chats.Group("/v1")
+			chats.GET("/ws/:session-token", chatEntity.ServeWS)
+		}
+
 		validated := r.Group("/", middleware.UserAuthorizationMiddleware)
 		validated.Use(handler.User.GetUserInstance)
 
@@ -107,14 +115,6 @@ var ServeCmd = &cobra.Command{
 			users.GET("/v1/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/v1/get-user/:id", handler.User.GetUserInfo)
 			users.POST("/v1/get-photographer-role", handler.User.GetPhotographerRole)
-		}
-
-		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
-		defer chatEntity.Close()
-		chats := validated.Group("/chat")
-		{
-			chats := chats.Group("/v1")
-			chats.GET("/ws", chatEntity.ServeWS)
 		}
 
 		rooms := validated.Group("/room")
