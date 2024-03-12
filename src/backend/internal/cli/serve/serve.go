@@ -5,6 +5,7 @@ import (
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
+	"github.com/Roongkun/software-eng-ii/internal/controller/chat"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
@@ -47,7 +48,9 @@ var ServeCmd = &cobra.Command{
 
 		db := databases.ConnectSQLDB(appCfg.Database.Postgres.DSN)
 		handler := controller.NewHandler(db)
-		databases.ConnectRedis(appCfg.Database.Redis.DSN)
+		redisClient := databases.ConnectRedis(appCfg.Database.Redis.DSN)
+
+		autoUpdateBookingStatus(handler)
 
 		r := gin.Default()
 		r.Use(retrieveSecretConf(appCfg))
@@ -101,13 +104,65 @@ var ServeCmd = &cobra.Command{
 
 		users := validated.Group("/users")
 		{
-			users.PUT("/v1/logout", handler.User.Logout)
-			users.POST("/v1/upload-profile", handler.User.UploadProfilePicture)
-			users.GET("/v1/get-my-user-info", handler.User.GetMyUserInfo)
-			users.GET("/v1/get-user/:id", handler.User.GetUserInfo)
-			users.POST("/v1/get-photographer-role", handler.User.GetPhotographerRole)
+			users := users.Group("/v1")
+			users.PUT("/logout", handler.User.Logout)
+			users.POST("/upload-profile", handler.User.UploadProfilePicture)
+			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
+			users.GET("/get-user/:id", handler.User.GetUserInfo)
+			users.POST("/get-photographer-role", handler.User.GetPhotographerRole)
 		}
 
+		photographers := validated.Group("/photographers", handler.Photographer.GetPhotographerInstance)
+		{
+			photographers := photographers.Group("/v1")
+			packages := photographers.Group("/packages")
+			packages.GET("/list", handler.Photographer.ListOwnPackages)
+			packages.POST("/", handler.Photographer.CreatePackage)
+			packages.PUT("/:id", handler.Photographer.UpdatePackage)
+			packages.DELETE("/:id", handler.Photographer.DeletePackage)
+			packages.GET("/:id", handler.Photographer.GetOnePackage)
+
+			bookings := photographers.Group("/bookings")
+			bookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
+			bookings.GET("/upcoming", handler.Photographer.ListUpcomingBookings)
+			bookings.GET("/past", handler.Photographer.ListPastBookings)
+			bookings.GET("/my-bookings", handler.Photographer.MyBookings)
+			bookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
+			bookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
+		}
+
+		commonBookings := validated.Group("/bookings/v1")
+		{
+			commonBookings.POST("/", handler.User.CreateBooking)
+			commonBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
+			commonBookings.GET("/upcoming", handler.User.ListUpcomingBookings)
+			commonBookings.GET("/past", handler.User.ListPastBookings)
+			commonBookings.GET("/my-bookings", handler.User.MyBookings)
+			commonBookings.GET("/:id", handler.User.GetOneBooking)
+			commonBookings.PUT("/cancel/:id", handler.User.CancelBooking)
+			commonBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
+		}
+
+		commonPackages := validated.Group("/packages/v1")
+		{
+			commonPackages.GET("/search", handler.User.SearchPackages)
+		}
+
+		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
+		defer chatEntity.Close()
+		chats := validated.Group("/chat")
+		{
+			chats := chats.Group("/v1")
+			chats.GET("/ws", chatEntity.ServeWS)
+		}
+
+		rooms := validated.Group("/room")
+		{
+			rooms := rooms.Group("/v1")
+			rooms.POST("/", handler.Room.InitializeRoom)
+			rooms.GET("/", handler.Room.GetRooms)
+			rooms.GET("/:id", handler.Room.GetAllConversations)
+		}
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 

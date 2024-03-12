@@ -40,7 +40,7 @@ func LookupTokenInRedis(c *gin.Context) (token string, ok bool) {
 	}
 	email, err := databases.RedisClient.Get(c, token).Result()
 	if err == redis.Nil {
-		c.Set("errorStatus", http.StatusNotFound)
+		c.Set("errorStatus", http.StatusUnauthorized)
 		c.Set("errorMessage", "please do re-login")
 		return "", false
 	}

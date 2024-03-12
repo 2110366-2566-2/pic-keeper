@@ -4,6 +4,7 @@ import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -54,17 +55,14 @@ async function processRequestWithTokenRetry(
   try {
     return await makeRequest(token);
   } catch (error) {
-    if (
-      axios.isAxiosError(error) &&
-      (error.response?.status === 401 || error.response?.status === 500)
-    ) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
       try {
         const { refreshed_session_token } = await authService.refreshToken(
           token
         );
         return await makeRequest(refreshed_session_token);
       } catch (refreshError) {
-        return handleError(refreshError);
+        redirect("/auth/login");
       }
     } else {
       return handleError(error);

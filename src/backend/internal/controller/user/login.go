@@ -39,7 +39,7 @@ func (r *Resolver) Login(c *gin.Context) {
 	if fieldErr := fieldvalidate.LoginUser(cred); len(fieldErr) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
-			"errors": util.JSONErrs(fieldErr),
+			"error":  util.JSONErrs(fieldErr),
 		})
 		c.Abort()
 		return
