@@ -19,7 +19,7 @@ func (r *Resolver) GetRooms(c *gin.Context) {
 		return
 	}
 
-	rooms, err := r.RoomUsecase.FindByUserId(c, userObj.Id)
+	rooms, err := r.LookupUsecase.FindByUserId(c, userObj.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
