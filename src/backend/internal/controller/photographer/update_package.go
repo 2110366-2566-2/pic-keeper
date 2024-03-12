@@ -81,6 +81,9 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 	if updatingPackageInput.Price != nil {
 		existingPackage.Price = *updatingPackageInput.Price
 	}
+	if updatingPackageInput.Location != nil {
+		existingPackage.Location = *updatingPackageInput.Location
+	}
 
 	if err := r.PackageUsecase.PackageRepo.UpdateOne(c, existingPackage); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

@@ -38,13 +38,7 @@ func (p *PackageDB) SearchWithFilter(ctx context.Context, filter *model.SearchFi
 	}
 
 	if filter.Location != nil {
-		var photographer model.Photographer
-		var locatedPhotographerIds []*uuid.UUID
-		if err := p.db.NewSelect().Model(&photographer).Where("location = ?", *filter.Location).Column("id").Scan(ctx, &locatedPhotographerIds); err != nil {
-			return nil, err
-		}
-
-		query.Where("photographer_id IN (?)", bun.In(locatedPhotographerIds))
+		query.Where("location = ?", *filter.Location)
 	}
 
 	if filter.MinPrice != nil {

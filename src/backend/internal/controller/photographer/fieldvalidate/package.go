@@ -14,6 +14,11 @@ func CreatePackage(input model.PackageInput) []error {
 			"the name of the new package must be provided",
 		))
 	}
+	if input.Location == nil {
+		fieldErrs = append(fieldErrs, errors.New(
+			"the location of the new package must be provided",
+		))
+	}
 	if input.Price == nil {
 		fieldErrs = append(fieldErrs, errors.New(
 			"the price of the new package must be provided",
@@ -26,7 +31,7 @@ func CreatePackage(input model.PackageInput) []error {
 func UpdatePackage(input model.PackageInput) []error {
 	fieldErrs := []error{}
 
-	if input.Name == nil && input.Price == nil {
+	if input.Name == nil && input.Price == nil && input.Location == nil {
 		fieldErrs = append(fieldErrs, errors.New(
 			"one of the package fields must be changed",
 		))

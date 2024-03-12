@@ -56,6 +56,7 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 
 	newPackage := model.Package{
 		Id:             uuid.New(),
+		Location:       *packageInput.Location,
 		PhotographerId: photographerObj.Id,
 		Name:           *packageInput.Name,
 		Price:          *packageInput.Price,
