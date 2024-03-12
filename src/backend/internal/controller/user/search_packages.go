@@ -9,7 +9,7 @@ import (
 
 func (r *Resolver) SearchPackages(c *gin.Context) {
 	searchFilter := model.SearchFilter{}
-	if err := c.BindJSON(&searchFilter); err != nil {
+	if err := c.BindQuery(&searchFilter); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
 			"error":   err.Error(),

@@ -86,8 +86,8 @@ type Booking struct {
 }
 
 type SearchFilter struct {
-	PhotographerId *uuid.UUID `json:"photographer_id"`
-	Location       *string    `json:"location"`
-	MinPrice       *int       `json:"min_price"`
-	MaxPrice       *int       `json:"max_price"`
+	PhotographerId *uuid.UUID `form:"photographer_id"`
+	Location       *string    `form:"location"`
+	MinPrice       *int       `form:"min_price"`
+	MaxPrice       *int       `form:"max_price"`
 }
