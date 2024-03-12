@@ -42,6 +42,14 @@ export interface Administrator {
   logged_out: boolean;
 }
 
+export interface Package {
+  id: string;
+  photographer_id: string;
+  location: string;
+  name: string;
+  price: number;
+}
+
 export interface BaseResponse {
   status: Status;
 }
@@ -95,6 +103,24 @@ export interface VerifyResponse extends BaseResponse {
   data: Photographer;
 }
 
-export interface RequestUserRoleResposne extends BaseResponse {
+export interface RequestPhotographerRoleResponse extends BaseResponse {
   data: Photographer;
+}
+
+export interface GetPackageListResponse extends BaseResponse {
+  data: Package[];
+}
+
+export interface PackageResponse extends BaseResponse {
+  data: Package;
+}
+
+export interface NewPackage {
+  name?: string;
+  location?: string;
+  price?: number;
+}
+
+export interface DeleteResponse extends BaseResponse {
+  data: string;
 }
