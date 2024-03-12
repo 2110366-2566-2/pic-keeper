@@ -5,6 +5,7 @@ import (
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
+	"github.com/Roongkun/software-eng-ii/internal/controller/chat"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
@@ -47,7 +48,7 @@ var ServeCmd = &cobra.Command{
 
 		db := databases.ConnectSQLDB(appCfg.Database.Postgres.DSN)
 		handler := controller.NewHandler(db)
-		databases.ConnectRedis(appCfg.Database.Redis.DSN)
+		redisClient := databases.ConnectRedis(appCfg.Database.Redis.DSN)
 
 		r := gin.Default()
 		r.Use(retrieveSecretConf(appCfg))
@@ -108,6 +109,14 @@ var ServeCmd = &cobra.Command{
 			users.POST("/v1/get-photographer-role", handler.User.GetPhotographerRole)
 		}
 
+		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
+		defer chatEntity.Close()
+		chat := validated.Group("/chat")
+		{
+			chat := chat.Group("/v1")
+			chat.GET("/ws", chatEntity.ServeWS)
+			// chat.GET("/rooms/:id", handler.Chat.GetRooms)
+		}
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 
