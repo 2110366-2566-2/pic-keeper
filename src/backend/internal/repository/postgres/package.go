@@ -51,7 +51,7 @@ func (p *PackageDB) SearchWithFilter(ctx context.Context, filter *model.SearchFi
 		query.Where("price >= ?", *filter.MinPrice)
 	}
 	if filter.MaxPrice != nil {
-		query.Where("price <= ?", *filter.MinPrice)
+		query.Where("price <= ?", *filter.MaxPrice)
 	}
 
 	if err := query.Scan(ctx, &pkgs); err != nil {
