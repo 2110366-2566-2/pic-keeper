@@ -110,11 +110,18 @@ var ServeCmd = &cobra.Command{
 
 		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
 		defer chatEntity.Close()
-		chat := validated.Group("/chat")
+		chats := validated.Group("/chat")
 		{
-			chat := chat.Group("/v1")
-			chat.GET("/ws", chatEntity.ServeWS)
+			chats := chats.Group("/v1")
+			chats.GET("/ws", chatEntity.ServeWS)
 			// chat.GET("/rooms/:id", handler.Chat.GetRooms)
+		}
+
+		rooms := validated.Group("/room")
+		{
+			rooms := rooms.Group("/v1")
+			rooms.POST("/", handler.Room.InitializeRoom)
+			rooms.GET("/:id", handler.Room.GetAllConversations)
 		}
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
