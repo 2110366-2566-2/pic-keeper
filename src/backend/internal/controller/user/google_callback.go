@@ -91,7 +91,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		if innerErr != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"status":  "failed",
-				"message": err.Error(),
+				"message": innerErr.Error(),
 			})
 			c.Abort()
 			return
