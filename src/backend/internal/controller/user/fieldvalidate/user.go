@@ -39,10 +39,17 @@ func LoginUser(cred model.LoginCredentials) []error {
 func Register(newUser model.UserInput) []error {
 	fieldErrs := []error{}
 
-	// empty and whitespace name
-	if strings.TrimSpace(newUser.Name) == "" {
+	// empty and whitespace firstname
+	if strings.TrimSpace(newUser.Firstname) == "" {
 		fieldErrs = append(fieldErrs, errors.New(
-			"name must be specified",
+			"firstname must be specified",
+		))
+	}
+
+	// empty and whitespace lastname
+	if strings.TrimSpace(newUser.Lastname) == "" {
+		fieldErrs = append(fieldErrs, errors.New(
+			"lastname must be specified",
 		))
 	}
 

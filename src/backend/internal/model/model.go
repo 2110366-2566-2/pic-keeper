@@ -14,18 +14,21 @@ type LoginCredentials struct {
 type User struct {
 	bun.BaseModel     `bun:"table:users,alias:u"`
 	Id                uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	Name              string    `bun:"name,type:varchar" json:"name"`
+	Username          string    `bun:"username,type:varchar" json:"username"`
 	Email             string    `bun:"email,type:varchar" json:"email"`
 	Provider          *string   `bun:"provider,type:varchar" json:"provider"`
 	Password          *string   `bun:"password,type:varchar" json:"-"`
 	LoggedOut         bool      `bun:"logged_out,type:boolean" json:"logged_out"`
 	ProfilePictureKey *string   `bun:"profile_picture_key,type:varchar" json:"profile_picture_key"`
+	Firstname         string    `bun:"firstname,type:varchar" json:"firstname"`
+	Lastname          string    `bun:"lastname,type:varchar" json:"lastname"`
 }
 
 type UserInput struct {
-	Name     string  `json:"name" example:"test"`
-	Email    string  `json:"email" example:"test@mail.com"`
-	Password *string `json:"password" example:"root"`
+	Email     string  `json:"email" example:"test@mail.com"`
+	Password  *string `json:"password" example:"root"`
+	Firstname string  `json:"firstname" example:"test"`
+	Lastname  string  `json:"lastname" example:"test"`
 }
 
 type Photographer struct {
