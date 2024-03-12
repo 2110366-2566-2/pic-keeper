@@ -5,6 +5,7 @@ import (
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
+	"github.com/Roongkun/software-eng-ii/internal/controller/chat"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
@@ -47,7 +48,7 @@ var ServeCmd = &cobra.Command{
 
 		db := databases.ConnectSQLDB(appCfg.Database.Postgres.DSN)
 		handler := controller.NewHandler(db)
-		databases.ConnectRedis(appCfg.Database.Redis.DSN)
+		redisClient := databases.ConnectRedis(appCfg.Database.Redis.DSN)
 
 		autoUpdateBookingStatus(handler)
 
@@ -147,6 +148,21 @@ var ServeCmd = &cobra.Command{
 			commonPackages.GET("/search", handler.User.SearchPackages)
 		}
 
+		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
+		defer chatEntity.Close()
+		chats := validated.Group("/chat")
+		{
+			chats := chats.Group("/v1")
+			chats.GET("/ws", chatEntity.ServeWS)
+		}
+
+		rooms := validated.Group("/room")
+		{
+			rooms := rooms.Group("/v1")
+			rooms.POST("/", handler.Room.InitializeRoom)
+			rooms.GET("/", handler.Room.GetRooms)
+			rooms.GET("/:id", handler.Room.GetAllConversations)
+		}
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 
