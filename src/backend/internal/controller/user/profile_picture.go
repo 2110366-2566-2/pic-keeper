@@ -18,15 +18,6 @@ func hashEmail(email string) string {
 	return fmt.Sprintf("%x", hasher.Sum(nil))
 }
 
-func GetProfilePictureUrl(profilePictureKey *string) string {
-	if profilePictureKey == nil {
-		return ""
-	}
-	// TODO: Add aws endpoint to config
-	url := fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", *profilePictureKey)
-	return url
-}
-
 // UploadProfilePicture handles the HTTP request for uploading a profile picture.
 //
 // @Summary      Upload profile picture

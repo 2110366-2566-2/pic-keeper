@@ -132,3 +132,12 @@ func (basics *BucketBasics) UploadFile(ctx context.Context, bucketName string, o
 	}
 	return nil
 }
+
+func (basics *BucketBasics) DeleteFile(ctx context.Context, bucketName string, objectKey string) error {
+	_, err := basics.S3Client.DeleteObject(ctx, &s3.DeleteObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(objectKey),
+	})
+
+	return err
+}

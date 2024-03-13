@@ -120,6 +120,7 @@ var ServeCmd = &cobra.Command{
 			galleries.POST("/", handler.Photographer.CreateGallery)
 			galleries.POST("/:id", handler.Photographer.UploadPhotoToGallery)
 			galleries.PUT("/:id", handler.Photographer.UpdateGallery)
+			galleries.DELETE("/:id/:photoId", handler.Photographer.DeletePhoto)
 			galleries.DELETE("/:id", handler.Photographer.DeleteGallery)
 			galleries.GET("/:id", handler.Photographer.GetOnePackage)
 
@@ -147,6 +148,7 @@ var ServeCmd = &cobra.Command{
 		commonGalleries := validated.Group("/galleries/v1")
 		{
 			commonGalleries.GET("/search", handler.User.SearchGalleries)
+			commonGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
 		}
 
 		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)

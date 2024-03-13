@@ -86,3 +86,12 @@ func FormatImage(file multipart.File) (*bytes.Buffer, string, error) {
 
 	return buf, contentType, nil
 }
+
+func GetProfilePictureUrl(profilePictureKey *string) string {
+	if profilePictureKey == nil {
+		return ""
+	}
+	// TODO: Add aws endpoint to config
+	url := fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", *profilePictureKey)
+	return url
+}

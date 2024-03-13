@@ -114,7 +114,7 @@ func (r *Resolver) Login(c *gin.Context) {
 		"status":              "success",
 		"session_token":       token,
 		"data":                existedUser,
-		"profile_picture_url": GetProfilePictureUrl(existedUser.ProfilePictureKey),
+		"profile_picture_url": util.GetProfilePictureUrl(existedUser.ProfilePictureKey),
 	})
 
 }
