@@ -1,7 +1,6 @@
-// components/SimpleModal.js
 "use client";
 
-interface Content {
+interface Content { //Will be fixed soon
   id?: string;
   name?: string;
   customer?: { name: string; imageUrl: string };
@@ -29,7 +28,7 @@ export default function BookingModal(props: {
           className="fixed bg-black bg-opacity-50 inset-0 flex items-center justify-center "
         >
           <div className="max-w-md w-full max-h-[500px] h-full px-4 bg-white shadow-lg rounded-2xl ">
-            <div className=" py-6 px-8 flex flex-col w-full h-full overflow-y-auto scrollbar-thingit  ">
+            <div className=" py-6 px-8 flex flex-col w-full h-full overflow-y-auto scrollbar-thin">
               <p className="text-base font-semibold">
                 Appointment ID {props.content.id}
               </p>

@@ -1,7 +1,6 @@
 'use client'
 import BookingPage from "@/components/Booking";
-import bookingService from "@/services/booking";
-import photographerGalleryService from "@/services/photographerGalleries"
+
 
 const Home = () => {
 
