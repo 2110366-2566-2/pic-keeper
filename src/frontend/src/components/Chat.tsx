@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { motion } from "framer-motion";
 
 interface Message {
   data: string;
@@ -120,40 +121,46 @@ const Chat = ({ roomId }: ChatProps) => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-gray-50">
       <div className="flex-grow p-4 overflow-y-auto">
-        {messages.map((message) => (
-          <div
-            key={Math.floor(Math.random() * 1000)}
+        {messages.map((message, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
             className={`flex justify-${
               message.sender === session?.user.data.id ? "end" : "start"
             }`}
           >
             <div
-              className={`p-2 m-1 rounded-lg ${
+              className={`p-3 m-1 rounded-lg shadow ${
                 message.sender === session?.user.data.id
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-300"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white"
               }`}
             >
               {message.data}
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-      <div className="p-4">
+      <div className="p-4 flex items-center">
         <input
           type="text"
-          className="border border-gray-300 rounded-md p-2"
+          className="flex-grow border-2 border-gray-200 rounded-lg p-2 mr-2 focus:outline-none focus:border-blue-500 transition-all"
           value={sendingMessage}
           onChange={handleSendingMessageChange}
+          placeholder="Type your message..."
         />
-        <button
-          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition-all"
           onClick={handleSendMessage}
         >
           Send
-        </button>
+        </motion.button>
       </div>
     </div>
   );
