@@ -109,7 +109,7 @@ var ServeCmd = &cobra.Command{
 			users.POST("/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/get-user/:id", handler.User.GetUserInfo)
-			users.POST("/get-photographer-role", handler.User.GetPhotographerRole)
+			users.POST("/request-photographer-role", handler.User.RequestPhotographerRole)
 		}
 
 		photographers := validated.Group("/photographers", handler.Photographer.GetPhotographerInstance)
