@@ -115,12 +115,12 @@ var ServeCmd = &cobra.Command{
 		photographers := validated.Group("/photographers", handler.Photographer.GetPhotographerInstance)
 		{
 			photographers := photographers.Group("/v1")
-			packages := photographers.Group("/packages")
-			packages.GET("/list", handler.Photographer.ListOwnPackages)
-			packages.POST("/", handler.Photographer.CreatePackage)
-			packages.PUT("/:id", handler.Photographer.UpdatePackage)
-			packages.DELETE("/:id", handler.Photographer.DeletePackage)
-			packages.GET("/:id", handler.Photographer.GetOnePackage)
+			galleries := photographers.Group("/galleries")
+			galleries.GET("/list", handler.Photographer.ListOwnGalleries)
+			galleries.POST("/", handler.Photographer.CreateGallery)
+			galleries.PUT("/:id", handler.Photographer.UpdateGallery)
+			galleries.DELETE("/:id", handler.Photographer.DeleteGallery)
+			galleries.GET("/:id", handler.Photographer.GetOnePackage)
 
 			bookings := photographers.Group("/bookings")
 			bookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
