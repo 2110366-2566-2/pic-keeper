@@ -19,25 +19,46 @@ export default function Home() {
     }
   };
 
+  // This will list of GalleryComponent that get from backend
+  const GalleryComponentList = [] 
+
   return (
     <main>
       <NavBar />
-      <div className="container mx-auto p-2">
+      {/* This part is sidebar */}
+
+      {/* This is section of displayed gallery view */}
+      <div className="container mx-auto p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <GalleryComponent
-            GalleryName={"Myself"}
-            Images={["/images/image1.jpg", "/images/image2.jpg", "/images/image3.jpg"]}
+            GalleryName={"MyDickIsBig"}
+            Images={["/images/image1.jpg"]}
             Photographer={"Pattapon Vichanukroh"}
+            Price={1290}
           />
           <GalleryComponent
-            GalleryName={"Myself"}
-            Images={["/images/image1.jpg", "/images/image2.jpg", "/images/image3.jpg"]}
-            Photographer={"Myname"}
+            GalleryName={"PussyTight"}
+            Images={["/images/image1.jpg", "/images/image2.jpg"]}
+            Photographer={"Joel Biden"}
+            Price={1599}
           />
           <GalleryComponent
-            GalleryName={"Myself"}
+            GalleryName={"dickBigPussyTight"}
             Images={["/images/image1.jpg", "/images/image2.jpg", "/images/image3.jpg"]}
-            Photographer={"Myname"}
+            Photographer={"Osama Bin Laden"}
+            Price={1000}
+          />
+          <GalleryComponent
+            GalleryName={"IWantChildren"}
+            Images={["/images/image1.jpg", "/images/image3.jpg"]}
+            Photographer={"Osama Bin Laden"}
+            Price={1000}
+          />
+          <GalleryComponent
+            GalleryName={"dickBigPussyTight"}
+            Images={["/images/image1.jpg", "/images/image2.jpg", "/images/image3.jpg"]}
+            Photographer={"Osama Bin Laden"}
+            Price={1000}
           />
         </div>
       </div>
