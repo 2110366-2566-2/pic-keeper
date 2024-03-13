@@ -209,3 +209,11 @@ export interface PhotoResponse {
 export interface UrlsListResponse {
   data: string[];
 }
+
+export interface UserRoomLookUpListResponse {
+  data: UserRoomLookUpListResponse[];
+}
+
+export interface ConversationListResposne {
+  data: Conversation[];
+}
