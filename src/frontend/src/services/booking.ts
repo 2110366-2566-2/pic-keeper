@@ -9,6 +9,7 @@ const createBooking = async (bookingProposal: BookingProposal) => {
       `${bookingBaseUrl}`,
       bookingProposal
     );
+    console.log(response.data)
     return response.data;
   } catch (error) {
     throw error;
@@ -53,6 +54,7 @@ const getAllBookings = async () => {
     const response = await apiClientWithAuth.get<BookingListResponse>(
       `${bookingBaseUrl}/my-bookings`
     );
+    console.log(response.data)
     return response.data;
   } catch (error) {
     throw error;

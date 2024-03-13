@@ -10,7 +10,7 @@ interface BookOptions {
     customer: { name: string; imageUrl: string };
     date: string;
     price: string;
-    status: number;
+    status: string;
   };
   openModal:Function;
   setModalProps:Function;
