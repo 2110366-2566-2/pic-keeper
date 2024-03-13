@@ -12,7 +12,7 @@ import (
 )
 
 func (r *Resolver) UploadPhotoToGallery(c *gin.Context) {
-	file, _, err := c.Request.FormFile("profilePicture")
+	file, _, err := c.Request.FormFile("picture")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": "Could not retrieve the file"})
 		c.Abort()
