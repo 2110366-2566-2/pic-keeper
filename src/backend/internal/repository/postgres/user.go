@@ -38,3 +38,12 @@ func (u *UserDB) CheckExistenceByEmail(ctx context.Context, email string) (bool,
 
 	return exist, nil
 }
+
+func (u *UserDB) ListPendingPhotographers(ctx context.Context) ([]*model.User, error) {
+	var pendingPhotographers []*model.User
+	if err := u.db.NewSelect().Model(&pendingPhotographers).Where("verification_status = ?", model.PhotographerVerifiedStatus).Scan(ctx, &pendingPhotographers); err != nil {
+		return nil, err
+	}
+
+	return pendingPhotographers, nil
+}

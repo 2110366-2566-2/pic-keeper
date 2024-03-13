@@ -16,9 +16,9 @@ import (
 // @Failure 404 {object} model.JSONErrorResult{status=string,error=nil} "Administrator is no longer existed"
 // @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error OR session token cannot be verified"
 //
-// @Router       /admin/v1/verifications/unverified-photographers [get]
-func (r *Resolver) ListUnverifiedPhotographers(c *gin.Context) {
-	unvrfPhotographers, err := r.PhotographerUsecase.ListUnverifiedPhotographers(c)
+// @Router       /admin/v1/verifications/pending-photographers [get]
+func (r *Resolver) ListPendingPhotographers(c *gin.Context) {
+	pendingPhotographers, err := r.UserUsecase.ListPendingPhotographers(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -30,6 +30,6 @@ func (r *Resolver) ListUnverifiedPhotographers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   unvrfPhotographers,
+		"data":   pendingPhotographers,
 	})
 }

@@ -23,7 +23,7 @@ const getAllGalleries = async () => {
 const createGallery = async (newGallery: NewGallery) => {
   try {
     const response = await apiClientWithAuth.post<GalleryResponse>(
-      `${photographerGalleryBaseUrl}t`,
+      `${photographerGalleryBaseUrl}`,
       newGallery
     );
     return response.data;
