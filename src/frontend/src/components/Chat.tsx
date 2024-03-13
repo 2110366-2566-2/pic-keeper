@@ -136,8 +136,8 @@ const Chat = ({ roomId }: ChatProps) => {
             <div
               className={`p-3 m-1 rounded-lg shadow ${
                 message.sender === session?.user.data.id
-                  ? "bg-blue-600 text-white"
-                  : "bg-white"
+                  ? "bg-slate-800 text-white"
+                  : "bg-slate-200"
               }`}
             >
               {message.data}
@@ -148,7 +148,7 @@ const Chat = ({ roomId }: ChatProps) => {
       <div className="p-4 flex items-center">
         <input
           type="text"
-          className="flex-grow border-2 border-gray-200 rounded-lg p-2 mr-2 focus:outline-none focus:border-blue-500 transition-all"
+          className="flex-grow border-2 border-gray-200 rounded-lg p-2 mr-2 focus:outline-none focus:border-slate-500 transition-all"
           value={sendingMessage}
           onChange={handleSendingMessageChange}
           placeholder="Type your message..."
@@ -156,7 +156,7 @@ const Chat = ({ roomId }: ChatProps) => {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition-all"
+          className="px-6 py-2 bg-slate-500 text-white rounded-lg shadow hover:bg-slate-600 transition-all"
           onClick={handleSendMessage}
         >
           Send
