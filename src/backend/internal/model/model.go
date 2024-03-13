@@ -13,28 +13,32 @@ type LoginCredentials struct {
 	Password string `json:"password" example:"abc123"`
 }
 
+const (
+	PhotographerNotVerifiedStatus = "NOT_VERIFIED"
+	PhotographerPendingStatus     = "PENDING"
+	PhotographerVerifiedStatus    = "VERIFIED"
+	PhotographerRejectedStatus    = "REJECTED"
+)
+
 type User struct {
-	bun.BaseModel     `bun:"table:users,alias:u"`
-	Id                uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	Name              string    `bun:"name,type:varchar" json:"name"`
-	Email             string    `bun:"email,type:varchar" json:"email"`
-	Provider          *string   `bun:"provider,type:varchar" json:"provider"`
-	Password          *string   `bun:"password,type:varchar" json:"-"`
-	LoggedOut         bool      `bun:"logged_out,type:boolean" json:"logged_out"`
-	ProfilePictureKey *string   `bun:"profile_picture_key,type:varchar" json:"profile_picture_key"`
+	bun.BaseModel      `bun:"table:users,alias:u"`
+	Id                 uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	Username           string    `bun:"username,type:varchar" json:"username"`
+	Email              string    `bun:"email,type:varchar" json:"email"`
+	Provider           *string   `bun:"provider,type:varchar" json:"provider"`
+	Password           *string   `bun:"password,type:varchar" json:"-"`
+	LoggedOut          bool      `bun:"logged_out,type:boolean" json:"logged_out"`
+	ProfilePictureKey  *string   `bun:"profile_picture_key,type:varchar" json:"profile_picture_key"`
+	Firstname          string    `bun:"firstname,type:varchar" json:"firstname"`
+	Lastname           string    `bun:"lastname,type:varchar" json:"lastname"`
+	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
 }
 
 type UserInput struct {
-	Name     string  `json:"name" example:"test"`
-	Email    string  `json:"email" example:"test@mail.com"`
-	Password *string `json:"password" example:"root"`
-}
-
-type Photographer struct {
-	bun.BaseModel `bun:"table:photographers,alias:ph"`
-	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	UserId        uuid.UUID `bun:"user_id,type:uuid" json:"user_id"`
-	IsVerified    bool      `bun:"is_verified,type:boolean" json:"is_verified"`
+	Email     string  `json:"email" example:"test@mail.com"`
+	Password  *string `json:"password" example:"root"`
+	Firstname string  `json:"firstname" example:"test"`
+	Lastname  string  `json:"lastname" example:"test"`
 }
 
 type Administrator struct {

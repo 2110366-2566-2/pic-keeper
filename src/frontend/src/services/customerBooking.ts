@@ -1,7 +1,7 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import { BookingListResponse, BookingProposal, BookingResponse } from "@/types";
 
-const bookingBaseUrl = "/bookings/v1";
+const bookingBaseUrl = "customers/bookings/v1";
 
 const createBooking = async (bookingProposal: BookingProposal) => {
   try {
@@ -94,7 +94,7 @@ const approveCancelBooking = async (id: string) => {
   }
 };
 
-const bookingService = {
+const customerBookingService = {
   createBooking,
   getPendingCancellations,
   getUpcomingBookings,
@@ -105,4 +105,4 @@ const bookingService = {
   approveCancelBooking,
 };
 
-export default bookingService;
+export default customerBookingService;

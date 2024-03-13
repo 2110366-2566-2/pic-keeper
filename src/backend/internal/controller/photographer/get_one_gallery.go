@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) GetOnePackage(c *gin.Context) {
+func (r *Resolver) GetOneGallery(c *gin.Context) {
 	paramId := c.Param("id")
 	galleryId := uuid.MustParse(paramId)
 	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, galleryId)

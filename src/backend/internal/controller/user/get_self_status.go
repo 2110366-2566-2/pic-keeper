@@ -1,4 +1,4 @@
-package photographer
+package user
 
 import (
 	"net/http"
@@ -8,22 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *Resolver) MyBookings(c *gin.Context) {
+func (r *Resolver) GetSelfStatus(c *gin.Context) {
 	user := c.MustGet("user")
 	userObj, ok := user.(model.User)
 	if !ok {
-		util.Raise400Error(c, "Invalid user type in context")
-		return
-	}
-
-	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, userObj.Id)
-	if err != nil {
-		util.Raise500Error(c, err)
+		util.Raise400Error(c, "could not bind JSON")
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   bookings,
+		"data":   userObj.VerificationStatus,
 	})
 }
