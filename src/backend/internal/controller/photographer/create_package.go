@@ -34,7 +34,7 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 		return
 	}
 
-	packageInput := model.PackageInput{}
+	packageInput := model.GalleryInput{}
 	if err := c.BindJSON(&packageInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
@@ -54,7 +54,7 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 		return
 	}
 
-	newPackage := model.Package{
+	newPackage := model.Gallery{
 		Id:             uuid.New(),
 		Location:       *packageInput.Location,
 		PhotographerId: photographerObj.Id,

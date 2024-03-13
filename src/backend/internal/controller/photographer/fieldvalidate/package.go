@@ -6,7 +6,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/model"
 )
 
-func CreatePackage(input model.PackageInput) []error {
+func CreatePackage(input model.GalleryInput) []error {
 	fieldErrs := []error{}
 
 	if input.Name == nil {
@@ -28,7 +28,7 @@ func CreatePackage(input model.PackageInput) []error {
 	return fieldErrs
 }
 
-func UpdatePackage(input model.PackageInput) []error {
+func UpdatePackage(input model.GalleryInput) []error {
 	fieldErrs := []error{}
 
 	if input.Name == nil && input.Price == nil && input.Location == nil {

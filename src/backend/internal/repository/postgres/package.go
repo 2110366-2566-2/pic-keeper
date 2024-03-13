@@ -9,19 +9,19 @@ import (
 )
 
 type PackageDB struct {
-	*BaseDB[model.Package]
+	*BaseDB[model.Gallery]
 }
 
 func NewPackageDB(db *bun.DB) *PackageDB {
-	type T = model.Package
+	type T = model.Gallery
 
 	return &PackageDB{
 		BaseDB: NewBaseDB[T](db),
 	}
 }
 
-func (p *PackageDB) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Package, error) {
-	var packages []*model.Package
+func (p *PackageDB) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Gallery, error) {
+	var packages []*model.Gallery
 	if err := p.db.NewSelect().Model(&packages).Where("photographer_id = ?", photographerId).Scan(ctx, &packages); err != nil {
 		return nil, err
 	}
@@ -29,8 +29,8 @@ func (p *PackageDB) FindByPhotographerId(ctx context.Context, photographerId uui
 	return packages, nil
 }
 
-func (p *PackageDB) SearchWithFilter(ctx context.Context, filter *model.SearchFilter) ([]*model.Package, error) {
-	var pkgs []*model.Package
+func (p *PackageDB) SearchWithFilter(ctx context.Context, filter *model.SearchFilter) ([]*model.Gallery, error) {
+	var pkgs []*model.Gallery
 	query := p.db.NewSelect().Model(&pkgs)
 
 	if filter.PhotographerId != nil {

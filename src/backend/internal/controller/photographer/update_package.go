@@ -31,7 +31,7 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 		return
 	}
 
-	updatingPackageInput := model.PackageInput{}
+	updatingPackageInput := model.GalleryInput{}
 	if err := c.BindJSON(&updatingPackageInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
