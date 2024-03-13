@@ -1,9 +1,9 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
-import { RoomMembers } from "@/types";
+import { RoomMemberInput } from "@/types";
 
 const roomBaseUrl = "/room/v1";
 
-const createRoom = async (roomMembers: RoomMembers) => {
+const createRoom = async (roomMembers: RoomMemberInput) => {
   try {
     const response = await apiClientWithAuth.post(roomBaseUrl, roomMembers);
     return response.data;
