@@ -4,9 +4,11 @@ import {
   ListUnverifiedPhotographerResponse,
   LoginCredentials,
   LoginResponse,
+  LogoutResponse,
   RefreshTokenResponse,
   VerifyResponse,
 } from "@/types";
+import { signOut } from "next-auth/react";
 
 const adminBaseUrl = "/admin/v1";
 
@@ -61,6 +63,24 @@ const verify = async (id: string) => {
   }
 };
 
-const adminService = { login, refresh, listUnverifiedPhotographer, verify };
+const logout = async () => {
+  try {
+    const response = await apiClientWithAuth.put<LogoutResponse>(
+      `${adminBaseUrl}/logout`
+    );
+    signOut();
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const adminService = {
+  login,
+  refresh,
+  listUnverifiedPhotographer,
+  verify,
+  logout,
+};
 
 export default adminService;
