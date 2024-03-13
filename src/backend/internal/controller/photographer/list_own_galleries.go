@@ -3,32 +3,27 @@ package photographer
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
 func (r *Resolver) ListOwnGalleries(c *gin.Context) {
-	photographer, exists := c.Get("photographer")
+	user, exists := c.Get("user")
 	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to retrieve photographer from context"})
-		c.Abort()
+		util.Raise400Error(c, "Failed to retrieve photographer from context")
 		return
 	}
 
-	photographerObj, ok := photographer.(model.Photographer)
+	userObj, ok := user.(model.User)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Invalid object type in context"})
-		c.Abort()
+		util.Raise400Error(c, "Invalid object type in context")
 		return
 	}
 
-	allGalleries, err := r.GalleryUsecase.FindByPhotographerId(c, photographerObj.Id)
+	allGalleries, err := r.GalleryUsecase.FindByPhotographerId(c, userObj.Id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
