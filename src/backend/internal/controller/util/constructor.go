@@ -36,13 +36,14 @@ func UserConstructor(c *gin.Context) (model.User, []error) {
 	}
 	hashedStr := string(hashed)
 	result = model.User{
-		Id:        uuid.New(),
-		Username:  uuid.New().String(),
-		Email:     newUser.Email,
-		Password:  &hashedStr,
-		LoggedOut: false,
-		Firstname: newUser.Firstname,
-		Lastname:  newUser.Lastname,
+		Id:                 uuid.New(),
+		Username:           uuid.New().String(),
+		Email:              newUser.Email,
+		Password:           &hashedStr,
+		LoggedOut:          false,
+		Firstname:          newUser.Firstname,
+		Lastname:           newUser.Lastname,
+		VerificationStatus: model.PhotographerNotVerifiedStatus,
 	}
 
 	return result, nil

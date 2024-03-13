@@ -1,3 +1,10 @@
+CREATE TYPE photographer_status AS enum(
+    'NOT_VERIFIED',
+    'PENDING',
+    'VERIFIED',
+    'REJECTED'
+);
+
 CREATE TABLE users(
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     username varchar(255) UNIQUE NOT NULL,
@@ -8,12 +15,7 @@ CREATE TABLE users(
     profile_picture_key varchar(2000),
     firstname varchar(255) NOT NULL,
     lastname varchar(255) NOT NULL,
-);
-
-CREATE TABLE photographers(
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id uuid REFERENCES users(id) ON DELETE CASCADE UNIQUE,
-    is_verified boolean NOT NULL
+    verification_status photographer_status NOT NULL DEFAULT 'NOT_VERIFIED'
 );
 
 CREATE TABLE administrators(
