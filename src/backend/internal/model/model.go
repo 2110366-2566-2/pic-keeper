@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 )
@@ -31,7 +33,7 @@ type UserInput struct {
 type Photographer struct {
 	bun.BaseModel `bun:"table:photographers,alias:ph"`
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	UserId        uuid.UUID `bun:"user_id,type:uuid,default:gen_random_uuid()" json:"user_id"`
+	UserId        uuid.UUID `bun:"user_id,type:uuid" json:"user_id"`
 	IsVerified    bool      `bun:"is_verified,type:boolean" json:"is_verified"`
 }
 
@@ -41,4 +43,86 @@ type Administrator struct {
 	Email         string    `bun:"email,type:varchar" json:"email"`
 	Password      string    `bun:"password,type:varchar" json:"password"`
 	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
+}
+
+type Package struct {
+	bun.BaseModel  `bun:"table:packages,alias:packages"`
+	Id             uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	PhotographerId uuid.UUID `bun:"photographer_id,type:uuid" json:"photographer_id"`
+	Location       string    `bun:"location,type:varchar" json:"location"`
+	Name           string    `bun:"name,type:varchar" json:"name"`
+	Price          int       `bun:"price,type:integer" json:"price"`
+}
+
+type PackageInput struct {
+	Name     *string `bun:"name,type:varchar" json:"name"`
+	Location *string `bun:"name,type:varchar" json:"location"`
+	Price    *int    `bun:"price,type:integer" json:"price"`
+}
+
+const (
+	BookingPaidStatus                  = "USER_PAID"
+	BookingCancelledStatus             = "CANCELLED"
+	BookingCustomerReqCancelStatus     = "C_REQ_CANCEL"
+	BookingPhotographerReqCancelStatus = "P_REQ_CANCEL"
+	BookingCompletedStatus             = "COMPLETED"
+	BookingPaidOutStatus               = "PAID_OUT"
+)
+
+type BookingProposal struct {
+	PackageId uuid.UUID `bun:"package_id,type:uuid" json:"package_id"`
+	StartTime time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
+	EndTime   time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
+}
+
+type Booking struct {
+	bun.BaseModel `bun:"table:bookings,alias:bookings"`
+	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	CustomerId    uuid.UUID `bun:"customer_id,type:uuid" json:"customer_id"`
+	PackageId     uuid.UUID `bun:"package_id,type:uuid" json:"package_id"`
+	StartTime     time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
+	EndTime       time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
+	Status        string    `bun:"status,type:varchar" json:"status"`
+	CreatedAt     time.Time `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+	UpdatedAt     time.Time `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
+}
+
+type SearchFilter struct {
+	PhotographerId *uuid.UUID `form:"photographer_id"`
+	Location       *string    `form:"location"`
+	MinPrice       *int       `form:"min_price"`
+	MaxPrice       *int       `form:"max_price"`
+}
+
+type Room struct {
+	bun.BaseModel `bun:"table:rooms,alias:rooms"`
+	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
+	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`
+}
+
+type UserRoomLookup struct {
+	bun.BaseModel `bun:"table:user_room_lookup,alias:urlookup"`
+	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	UserId        uuid.UUID  `bun:"user_id,type:uuid" json:"user_id"`
+	RoomId        uuid.UUID  `bun:"room_id,type:uuid" json:"room_id"`
+	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
+	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`
+}
+
+type Conversation struct {
+	bun.BaseModel `bun:"table:conversations,alias:convs"`
+	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	Text          string     `bun:"text,type:varchar" json:"text"`
+	UserId        uuid.UUID  `bun:"user_id,type:uuid" json:"user_id"`
+	RoomId        uuid.UUID  `bun:"room_id,type:uuid" json:"room_id"`
+	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
+	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`
+}
+
+type RoomMemberInput struct {
+	MemberIds []uuid.UUID `binding:"required" json:"member_ids"`
 }
