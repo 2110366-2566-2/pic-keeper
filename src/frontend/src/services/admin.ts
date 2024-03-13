@@ -1,12 +1,14 @@
 import apiClient from "@/libs/apiClient";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
-  ListUnverifiedPhotographerResponse,
   LoginCredentials,
   LoginResponse,
+  LogoutResponse,
   RefreshTokenResponse,
-  VerifyResponse,
+  UserListResponse,
+  UserResponse,
 } from "@/types";
+import { signOut } from "next-auth/react";
 
 const adminBaseUrl = "/admin/v1";
 
@@ -38,12 +40,11 @@ const refresh = async (token: string) => {
   }
 };
 
-const listUnverifiedPhotographer = async () => {
+const listPendingPhotographer = async () => {
   try {
-    const response =
-      await apiClientWithAuth.get<ListUnverifiedPhotographerResponse>(
-        `${adminBaseUrl}/verifications/unverified-photographers`
-      );
+    const response = await apiClientWithAuth.get<UserListResponse>(
+      `${adminBaseUrl}/verifications/pending-photographers`
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -52,8 +53,8 @@ const listUnverifiedPhotographer = async () => {
 
 const verify = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.put<VerifyResponse>(
-      `${adminBaseUrl}/verifications/${id}`
+    const response = await apiClientWithAuth.put<UserResponse>(
+      `${adminBaseUrl}/verifications/verify/${id}`
     );
     return response.data;
   } catch (error) {
@@ -61,6 +62,36 @@ const verify = async (id: string) => {
   }
 };
 
-const adminService = { login, refresh, listUnverifiedPhotographer, verify };
+const reject = async (id: string) => {
+  try {
+    const response = await apiClientWithAuth.put<UserResponse>(
+      `${adminBaseUrl}/verifications/reject/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const logout = async () => {
+  try {
+    const response = await apiClientWithAuth.put<LogoutResponse>(
+      `${adminBaseUrl}/logout`
+    );
+    signOut();
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const adminService = {
+  login,
+  refresh,
+  listPendingPhotographer,
+  verify,
+  reject,
+  logout,
+};
 
 export default adminService;

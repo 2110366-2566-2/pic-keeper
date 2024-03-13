@@ -17,7 +17,7 @@ import (
 // @Failure 400 {object} model.JSONErrorResult{status=string,error=nil} "Incorrect input"
 // @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
 // @Router /authen/v1/register/customer [post]
-func (r *Resolver) RegCustomer(c *gin.Context) {
+func (r *Resolver) Register(c *gin.Context) {
 	userModel, errs := util.UserConstructor(c)
 	if len(errs) > 0 {
 		c.JSON(c.GetInt("errorStatus"), gin.H{
