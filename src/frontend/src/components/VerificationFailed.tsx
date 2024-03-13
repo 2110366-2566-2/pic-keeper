@@ -16,7 +16,7 @@ enum Status {
 }
 
 // Accept setStatus as a prop
-const PhotographerVerification = ({
+const VerificationFailed = ({
   setStatus,
 }: {
   setStatus: (status: Status) => void;
@@ -99,7 +99,7 @@ const PhotographerVerification = ({
             <div className="sm:col-span-2">
               <h2 className="text-title">My Galleries</h2>
               <p className="text-standard font-semibold text-red-500">
-                Photographer status: Unverified
+                Photographer status: Verification failed
               </p>
               <p className="text-standard text-gray-700">
                 This section is only accessible for verified photographer.
@@ -202,4 +202,4 @@ const PhotographerVerification = ({
   );
 };
 
-export default PhotographerVerification;
+export default VerificationFailed;
