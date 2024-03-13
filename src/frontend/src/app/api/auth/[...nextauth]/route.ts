@@ -32,9 +32,9 @@ export const authOptions: AuthOptions = {
             }
           } catch (error) {
             if (error instanceof AxiosError) {
-              console.log(error.response?.data);
+              // console.log(error.response?.data);
             } else {
-              console.log(error);
+              // console.log(error);
             }
           }
 
@@ -58,9 +58,9 @@ export const authOptions: AuthOptions = {
                 : null;
             } catch (error) {
               if (error instanceof AxiosError) {
-                console.log(error.response?.data);
+                // console.log(error.response?.data);
               } else {
-                console.log(error);
+                // console.log(error);
               }
               return null;
             }
@@ -74,7 +74,7 @@ export const authOptions: AuthOptions = {
   pages: {
     signIn: "/auth/login",
   },
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 60 * 60 },
   callbacks: {
     async jwt({ token, user }) {
       return { ...token, ...user };

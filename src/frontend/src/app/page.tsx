@@ -6,71 +6,125 @@ import GalleryComponent from "@/components/Gallery";
 import SideBarLandingPage from "@/components/SideBarLandingPage";
 import SearchBar from "@/components/SearchBar";
 import userService from "@/services/user";
+import axios from "axios";
 import { useEffect } from "react";
+import { Gallery } from "@/types";
+import getAllGalleries from "@/services/photographerGalleries";
 
 export default function Home() {
-  const handleClick = async () => {
-    console.log("here");
-    try {
-      const response = await userService.getUserById(
-        "04615383-1c27-404c-9bb7-f4ffabff9700"
-      );
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleOnClick = () => {
+    axios.post("/api/auth/signout");
   };
-
   // This will list of GalleryComponent that get from backend
-  const GalleryComponentList = [];
-
+  // Usage of the `getAllGalleries` function
+  const result = getAllGalleries
   return (
     <main>
-      <div className="fixed z-50">
+      <div className="fixed top-0 z-50">
         <NavBar />
       </div>
-      <div className="fixed p-16 z-30">
-        <SearchBar/>
+      <div className="sticky top-16 w-full px-6 z-30 bg-white">
+        <SearchBar />
       </div>
-      <div className="pt-32">
+      <div className="flex flex-row pt-16">
         {/* This part is sidebar */}
-        <div className="w-1/5 fixed">
+        <div className="w-1/5 pl-4">
           <SideBarLandingPage />
         </div>
 
         {/* This is section of displayed gallery view */}
-        <div className="mx-5 pl-48 z-20">
-          <div className=" p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="mx-5 z-20 w-4/5">
+          <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <GalleryComponent
-              GalleryName={"MyDickIsBig"}
+              GalleryName={"White House"}
               Images={["/images/image1.jpg"]}
-              Photographer={"Pattapon Vichanukroh"}
+              Photographer={"Michelle Obama"}
               Price={1290}
             />
             <GalleryComponent
-              GalleryName={"PussyTight"}
+              GalleryName={"American's right"}
               Images={["/images/image1.jpg", "/images/image2.jpg"]}
               Photographer={"Joel Biden"}
               Price={1599}
             />
             <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
+              GalleryName={"Golfing In the Forest"}
               Images={[
                 "/images/image1.jpg",
                 "/images/image2.jpg",
                 "/images/image3.jpg",
               ]}
-              Photographer={"Osama Bin Laden"}
+              Photographer={"Donale Trump"}
               Price={1000}
             />
             <GalleryComponent
-              GalleryName={"IWantChildren"}
+              GalleryName={"Civil War 2019"}
               Images={["/images/image1.jpg", "/images/image3.jpg"]}
               Photographer={"Osama Bin Laden"}
               Price={1000}
             />
             <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
+              GalleryName={"Running Marathon"}
+              Images={[
+                "/images/image1.jpg",
+                "/images/image2.jpg",
+                "/images/image3.jpg",
+              ]}
+              Photographer={"David Goggins"}
+              Price={1000}
+            />
+            <GalleryComponent
+              GalleryName={"Mushroom House"}
+              Images={[
+                "/images/image1.jpg",
+                "/images/image2.jpg",
+                "/images/image3.jpg",
+              ]}
+              Photographer={"Blue Smurf"}
+              Price={1000}
+            />
+            <GalleryComponent
+              GalleryName={"Face Slapping Oscar"}
+              Images={[
+                "/images/image1.jpg",
+                "/images/image2.jpg",
+                "/images/image3.jpg",
+              ]}
+              Photographer={"Wil Smiths"}
+              Price={1000}
+            />
+            <GalleryComponent
+              GalleryName={"The Chinese way"}
+              Images={[
+                "/images/image1.jpg",
+                "/images/image2.jpg",
+                "/images/image3.jpg",
+              ]}
+              Photographer={"Xi Jing Ping"}
+              Price={1000}
+            />
+            <GalleryComponent
+              GalleryName={"Suspicious Powder"}
+              Images={[
+                "/images/image1.jpg",
+                "/images/image2.jpg",
+                "/images/image3.jpg",
+              ]}
+              Photographer={"Some Policeman"}
+              Price={1000}
+            />
+            <GalleryComponent
+              GalleryName={"Woof Woof Woof"}
+              Images={[
+                "/images/image1.jpg",
+                "/images/image2.jpg",
+                "/images/image3.jpg",
+              ]}
+              Photographer={"Golden Retriever"}
+              Price={1000}
+            />
+            <GalleryComponent
+              GalleryName={"Plane"}
               Images={[
                 "/images/image1.jpg",
                 "/images/image2.jpg",
@@ -80,93 +134,33 @@ export default function Home() {
               Price={1000}
             />
             <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
+              GalleryName={"Handsome Cat"}
               Images={[
                 "/images/image1.jpg",
                 "/images/image2.jpg",
                 "/images/image3.jpg",
               ]}
-              Photographer={"Osama Bin Laden"}
+              Photographer={"Definitely not a cat"}
               Price={1000}
             />
             <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
+              GalleryName={"3:33Hrs after midnight"}
               Images={[
                 "/images/image1.jpg",
                 "/images/image2.jpg",
                 "/images/image3.jpg",
               ]}
-              Photographer={"Osama Bin Laden"}
+              Photographer={"Pattapon V."}
               Price={1000}
             />
             <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
+              GalleryName={"Giant Water Bottle"}
               Images={[
                 "/images/image1.jpg",
                 "/images/image2.jpg",
                 "/images/image3.jpg",
               ]}
-              Photographer={"Osama Bin Laden"}
-              Price={1000}
-            />
-            <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
-              Images={[
-                "/images/image1.jpg",
-                "/images/image2.jpg",
-                "/images/image3.jpg",
-              ]}
-              Photographer={"Osama Bin Laden"}
-              Price={1000}
-            />
-            <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
-              Images={[
-                "/images/image1.jpg",
-                "/images/image2.jpg",
-                "/images/image3.jpg",
-              ]}
-              Photographer={"Osama Bin Laden"}
-              Price={1000}
-            />
-            <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
-              Images={[
-                "/images/image1.jpg",
-                "/images/image2.jpg",
-                "/images/image3.jpg",
-              ]}
-              Photographer={"Osama Bin Laden"}
-              Price={1000}
-            />
-            <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
-              Images={[
-                "/images/image1.jpg",
-                "/images/image2.jpg",
-                "/images/image3.jpg",
-              ]}
-              Photographer={"Osama Bin Laden"}
-              Price={1000}
-            />
-            <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
-              Images={[
-                "/images/image1.jpg",
-                "/images/image2.jpg",
-                "/images/image3.jpg",
-              ]}
-              Photographer={"Osama Bin Laden"}
-              Price={1000}
-            />
-            <GalleryComponent
-              GalleryName={"dickBigPussyTight"}
-              Images={[
-                "/images/image1.jpg",
-                "/images/image2.jpg",
-                "/images/image3.jpg",
-              ]}
-              Photographer={"Osama Bin Laden"}
+              Photographer={"a guy that sits in front of me"}
               Price={1000}
             />
           </div>

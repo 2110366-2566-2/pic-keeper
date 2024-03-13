@@ -11,7 +11,7 @@ var (
 	RedisClient *redis.Client
 )
 
-func ConnectRedis(dsn string) {
+func ConnectRedis(dsn string) *redis.Client {
 	ctx := context.Background()
 
 	RedisClient = redis.NewClient(&redis.Options{
@@ -27,4 +27,6 @@ func ConnectRedis(dsn string) {
 	}
 
 	log.Println("✅ Redis connected successfully")
+
+	return RedisClient
 }

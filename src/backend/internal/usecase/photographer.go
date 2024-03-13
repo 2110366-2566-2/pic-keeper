@@ -27,3 +27,7 @@ func (p *PhotographerUseCase) ListUnverifiedPhotographers(ctx context.Context) (
 func (p *PhotographerUseCase) CheckExistenceByUserId(ctx context.Context, userId uuid.UUID) (bool, error) {
 	return p.PhotographerRepo.CheckExistenceByUserId(ctx, userId)
 }
+
+func (p *PhotographerUseCase) FindOneByUserId(ctx context.Context, userId uuid.UUID) (*model.Photographer, error) {
+	return p.PhotographerRepo.FindOneByUserId(ctx, userId)
+}

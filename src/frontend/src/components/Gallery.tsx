@@ -14,7 +14,7 @@ const GalleryComponent = (data: Props) => {
     <div className="rounded-xl shadow-lg bg-white overflow-hidden">
       {/* Check how many pictures the gallery have 1,2,3? */}
       {data.Images.length === 1 ? (
-        <div className="px-2">
+        <div className="px-2 pt-2">
           <div className="relative w-full h-64">
             <Image
               src={"/images/image1.jpg"}
@@ -26,7 +26,7 @@ const GalleryComponent = (data: Props) => {
           </div>
         </div>
       ) : data.Images.length === 2 ? (
-        <div className="flex gap-2 px-2">
+        <div className="flex gap-2 px-2 pt-2">
           {data.Images.map((image, index) => (
             <div key={index} className="relative w-1/2 h-64">
               <Image
@@ -40,7 +40,7 @@ const GalleryComponent = (data: Props) => {
           ))}
         </div>
       ) : (
-        <div className="flex gap-2 px-2">
+        <div className="flex gap-2 px-2 pt-2">
           <div className="relative w-3/5 h-64">
             <Image
               src={data.Images[0]}
