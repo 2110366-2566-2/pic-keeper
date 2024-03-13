@@ -44,7 +44,7 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 	newBooking := model.Booking{
 		Id:         uuid.New(),
 		CustomerId: userObj.Id,
-		PackageId:  bookingProposal.PackageId,
+		GalleryId:  bookingProposal.GalleryId,
 		StartTime:  bookingProposal.StartTime,
 		EndTime:    bookingProposal.EndTime,
 		Status:     model.BookingPaidStatus,

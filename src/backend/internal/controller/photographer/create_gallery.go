@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) CreatePackage(c *gin.Context) {
+func (r *Resolver) CreateGallery(c *gin.Context) {
 	photographer, exists := c.Get("photographer")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to retrieve photographer from context"})
@@ -28,14 +28,14 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 	if !photographerObj.IsVerified {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
-			"error":  "You have not yet been verified, only verified photographers can create packages",
+			"error":  "You have not yet been verified, only verified photographers can create galleries",
 		})
 		c.Abort()
 		return
 	}
 
-	packageInput := model.PackageInput{}
-	if err := c.BindJSON(&packageInput); err != nil {
+	galleryInput := model.GalleryInput{}
+	if err := c.BindJSON(&galleryInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
 			"error":   err.Error(),
@@ -45,7 +45,7 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 		return
 	}
 
-	if fieldErrs := fieldvalidate.CreatePackage(packageInput); len(fieldErrs) > 0 {
+	if fieldErrs := fieldvalidate.CreateGallery(galleryInput); len(fieldErrs) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
 			"error":  util.JSONErrs(fieldErrs),
@@ -54,15 +54,15 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 		return
 	}
 
-	newPackage := model.Package{
+	newGallery := model.Gallery{
 		Id:             uuid.New(),
-		Location:       *packageInput.Location,
+		Location:       *galleryInput.Location,
 		PhotographerId: photographerObj.Id,
-		Name:           *packageInput.Name,
-		Price:          *packageInput.Price,
+		Name:           *galleryInput.Name,
+		Price:          *galleryInput.Price,
 	}
 
-	if err := r.PackageUsecase.PackageRepo.AddOne(c, &newPackage); err != nil {
+	if err := r.GalleryUsecase.GalleryRepo.AddOne(c, &newGallery); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
@@ -73,6 +73,6 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"status": "success",
-		"data":   newPackage,
+		"data":   newGallery,
 	})
 }

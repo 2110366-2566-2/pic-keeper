@@ -3,6 +3,7 @@ package user
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -40,6 +41,6 @@ func (r *Resolver) GetUserInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":              "success",
 		"data":                userObj,
-		"profile_picture_url": GetProfilePictureUrl(userObj.ProfilePictureKey),
+		"profile_picture_url": util.GetProfilePictureUrl(userObj.ProfilePictureKey),
 	})
 }
