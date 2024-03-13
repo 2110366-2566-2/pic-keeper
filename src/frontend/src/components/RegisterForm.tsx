@@ -48,7 +48,7 @@ const RegisterForm = () => {
         name,
         password,
       });
-      setModalMessage(`${user.name} created successfully!`);
+      setModalMessage(`${user.data.name} created successfully!`);
       setSuccess(true);
       setIsModalOpen(true);
     } catch (error) {

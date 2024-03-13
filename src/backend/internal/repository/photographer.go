@@ -11,4 +11,5 @@ type Photographer interface {
 	BaseRepo[model.Photographer]
 	ListUnverifiedPhotographers(ctx context.Context) ([]*model.Photographer, error)
 	CheckExistenceByUserId(ctx context.Context, userId uuid.UUID) (bool, error)
+	FindOneByUserId(ctx context.Context, userId uuid.UUID) (*model.Photographer, error)
 }
