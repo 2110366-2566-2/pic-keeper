@@ -1,4 +1,4 @@
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/SidebarDashBoard";
 import Header from "@/components/Header";
 import Verification from "@/components/Verification";
 

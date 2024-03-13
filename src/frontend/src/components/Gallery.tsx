@@ -84,7 +84,7 @@ const GalleryComponent = (data: Props) => {
             by {data.Photographer}
           </div>
         </div>
-        <div className="text-orange-400 font-bold text-ellipsis">
+        <div className="text-amber-500 font-bold text-ellipsis">
           {data.Price} THB
         </div>
       </div>
