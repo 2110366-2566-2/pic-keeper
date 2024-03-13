@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *Resolver) ListOwnPackages(c *gin.Context) {
+func (r *Resolver) ListOwnGalleries(c *gin.Context) {
 	photographer, exists := c.Get("photographer")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to retrieve photographer from context"})
@@ -22,7 +22,7 @@ func (r *Resolver) ListOwnPackages(c *gin.Context) {
 		return
 	}
 
-	allPackages, err := r.PackageUsecase.FindByPhotographerId(c, photographerObj.Id)
+	allGalleries, err := r.GalleryUsecase.FindByPhotographerId(c, photographerObj.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -34,6 +34,6 @@ func (r *Resolver) ListOwnPackages(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   allPackages,
+		"data":   allGalleries,
 	})
 }

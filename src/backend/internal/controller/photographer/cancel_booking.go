@@ -39,7 +39,7 @@ func (r *Resolver) CancelBooking(c *gin.Context) {
 		return
 	}
 
-	pkg, err := r.PackageUsecase.GalleryRepo.FindOneById(c, booking.PackageId)
+	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, booking.GalleryId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -49,7 +49,7 @@ func (r *Resolver) CancelBooking(c *gin.Context) {
 		return
 	}
 
-	if pkg.PhotographerId != photographerObj.Id {
+	if gallery.PhotographerId != photographerObj.Id {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
 			"error":  "this booking is not yours",

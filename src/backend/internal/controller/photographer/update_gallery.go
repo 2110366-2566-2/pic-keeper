@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) UpdatePackage(c *gin.Context) {
+func (r *Resolver) UpdateGallery(c *gin.Context) {
 	photographer, exists := c.Get("photographer")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -31,8 +31,8 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 		return
 	}
 
-	updatingPackageInput := model.GalleryInput{}
-	if err := c.BindJSON(&updatingPackageInput); err != nil {
+	updatingGalleryInput := model.GalleryInput{}
+	if err := c.BindJSON(&updatingGalleryInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":  "failed",
 			"error":   err.Error(),
@@ -42,7 +42,7 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 		return
 	}
 
-	if fieldErrs := fieldvalidate.UpdatePackage(updatingPackageInput); len(fieldErrs) > 0 {
+	if fieldErrs := fieldvalidate.UpdateGallery(updatingGalleryInput); len(fieldErrs) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
 			"error":  util.JSONErrs(fieldErrs),
@@ -52,9 +52,9 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 	}
 
 	paramId := c.Param("id")
-	packageId := uuid.MustParse(paramId)
+	galleryId := uuid.MustParse(paramId)
 
-	existingPackage, err := r.PackageUsecase.GalleryRepo.FindOneById(c, packageId)
+	existingGallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, galleryId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -65,27 +65,27 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 	}
 
 	// dbValidate
-	if photographerObj.Id != existingPackage.PhotographerId {
+	if photographerObj.Id != existingGallery.PhotographerId {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
-			"error":  "You have no permission to edit this package",
+			"error":  "You have no permission to edit this gallery",
 		})
 		c.Abort()
 		return
 	}
 
 	// editing
-	if updatingPackageInput.Name != nil {
-		existingPackage.Name = *updatingPackageInput.Name
+	if updatingGalleryInput.Name != nil {
+		existingGallery.Name = *updatingGalleryInput.Name
 	}
-	if updatingPackageInput.Price != nil {
-		existingPackage.Price = *updatingPackageInput.Price
+	if updatingGalleryInput.Price != nil {
+		existingGallery.Price = *updatingGalleryInput.Price
 	}
-	if updatingPackageInput.Location != nil {
-		existingPackage.Location = *updatingPackageInput.Location
+	if updatingGalleryInput.Location != nil {
+		existingGallery.Location = *updatingGalleryInput.Location
 	}
 
-	if err := r.PackageUsecase.GalleryRepo.UpdateOne(c, existingPackage); err != nil {
+	if err := r.GalleryUsecase.GalleryRepo.UpdateOne(c, existingGallery); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
@@ -96,6 +96,6 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   existingPackage,
+		"data":   existingGallery,
 	})
 }

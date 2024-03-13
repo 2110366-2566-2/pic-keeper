@@ -19,7 +19,7 @@ func (r *Resolver) SearchPackages(c *gin.Context) {
 		return
 	}
 
-	targetPackages, err := r.PackageUsecase.SearchWithFilter(c, &searchFilter)
+	targetGalleries, err := r.GalleryUsecase.SearchWithFilter(c, &searchFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -31,6 +31,6 @@ func (r *Resolver) SearchPackages(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   targetPackages,
+		"data":   targetGalleries,
 	})
 }

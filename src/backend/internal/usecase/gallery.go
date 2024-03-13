@@ -14,7 +14,7 @@ type GalleryUseCase struct {
 	GalleryRepo repository.Gallery
 }
 
-func NewPackageUseCase(db *bun.DB) *GalleryUseCase {
+func NewGalleryUseCase(db *bun.DB) *GalleryUseCase {
 	return &GalleryUseCase{
 		GalleryRepo: postgres.NewGalleryDB(db),
 	}
