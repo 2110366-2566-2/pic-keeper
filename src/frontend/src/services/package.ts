@@ -5,9 +5,15 @@ const packageBaseUrl = "package/v1/";
 
 const search = async (searchFilter: SearchFilter) => {
   try {
-    const response = await apiClientWithAuth.post(
-      `${packageBaseUrl}`,
-      searchFilter
+    const queryParams = new URLSearchParams();
+    Object.entries(searchFilter).forEach(([key, value]) => {
+      if (value !== undefined) {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const response = await apiClientWithAuth.get(
+      `${packageBaseUrl}?${queryParams.toString()}`
     );
     return response.data;
   } catch (error) {
