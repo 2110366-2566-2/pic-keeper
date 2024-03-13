@@ -10,7 +10,7 @@ CREATE TABLE users(
 
 CREATE TABLE photographers(
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id uuid REFERENCES users(id) ON DELETE CASCADE,
+    user_id uuid REFERENCES users(id) ON DELETE CASCADE UNIQUE,
     is_verified boolean NOT NULL
 );
 
