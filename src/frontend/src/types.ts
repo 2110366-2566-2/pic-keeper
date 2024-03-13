@@ -42,7 +42,7 @@ export interface Administrator {
   logged_out: boolean;
 }
 
-export interface Package {
+export interface Gallery {
   id: string;
   photographer_id: string;
   location: string;
@@ -107,15 +107,15 @@ export interface RequestPhotographerRoleResponse extends BaseResponse {
   data: Photographer;
 }
 
-export interface GetPackageListResponse extends BaseResponse {
-  data: Package[];
+export interface GalleryListResponse extends BaseResponse {
+  data: Gallery[];
 }
 
-export interface PackageResponse extends BaseResponse {
-  data: Package;
+export interface GalleryResponse extends BaseResponse {
+  data: Gallery;
 }
 
-export interface NewPackage {
+export interface NewGallery {
   name?: string;
   location?: string;
   price?: number;
@@ -194,4 +194,18 @@ export interface BookingListResponse {
 
 export interface BookingResponse {
   data: Booking;
+}
+
+export interface Photo {
+  id: string;
+  gallery_id: string;
+  photo_key: string;
+}
+
+export interface PhotoResponse {
+  data: Photo;
+}
+
+export interface UrlsListResponse {
+  data: string[];
 }
