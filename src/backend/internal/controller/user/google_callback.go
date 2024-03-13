@@ -78,14 +78,15 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 	var user *model.User
 	if !exist {
 		newUser := model.User{
-			Id:        uuid.New(),
-			Username:  uuid.New().String(),
-			Email:     googleUser.Email,
-			Provider:  &provider,
-			Password:  nil,
-			LoggedOut: false,
-			Firstname: firstname,
-			Lastname:  lastname,
+			Id:                 uuid.New(),
+			Username:           uuid.New().String(),
+			Email:              googleUser.Email,
+			Provider:           &provider,
+			Password:           nil,
+			LoggedOut:          false,
+			Firstname:          firstname,
+			Lastname:           lastname,
+			VerificationStatus: model.PhotographerNotVerifiedStatus,
 		}
 
 		if err := r.UserUsecase.UserRepo.AddOne(c, &newUser); err != nil {
