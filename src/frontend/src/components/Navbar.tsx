@@ -132,7 +132,7 @@ const NavBar = () => {
                             </div>
 
                             <h2>
-                              {session ? session.user.data.name : "Guest"}
+                              {session ? session.user.data.firstname : "Guest"}
                             </h2>
                             {open ? (
                               <MdArrowDropUp />

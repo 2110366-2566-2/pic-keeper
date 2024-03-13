@@ -1,12 +1,15 @@
 export interface NewUser {
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
 }
 
 export interface User {
   id: string;
-  name: string;
+  username: string;
+  firstname: string;
+  lastname: string;
   email: string;
   provider: string | null;
   logged_out: string;

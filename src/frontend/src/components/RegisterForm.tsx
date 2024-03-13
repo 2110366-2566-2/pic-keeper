@@ -10,7 +10,8 @@ const RegisterForm = () => {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
 
@@ -21,7 +22,7 @@ const RegisterForm = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     if (success) {
-      router.push("/auth/signin");
+      router.push("/auth/login");
     }
   };
 
@@ -44,10 +45,13 @@ const RegisterForm = () => {
     try {
       const user = await authService.register({
         email,
-        name,
+        firstname,
+        lastname,
         password,
       });
-      setModalMessage(`${user.data.name} created successfully!`);
+      setModalMessage(
+        `${user.data.firstname} ${user.data.lastname} created successfully!`
+      );
       setSuccess(true);
       setIsModalOpen(true);
     } catch (error) {
@@ -113,11 +117,21 @@ const RegisterForm = () => {
                 </div>
                 <div className="flex flex-col gap-2 col-span-2 dark:text-white">
                   <input
-                    id="name"
+                    id="firstname"
                     type="text"
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    placeholder="First name"
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
+                    className="form-input form-input-normal"
+                  />
+                </div>
+                <div className="flex flex-col gap-2 col-span-2 dark:text-white">
+                  <input
+                    id="lastname"
+                    type="text"
+                    placeholder="Last name"
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
                     className="form-input form-input-normal"
                   />
                 </div>
@@ -157,7 +171,7 @@ const RegisterForm = () => {
               </form>
               <a
                 className="text-standard text-center hover:text-amber-500"
-                href="/auth/signin"
+                href="/auth/login"
               >
                 Already have an account?{" "}
               </a>
