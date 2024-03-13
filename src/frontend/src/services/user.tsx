@@ -2,8 +2,8 @@ import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
   GetUserInfoResponse,
   LogoutResponse,
-  RequestPhotographerRoleResponse,
   UploadProfilePictureResponse,
+  UserResponse,
 } from "@/types";
 import { signOut } from "next-auth/react";
 
@@ -63,12 +63,22 @@ const getUserById = async (id: string) => {
   }
 };
 
-const requestPhotographerRole = async () => {
+const requestVerify = async () => {
   try {
-    const response =
-      await apiClientWithAuth.get<RequestPhotographerRoleResponse>(
-        `${userBaseUrl}/request-photographer-role`
-      );
+    const response = await apiClientWithAuth.get<UserResponse>(
+      `${userBaseUrl}/req-verify`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getSelfStatus = async () => {
+  try {
+    const response = await apiClientWithAuth.get<UserResponse>(
+      `${userBaseUrl}/self-status`
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -80,7 +90,8 @@ const userService = {
   uploadProfile,
   getMyUserInfo,
   getUserById,
-  requestPhotographerRole,
+  requestVerify,
+  getSelfStatus,
 };
 
 export default userService;
