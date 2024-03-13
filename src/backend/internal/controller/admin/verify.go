@@ -3,6 +3,7 @@ package admin
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -31,7 +32,7 @@ func (r *Resolver) Verify(c *gin.Context) {
 		return
 	}
 
-	toBeVrf.IsVerified = true
+	toBeVrf.VerificationStatus = model.PhotographerVerifiedStatus
 	if err = r.PhotographerUsecase.PhotographerRepo.UpdateOne(c, toBeVrf); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

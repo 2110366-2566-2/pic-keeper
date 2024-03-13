@@ -31,10 +31,10 @@ type UserInput struct {
 }
 
 type Photographer struct {
-	bun.BaseModel `bun:"table:photographers,alias:ph"`
-	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	UserId        uuid.UUID `bun:"user_id,type:uuid" json:"user_id"`
-	IsVerified    bool      `bun:"is_verified,type:boolean" json:"is_verified"`
+	bun.BaseModel      `bun:"table:photographers,alias:ph"`
+	Id                 uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	UserId             uuid.UUID `bun:"user_id,type:uuid" json:"user_id"`
+	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
 }
 
 type Administrator struct {
@@ -73,6 +73,7 @@ const (
 	PhotographerNotVerifiedStatus = "NOT_VERIFIED"
 	PhotographerPendingStatus     = "PENDING"
 	PhotographerVerifiedStatus    = "VERIFIED"
+	PhotographerRejectedStatus    = "REJECTED"
 )
 
 type BookingProposal struct {

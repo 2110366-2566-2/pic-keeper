@@ -25,7 +25,7 @@ func (r *Resolver) CreateGallery(c *gin.Context) {
 		return
 	}
 
-	if !photographerObj.IsVerified {
+	if photographerObj.VerificationStatus != model.PhotographerVerifiedStatus {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
 			"error":  "You have not yet been verified, only verified photographers can create galleries",

@@ -11,13 +11,14 @@ CREATE TABLE users(
 CREATE TYPE photographer_status AS enum(
     'NOT_VERIFIED',
     'PENDING',
-    'VERIFIED'
+    'VERIFIED',
+    'REJECTED'
 );
 
 CREATE TABLE photographers(
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id uuid REFERENCES users(id) ON DELETE CASCADE UNIQUE,
-    is_verified photographer_status NOT NULL DEFAULT 'NOT_VERIFIED'
+    verification_status photographer_status NOT NULL DEFAULT 'NOT_VERIFIED'
 );
 
 CREATE TABLE administrators(

@@ -36,9 +36,9 @@ func (r *Resolver) RequestPhotographerRole(c *gin.Context) {
 	}
 
 	photographerModel := model.Photographer{
-		Id:         uuid.New(),
-		UserId:     userObj.Id,
-		IsVerified: false,
+		Id:                 uuid.New(),
+		UserId:             userObj.Id,
+		VerificationStatus: model.PhotographerNotVerifiedStatus,
 	}
 
 	if err := r.PhotographerUsecase.PhotographerRepo.AddOne(c, &photographerModel); err != nil {

@@ -41,9 +41,9 @@ func (r *Resolver) RegPhotographer(c *gin.Context) {
 	}
 
 	photographerModel := model.Photographer{
-		Id:         uuid.New(),
-		UserId:     userModel.Id,
-		IsVerified: false,
+		Id:                 uuid.New(),
+		UserId:             userModel.Id,
+		VerificationStatus: model.PhotographerNotVerifiedStatus,
 	}
 
 	if err := r.PhotographerUsecase.PhotographerRepo.AddOne(c, &photographerModel); err != nil {
