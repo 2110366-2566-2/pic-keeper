@@ -69,6 +69,12 @@ const (
 	BookingPaidOutStatus               = "PAID_OUT"
 )
 
+const (
+	PhotographerNotVerifiedStatus = "NOT_VERIFIED"
+	PhotographerPendingStatus     = "PENDING"
+	PhotographerVerifiedStatus    = "VERIFIED"
+)
+
 type BookingProposal struct {
 	GalleryId uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
 	StartTime time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
