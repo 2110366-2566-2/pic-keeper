@@ -1,6 +1,6 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
-  ConversationListResposne,
+  ConversationListResponse,
   RoomMemberInput,
   UserRoomLookUpListResponse,
 } from "@/types";
@@ -32,7 +32,7 @@ const getAllRooms = async () => {
 
 const getAllConversations = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.get<ConversationListResposne>(
+    const response = await apiClientWithAuth.get<ConversationListResponse>(
       `${roomBaseUrl}/${id}`
     );
     return response.data;

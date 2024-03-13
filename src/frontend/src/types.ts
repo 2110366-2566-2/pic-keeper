@@ -214,6 +214,6 @@ export interface UserRoomLookUpListResponse {
   data: UserRoomLookUpListResponse[];
 }
 
-export interface ConversationListResposne {
+export interface ConversationListResponse {
   data: Conversation[];
 }
