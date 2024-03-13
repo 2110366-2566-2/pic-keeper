@@ -126,3 +126,10 @@ type Conversation struct {
 type RoomMemberInput struct {
 	MemberIds []uuid.UUID `binding:"required" json:"member_ids"`
 }
+
+type Photo struct {
+	bun.BaseModel `bun:"table:photos,alias:photos"`
+	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
+	PhotoKey      string    `bun:"photo_key,type:varchar" json:"photo_key"`
+}

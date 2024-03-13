@@ -25,3 +25,9 @@ CREATE TABLE bookings(
     updated_at timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE TABLE photos(
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    gallery_id uuid NOT NULL REFERENCES galleries(id),
+    photo_key varchar(2000) NOT NULL
+);
+

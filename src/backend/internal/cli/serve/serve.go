@@ -118,6 +118,7 @@ var ServeCmd = &cobra.Command{
 			galleries := photographers.Group("/galleries")
 			galleries.GET("/list", handler.Photographer.ListOwnGalleries)
 			galleries.POST("/", handler.Photographer.CreateGallery)
+			galleries.POST("/:id", handler.Photographer.UploadPhotoToGallery)
 			galleries.PUT("/:id", handler.Photographer.UpdateGallery)
 			galleries.DELETE("/:id", handler.Photographer.DeleteGallery)
 			galleries.GET("/:id", handler.Photographer.GetOnePackage)
@@ -143,9 +144,9 @@ var ServeCmd = &cobra.Command{
 			commonBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
-		commonPackages := validated.Group("/packages/v1")
+		commonGalleries := validated.Group("/galleries/v1")
 		{
-			commonPackages.GET("/search", handler.User.SearchPackages)
+			commonGalleries.GET("/search", handler.User.SearchGalleries)
 		}
 
 		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)

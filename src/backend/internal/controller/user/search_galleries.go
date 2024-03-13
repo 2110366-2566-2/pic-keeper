@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *Resolver) SearchPackages(c *gin.Context) {
+func (r *Resolver) SearchGalleries(c *gin.Context) {
 	searchFilter := model.SearchFilter{}
 	if err := c.BindQuery(&searchFilter); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

@@ -1,81 +1,21 @@
 package user
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"fmt"
-	"image"
-	"image/jpeg"
-	"image/png"
-	"io"
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/nfnt/resize"
 )
 
 func hashEmail(email string) string {
 	hasher := sha256.New()
 	hasher.Write([]byte(email))
 	return fmt.Sprintf("%x", hasher.Sum(nil))
-}
-
-func validateImage(file io.ReadSeeker) (string, error) {
-	buffer := make([]byte, 512)
-	_, err := file.Read(buffer)
-	if err != nil {
-		return "", fmt.Errorf("failed to read file header: %w", err)
-	}
-	// Seek to the start of the file after reading the header
-	if _, err := file.Seek(0, io.SeekStart); err != nil {
-		return "", fmt.Errorf("failed to reset file read pointer: %w", err)
-	}
-	contentType := http.DetectContentType(buffer)
-	return contentType, nil
-}
-
-func decodeImage(contentType string, file io.Reader) (image.Image, error) {
-
-	var img image.Image
-	var err error
-	switch contentType {
-	case "image/jpeg":
-		img, err = jpeg.Decode(file)
-	case "image/png":
-		img, err = png.Decode(file)
-	default:
-		return nil, fmt.Errorf("unsupported content type: %s", contentType)
-	}
-	if err != nil {
-		return nil, fmt.Errorf("error decoding image: %w", err)
-	}
-
-	return img, nil
-}
-
-// processImage resizes and compresses the image.
-func processImage(img image.Image, contentType string) (*bytes.Buffer, error) {
-	maxWidth, maxHeight := uint(800), uint(600)
-	img = resize.Thumbnail(maxWidth, maxHeight, img, resize.Lanczos3)
-
-	var buf bytes.Buffer
-	switch contentType {
-	case "image/jpeg":
-		err := jpeg.Encode(&buf, img, &jpeg.Options{Quality: 75})
-		if err != nil {
-			return nil, fmt.Errorf("error compressing JPEG image: %w", err)
-		}
-	case "image/png":
-		err := png.Encode(&buf, img)
-		if err != nil {
-			return nil, fmt.Errorf("error compressing PNG image: %w", err)
-		}
-	}
-
-	return &buf, nil
 }
 
 func GetProfilePictureUrl(profilePictureKey *string) string {
@@ -109,23 +49,9 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	}
 	defer file.Close()
 
-	contentType, err := validateImage(file)
+	buf, contentType, err := util.FormatImage(file)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
-		c.Abort()
-		return
-	}
-
-	img, err := decodeImage(contentType, file)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
-		c.Abort()
-		return
-	}
-
-	buf, err := processImage(img, contentType)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": err.Error()})
 		c.Abort()
 		return
 	}
@@ -147,7 +73,7 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	if err := bucket.UploadFile(c.Request.Context(), "profile-picture", objectKey, buf, contentType); err != nil {
+	if err := bucket.UploadFile(c.Request.Context(), s3utils.ProfilePicBucket, objectKey, buf, contentType); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to upload the file"})
 		c.Abort()
 		return
