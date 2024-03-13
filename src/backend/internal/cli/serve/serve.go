@@ -114,22 +114,24 @@ var ServeCmd = &cobra.Command{
 		}
 
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
-		phtgGalleries := photographers.Group("/galleries/v1")
-		phtgGalleries.GET("/list", handler.Photographer.ListOwnGalleries)
-		phtgGalleries.POST("/", handler.Photographer.CreateGallery)
-		phtgGalleries.POST("/:id", handler.Photographer.UploadPhotoToGallery)
-		phtgGalleries.PUT("/:id", handler.Photographer.UpdateGallery)
-		phtgGalleries.DELETE("/:id/:photoId", handler.Photographer.DeletePhoto)
-		phtgGalleries.DELETE("/:id", handler.Photographer.DeleteGallery)
-		phtgGalleries.GET("/:id", handler.Photographer.GetOnePackage)
+		{
+			phtgGalleries := photographers.Group("/galleries/v1")
+			phtgGalleries.GET("/list", handler.Photographer.ListOwnGalleries)
+			phtgGalleries.POST("/", handler.Photographer.CreateGallery)
+			phtgGalleries.POST("/:id", handler.Photographer.UploadPhotoToGallery)
+			phtgGalleries.PUT("/:id", handler.Photographer.UpdateGallery)
+			phtgGalleries.DELETE("/:id/:photoId", handler.Photographer.DeletePhoto)
+			phtgGalleries.DELETE("/:id", handler.Photographer.DeleteGallery)
+			phtgGalleries.GET("/:id", handler.Photographer.GetOneGallery)
 
-		phtgBookings := photographers.Group("/bookings/v1")
-		phtgBookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
-		phtgBookings.GET("/upcoming", handler.Photographer.ListUpcomingBookings)
-		phtgBookings.GET("/past", handler.Photographer.ListPastBookings)
-		phtgBookings.GET("/my-bookings", handler.Photographer.MyBookings)
-		phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
-		phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
+			phtgBookings := photographers.Group("/bookings/v1")
+			phtgBookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
+			phtgBookings.GET("/upcoming", handler.Photographer.ListUpcomingBookings)
+			phtgBookings.GET("/past", handler.Photographer.ListPastBookings)
+			phtgBookings.GET("/my-bookings", handler.Photographer.MyBookings)
+			phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
+			phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
+		}
 
 		customerBookings := validated.Group("/customers/bookings/v1")
 		{
