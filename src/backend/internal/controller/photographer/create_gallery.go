@@ -11,21 +11,20 @@ import (
 )
 
 func (r *Resolver) CreateGallery(c *gin.Context) {
-	photographer, exists := c.Get("photographer")
+	user, exists := c.Get("user")
 	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to retrieve photographer from context"})
-		c.Abort()
+		util.Raise400Error(c, "Failed to retrieve photographer from context")
 		return
 	}
 
-	photographerObj, ok := photographer.(model.Photographer)
+	userObj, ok := user.(model.User)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Invalid object type in context"})
-		c.Abort()
+		util.Raise400Error(c, "Failed to retrieve photographer from context")
 		return
 	}
 
-	if photographerObj.VerificationStatus != model.PhotographerVerifiedStatus {
+	// double-check here
+	if userObj.VerificationStatus != model.PhotographerVerifiedStatus {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
 			"error":  "You have not yet been verified, only verified photographers can create galleries",
@@ -36,12 +35,7 @@ func (r *Resolver) CreateGallery(c *gin.Context) {
 
 	galleryInput := model.GalleryInput{}
 	if err := c.BindJSON(&galleryInput); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  "failed",
-			"error":   err.Error(),
-			"message": "unable to bind request body with json, please recheck",
-		})
-		c.Abort()
+		util.Raise400Error(c, err.Error())
 		return
 	}
 
@@ -57,17 +51,13 @@ func (r *Resolver) CreateGallery(c *gin.Context) {
 	newGallery := model.Gallery{
 		Id:             uuid.New(),
 		Location:       *galleryInput.Location,
-		PhotographerId: photographerObj.Id,
+		PhotographerId: userObj.Id,
 		Name:           *galleryInput.Name,
 		Price:          *galleryInput.Price,
 	}
 
 	if err := r.GalleryUsecase.GalleryRepo.AddOne(c, &newGallery); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 

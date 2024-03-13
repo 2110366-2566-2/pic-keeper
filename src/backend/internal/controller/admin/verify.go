@@ -22,7 +22,7 @@ import (
 func (r *Resolver) Verify(c *gin.Context) {
 	photographerId := c.Param("id")
 
-	toBeVrf, err := r.PhotographerUsecase.PhotographerRepo.FindOneById(c, uuid.MustParse(photographerId))
+	toBeVrf, err := r.UserUsecase.UserRepo.FindOneById(c, uuid.MustParse(photographerId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -33,7 +33,7 @@ func (r *Resolver) Verify(c *gin.Context) {
 	}
 
 	toBeVrf.VerificationStatus = model.PhotographerVerifiedStatus
-	if err = r.PhotographerUsecase.PhotographerRepo.UpdateOne(c, toBeVrf); err != nil {
+	if err = r.UserUsecase.UserRepo.UpdateOne(c, toBeVrf); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error,

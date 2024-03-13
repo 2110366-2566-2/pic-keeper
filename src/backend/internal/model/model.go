@@ -13,28 +13,29 @@ type LoginCredentials struct {
 	Password string `json:"password" example:"abc123"`
 }
 
+const (
+	PhotographerNotVerifiedStatus = "NOT_VERIFIED"
+	PhotographerPendingStatus     = "PENDING"
+	PhotographerVerifiedStatus    = "VERIFIED"
+	PhotographerRejectedStatus    = "REJECTED"
+)
+
 type User struct {
-	bun.BaseModel     `bun:"table:users,alias:u"`
-	Id                uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	Name              string    `bun:"name,type:varchar" json:"name"`
-	Email             string    `bun:"email,type:varchar" json:"email"`
-	Provider          *string   `bun:"provider,type:varchar" json:"provider"`
-	Password          *string   `bun:"password,type:varchar" json:"-"`
-	LoggedOut         bool      `bun:"logged_out,type:boolean" json:"logged_out"`
-	ProfilePictureKey *string   `bun:"profile_picture_key,type:varchar" json:"profile_picture_key"`
+	bun.BaseModel      `bun:"table:users,alias:u"`
+	Id                 uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	Name               string    `bun:"name,type:varchar" json:"name"`
+	Email              string    `bun:"email,type:varchar" json:"email"`
+	Provider           *string   `bun:"provider,type:varchar" json:"provider"`
+	Password           *string   `bun:"password,type:varchar" json:"-"`
+	LoggedOut          bool      `bun:"logged_out,type:boolean" json:"logged_out"`
+	ProfilePictureKey  *string   `bun:"profile_picture_key,type:varchar" json:"profile_picture_key"`
+	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
 }
 
 type UserInput struct {
 	Name     string  `json:"name" example:"test"`
 	Email    string  `json:"email" example:"test@mail.com"`
 	Password *string `json:"password" example:"root"`
-}
-
-type Photographer struct {
-	bun.BaseModel      `bun:"table:photographers,alias:ph"`
-	Id                 uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	UserId             uuid.UUID `bun:"user_id,type:uuid" json:"user_id"`
-	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
 }
 
 type Administrator struct {
@@ -67,13 +68,6 @@ const (
 	BookingPhotographerReqCancelStatus = "P_REQ_CANCEL"
 	BookingCompletedStatus             = "COMPLETED"
 	BookingPaidOutStatus               = "PAID_OUT"
-)
-
-const (
-	PhotographerNotVerifiedStatus = "NOT_VERIFIED"
-	PhotographerPendingStatus     = "PENDING"
-	PhotographerVerifiedStatus    = "VERIFIED"
-	PhotographerRejectedStatus    = "REJECTED"
 )
 
 type BookingProposal struct {

@@ -27,14 +27,10 @@ func (r *Resolver) UploadPhotoToGallery(c *gin.Context) {
 		return
 	}
 
-	photographer := c.MustGet("photographer")
-	photographerObj, ok := photographer.(model.Photographer)
+	user := c.MustGet("user")
+	userObj, ok := user.(model.User)
 	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  "could not bind json object",
-		})
-		c.Abort()
+		util.Raise400Error(c, "could not bind JSON")
 		return
 	}
 
@@ -43,36 +39,26 @@ func (r *Resolver) UploadPhotoToGallery(c *gin.Context) {
 
 	existingGallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, galleryId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
-	if existingGallery.PhotographerId != photographerObj.Id {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  "you have no permission to upload photos to this gallery",
-		})
-		c.Abort()
+	if existingGallery.PhotographerId != userObj.Id {
+		util.Raise403Error(c, "you have no permission to upload photos to this gallery")
 		return
 	}
 
 	fileUUID := uuid.New().String()
-	objectKey := fmt.Sprintf("%s-%s", photographerObj.Id.String(), fileUUID)
+	objectKey := fmt.Sprintf("%s-%s", userObj.Id.String(), fileUUID)
 
 	bucket, err := s3utils.GetInstance()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": err.Error()})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
 	if err := bucket.UploadFile(c.Request.Context(), s3utils.GalleryPhotoBucket, objectKey, buf, contentType); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to upload the file"})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
@@ -83,8 +69,7 @@ func (r *Resolver) UploadPhotoToGallery(c *gin.Context) {
 	}
 
 	if err := r.PhotoUsecase.PhotoRepo.AddOne(c, newPhoto); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to upload the file"})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 

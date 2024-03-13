@@ -57,7 +57,7 @@ var ServeCmd = &cobra.Command{
 
 		r.Use(cors.New(cors.Config{
 			AllowOrigins:     []string{"http://localhost:3000"},
-			AllowMethods:     []string{"GET", "PUT", "PATCH", "OPTIONS"},
+			AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"},
 			AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 			ExposeHeaders:    []string{"Content-Length"},
 			AllowCredentials: true,
@@ -78,8 +78,9 @@ var ServeCmd = &cobra.Command{
 
 			verification := admin.Group("/verifications")
 			{
-				verification.GET("/unverified-photographers", handler.Admin.ListUnverifiedPhotographers)
+				verification.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
 				verification.PUT("/verify/:id", handler.Admin.Verify)
+				verification.PUT("/reject/:id", handler.Admin.Reject)
 			}
 			admin.PUT("/logout", handler.Admin.Logout)
 		}
@@ -87,8 +88,7 @@ var ServeCmd = &cobra.Command{
 		authen := r.Group("/authen")
 		{
 			authen := authen.Group("/v1")
-			authen.POST("/register/customer", handler.User.RegCustomer)
-			authen.POST("/register/photographer", handler.User.RegPhotographer)
+			authen.POST("/register", handler.User.Register)
 			authen.POST("/login", handler.User.Login)
 			authen.GET("/refresh", handler.User.RefreshToken)
 			google := authen.Group("/google")
@@ -109,46 +109,44 @@ var ServeCmd = &cobra.Command{
 			users.POST("/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/get-user/:id", handler.User.GetUserInfo)
-			users.POST("/request-photographer-role", handler.User.RequestPhotographerRole)
+			users.PUT("/req-verify", handler.User.RequestVerification)
+			users.GET("/self-status", handler.User.GetSelfStatus)
 		}
 
-		photographers := validated.Group("/photographers", handler.Photographer.GetPhotographerInstance)
-		{
-			photographers := photographers.Group("/v1")
-			galleries := photographers.Group("/galleries")
-			galleries.GET("/list", handler.Photographer.ListOwnGalleries)
-			galleries.POST("/", handler.Photographer.CreateGallery)
-			galleries.POST("/:id", handler.Photographer.UploadPhotoToGallery)
-			galleries.PUT("/:id", handler.Photographer.UpdateGallery)
-			galleries.DELETE("/:id/:photoId", handler.Photographer.DeletePhoto)
-			galleries.DELETE("/:id", handler.Photographer.DeleteGallery)
-			galleries.GET("/:id", handler.Photographer.GetOnePackage)
+		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
+		phtgGalleries := photographers.Group("/galleries/v1")
+		phtgGalleries.GET("/list", handler.Photographer.ListOwnGalleries)
+		phtgGalleries.POST("/", handler.Photographer.CreateGallery)
+		phtgGalleries.POST("/:id", handler.Photographer.UploadPhotoToGallery)
+		phtgGalleries.PUT("/:id", handler.Photographer.UpdateGallery)
+		phtgGalleries.DELETE("/:id/:photoId", handler.Photographer.DeletePhoto)
+		phtgGalleries.DELETE("/:id", handler.Photographer.DeleteGallery)
+		phtgGalleries.GET("/:id", handler.Photographer.GetOnePackage)
 
-			bookings := photographers.Group("/bookings")
-			bookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
-			bookings.GET("/upcoming", handler.Photographer.ListUpcomingBookings)
-			bookings.GET("/past", handler.Photographer.ListPastBookings)
-			bookings.GET("/my-bookings", handler.Photographer.MyBookings)
-			bookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
-			bookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
+		phtgBookings := photographers.Group("/bookings/v1")
+		phtgBookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
+		phtgBookings.GET("/upcoming", handler.Photographer.ListUpcomingBookings)
+		phtgBookings.GET("/past", handler.Photographer.ListPastBookings)
+		phtgBookings.GET("/my-bookings", handler.Photographer.MyBookings)
+		phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
+		phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
+
+		customerBookings := validated.Group("/customers/bookings/v1")
+		{
+			customerBookings.POST("/", handler.User.CreateBooking)
+			customerBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
+			customerBookings.GET("/upcoming", handler.User.ListUpcomingBookings)
+			customerBookings.GET("/past", handler.User.ListPastBookings)
+			customerBookings.GET("/my-bookings", handler.User.MyBookings)
+			customerBookings.GET("/:id", handler.User.GetOneBooking)
+			customerBookings.PUT("/cancel/:id", handler.User.CancelBooking)
+			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
-		commonBookings := validated.Group("/bookings/v1")
+		customerGalleries := validated.Group("/customers/galleries/v1")
 		{
-			commonBookings.POST("/", handler.User.CreateBooking)
-			commonBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
-			commonBookings.GET("/upcoming", handler.User.ListUpcomingBookings)
-			commonBookings.GET("/past", handler.User.ListPastBookings)
-			commonBookings.GET("/my-bookings", handler.User.MyBookings)
-			commonBookings.GET("/:id", handler.User.GetOneBooking)
-			commonBookings.PUT("/cancel/:id", handler.User.CancelBooking)
-			commonBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
-		}
-
-		commonGalleries := validated.Group("/galleries/v1")
-		{
-			commonGalleries.GET("/search", handler.User.SearchGalleries)
-			commonGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
+			customerGalleries.GET("/search", handler.User.SearchGalleries)
+			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
 		}
 
 		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
