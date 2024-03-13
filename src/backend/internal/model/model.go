@@ -48,8 +48,8 @@ type Administrator struct {
 	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
 }
 
-type Package struct {
-	bun.BaseModel  `bun:"table:packages,alias:packages"`
+type Gallery struct {
+	bun.BaseModel  `bun:"table:galleries,alias:galleries"`
 	Id             uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	PhotographerId uuid.UUID `bun:"photographer_id,type:uuid" json:"photographer_id"`
 	Location       string    `bun:"location,type:varchar" json:"location"`
@@ -57,7 +57,7 @@ type Package struct {
 	Price          int       `bun:"price,type:integer" json:"price"`
 }
 
-type PackageInput struct {
+type GalleryInput struct {
 	Name     *string `bun:"name,type:varchar" json:"name"`
 	Location *string `bun:"name,type:varchar" json:"location"`
 	Price    *int    `bun:"price,type:integer" json:"price"`
@@ -73,7 +73,7 @@ const (
 )
 
 type BookingProposal struct {
-	PackageId uuid.UUID `bun:"package_id,type:uuid" json:"package_id"`
+	GalleryId uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
 	StartTime time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
 	EndTime   time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 }
@@ -82,7 +82,7 @@ type Booking struct {
 	bun.BaseModel `bun:"table:bookings,alias:bookings"`
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	CustomerId    uuid.UUID `bun:"customer_id,type:uuid" json:"customer_id"`
-	PackageId     uuid.UUID `bun:"package_id,type:uuid" json:"package_id"`
+	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
 	StartTime     time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
 	EndTime       time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 	Status        string    `bun:"status,type:varchar" json:"status"`
@@ -128,4 +128,11 @@ type Conversation struct {
 
 type RoomMemberInput struct {
 	MemberIds []uuid.UUID `binding:"required" json:"member_ids"`
+}
+
+type Photo struct {
+	bun.BaseModel `bun:"table:photos,alias:photos"`
+	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
+	PhotoKey      string    `bun:"photo_key,type:varchar" json:"photo_key"`
 }

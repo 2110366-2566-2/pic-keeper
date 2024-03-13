@@ -2,6 +2,7 @@ import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
   GetUserInfoResponse,
   LogoutResponse,
+  RequestPhotographerRoleResponse,
   UploadProfilePictureResponse,
 } from "@/types";
 import { signOut } from "next-auth/react";
@@ -62,11 +63,24 @@ const getUserById = async (id: string) => {
   }
 };
 
+const requestPhotographerRole = async () => {
+  try {
+    const response =
+      await apiClientWithAuth.get<RequestPhotographerRoleResponse>(
+        `${userBaseUrl}/request-photographer-role`
+      );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const userService = {
   logout,
   uploadProfile,
   getMyUserInfo,
   getUserById,
+  requestPhotographerRole,
 };
 
 export default userService;

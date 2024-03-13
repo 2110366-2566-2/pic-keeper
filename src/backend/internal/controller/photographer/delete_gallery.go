@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) DeletePackage(c *gin.Context) {
+func (r *Resolver) DeleteGallery(c *gin.Context) {
 	photographer, exists := c.Get("photographer")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -30,9 +30,9 @@ func (r *Resolver) DeletePackage(c *gin.Context) {
 	}
 
 	paramId := c.Param("id")
-	packageId := uuid.MustParse(paramId)
+	galleryId := uuid.MustParse(paramId)
 
-	existingPackage, err := r.PackageUsecase.PackageRepo.FindOneById(c, packageId)
+	existingGallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, galleryId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -43,16 +43,16 @@ func (r *Resolver) DeletePackage(c *gin.Context) {
 	}
 
 	// dbValidate
-	if photographerObj.Id != existingPackage.PhotographerId {
+	if photographerObj.Id != existingGallery.PhotographerId {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
-			"error":  "You have no permission to delete this package",
+			"error":  "You have no permission to delete this gallery",
 		})
 		c.Abort()
 		return
 	}
 
-	deletedId, err := r.PackageUsecase.PackageRepo.DeleteOneById(c, packageId)
+	deletedId, err := r.GalleryUsecase.GalleryRepo.DeleteOneById(c, galleryId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

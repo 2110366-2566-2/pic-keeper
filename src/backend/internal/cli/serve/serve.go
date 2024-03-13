@@ -109,18 +109,20 @@ var ServeCmd = &cobra.Command{
 			users.POST("/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/get-user/:id", handler.User.GetUserInfo)
-			users.POST("/get-photographer-role", handler.User.GetPhotographerRole)
+			users.POST("/request-photographer-role", handler.User.RequestPhotographerRole)
 		}
 
 		photographers := validated.Group("/photographers", handler.Photographer.GetPhotographerInstance)
 		{
 			photographers := photographers.Group("/v1")
-			packages := photographers.Group("/packages")
-			packages.GET("/list", handler.Photographer.ListOwnPackages)
-			packages.POST("/", handler.Photographer.CreatePackage)
-			packages.PUT("/:id", handler.Photographer.UpdatePackage)
-			packages.DELETE("/:id", handler.Photographer.DeletePackage)
-			packages.GET("/:id", handler.Photographer.GetOnePackage)
+			galleries := photographers.Group("/galleries")
+			galleries.GET("/list", handler.Photographer.ListOwnGalleries)
+			galleries.POST("/", handler.Photographer.CreateGallery)
+			galleries.POST("/:id", handler.Photographer.UploadPhotoToGallery)
+			galleries.PUT("/:id", handler.Photographer.UpdateGallery)
+			galleries.DELETE("/:id/:photoId", handler.Photographer.DeletePhoto)
+			galleries.DELETE("/:id", handler.Photographer.DeleteGallery)
+			galleries.GET("/:id", handler.Photographer.GetOnePackage)
 
 			bookings := photographers.Group("/bookings")
 			bookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
@@ -143,9 +145,10 @@ var ServeCmd = &cobra.Command{
 			commonBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
-		commonPackages := validated.Group("/packages/v1")
+		commonGalleries := validated.Group("/galleries/v1")
 		{
-			commonPackages.GET("/search", handler.User.SearchPackages)
+			commonGalleries.GET("/search", handler.User.SearchGalleries)
+			commonGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
 		}
 
 		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)

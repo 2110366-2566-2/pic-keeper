@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) GetPhotographerRole(c *gin.Context) {
+func (r *Resolver) RequestPhotographerRole(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": "Failed to retrieve user from context"})

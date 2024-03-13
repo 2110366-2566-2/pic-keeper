@@ -42,7 +42,7 @@ func (b *BookingDB) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID
 
 func (b *BookingDB) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, status ...string) ([]*model.Booking, error) {
 	var bookings []*model.Booking
-	var pkg model.Package
+	var pkg model.Gallery
 
 	subq := b.db.NewSelect().Model(&pkg).Where("photographer_id = ?", phtgId).Column("id")
 
