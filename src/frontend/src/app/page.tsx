@@ -8,6 +8,12 @@ export default function Home() {
   const handleOnClick = () => {
     axios.post("/api/auth/signout");
   };
+  useEffect(() => {
+    console.log("yeahh mounted");
+    return () => {
+      console.log("unmounteddd");
+    };
+  });
   return (
     <main>
       <NavBar />

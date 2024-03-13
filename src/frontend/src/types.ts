@@ -217,3 +217,10 @@ export interface UserRoomLookUpListResponse {
 export interface ConversationListResponse {
   data: Conversation[];
 }
+
+export interface Message {
+  data: string;
+  type: string;
+  sender: string;
+  room: string;
+}
