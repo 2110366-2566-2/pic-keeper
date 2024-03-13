@@ -6,28 +6,15 @@ import {
   NewUser,
   RefreshTokenResponse,
   RegisterCustomerResponse,
-  RegisterPhotoGrapherResponse,
 } from "@/types";
 
 const authBaseUrl = `/authen/v1`;
 
-const registerCustomer = async (newUser: NewUser) => {
+const register = async (newUser: NewUser) => {
   try {
     const response = await apiClient.post<RegisterCustomerResponse>(
-      `${authBaseUrl}/register/customer`,
+      `${authBaseUrl}/register`,
       newUser
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const registerPhotographer = async (newPhotographer: NewUser) => {
-  try {
-    const response = await apiClient.post<RegisterPhotoGrapherResponse>(
-      `${authBaseUrl}/register/photographer`,
-      newPhotographer
     );
     return response.data;
   } catch (error) {
@@ -75,8 +62,7 @@ const googleLogin = async () => {
 };
 
 const authService = {
-  registerCustomer,
-  registerPhotographer,
+  register,
   login,
   refreshToken,
   googleLogin,

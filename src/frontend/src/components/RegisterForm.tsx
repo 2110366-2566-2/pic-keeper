@@ -1,6 +1,5 @@
 "use client";
 
-import userService from "@/services/user";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -43,7 +42,7 @@ const RegisterForm = () => {
       return;
     }
     try {
-      const user = await authService.registerCustomer({
+      const user = await authService.register({
         email,
         name,
         password,
