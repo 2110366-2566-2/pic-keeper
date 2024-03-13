@@ -3,25 +3,53 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
-
-interface Message {
-  data: string;
-  id: string;
-  room: string;
-  sender: string;
-  ts: string;
-  type: string;
-}
+import { useWebSocket } from "@/context/WebSocketContext";
+import { Message } from "@/types";
 
 interface ChatProps {
   roomId: string;
 }
 
 const Chat = ({ roomId }: ChatProps) => {
-  const [sendingMessage, setSendingMessage] = useState<string>("");
-  const [ws, setWs] = useState<WebSocket | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { sendMessage, messages } = useWebSocket();
+  const [sendingMessage, setSendingMessage] = useState("");
   const { data: session } = useSession();
+  const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    setOptimisticMessages(messages);
+  }, [messages]);
+
+  const handleSendMessage = () => {
+    if (!session?.user?.data?.id) {
+      console.error("No session user");
+      return;
+    }
+
+    const messageData = {
+      data: sendingMessage,
+      type: "message",
+      sender: session.user.data.id,
+      room: roomId,
+    };
+
+    const mockUpMessageData = {
+      data: sendingMessage,
+      type: "message",
+      sender: session.user.data.id,
+      room: roomId,
+      ts: new Date().toISOString(), // Optimistic timestamp
+      id: "temp-" + Math.random().toString(36).substring(2, 15), // Temporary unique ID for optimistic update
+    };
+
+    setOptimisticMessages((prevMessages) => [
+      ...prevMessages,
+      mockUpMessageData,
+    ]);
+
+    sendMessage(messageData);
+    setSendingMessage("");
+  };
 
   const handleSendingMessageChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -29,121 +57,33 @@ const Chat = ({ roomId }: ChatProps) => {
     setSendingMessage(event.target.value);
   };
 
-  const handleSendMessage = () => {
-    if (!ws || ws.readyState !== WebSocket.OPEN) {
-      console.error("WebSocket connection is not established.");
-      return;
-    }
-
-    const messageData = {
-      data: sendingMessage,
-      type: "message",
-      sender: session?.user.data.id,
-      room: roomId,
-    };
-
-    ws.send(JSON.stringify(messageData));
-
-    if (!session?.user.data.id) {
-      throw Error("No session user");
-    }
-
-    const newMessage: Message = {
-      data: sendingMessage,
-      id: Math.random().toString(),
-      room: roomId,
-      sender: session?.user.data.id,
-      ts: new Date().toISOString(),
-      type: "message",
-    };
-
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-    setSendingMessage("");
-
-    setSendingMessage("");
-  };
-
-  const onMessage = (event: MessageEvent) => {
-    const receivedMessage: Message = JSON.parse(event.data);
-    console.log(receivedMessage);
-    console.log(messages.slice(-1));
-    if (receivedMessage.type == "message") {
-      if (
-        messages.slice(-1)[0] &&
-        messages.slice(-1)[0]?.id == receivedMessage.id
-      ) {
-        return;
-      }
-      setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-    }
-  };
-
-  useEffect(() => {
-    const initializeWebSocket = async () => {
-      if (!session) {
-        console.error("User session not found.");
-        return;
-      }
-
-      const authToken = session?.user.session_token;
-      const newWs = new WebSocket(
-        `ws://localhost:8080/chat/v1/ws/${authToken}`
-      );
-      console.log("WebSocket initialized");
-
-      newWs.onopen = () => {
-        console.log("Connected to server");
-        setWs(newWs);
-      };
-
-      newWs.onclose = () => {
-        console.log("Disconnected from server");
-        setWs(null);
-      };
-
-      newWs.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
-
-      newWs.onmessage = onMessage;
-    };
-
-    initializeWebSocket();
-
-    return () => {
-      if (ws) {
-        console.log("delete socket");
-        ws.close();
-        setWs(null);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <div className="flex-grow p-4 overflow-y-auto">
-        {messages.map((message, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className={`flex justify-${
-              message.sender === session?.user.data.id ? "end" : "start"
-            }`}
-          >
-            <div
-              className={`p-3 m-1 rounded-lg shadow ${
-                message.sender === session?.user.data.id
-                  ? "bg-slate-800 text-white"
-                  : "bg-slate-200"
-              }`}
-            >
-              {message.data}
-            </div>
-          </motion.div>
-        ))}
+        {optimisticMessages.map(
+          (message, index) =>
+            message.type === "message" && (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className={`flex justify-${
+                  message.sender === session?.user.data.id ? "end" : "start"
+                }`}
+              >
+                <div
+                  className={`p-3 m-1 rounded-lg shadow ${
+                    message.sender === session?.user.data.id
+                      ? "bg-slate-800 text-white"
+                      : "bg-slate-200"
+                  }`}
+                >
+                  {message.data}
+                </div>
+              </motion.div>
+            )
+        )}
       </div>
       <div className="p-4 flex items-center">
         <input
