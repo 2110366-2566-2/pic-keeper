@@ -54,7 +54,7 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 	paramId := c.Param("id")
 	packageId := uuid.MustParse(paramId)
 
-	existingPackage, err := r.PackageUsecase.PackageRepo.FindOneById(c, packageId)
+	existingPackage, err := r.PackageUsecase.GalleryRepo.FindOneById(c, packageId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -85,7 +85,7 @@ func (r *Resolver) UpdatePackage(c *gin.Context) {
 		existingPackage.Location = *updatingPackageInput.Location
 	}
 
-	if err := r.PackageUsecase.PackageRepo.UpdateOne(c, existingPackage); err != nil {
+	if err := r.PackageUsecase.GalleryRepo.UpdateOne(c, existingPackage); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),

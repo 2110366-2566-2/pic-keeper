@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type Package interface {
+type Gallery interface {
 	BaseRepo[model.Gallery]
 	FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Gallery, error)
 	SearchWithFilter(ctx context.Context, filter *model.SearchFilter) ([]*model.Gallery, error)

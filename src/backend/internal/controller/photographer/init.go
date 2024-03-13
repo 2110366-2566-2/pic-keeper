@@ -7,7 +7,7 @@ import (
 
 type Resolver struct {
 	PhotographerUsecase usecase.PhotographerUseCase
-	PackageUsecase      usecase.PackageUseCase
+	PackageUsecase      usecase.GalleryUseCase
 	BookingUsecase      usecase.BookingUseCase
 }
 

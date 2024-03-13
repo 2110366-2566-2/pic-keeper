@@ -32,7 +32,7 @@ func (r *Resolver) DeletePackage(c *gin.Context) {
 	paramId := c.Param("id")
 	packageId := uuid.MustParse(paramId)
 
-	existingPackage, err := r.PackageUsecase.PackageRepo.FindOneById(c, packageId)
+	existingPackage, err := r.PackageUsecase.GalleryRepo.FindOneById(c, packageId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
@@ -52,7 +52,7 @@ func (r *Resolver) DeletePackage(c *gin.Context) {
 		return
 	}
 
-	deletedId, err := r.PackageUsecase.PackageRepo.DeleteOneById(c, packageId)
+	deletedId, err := r.PackageUsecase.GalleryRepo.DeleteOneById(c, packageId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

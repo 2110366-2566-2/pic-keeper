@@ -62,7 +62,7 @@ func (r *Resolver) CreatePackage(c *gin.Context) {
 		Price:          *packageInput.Price,
 	}
 
-	if err := r.PackageUsecase.PackageRepo.AddOne(c, &newPackage); err != nil {
+	if err := r.PackageUsecase.GalleryRepo.AddOne(c, &newPackage); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
 			"error":  err.Error(),
