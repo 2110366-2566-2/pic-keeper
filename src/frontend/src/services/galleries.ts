@@ -1,7 +1,7 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import { GalleryListResponse, SearchFilter, UrlsListResponse } from "@/types";
 
-const galleryBaseUrl = "galleries/v1/";
+const galleriesBaseUrl = "galleries/v1/";
 
 const search = async (searchFilter: SearchFilter) => {
   try {
@@ -13,7 +13,7 @@ const search = async (searchFilter: SearchFilter) => {
     });
 
     const response = await apiClientWithAuth.get<GalleryListResponse>(
-      `${galleryBaseUrl}?${queryParams.toString()}`
+      `${galleriesBaseUrl}?${queryParams.toString()}`
     );
     return response.data;
   } catch (error) {
@@ -24,7 +24,7 @@ const search = async (searchFilter: SearchFilter) => {
 const getPhotoUrlsListInGallery = async (id: string) => {
   try {
     const response = await apiClientWithAuth.get<UrlsListResponse>(
-      `${galleryBaseUrl}/${id}`
+      `${galleriesBaseUrl}/${id}`
     );
     return response.data;
   } catch (error) {
