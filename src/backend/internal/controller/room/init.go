@@ -7,6 +7,7 @@ import (
 
 type Resolver struct {
 	RoomUsecase         usecase.RoomUseCase
+	GalleryUsecase      usecase.GalleryUseCase
 	LookupUsecase       usecase.LookupUseCase
 	ConversationUsecase usecase.ConversationUseCase
 }
@@ -14,6 +15,7 @@ type Resolver struct {
 func NewResolver(db *bun.DB) *Resolver {
 	return &Resolver{
 		RoomUsecase:         *usecase.NewRoomUseCase(db),
+		GalleryUsecase:      *usecase.NewGalleryUseCase(db),
 		LookupUsecase:       *usecase.NewLookupUseCase(db),
 		ConversationUsecase: *usecase.NewConversationUseCase(db),
 	}

@@ -159,7 +159,7 @@ var ServeCmd = &cobra.Command{
 			chats.GET("/ws", chatEntity.ServeWS)
 		}
 
-		rooms := validated.Group("/room")
+		rooms := validated.Group("/rooms")
 		{
 			rooms := rooms.Group("/v1")
 			rooms.POST("/", handler.Room.InitializeRoom)
