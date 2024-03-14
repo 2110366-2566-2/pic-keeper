@@ -132,6 +132,7 @@ type Conversation struct {
 
 type RoomMemberInput struct {
 	MemberIds []uuid.UUID `binding:"required" json:"member_ids"`
+	GalleryId uuid.UUID   `json:"gallery_id"`
 }
 
 type Photo struct {
