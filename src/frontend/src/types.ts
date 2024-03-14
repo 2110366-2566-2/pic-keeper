@@ -129,7 +129,7 @@ export enum BookingStatus {
 }
 
 export interface BookingProposal {
-  package_id: string;
+  gallery_id: string;
   start_time: string;
   end_time: string;
 }
@@ -137,7 +137,7 @@ export interface BookingProposal {
 export interface Booking {
   id: string;
   customer_id: string;
-  package_id: string;
+  gallery_id: string;
   start_time: string;
   end_time: string;
   status: BookingStatus;

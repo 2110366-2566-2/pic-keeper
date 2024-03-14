@@ -16,7 +16,7 @@ func (r *Resolver) ListUpcomingBookings(c *gin.Context) {
 		return
 	}
 
-	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, userObj.Id, model.BookingPaidStatus)
+	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, userObj.Id, r.GalleryUsecase, model.BookingPaidStatus)
 	if err != nil {
 		util.Raise500Error(c, err)
 		return

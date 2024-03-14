@@ -159,7 +159,15 @@ var ServeCmd = &cobra.Command{
 			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
 		}
 
-		rooms := validated.Group("/room")
+		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
+		defer chatEntity.Close()
+		chats := validated.Group("/chat")
+		{
+			chats := chats.Group("/v1")
+			chats.GET("/ws", chatEntity.ServeWS)
+		}
+
+		rooms := validated.Group("/rooms")
 		{
 			rooms := rooms.Group("/v1")
 			rooms.POST("/", handler.Room.InitializeRoom)

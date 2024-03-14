@@ -234,9 +234,6 @@ func (c *Chat) Broadcast(msg Message) error {
 	// get all users in the room
 	users := c.rooms.GetUsers(msg.Receiver)
 	for _, user := range users {
-		if user == msg.Sender {
-			continue
-		}
 		sessionIds := c.lookupTable.Get(UserId(user))
 		for _, sid := range sessionIds {
 			sess := c.sessions.Get(sid)
