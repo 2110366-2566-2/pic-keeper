@@ -2,6 +2,7 @@ package user
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
@@ -9,8 +10,19 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/third-party/oauth2"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
+	"strings"
 )
 
+// @Summary      This will be automatically called when the Google OAuth2 login process is completed
+// @Description  This will be automatically called when the Google OAuth2 login process is completed
+// @Tags         google
+// @Accept       json
+// @Produce      json
+// @Success      200 {object} model.JSONSuccessResult{status=string,data=nil} "The session token will be returned in the data field"
+// @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
+//
+// @Router       /authen/v1/google/callback [get]
 func (r *Resolver) GoogleCallback(c *gin.Context) {
 	provider := "Google"
 	config := util.GetGoogleLibConfig(c)
@@ -55,15 +67,26 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		return
 	}
 
+	// split google name into firstname and lastname
+	combinedName := strings.Split(googleUser.Name, " ")
+	firstname := combinedName[0]
+	lastname := ""
+	if len(combinedName) > 1 {
+		lastname = combinedName[1]
+	}
+
 	var user *model.User
 	if !exist {
 		newUser := model.User{
-			Id:        uuid.New(),
-			Name:      googleUser.Name,
-			Email:     googleUser.Email,
-			Provider:  &provider,
-			Password:  nil,
-			LoggedOut: false,
+			Id:                 uuid.New(),
+			Username:           uuid.New().String(),
+			Email:              googleUser.Email,
+			Provider:           &provider,
+			Password:           nil,
+			LoggedOut:          false,
+			Firstname:          firstname,
+			Lastname:           lastname,
+			VerificationStatus: model.PhotographerNotVerifiedStatus,
 		}
 
 		if err := r.UserUsecase.UserRepo.AddOne(c, &newUser); err != nil {
@@ -81,7 +104,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		if innerErr != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"status":  "failed",
-				"message": err.Error(),
+				"message": innerErr.Error(),
 			})
 			c.Abort()
 			return
@@ -125,8 +148,12 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":        "success",
-		"session_token": token,
-	})
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"status":        "success",
+	// 	"session_token": token,
+	// })
+
+	c.SetCookie("session_token", token, 3600, "/", "localhost", false, true)
+	location := url.URL{Path: "http://localhost:3000/auth/handle-login"}
+	c.Redirect(http.StatusFound, location.RequestURI())
 }

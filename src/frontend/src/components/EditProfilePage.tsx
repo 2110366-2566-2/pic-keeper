@@ -32,7 +32,6 @@ const EditProfilePage = () => {
       }
       const fileUrl = URL.createObjectURL(file);
       setPhotoPreview(fileUrl);
-      console.log(fileUrl);
     } else {
       setPhotoPreview(null);
     }

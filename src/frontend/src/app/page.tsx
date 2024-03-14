@@ -1,14 +1,21 @@
 "use client";
 import NavBar from "@/components/Navbar";
-import { useSession } from "next-auth/react";
+import userService from "@/services/user";
+import axios from "axios";
+import { useEffect } from "react";
+import CreateGallery from "@/components/CreateGallery";
+
 
 export default function Home() {
-  const { data: session } = useSession();
-  console.log(session);
+  const handleOnClick = () => {
+    axios.post("/api/auth/signout");
+  };
   return (
     <main>
       <NavBar />
-      <div className=''>Pic-Keeper</div>
+      <div className="" onClick={handleOnClick}>
+        Pic-Keeper
+      </div>
     </main>
   );
 }

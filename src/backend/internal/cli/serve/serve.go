@@ -5,13 +5,27 @@ import (
 
 	"github.com/Roongkun/software-eng-ii/internal/config"
 	"github.com/Roongkun/software-eng-ii/internal/controller"
+	"github.com/Roongkun/software-eng-ii/internal/controller/chat"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
+
+	_ "github.com/Roongkun/software-eng-ii/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title           Pic-keeper APIs
+// @version         1.0
+// @description     This is the back-end documentation of the pic-keeper project
+
+// @license.name  Apache 2.0
+
+// @host      localhost:8080
+// @BasePath  /
 
 var ServeCmd = &cobra.Command{
 	Use:   "serve [FLAGS]...",
@@ -34,14 +48,16 @@ var ServeCmd = &cobra.Command{
 
 		db := databases.ConnectSQLDB(appCfg.Database.Postgres.DSN)
 		handler := controller.NewHandler(db)
-		databases.ConnectRedis(appCfg.Database.Redis.DSN)
+		redisClient := databases.ConnectRedis(appCfg.Database.Redis.DSN)
+
+		autoUpdateBookingStatus(handler)
 
 		r := gin.Default()
 		r.Use(retrieveSecretConf(appCfg))
 
 		r.Use(cors.New(cors.Config{
 			AllowOrigins:     []string{"http://localhost:3000"},
-			AllowMethods:     []string{"GET", "PUT", "PATCH", "OPTIONS"},
+			AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"},
 			AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 			ExposeHeaders:    []string{"Content-Length"},
 			AllowCredentials: true,
@@ -62,8 +78,9 @@ var ServeCmd = &cobra.Command{
 
 			verification := admin.Group("/verifications")
 			{
-				verification.GET("/unverified-photographers", handler.Admin.ListUnverifiedPhotographers)
+				verification.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
 				verification.PUT("/verify/:id", handler.Admin.Verify)
+				verification.PUT("/reject/:id", handler.Admin.Reject)
 			}
 			admin.PUT("/logout", handler.Admin.Logout)
 		}
@@ -71,8 +88,7 @@ var ServeCmd = &cobra.Command{
 		authen := r.Group("/authen")
 		{
 			authen := authen.Group("/v1")
-			authen.POST("/register/customer", handler.User.RegCustomer)
-			authen.POST("/register/photographer", handler.Photographer.RegPhotographer)
+			authen.POST("/register", handler.User.Register)
 			authen.POST("/login", handler.User.Login)
 			authen.GET("/refresh", handler.User.RefreshToken)
 			google := authen.Group("/google")
@@ -88,12 +104,69 @@ var ServeCmd = &cobra.Command{
 
 		users := validated.Group("/users")
 		{
-			users.PUT("/v1/logout", handler.User.Logout)
-			users.POST("/v1/upload-profile", handler.User.UploadProfilePicture)
-			users.GET("/v1/get-my-user-info", handler.User.GetMyUserInfo)
-			users.GET("/v1/get-user/:id", handler.User.GetUserInfo)
+			users := users.Group("/v1")
+			users.PUT("/logout", handler.User.Logout)
+			users.POST("/upload-profile", handler.User.UploadProfilePicture)
+			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
+			users.GET("/get-user/:id", handler.User.GetUserInfo)
+			users.PUT("/req-verify", handler.User.RequestVerification)
+			users.GET("/self-status", handler.User.GetSelfStatus)
 		}
 
+		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
+		{
+			phtgGalleries := photographers.Group("/galleries/v1")
+			phtgGalleries.GET("/list", handler.Photographer.ListOwnGalleries)
+			phtgGalleries.POST("/", handler.Photographer.CreateGallery)
+			phtgGalleries.POST("/:id", handler.Photographer.UploadPhotoToGallery)
+			phtgGalleries.PUT("/:id", handler.Photographer.UpdateGallery)
+			phtgGalleries.DELETE("/:id/:photoId", handler.Photographer.DeletePhoto)
+			phtgGalleries.DELETE("/:id", handler.Photographer.DeleteGallery)
+			phtgGalleries.GET("/:id", handler.Photographer.GetOneGallery)
+
+			phtgBookings := photographers.Group("/bookings/v1")
+			phtgBookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
+			phtgBookings.GET("/upcoming", handler.Photographer.ListUpcomingBookings)
+			phtgBookings.GET("/past", handler.Photographer.ListPastBookings)
+			phtgBookings.GET("/my-bookings", handler.Photographer.MyBookings)
+			phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
+			phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
+		}
+
+		customerBookings := validated.Group("/customers/bookings/v1")
+		{
+			customerBookings.POST("/", handler.User.CreateBooking)
+			customerBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
+			customerBookings.GET("/upcoming", handler.User.ListUpcomingBookings)
+			customerBookings.GET("/past", handler.User.ListPastBookings)
+			customerBookings.GET("/my-bookings", handler.User.MyBookings)
+			customerBookings.GET("/:id", handler.User.GetOneBooking)
+			customerBookings.PUT("/cancel/:id", handler.User.CancelBooking)
+			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
+		}
+
+		customerGalleries := validated.Group("/customers/galleries/v1")
+		{
+			customerGalleries.GET("/search", handler.User.SearchGalleries)
+			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
+		}
+
+		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
+		defer chatEntity.Close()
+		chats := validated.Group("/chat")
+		{
+			chats := chats.Group("/v1")
+			chats.GET("/ws", chatEntity.ServeWS)
+		}
+
+		rooms := validated.Group("/room")
+		{
+			rooms := rooms.Group("/v1")
+			rooms.POST("/", handler.Room.InitializeRoom)
+			rooms.GET("/", handler.Room.GetRooms)
+			rooms.GET("/:id", handler.Room.GetAllConversations)
+		}
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 
 		return nil

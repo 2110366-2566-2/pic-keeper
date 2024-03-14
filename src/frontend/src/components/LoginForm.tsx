@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "./Modal";
 import { signIn } from "next-auth/react";
+import authService from "@/services/auth";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -58,11 +59,15 @@ const LoginForm = () => {
     setIsForgotPasswordModalOpen(false);
   };
 
-  const onForgotPassword = (event: React.MouseEvent) => {
-    event.preventDefault(); // Prevent the default anchor behavior
-    setModalMessage("Sorry to hear that!"); // Set the joke message
-    setSuccess(false); // It's not a success event
-    setIsModalOpen(true); // Show the modal
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await authService.googleLogin();
+      if (response.status == "success") {
+        router.push(response.url);
+      }
+    } catch (error) {
+      console.log("error ja");
+    }
   };
 
   return (
@@ -83,7 +88,10 @@ const LoginForm = () => {
                 </h2>
               </div>
               <div className="w-full flex flex-col items-stretch gap-4">
-                <button className="text-center form-input form-input-normal text-gray-500">
+                <button
+                  className="text-center form-input form-input-normal text-gray-500"
+                  onClick={handleGoogleLogin}
+                >
                   <Image
                     src={"/images/google-logo.svg"}
                     alt="google"

@@ -17,10 +17,16 @@ type BucketBasics struct {
 	S3Client *s3.Client
 }
 
+const (
+	ProfilePicBucket   = "profile-picture"
+	GalleryPhotoBucket = "gallery-photos"
+)
+
 const awsRegion = "us-east-1"
 
 var requiredBuckets = []string{
-	"profile-picture",
+	ProfilePicBucket,
+	GalleryPhotoBucket,
 }
 
 var (
@@ -107,6 +113,7 @@ func InitializeS3() error {
 		}
 	}
 
+	log.Println("✅ Localstack connected successfully")
 	return nil
 }
 
@@ -124,4 +131,13 @@ func (basics *BucketBasics) UploadFile(ctx context.Context, bucketName string, o
 		return err
 	}
 	return nil
+}
+
+func (basics *BucketBasics) DeleteFile(ctx context.Context, bucketName string, objectKey string) error {
+	_, err := basics.S3Client.DeleteObject(ctx, &s3.DeleteObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(objectKey),
+	})
+
+	return err
 }

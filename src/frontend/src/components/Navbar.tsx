@@ -10,11 +10,13 @@ import Image from "next/image";
 import { Fragment } from "react";
 import { MdOutlineArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { useSession } from "next-auth/react";
+import userService from "@/services/user";
 
 const NavBar = () => {
   const pathName = usePathname();
 
   const { data: session } = useSession();
+
   const navigation = [
     {
       name: "Search",
@@ -129,7 +131,9 @@ const NavBar = () => {
                               />
                             </div>
 
-                            <h2>{session ? session.user.name : "Guest"}</h2>
+                            <h2>
+                              {session ? session.user.data.firstname : "Guest"}
+                            </h2>
                             {open ? (
                               <MdArrowDropUp />
                             ) : (
@@ -168,7 +172,7 @@ const NavBar = () => {
                             <Menu.Item>
                               {({ active }) => (
                                 <a
-                                  href="user/my-profile"
+                                  href="user/edit-profile"
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
                                     "block px-4 py-2 text-sm text-gray-700"
@@ -207,15 +211,15 @@ const NavBar = () => {
                             {session ? (
                               <Menu.Item>
                                 {({ active }) => (
-                                  <a
-                                    href="#"
+                                  <button
+                                    onClick={() => userService.logout()}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700"
                                     )}
                                   >
                                     Logout
-                                  </a>
+                                  </button>
                                 )}
                               </Menu.Item>
                             ) : (
