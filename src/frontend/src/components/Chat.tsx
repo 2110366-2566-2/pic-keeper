@@ -14,11 +14,6 @@ const Chat = ({ roomId }: ChatProps) => {
   const { sendMessage, messages } = useWebSocket();
   const [sendingMessage, setSendingMessage] = useState("");
   const { data: session } = useSession();
-  const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
-
-  useEffect(() => {
-    setOptimisticMessages(messages);
-  }, [messages]);
 
   const handleSendMessage = () => {
     if (!session?.user?.data?.id) {
@@ -33,20 +28,6 @@ const Chat = ({ roomId }: ChatProps) => {
       room: roomId,
     };
 
-    const mockUpMessageData = {
-      data: sendingMessage,
-      type: "message",
-      sender: session.user.data.id,
-      room: roomId,
-      ts: new Date().toISOString(), // Optimistic timestamp
-      id: "temp-" + Math.random().toString(36).substring(2, 15), // Temporary unique ID for optimistic update
-    };
-
-    setOptimisticMessages((prevMessages) => [
-      ...prevMessages,
-      mockUpMessageData,
-    ]);
-
     sendMessage(messageData);
     setSendingMessage("");
   };
@@ -60,7 +41,7 @@ const Chat = ({ roomId }: ChatProps) => {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <div className="flex-grow p-4 overflow-y-auto">
-        {optimisticMessages.map(
+        {messages.map(
           (message, index) =>
             message.type === "message" && (
               <motion.div
