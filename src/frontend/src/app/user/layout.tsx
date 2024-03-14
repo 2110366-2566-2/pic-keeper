@@ -12,7 +12,7 @@ export default function UserLayout({
     <div className="w-screen h-screen">
       <NavBar />
       <div className="flex h-full">
-        <SideNavbar />
+        {/* <SideNavbar /> */}
         <div className="flex flex-col flex-1">
           <main className="flex-grow">{children}</main>
         </div>
