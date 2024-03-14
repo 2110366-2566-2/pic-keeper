@@ -26,7 +26,7 @@ const AccountManagePage = () => {
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-6 gap-x-6 gap-y-3">
             <div className="sm:col-span-4">
               <h2 className="text-title">Account management</h2>
-              <p className="text-standard font-semiboldtext-gray-700">
+              <p className="text-standard font-semibold text-gray-700">
                 Make changes to your personal information or account type.
               </p>
             </div>
