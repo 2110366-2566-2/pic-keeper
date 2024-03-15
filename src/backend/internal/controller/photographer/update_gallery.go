@@ -11,34 +11,21 @@ import (
 )
 
 func (r *Resolver) UpdateGallery(c *gin.Context) {
-	photographer, exists := c.Get("photographer")
+	user, exists := c.Get("user")
 	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  "Failed to retrieve photographer from context",
-		})
-		c.Abort()
+		util.Raise400Error(c, "Failed to retrieve photographer from context")
 		return
 	}
 
-	photographerObj, ok := photographer.(model.Photographer)
+	userObj, ok := user.(model.User)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  "Invalid object type in context",
-		})
-		c.Abort()
+		util.Raise400Error(c, "Invalid object type in context")
 		return
 	}
 
 	updatingGalleryInput := model.GalleryInput{}
 	if err := c.BindJSON(&updatingGalleryInput); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  "failed",
-			"error":   err.Error(),
-			"message": "unable to bind request body with json model, please recheck",
-		})
-		c.Abort()
+		util.Raise400Error(c, "unable to bind request body with json model, please recheck")
 		return
 	}
 
@@ -56,21 +43,13 @@ func (r *Resolver) UpdateGallery(c *gin.Context) {
 
 	existingGallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, galleryId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
 	// dbValidate
-	if photographerObj.Id != existingGallery.PhotographerId {
-		c.JSON(http.StatusForbidden, gin.H{
-			"status": "failed",
-			"error":  "You have no permission to edit this gallery",
-		})
-		c.Abort()
+	if userObj.Id != existingGallery.PhotographerId {
+		util.Raise403Error(c, "You have no permission to edit this gallery")
 		return
 	}
 
@@ -86,11 +65,7 @@ func (r *Resolver) UpdateGallery(c *gin.Context) {
 	}
 
 	if err := r.GalleryUsecase.GalleryRepo.UpdateOne(c, existingGallery); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 

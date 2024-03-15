@@ -1,22 +1,24 @@
 import apiClient from "@/libs/apiClient";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
-  ListUnverifiedPhotographerResponse,
   LoginCredentials,
   LoginResponse,
+  LogoutResponse,
   RefreshTokenResponse,
-  VerifyResponse,
+  UserListResponse,
+  UserResponse,
 } from "@/types";
+import { signOut } from "next-auth/react";
 
 const adminBaseUrl = "/admin/v1";
 
 const login = async (loginCredentials: LoginCredentials) => {
   try {
-    const response = await apiClient.post<LoginResponse>(
+    const { data } = await apiClient.post<LoginResponse>(
       `${adminBaseUrl}/login`,
       loginCredentials
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -24,7 +26,7 @@ const login = async (loginCredentials: LoginCredentials) => {
 
 const refresh = async (token: string) => {
   try {
-    const response = await apiClient.get<RefreshTokenResponse>(
+    const { data } = await apiClient.get<RefreshTokenResponse>(
       `${adminBaseUrl}/refresh`,
       {
         headers: {
@@ -32,19 +34,18 @@ const refresh = async (token: string) => {
         },
       }
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
 };
 
-const listUnverifiedPhotographer = async () => {
+const listPendingPhotographer = async () => {
   try {
-    const response =
-      await apiClientWithAuth.get<ListUnverifiedPhotographerResponse>(
-        `${adminBaseUrl}/verifications/unverified-photographers`
-      );
-    return response.data;
+    const { data } = await apiClientWithAuth.get<UserListResponse>(
+      `${adminBaseUrl}/verifications/pending-photographers`
+    );
+    return data;
   } catch (error) {
     throw error;
   }
@@ -52,15 +53,45 @@ const listUnverifiedPhotographer = async () => {
 
 const verify = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.put<VerifyResponse>(
-      `${adminBaseUrl}/verifications/${id}`
+    const { data } = await apiClientWithAuth.put<UserResponse>(
+      `${adminBaseUrl}/verifications/verify/${id}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
 };
 
-const adminService = { login, refresh, listUnverifiedPhotographer, verify };
+const reject = async (id: string) => {
+  try {
+    const { data } = await apiClientWithAuth.put<UserResponse>(
+      `${adminBaseUrl}/verifications/reject/${id}`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const logout = async () => {
+  try {
+    const { data } = await apiClientWithAuth.put<LogoutResponse>(
+      `${adminBaseUrl}/logout`
+    );
+    signOut();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const adminService = {
+  login,
+  refresh,
+  listPendingPhotographer,
+  verify,
+  reject,
+  logout,
+};
 
 export default adminService;

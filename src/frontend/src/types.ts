@@ -1,16 +1,20 @@
 export interface NewUser {
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
 }
 
 export interface User {
   id: string;
-  name: string;
+  username: string;
+  firstname: string;
+  lastname: string;
   email: string;
   provider: string | null;
   logged_out: string;
   profile_picture_key: string;
+  verification_status: PhotographerStatus;
 }
 
 export interface LoginCredentials {
@@ -27,12 +31,6 @@ export enum Gender {
 export enum Status {
   Failed = "failed",
   Success = "success",
-}
-
-export interface Photographer {
-  id: string;
-  user_id: string;
-  is_verified: boolean;
 }
 
 export interface Administrator {
@@ -64,8 +62,16 @@ export interface RegisterCustomerResponse extends BaseResponse {
   data: User;
 }
 
-export interface RegisterPhotoGrapherResponse extends BaseResponse {
-  data: Photographer;
+export interface UserResponse extends BaseResponse {
+  data: User;
+}
+
+export interface UserListResponse extends BaseResponse {
+  data: User[];
+}
+
+export interface SelfStatusResponse extends BaseResponse {
+  data: PhotographerStatus;
 }
 
 export interface LoginResponse extends BaseResponse {
@@ -93,18 +99,6 @@ export interface UploadProfilePictureResponse extends BaseResponse {
 export interface GetUserInfoResponse extends BaseResponse {
   data: User;
   profile_picture_url: string;
-}
-
-export interface ListUnverifiedPhotographerResponse extends BaseResponse {
-  data: Photographer[];
-}
-
-export interface VerifyResponse extends BaseResponse {
-  data: Photographer;
-}
-
-export interface RequestPhotographerRoleResponse extends BaseResponse {
-  data: Photographer;
 }
 
 export interface GalleryListResponse extends BaseResponse {
@@ -135,7 +129,7 @@ export enum BookingStatus {
 }
 
 export interface BookingProposal {
-  package_id: string;
+  gallery_id: string;
   start_time: string;
   end_time: string;
 }
@@ -143,7 +137,7 @@ export interface BookingProposal {
 export interface Booking {
   id: string;
   customer_id: string;
-  package_id: string;
+  gallery_id: string;
   start_time: string;
   end_time: string;
   status: BookingStatus;
@@ -216,4 +210,11 @@ export interface UserRoomLookUpListResponse {
 
 export interface ConversationListResponse {
   data: Conversation[];
+}
+
+export enum PhotographerStatus {
+  PhotographerNotVerifiedStatus = "NOT_VERIFIED",
+  PhotographerPendingStatus = "PENDING",
+  PhotographerVerifiedStatus = "VERIFIED",
+  PhotographerRejectedStatus = "REJECTED",
 }

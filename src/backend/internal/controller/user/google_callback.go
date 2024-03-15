@@ -10,6 +10,8 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/third-party/oauth2"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
+	"strings"
 )
 
 // @Summary      This will be automatically called when the Google OAuth2 login process is completed
@@ -65,15 +67,26 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		return
 	}
 
+	// split google name into firstname and lastname
+	combinedName := strings.Split(googleUser.Name, " ")
+	firstname := combinedName[0]
+	lastname := ""
+	if len(combinedName) > 1 {
+		lastname = combinedName[1]
+	}
+
 	var user *model.User
 	if !exist {
 		newUser := model.User{
-			Id:        uuid.New(),
-			Name:      googleUser.Name,
-			Email:     googleUser.Email,
-			Provider:  &provider,
-			Password:  nil,
-			LoggedOut: false,
+			Id:                 uuid.New(),
+			Username:           uuid.New().String(),
+			Email:              googleUser.Email,
+			Provider:           &provider,
+			Password:           nil,
+			LoggedOut:          false,
+			Firstname:          firstname,
+			Lastname:           lastname,
+			VerificationStatus: model.PhotographerNotVerifiedStatus,
 		}
 
 		if err := r.UserUsecase.UserRepo.AddOne(c, &newUser); err != nil {

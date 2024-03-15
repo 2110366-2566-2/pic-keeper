@@ -6,30 +6,17 @@ import {
   NewUser,
   RefreshTokenResponse,
   RegisterCustomerResponse,
-  RegisterPhotoGrapherResponse,
 } from "@/types";
 
 const authBaseUrl = `/authen/v1`;
 
-const registerCustomer = async (newUser: NewUser) => {
+const register = async (newUser: NewUser) => {
   try {
-    const response = await apiClient.post<RegisterCustomerResponse>(
-      `${authBaseUrl}/register/customer`,
+    const { data } = await apiClient.post<RegisterCustomerResponse>(
+      `${authBaseUrl}/register`,
       newUser
     );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-const registerPhotographer = async (newPhotographer: NewUser) => {
-  try {
-    const response = await apiClient.post<RegisterPhotoGrapherResponse>(
-      `${authBaseUrl}/register/photographer`,
-      newPhotographer
-    );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -37,11 +24,11 @@ const registerPhotographer = async (newPhotographer: NewUser) => {
 
 const login = async (loginCredentials: LoginCredentials) => {
   try {
-    const response = await apiClient.post<LoginResponse>(
+    const { data } = await apiClient.post<LoginResponse>(
       `${authBaseUrl}/login`,
       loginCredentials
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -49,7 +36,7 @@ const login = async (loginCredentials: LoginCredentials) => {
 
 const refreshToken = async (token: string) => {
   try {
-    const response = await apiClient.get<RefreshTokenResponse>(
+    const { data } = await apiClient.get<RefreshTokenResponse>(
       `${authBaseUrl}/refresh`,
       {
         headers: {
@@ -57,7 +44,7 @@ const refreshToken = async (token: string) => {
         },
       }
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -65,18 +52,17 @@ const refreshToken = async (token: string) => {
 
 const googleLogin = async () => {
   try {
-    const response = await apiClient.post<GoogleLoginResponse>(
+    const { data } = await apiClient.post<GoogleLoginResponse>(
       `${authBaseUrl}/google/login`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
 };
 
 const authService = {
-  registerCustomer,
-  registerPhotographer,
+  register,
   login,
   refreshToken,
   googleLogin,

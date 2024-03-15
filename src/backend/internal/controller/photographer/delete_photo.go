@@ -3,6 +3,7 @@ package photographer
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/gin-gonic/gin"
@@ -10,14 +11,10 @@ import (
 )
 
 func (r *Resolver) DeletePhoto(c *gin.Context) {
-	photographer := c.MustGet("photographer")
-	photographerObj, ok := photographer.(model.Photographer)
+	user := c.MustGet("photographer")
+	userObj, ok := user.(model.User)
 	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  "could not bind json",
-		})
-		c.Abort()
+		util.Raise400Error(c, "could not bind JSON")
 		return
 	}
 
@@ -29,15 +26,11 @@ func (r *Resolver) DeletePhoto(c *gin.Context) {
 
 	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, galleryId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
-	if gallery.PhotographerId != photographerObj.Id {
+	if gallery.PhotographerId != userObj.Id {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
 			"error":  "you have no permission to modify this gallery",
@@ -64,21 +57,13 @@ func (r *Resolver) DeletePhoto(c *gin.Context) {
 	}
 
 	if err := bucket.DeleteFile(c, s3utils.GalleryPhotoBucket, photo.PhotoKey); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
 	deletedId, err := r.PhotoUsecase.PhotoRepo.DeleteOneById(c, photoId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
