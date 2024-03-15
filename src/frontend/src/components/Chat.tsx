@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useWebSocket } from "@/context/WebSocketContext";
 import { Conversation, Message } from "@/types";
 import roomService from "@/services/room";
+import { isDifferentDay } from "@/utils/date";
 
 interface ChatProps {
   roomId: string;
@@ -57,32 +58,51 @@ const Chat = ({ roomId }: ChatProps) => {
     <div className="flex flex-col h-screen bg-gray-50">
       <div className="flex-grow p-4 overflow-y-auto">
         {/* Render conversations */}
-        {conversations.map(
-          (conversation, index) =>
-            !conversation.deleted_at && (
-              <motion.div
-                key={conversation.id} // Use unique conversation ID for key
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className={`flex justify-${
-                  conversation.user_id === session?.user.data.id
-                    ? "end"
-                    : "start"
-                }`}
-              >
-                <div
-                  className={`p-3 m-1 rounded-lg shadow ${
-                    conversation.user_id === session?.user.data.id
-                      ? "bg-slate-800 text-white"
-                      : "bg-slate-200"
-                  }`}
-                >
-                  {conversation.text}
-                </div>
-              </motion.div>
-            )
-        )}
+        {conversations.length > 0 &&
+          conversations.map((conversation, index) => {
+            const previousConversation = conversations[index - 1];
+            const showDateSeparator =
+              index === 0 ||
+              (previousConversation &&
+                isDifferentDay(
+                  conversation.created_at,
+                  previousConversation.created_at
+                ));
+
+            return (
+              <React.Fragment key={conversation.id}>
+                {showDateSeparator && (
+                  <div className="text-center py-2">
+                    {/* Format the date as you prefer */}
+                    {new Date(conversation.created_at).toLocaleDateString()}
+                  </div>
+                )}
+                {/* Render the conversation/message */}
+                {!conversation.deleted_at && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className={`flex justify-${
+                      conversation.user_id === session?.user.data.id
+                        ? "end"
+                        : "start"
+                    }`}
+                  >
+                    <div
+                      className={`p-3 m-1 rounded-lg shadow ${
+                        conversation.user_id === session?.user.data.id
+                          ? "bg-slate-800 text-white"
+                          : "bg-slate-200"
+                      }`}
+                    >
+                      {conversation.text}
+                    </div>
+                  </motion.div>
+                )}
+              </React.Fragment>
+            );
+          })}
         <div ref={bottomOfChat}></div>
         {messages.map(
           (message, index) =>
