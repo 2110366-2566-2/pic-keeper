@@ -14,11 +14,11 @@ const adminBaseUrl = "/admin/v1";
 
 const login = async (loginCredentials: LoginCredentials) => {
   try {
-    const response = await apiClient.post<LoginResponse>(
+    const { data } = await apiClient.post<LoginResponse>(
       `${adminBaseUrl}/login`,
       loginCredentials
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -26,7 +26,7 @@ const login = async (loginCredentials: LoginCredentials) => {
 
 const refresh = async (token: string) => {
   try {
-    const response = await apiClient.get<RefreshTokenResponse>(
+    const { data } = await apiClient.get<RefreshTokenResponse>(
       `${adminBaseUrl}/refresh`,
       {
         headers: {
@@ -34,7 +34,7 @@ const refresh = async (token: string) => {
         },
       }
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -42,10 +42,10 @@ const refresh = async (token: string) => {
 
 const listPendingPhotographer = async () => {
   try {
-    const response = await apiClientWithAuth.get<UserListResponse>(
+    const { data } = await apiClientWithAuth.get<UserListResponse>(
       `${adminBaseUrl}/verifications/pending-photographers`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -53,10 +53,10 @@ const listPendingPhotographer = async () => {
 
 const verify = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.put<UserResponse>(
+    const { data } = await apiClientWithAuth.put<UserResponse>(
       `${adminBaseUrl}/verifications/verify/${id}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -64,10 +64,10 @@ const verify = async (id: string) => {
 
 const reject = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.put<UserResponse>(
+    const { data } = await apiClientWithAuth.put<UserResponse>(
       `${adminBaseUrl}/verifications/reject/${id}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -75,11 +75,11 @@ const reject = async (id: string) => {
 
 const logout = async () => {
   try {
-    const response = await apiClientWithAuth.put<LogoutResponse>(
+    const { data } = await apiClientWithAuth.put<LogoutResponse>(
       `${adminBaseUrl}/logout`
     );
     signOut();
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
