@@ -11,10 +11,10 @@ const photographerGalleryBaseUrl = "/photographers/v1/galleries";
 
 const getAllGalleries = async () => {
   try {
-    const response = await apiClientWithAuth.get<GalleryListResponse>(
+    const { data } = await apiClientWithAuth.get<GalleryListResponse>(
       `${photographerGalleryBaseUrl}/list`
     );
-    return response.data;
+    return data;
   } catch (error) {
     return error;
   }
@@ -22,11 +22,11 @@ const getAllGalleries = async () => {
 
 const createGallery = async (newGallery: NewGallery) => {
   try {
-    const response = await apiClientWithAuth.post<GalleryResponse>(
+    const { data } = await apiClientWithAuth.post<GalleryResponse>(
       `${photographerGalleryBaseUrl}`,
       newGallery
     );
-    return response.data;
+    return data;
   } catch (error) {
     return error;
   }
@@ -37,7 +37,7 @@ const uploadPhotoToGallery = async (id: string, file: File) => {
     const formData = new FormData();
 
     formData.append("picture", file);
-    const response = await apiClientWithAuth.post<PhotoResponse>(
+    const { data } = await apiClientWithAuth.post<PhotoResponse>(
       `${photographerGalleryBaseUrl}/${id}`,
       formData,
       {
@@ -46,7 +46,7 @@ const uploadPhotoToGallery = async (id: string, file: File) => {
         },
       }
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -54,11 +54,11 @@ const uploadPhotoToGallery = async (id: string, file: File) => {
 
 const updateGallery = async (id: string, newGallery: NewGallery) => {
   try {
-    const response = await apiClientWithAuth.put<GalleryResponse>(
+    const { data } = await apiClientWithAuth.put<GalleryResponse>(
       `${photographerGalleryBaseUrl}/${id}`,
       newGallery
     );
-    return response.data;
+    return data;
   } catch (error) {
     return error;
   }
@@ -66,10 +66,10 @@ const updateGallery = async (id: string, newGallery: NewGallery) => {
 
 const deleteGallery = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.delete<DeleteResponse>(
+    const { data } = await apiClientWithAuth.delete<DeleteResponse>(
       `${photographerGalleryBaseUrl}/${id}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     return error;
   }
@@ -77,10 +77,10 @@ const deleteGallery = async (id: string) => {
 
 const deletePhotoFromGallery = async (id: string, photoId: string) => {
   try {
-    const response = await apiClientWithAuth.delete<DeleteResponse>(
+    const { data } = await apiClientWithAuth.delete<DeleteResponse>(
       `${photographerGalleryBaseUrl}/${id}/${photoId}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     return error;
   }
@@ -88,10 +88,10 @@ const deletePhotoFromGallery = async (id: string, photoId: string) => {
 
 const getGallery = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.get<GalleryResponse>(
+    const { data } = await apiClientWithAuth.get<GalleryResponse>(
       `${photographerGalleryBaseUrl}/${id}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     return error;
   }

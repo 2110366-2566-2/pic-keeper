@@ -11,11 +11,11 @@ const userBaseUrl = "/users/v1";
 
 const logout = async () => {
   try {
-    const response = await apiClientWithAuth.put<LogoutResponse>(
+    const { data } = await apiClientWithAuth.put<LogoutResponse>(
       `${userBaseUrl}/logout`
     );
     signOut();
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -26,7 +26,7 @@ const uploadProfile = async (file: File) => {
     const formData = new FormData();
 
     formData.append("profilePicture", file);
-    const response = await apiClientWithAuth.post<UploadProfilePictureResponse>(
+    const { data } = await apiClientWithAuth.post<UploadProfilePictureResponse>(
       `${userBaseUrl}/upload-profile`,
       formData,
       {
@@ -35,7 +35,7 @@ const uploadProfile = async (file: File) => {
         },
       }
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -43,10 +43,10 @@ const uploadProfile = async (file: File) => {
 
 const getMyUserInfo = async () => {
   try {
-    const response = await apiClientWithAuth.get<GetUserInfoResponse>(
+    const { data } = await apiClientWithAuth.get<GetUserInfoResponse>(
       `${userBaseUrl}/get-my-user-info`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -54,10 +54,10 @@ const getMyUserInfo = async () => {
 
 const getUserById = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.get<GetUserInfoResponse>(
+    const { data } = await apiClientWithAuth.get<GetUserInfoResponse>(
       `${userBaseUrl}/get-user/${id}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -65,10 +65,10 @@ const getUserById = async (id: string) => {
 
 const requestVerify = async () => {
   try {
-    const response = await apiClientWithAuth.get<UserResponse>(
+    const { data } = await apiClientWithAuth.get<UserResponse>(
       `${userBaseUrl}/req-verify`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -76,10 +76,10 @@ const requestVerify = async () => {
 
 const getSelfStatus = async () => {
   try {
-    const response = await apiClientWithAuth.get<UserResponse>(
+    const { data } = await apiClientWithAuth.get<UserResponse>(
       `${userBaseUrl}/self-status`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }

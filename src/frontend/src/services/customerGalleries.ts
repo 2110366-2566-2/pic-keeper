@@ -12,10 +12,10 @@ const search = async (searchFilter: SearchFilter) => {
       }
     });
 
-    const response = await apiClientWithAuth.get<GalleryListResponse>(
+    const { data } = await apiClientWithAuth.get<GalleryListResponse>(
       `${customerGalleriesBaseUrl}?${queryParams.toString()}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -23,10 +23,10 @@ const search = async (searchFilter: SearchFilter) => {
 
 const getPhotoUrlsListInGallery = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.get<UrlsListResponse>(
+    const { data } = await apiClientWithAuth.get<UrlsListResponse>(
       `${customerGalleriesBaseUrl}/${id}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
