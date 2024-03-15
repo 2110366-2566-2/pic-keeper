@@ -5,7 +5,7 @@ import {
   UserRoomLookUpListResponse,
 } from "@/types";
 
-const roomBaseUrl = "/room/v1";
+const roomBaseUrl = "/rooms/v1";
 
 const createRoom = async (roomMembers: RoomMemberInput) => {
   try {

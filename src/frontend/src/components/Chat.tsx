@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { useWebSocket } from "@/context/WebSocketContext";
-import { Message } from "@/types";
+import { Conversation, Message } from "@/types";
+import roomService from "@/services/room";
 
 interface ChatProps {
   roomId: string;
@@ -14,6 +15,15 @@ const Chat = ({ roomId }: ChatProps) => {
   const { sendMessage, messages } = useWebSocket();
   const [sendingMessage, setSendingMessage] = useState("");
   const { data: session } = useSession();
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+
+  useEffect(() => {
+    const fetchOldConversation = async () => {
+      const conversations = await roomService.getAllConversations(roomId);
+      setConversations(conversations.data.reverse());
+    };
+    fetchOldConversation();
+  }, [roomId]);
 
   const handleSendMessage = () => {
     if (!session?.user?.data?.id) {
@@ -41,6 +51,33 @@ const Chat = ({ roomId }: ChatProps) => {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <div className="flex-grow p-4 overflow-y-auto">
+        {/* Render conversations */}
+        {conversations.map(
+          (conversation, index) =>
+            !conversation.deleted_at && (
+              <motion.div
+                key={conversation.id} // Use unique conversation ID for key
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className={`flex justify-${
+                  conversation.user_id === session?.user.data.id
+                    ? "end"
+                    : "start"
+                }`}
+              >
+                <div
+                  className={`p-3 m-1 rounded-lg shadow ${
+                    conversation.user_id === session?.user.data.id
+                      ? "bg-slate-800 text-white"
+                      : "bg-slate-200"
+                  }`}
+                >
+                  {conversation.text}
+                </div>
+              </motion.div>
+            )
+        )}
         {messages.map(
           (message, index) =>
             message.type === "message" && (
