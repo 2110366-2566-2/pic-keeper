@@ -10,6 +10,8 @@ import React, {
 } from "react";
 import { useSession } from "next-auth/react";
 import { Message, SendMessage } from "@/types";
+import userService from "@/services/user";
+import authService from "@/services/auth";
 
 interface IWebSocketContext {
   sendMessage: (messageData: SendMessage) => void;
@@ -48,7 +50,18 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     const newWs = new WebSocket(`ws://localhost:8080/chat/v1/ws/${authToken}`);
 
     newWs.onopen = () => console.log("Connected to server");
-    newWs.onclose = () => console.log("Disconnected from server");
+    newWs.onclose = () => {
+      console.log("Disconnected from server");
+      console.log("Trying to connect with new token");
+
+      const refreshToken = await authService.refreshToken(
+        session.user.session_token
+      );
+      session.user.session_token = refreshToken.refreshed_session_token;
+
+      console.log("Trying to reconnect");
+      const newWs = newWebSocket(`ws://localhost:8080/chat/v1/ws/${authToken}`);
+    };
     newWs.onerror = (error) => console.error("WebSocket error:", error);
 
     newWs.onmessage = (event) => {
@@ -76,7 +89,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       sendMessage,
       messages,
     }),
-    [messages, ws]
+    [messages, sendMessage]
   );
 
   return (

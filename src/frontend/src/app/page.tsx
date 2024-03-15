@@ -2,24 +2,21 @@
 import NavBar from "@/components/Navbar";
 import userService from "@/services/user";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
 export default function Home() {
-  const handleOnClick = () => {
-    axios.post("/api/auth/signout");
+  const { data: session } = useSession();
+
+  const fetchUserInfo = async () => {
+    const response = await userService.getMyUserInfo();
+    console.log(response);
   };
-  useEffect(() => {
-    console.log("yeahh mounted");
-    return () => {
-      console.log("unmounteddd");
-    };
-  });
+  fetchUserInfo();
   return (
     <main>
       <NavBar />
-      <div className="" onClick={handleOnClick}>
-        Pic-Keeper
-      </div>
+      <div className="">Pic-Keeper</div>
     </main>
   );
 }
