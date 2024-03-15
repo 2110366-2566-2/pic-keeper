@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { useWebSocket } from "@/context/WebSocketContext";
@@ -16,6 +16,7 @@ const Chat = ({ roomId }: ChatProps) => {
   const [sendingMessage, setSendingMessage] = useState("");
   const { data: session } = useSession();
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const bottomOfChat = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchOldConversation = async () => {
@@ -24,6 +25,10 @@ const Chat = ({ roomId }: ChatProps) => {
     };
     fetchOldConversation();
   }, [roomId]);
+
+  useEffect(() => {
+    bottomOfChat.current?.scrollIntoView({ behavior: "instant" });
+  }, [messages, conversations]);
 
   const handleSendMessage = () => {
     if (!session?.user?.data?.id) {
@@ -78,6 +83,7 @@ const Chat = ({ roomId }: ChatProps) => {
               </motion.div>
             )
         )}
+        <div ref={bottomOfChat}></div>
         {messages.map(
           (message, index) =>
             message.type === "message" && (
