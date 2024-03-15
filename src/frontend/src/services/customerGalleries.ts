@@ -3,7 +3,7 @@ import { GalleryListResponse, SearchFilter, UrlsListResponse } from "@/types";
 
 const customerGalleriesBaseUrl = "customers/galleries/v1/";
 
-const search = async (searchFilter: SearchFilter) => {
+const search = async (searchFilter: SearchFilter = {}) => {
   try {
     const queryParams = new URLSearchParams();
     Object.entries(searchFilter).forEach(([key, value]) => {
