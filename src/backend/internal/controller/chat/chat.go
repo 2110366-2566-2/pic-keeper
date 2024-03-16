@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"errors"
+
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
@@ -318,41 +321,28 @@ func ping(ws *websocket.Conn) {
 func (c *Chat) ServeWS(gc *gin.Context) {
 
 	if gc.Request.Method != http.MethodGet {
-		gc.JSON(http.StatusMethodNotAllowed, gin.H{
-			"status": "failed",
-			"error":  "method not allowed",
-		})
-		gc.Abort()
+		util.Raise405Error(gc, "method not allowed")
 		return
 	}
 
 	ws, err := upgrader.Upgrade(gc.Writer, gc.Request, nil)
 	if err != nil {
-		gc.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
+		util.Raise400Error(gc, err.Error())
+		return
 	}
 
 	defer ws.Close()
 
 	token := gc.Param("session-token")
 	if token == "" {
-		gc.JSON(gc.GetInt("errorStatus"), gin.H{
-			"status": "failed",
-			"error":  gc.GetString("errorMessage"),
-		})
-		gc.Abort()
+		util.Raise400Error(gc, "No session token provided")
 		return
 	}
 
 	secretKey, exist := gc.Get("secretKey")
 	if !exist {
-		gc.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  "secret key not found",
-		})
-		gc.Abort()
+		err := errors.New("secret key not found")
+		util.Raise500Error(gc, err)
 		return
 	}
 	jwtWrapper := auth.JwtWrapper{
@@ -362,31 +352,18 @@ func (c *Chat) ServeWS(gc *gin.Context) {
 
 	claims, err := jwtWrapper.ValidateToken(gc, token, false)
 	if err != nil {
-		gc.JSON(gc.GetInt("errorStatus"), gin.H{
-			"status": "failed",
-			"error":  gc.GetString("errorMessage"),
-		})
-		gc.Abort()
+		util.Raise500Error(gc, err)
 		return
 	}
 
 	user, err := c.Resolver.UserUsecase.UserRepo.FindOneByEmail(gc, claims.Email)
-	log.Println("Here1")
 	if err != nil {
-		gc.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		gc.Abort()
+		util.Raise500Error(gc, err)
 		return
 	}
 
 	if user.LoggedOut {
-		gc.JSON(http.StatusUnauthorized, gin.H{
-			"status": "failed",
-			"error":  "you have logged out, please log in again",
-		})
-		gc.Abort()
+		util.Raise401Error(gc, "you have logged out, please log in again")
 		return
 	}
 
