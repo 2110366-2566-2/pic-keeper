@@ -7,7 +7,7 @@ import SideBarLandingPage from "@/components/SideBarLandingPage";
 import SearchBar from "@/components/SearchBar";
 import userService from "@/services/user";
 import axios from "axios";
-<<<<<<< HEAD
+
 import { useEffect, useState } from "react";
 import { Gallery } from "@/types";
 import photographerGalleryService from "@/services/photographerGalleries";
@@ -172,23 +172,6 @@ export default function Home() {
           </div>
           
         </div> */}
-=======
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
-
-export default function Home() {
-  const { data: session } = useSession();
-
-  const fetchUserInfo = async () => {
-    const response = await userService.getMyUserInfo();
-    console.log(response);
-  };
-  fetchUserInfo();
-  return (
-    <main>
-      <NavBar />
-      <div className="">Pic-Keeper</div>
->>>>>>> d1017c362207e2fb219c1c18fdb73b3a8b6e11bc
     </main>
   );
 }

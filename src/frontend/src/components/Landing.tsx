@@ -17,7 +17,6 @@ const LandingPage = () => {
   const [selectedGender, setSelectedGender] = useState("All");
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
-
   const [searchFiter, setSearchFilter] = useState<SearchFilter>({});
 
   useEffect(() => {
