@@ -41,6 +41,7 @@ type User struct {
 	About              string    `bun:"about,type:varchar" json:"about"`
 	Location           string    `bun:"location,type:varchar" json:"location"`
 	PhoneNumber        string    `bun:"phone_number,type:varchar" json:"phone_number"`
+	Gender             string    `bun:"gender,type:varchar" json:"gender"`
 }
 
 type UserInput struct {
