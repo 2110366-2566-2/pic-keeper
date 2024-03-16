@@ -218,3 +218,19 @@ export enum PhotographerStatus {
   PhotographerVerifiedStatus = "VERIFIED",
   PhotographerRejectedStatus = "REJECTED",
 }
+
+export interface Message {
+  data: string;
+  id: string;
+  room: string;
+  sender: string;
+  ts: string;
+  type: string;
+}
+
+export interface SendMessage {
+  data: string;
+  type: string;
+  room: string;
+  sender: string;
+}

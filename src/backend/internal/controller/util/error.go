@@ -21,8 +21,25 @@ func Raise400Error(c *gin.Context, message string) {
 	})
 	c.Abort()
 }
+
+func Raise401Error(c *gin.Context, message string) {
+	c.JSON(http.StatusUnauthorized, gin.H{
+		"status": "failed",
+		"error":  message,
+	})
+	c.Abort()
+}
+
 func Raise403Error(c *gin.Context, message string) {
 	c.JSON(http.StatusForbidden, gin.H{
+		"status": "failed",
+		"error":  message,
+	})
+	c.Abort()
+}
+
+func Raise405Error(c *gin.Context, message string) {
+	c.JSON(http.StatusMethodNotAllowed, gin.H{
 		"status": "failed",
 		"error":  message,
 	})

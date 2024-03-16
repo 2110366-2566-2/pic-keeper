@@ -60,6 +60,11 @@ async function processRequestWithTokenRetry(
         const { refreshed_session_token } = await authService.refreshToken(
           token
         );
+        const session = await getServerSession(authOptions);
+        if (session) {
+          session.user.session_token = refreshed_session_token;
+        }
+
         return await makeRequest(refreshed_session_token);
       } catch (refreshError) {
         redirect("/auth/login");
