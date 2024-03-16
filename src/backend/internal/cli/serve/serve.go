@@ -107,6 +107,12 @@ var ServeCmd = &cobra.Command{
 			chats.GET("/ws/:session-token", chatEntity.ServeWS)
 		}
 
+		customerGalleries := r.Group("/customers/galleries/v1")
+		{
+			customerGalleries.GET("/search", handler.User.SearchGalleries)
+			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
+		}
+
 		validated := r.Group("/", middleware.UserAuthorizationMiddleware)
 		validated.Use(handler.User.GetUserInstance)
 
@@ -117,6 +123,7 @@ var ServeCmd = &cobra.Command{
 			users.POST("/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/get-user/:id", handler.User.GetUserInfo)
+			users.PUT("/", handler.User.UpdateUserProfile)
 			users.PUT("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
 		}
@@ -151,12 +158,6 @@ var ServeCmd = &cobra.Command{
 			customerBookings.GET("/:id", handler.User.GetOneBooking)
 			customerBookings.PUT("/cancel/:id", handler.User.CancelBooking)
 			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
-		}
-
-		customerGalleries := validated.Group("/customers/galleries/v1")
-		{
-			customerGalleries.GET("/search", handler.User.SearchGalleries)
-			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
 		}
 
 		rooms := validated.Group("/rooms")
