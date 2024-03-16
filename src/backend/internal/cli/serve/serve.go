@@ -165,7 +165,8 @@ var ServeCmd = &cobra.Command{
 			rooms := rooms.Group("/v1")
 			rooms.POST("/", handler.Room.InitializeRoom)
 			rooms.GET("/", handler.Room.GetRooms)
-			rooms.GET("/:id", handler.Room.GetAllConversations)
+			rooms.GET("/:id", handler.Room.GetRoom)
+			rooms.GET("/conversation/:id", handler.Room.GetAllConversations)
 		}
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
