@@ -13,7 +13,7 @@ const search = async (searchFilter: SearchFilter = {}) => {
     });
 
     const { data } = await apiClient.get<GalleryListResponse>(
-      `${customerGalleriesBaseUrl}?${queryParams.toString()}`
+      `${customerGalleriesBaseUrl}/search?${queryParams.toString()}`
     );
     return data;
   } catch (error) {
