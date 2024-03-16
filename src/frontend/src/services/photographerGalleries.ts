@@ -9,7 +9,7 @@ import {
 
 const photographerGalleryBaseUrl = "/photographers/v1/galleries";
 
-const getAllGalleries = async () => {
+const getAllMyGalleries = async () => {
   try {
     const { data } = await apiClientWithAuth.get<GalleryListResponse>(
       `${photographerGalleryBaseUrl}/list`
@@ -97,7 +97,7 @@ const getGallery = async (id: string) => {
   }
 };
 const photographerGalleryService = {
-  getAllGalleries,
+  getAllMyGalleries,
   createGallery,
   uploadPhotoToGallery,
   updateGallery,

@@ -154,6 +154,7 @@ export interface SearchFilter {
 
 export interface Room {
   id: string;
+  gallery: Gallery;
   created_at: string;
   updated_at: string;
   deleted_at?: string;
@@ -180,6 +181,7 @@ export interface Conversation {
 
 export interface RoomMemberInput {
   member_ids: string[];
+  gallery_id: string;
 }
 
 export interface BookingListResponse {
@@ -217,4 +219,20 @@ export enum PhotographerStatus {
   PhotographerPendingStatus = "PENDING",
   PhotographerVerifiedStatus = "VERIFIED",
   PhotographerRejectedStatus = "REJECTED",
+}
+
+export interface Message {
+  data: string;
+  id: string;
+  room: string;
+  sender: string;
+  ts: string;
+  type: string;
+}
+
+export interface SendMessage {
+  data: string;
+  type: string;
+  room: string;
+  sender: string;
 }
