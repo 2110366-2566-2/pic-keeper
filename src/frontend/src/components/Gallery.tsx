@@ -1,6 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
+import { useState , useEffect } from "react";
+import customerGalleriesService from "@/services/customerGalleries";
 
 type Props = {
   GalleryName: string;
@@ -10,7 +12,19 @@ type Props = {
 };
 
 const GalleryComponent = (data: Props) => {
+  const [ listOfImages , setListOfImages ] = useState<string[]>([])
+
+  useEffect(() => {
+    const fetchAllImages = async () => {
+      const response = await customerGalleriesService.getPhotoUrlsListInGallery(data.GalleryName)
+      setListOfImages(response);
+    };
+
+    fetchAllImages();
+  }, []);
+  
   return (
+
     <div className="rounded-xl shadow-lg bg-white overflow-hidden">
       {/* Check how many pictures the gallery have 1,2,3? */}
       {data.Images.length === 1 ? (
