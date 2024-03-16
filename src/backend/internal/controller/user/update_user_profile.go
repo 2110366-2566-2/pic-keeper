@@ -52,7 +52,7 @@ func (r *Resolver) UpdateUserProfile(c *gin.Context) {
 	}
 
 	if updatingUserInput.About != nil {
-		userObj.About = *updatingUserInput.About
+		userObj.About = updatingUserInput.About
 	}
 
 	// Update Email if provided
@@ -74,7 +74,7 @@ func (r *Resolver) UpdateUserProfile(c *gin.Context) {
 
 	// Update PhoneNumber if provided
 	if updatingUserInput.PhoneNumber != nil {
-		userObj.PhoneNumber = *updatingUserInput.PhoneNumber
+		userObj.PhoneNumber = updatingUserInput.PhoneNumber
 	}
 
 	// Update Firstname if provided
@@ -89,19 +89,25 @@ func (r *Resolver) UpdateUserProfile(c *gin.Context) {
 
 	// Update Gender if provided
 	if updatingUserInput.Gender != nil {
-		userObj.Gender = *updatingUserInput.Gender
+		userObj.Gender = updatingUserInput.Gender
 	}
 
 	// Update Location if provided
 	if updatingUserInput.Location != nil {
-		userObj.Location = *updatingUserInput.Location
+		userObj.Location = updatingUserInput.Location
+	}
+
+	if updatingUserInput.Username != nil {
+		userObj.Username = *updatingUserInput.Username
 	}
 
 	// Finally, update the user in the database
-	if err := r.UserUsecase.UserRepo.UpdateOne(c, userObj); err != nil {
-		util.Raise500Error(c, updateErr)
+	if err := r.UserUsecase.UserRepo.UpdateOne(c, &userObj); err != nil {
+		util.Raise500Error(c, err)
 		return
 	}
+
+	c.Set("user", userObj)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",

@@ -38,10 +38,10 @@ type User struct {
 	Firstname          string    `bun:"firstname,type:varchar" json:"firstname"`
 	Lastname           string    `bun:"lastname,type:varchar" json:"lastname"`
 	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
-	About              string    `bun:"about,type:varchar" json:"about"`
-	Location           string    `bun:"location,type:varchar" json:"location"`
-	PhoneNumber        string    `bun:"phone_number,type:varchar" json:"phone_number"`
-	Gender             string    `bun:"gender,type:varchar" json:"gender"`
+	About              *string   `bun:"about,type:varchar" json:"about"`
+	Location           *string   `bun:"location,type:varchar" json:"location"`
+	PhoneNumber        *string   `bun:"phone_number,type:varchar" json:"phone_number"`
+	Gender             *string   `bun:"gender,type:varchar" json:"gender"`
 }
 
 type UserInput struct {
