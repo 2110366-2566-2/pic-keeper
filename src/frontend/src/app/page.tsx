@@ -7,34 +7,39 @@ import SideBarLandingPage from "@/components/SideBarLandingPage";
 import SearchBar from "@/components/SearchBar";
 import userService from "@/services/user";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Gallery } from "@/types";
-import getAllGalleries from "@/services/photographerGalleries";
+import photographerGalleryService from "@/services/photographerGalleries";
+import Landing from "@/components/Landing";
 
 export default function Home() {
+
+  const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
+
+  // useEffect(() => {
+  //   const fetchAllGalleries = async () => {
+  //     const response = await photographerGalleryService.getAllGalleries();
+  //     setListOfGalleries(response)
+  //   }
+
+  //   fetchAllGalleries();
+  // }, [])
+
+  
   const handleOnClick = () => {
     axios.post("/api/auth/signout");
   };
   // This will list of GalleryComponent that get from backend
   // Usage of the `getAllGalleries` function
-  const result = getAllGalleries
+
   return (
     <main>
-      <div className="fixed top-0 z-50">
-        <NavBar />
-      </div>
-      <div className="sticky top-16 w-full px-6 z-30 bg-white">
-        <SearchBar />
-      </div>
-      <div className="flex flex-row pt-16">
-        {/* This part is sidebar */}
-        <div className="w-1/5 pl-4">
-          <SideBarLandingPage />
-        </div>
+      <Landing/>
 
         {/* This is section of displayed gallery view */}
-        <div className="mx-5 z-20 w-4/5">
+        {/* <div className="mx-5 z-20 w-4/5">
           <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            
             <GalleryComponent
               GalleryName={"White House"}
               Images={["/images/image1.jpg"]}
@@ -164,8 +169,8 @@ export default function Home() {
               Price={1000}
             />
           </div>
-        </div>
-      </div>
+          
+        </div> */}
     </main>
   );
 }
