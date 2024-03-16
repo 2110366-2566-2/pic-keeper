@@ -6,7 +6,6 @@ import customerGalleriesService from "@/services/customerGalleries";
 
 type Props = {
   GalleryName: string;
-  Images: string[];
   Photographer: string;
   Price: number;
 };
@@ -22,12 +21,12 @@ const GalleryComponent = (data: Props) => {
 
     fetchAllImages();
   }, []);
-  
+
   return (
 
     <div className="rounded-xl shadow-lg bg-white overflow-hidden">
       {/* Check how many pictures the gallery have 1,2,3? */}
-      {data.Images.length === 1 ? (
+      {listOfImages.length === 1 ? (
         <div className="px-2 pt-2">
           <div className="relative w-full h-64">
             <Image
@@ -39,9 +38,9 @@ const GalleryComponent = (data: Props) => {
             />
           </div>
         </div>
-      ) : data.Images.length === 2 ? (
+      ) : listOfImages.length === 2 ? (
         <div className="flex gap-2 px-2 pt-2">
-          {data.Images.map((image, index) => (
+          {listOfImages.map((image, index) => (
             <div key={index} className="relative w-1/2 h-64">
               <Image
                 src={image}
@@ -57,7 +56,7 @@ const GalleryComponent = (data: Props) => {
         <div className="flex gap-2 px-2 pt-2">
           <div className="relative w-3/5 h-64">
             <Image
-              src={data.Images[0]}
+              src={listOfImages[0]}
               alt="Tiger"
               layout="fill"
               objectFit="cover"
@@ -67,7 +66,7 @@ const GalleryComponent = (data: Props) => {
           <div className="flex flex-col w-2/5 h-64 gap-2">
             <div className="relative w-full h-32">
               <Image
-                src={data.Images[1]}
+                src={listOfImages[1]}
                 alt="Tiger"
                 layout="fill"
                 objectFit="cover"
@@ -76,7 +75,7 @@ const GalleryComponent = (data: Props) => {
             </div>
             <div className="relative w-full h-32">
               <Image
-                src={data.Images[2]}
+                src={listOfImages[2]}
                 alt="Tiger"
                 layout="fill"
                 objectFit="cover"
