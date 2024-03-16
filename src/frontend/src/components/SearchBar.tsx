@@ -8,7 +8,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
 
-const SearchBar = () => {
+const SearchBar = (data: Props) => {
   const classNames = (...classes: string[]) =>
     classes.filter(Boolean).join(" ");
 
