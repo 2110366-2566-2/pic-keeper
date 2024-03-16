@@ -30,3 +30,7 @@ func (u *UserUseCase) CheckExistenceByEmail(ctx context.Context, email string) (
 func (u *UserUseCase) ListPendingPhotographers(ctx context.Context) ([]*model.User, error) {
 	return u.UserRepo.ListPendingPhotographers(ctx)
 }
+
+func (u *UserUseCase) FindOneByUsername(ctx context.Context, username string) (*model.User, error) {
+	return u.UserRepo.FindOneByEmail(ctx, username)
+}

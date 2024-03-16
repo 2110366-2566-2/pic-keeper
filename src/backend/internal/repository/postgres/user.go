@@ -47,3 +47,11 @@ func (u *UserDB) ListPendingPhotographers(ctx context.Context) ([]*model.User, e
 
 	return pendingPhotographers, nil
 }
+
+func (u *UserDB) FindOneByUsername(ctx context.Context, username string) (*model.User, error) {
+	var user model.User
+	if err := u.db.NewSelect().Model(&user).Where("username = ?", username).Scan(ctx, &user); err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
