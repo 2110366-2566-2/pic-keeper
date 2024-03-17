@@ -24,6 +24,10 @@ func (l *LookupUseCase) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*
 	return l.LookupRepo.FindByUserId(ctx, userId)
 }
 
+func (l *LookupUseCase) FindByRoomId(ctx context.Context, roomId uuid.UUID) ([]*model.UserRoomLookup, error) {
+	return l.LookupRepo.FindByRoomId(ctx, roomId)
+}
+
 func (l *LookupUseCase) CheckRoomMembership(ctx context.Context, userId uuid.UUID, roomId uuid.UUID) (bool, error) {
 	return l.LookupRepo.CheckRoomMembership(ctx, userId, roomId)
 }
