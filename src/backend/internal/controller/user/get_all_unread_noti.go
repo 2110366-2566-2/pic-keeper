@@ -16,7 +16,7 @@ func (r *Resolver) GetAllUnreadNotifications(c *gin.Context) {
 		return
 	}
 
-	unreadNotis, err := r.NotificationUsecase.GetAllUnreadByUserId(c, userObj.Id)
+	unreadNotis, err := r.NotificationUsecase.GetAllUnreadByUserIdWithRoomOption(c, userObj.Id)
 	if err != nil {
 		util.Raise500Error(c, err)
 		return

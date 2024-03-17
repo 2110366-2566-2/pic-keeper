@@ -20,6 +20,10 @@ func NewNotificationUseCase(db *bun.DB) *NotificationUseCase {
 	}
 }
 
-func (n *NotificationUseCase) GetAllUnreadByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Notification, error) {
-	return n.NotificationRepo.GetAllUnreadByUserId(ctx, userId)
+func (n *NotificationUseCase) GetAllUnreadByUserIdWithRoomOption(ctx context.Context, userId uuid.UUID, roomId ...uuid.UUID) ([]*model.Notification, error) {
+	return n.NotificationRepo.GetAllUnreadByUserIdWithRoomOption(ctx, userId, roomId...)
+}
+
+func (n *NotificationUseCase) ReadNotificationFromThisRoom(ctx context.Context, updatedNoti []*model.Notification) error {
+	return n.NotificationRepo.ReadNotificationFromThisRoom(ctx, updatedNoti)
 }

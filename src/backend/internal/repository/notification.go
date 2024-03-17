@@ -9,5 +9,6 @@ import (
 
 type Notification interface {
 	BaseRepo[model.Notification]
-	GetAllUnreadByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Notification, error)
+	GetAllUnreadByUserIdWithRoomOption(ctx context.Context, userId uuid.UUID, roomId ...uuid.UUID) ([]*model.Notification, error)
+	ReadNotificationFromThisRoom(ctx context.Context, updatedNoti []*model.Notification) error
 }
