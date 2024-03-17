@@ -125,8 +125,9 @@ var ServeCmd = &cobra.Command{
 			users.GET("/get-user/:id", handler.User.GetUserInfo)
 			users.PUT("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
-			users.GET("/get-noti", handler.User.GetAllUnreadNotifications)
-			users.PUT("/read-noti/:roomId", handler.User.ReadNotificationFromThisRoom)
+			users.GET("/noti", handler.User.GetAllUnreadNotifications)
+			users.GET("/noti/:roomId", handler.User.GetAllUnreadNotificationsFromRoom)
+			users.PUT("/read-noti/:roomId", handler.User.ReadNotificationFromRoom)
 		}
 
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)

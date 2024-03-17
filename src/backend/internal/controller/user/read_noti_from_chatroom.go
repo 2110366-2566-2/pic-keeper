@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) ReadNotificationFromThisRoom(c *gin.Context) {
+func (r *Resolver) ReadNotificationFromRoom(c *gin.Context) {
 	user := c.MustGet("user")
 	userObj, ok := user.(model.User)
 	if !ok {
