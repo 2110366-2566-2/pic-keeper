@@ -20,6 +20,12 @@ const (
 	PhotographerRejectedStatus    = "REJECTED"
 )
 
+const (
+	MALE   = "MALE"
+	FEMALE = "FEMALE"
+	OTHER  = "OTHER"
+)
+
 type User struct {
 	bun.BaseModel      `bun:"table:users,alias:u"`
 	Id                 uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
@@ -32,6 +38,10 @@ type User struct {
 	Firstname          string    `bun:"firstname,type:varchar" json:"firstname"`
 	Lastname           string    `bun:"lastname,type:varchar" json:"lastname"`
 	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
+	About              *string   `bun:"about,type:varchar" json:"about"`
+	Address            *string   `bun:"address,type:varchar" json:"address"`
+	PhoneNumber        *string   `bun:"phone_number,type:varchar" json:"phone_number"`
+	Gender             *string   `bun:"gender,type:varchar" json:"gender"`
 }
 
 type UserInput struct {
@@ -39,6 +49,18 @@ type UserInput struct {
 	Password  *string `json:"password" example:"root"`
 	Firstname string  `json:"firstname" example:"test"`
 	Lastname  string  `json:"lastname" example:"test"`
+}
+
+type UserUpdateInput struct {
+	Email       *string `json:"email" example:"test@mail.com"`
+	Password    *string `json:"password" example:"root"`
+	PhoneNumber *string `json:"phone_number" example:"096198923"`
+	Firstname   *string `json:"firstname" example:"test"`
+	Lastname    *string `json:"lastname" example:"test"`
+	Gender      *string `json:"gender" example:"Male"`
+	About       *string `json:"about" example:"Hello"`
+	Username    *string `json:"username" example:"test"`
+	Address     *string `json:"address" example:"Bangkok"`
 }
 
 type Administrator struct {

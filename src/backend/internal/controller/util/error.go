@@ -45,3 +45,11 @@ func Raise405Error(c *gin.Context, message string) {
 	})
 	c.Abort()
 }
+
+func Raise409Error(c *gin.Context, message string) {
+	c.JSON(http.StatusConflict, gin.H{
+		"status": "failed",
+		"error":  message,
+	})
+	c.Abort()
+}
