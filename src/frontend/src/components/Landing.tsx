@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { Gallery, SearchFilter, NewGallery } from "@/types";
+import { Gallery } from "@/types/gallery";
+import { SearchFilter } from "@/types/gallery";
+import { NewGallery } from "@/types/gallery";
 import SearchBar from "@/components/SearchBar";
 import GalleryComponent from "./Gallery";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/shared/Navbar";
 import SideBarLandingPage from "./SideBarLandingPage";
 import photographerGalleryService from "@/services/photographerGalleries";
 import customerGalleriesService from "@/services/customerGalleries";
@@ -17,8 +19,7 @@ const LandingPage = () => {
   const [minPrice, setMinPrice] = useState(1);
   const [maxPrice, setMaxPrice] = useState(9999);
   const [isPopoverOpen, setIsPopoverOpen] = useState(true);
-  const [selectedOptionSideBar, setSelectedOptionSideBar] =
-    useState("Recommended");
+  const [selectedOptionSideBar, setSelectedOptionSideBar] = useState("Recommended");
   const [selectedGender, setSelectedGender] = useState("All");
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);

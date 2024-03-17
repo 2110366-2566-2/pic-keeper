@@ -4,7 +4,8 @@ import { FaUserCircle } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import customerGalleriesService from "@/services/customerGalleries";
 import photographerGalleryService from "@/services/photographerGalleries";
-import { Gallery, User } from "@/types";
+import { User } from "@/types/user";
+import { Gallery } from "@/types/gallery"
 import userService from "@/services/user";
 
 interface Props {
