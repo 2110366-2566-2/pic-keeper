@@ -1,11 +1,16 @@
+import { useState, useEffect } from "react";
+import { Gallery , SearchFilter , NewGallery} from "@/types";
 import SearchBar from "@/components/SearchBar";
 import GalleryComponent from "./Gallery";
 import Navbar from "@/components/Navbar";
 import SideBarLandingPage from "./SideBarLandingPage";
-import { useState, useEffect } from "react";
 import photographerGalleryService from "@/services/photographerGalleries";
-import { Gallery , SearchFilter} from "@/types";
 import customerGalleriesService from "@/services/customerGalleries";
+
+
+
+// FOR MOCKING DATA
+
 
 const LandingPage = () => {
   const [searchGallery, setSearchGallery] = useState("Search Gallery");
@@ -19,6 +24,7 @@ const LandingPage = () => {
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
   const [searchFiter, setSearchFilter] = useState<SearchFilter>({});
 
+
   useEffect(() => {
     const fetchAllGalleries = async () => {
       const response = await customerGalleriesService.search(searchFiter)
@@ -26,6 +32,23 @@ const LandingPage = () => {
     };
 
     fetchAllGalleries();
+  }, []);
+
+  useEffect(() => {
+    const createGallery = async () => {
+      const newGallery: NewGallery = {
+        name: "Gallery01",
+        location: "Location01",
+        price: 100
+      };
+      try {
+        const response = await photographerGalleryService.createGallery(newGallery);
+        console.log('Gallery created successfully', response);
+      } catch (error) {
+        console.error('Error creating gallery', error);
+      }
+    };
+    createGallery();
   }, []);
 
   return (

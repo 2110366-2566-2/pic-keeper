@@ -17,21 +17,9 @@ export default function Home() {
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
 
-  // useEffect(() => {
-  //   const fetchAllGalleries = async () => {
-  //     const response = await photographerGalleryService.getAllGalleries();
-  //     setListOfGalleries(response)
-  //   }
-
-  //   fetchAllGalleries();
-  // }, [])
-
-  
   const handleOnClick = () => {
     axios.post("/api/auth/signout");
   };
-  // This will list of GalleryComponent that get from backend
-  // Usage of the `getAllGalleries` function
 
   return (
     <main>

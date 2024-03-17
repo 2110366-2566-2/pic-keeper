@@ -22,6 +22,8 @@ const GalleryComponent = (data: Props) => {
     fetchAllImages();
   }, []);
 
+  
+
   return (
 
     <div className="rounded-xl shadow-lg bg-white overflow-hidden">
