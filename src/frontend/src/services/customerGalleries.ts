@@ -1,4 +1,4 @@
-import apiClientWithAuth from "@/libs/apiClientWithAuth";
+import apiClient from "@/libs/apiClient";
 import { SearchFilter } from "@/types/gallery";
 import { GalleryListResponse, UrlsListResponse } from "@/types/response";
 
