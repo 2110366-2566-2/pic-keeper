@@ -141,3 +141,11 @@ type Photo struct {
 	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
 	PhotoKey      string    `bun:"photo_key,type:varchar" json:"photo_key"`
 }
+
+type Notification struct {
+	bun.BaseModel `bun:"table:notifications,alias:noti"`
+	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	UserId        uuid.UUID `bun:"user_id,type:uuid" json:"user_id"`
+	RoomId        uuid.UUID `bun:"room_id,type:uuid" json:"room_id"`
+	Noticed       bool      `bun:"noticed,type:boolean" json:"noticed"`
+}
