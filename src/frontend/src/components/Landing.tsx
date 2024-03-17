@@ -26,6 +26,7 @@ const LandingPage = () => {
     const fetchAllGalleries = async () => {
       const response = await customerGalleriesService.search(searchFilter);
       setListOfGalleries(response.data);
+      console.log(response);
     };
 
     fetchAllGalleries();
@@ -76,14 +77,15 @@ const LandingPage = () => {
         </div>
         <div className="mx-5 z-20 w-4/5">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {listOfGalleries.map((Gallery, index) => (
-              <GalleryComponent
-                key={index}
-                galleryId={Gallery.id}
-                photographerId={Gallery.photographer_id}
-                price={Gallery.price}
-              />
-            ))}
+            {listOfGalleries &&
+              listOfGalleries.map((Gallery, index) => (
+                <GalleryComponent
+                  key={index}
+                  galleryId={Gallery.id}
+                  photographerId={Gallery.photographer_id}
+                  price={Gallery.price}
+                />
+              ))}
           </div>
         </div>
       </div>
