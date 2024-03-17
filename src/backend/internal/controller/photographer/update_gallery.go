@@ -54,15 +54,7 @@ func (r *Resolver) UpdateGallery(c *gin.Context) {
 	}
 
 	// editing
-	if updatingGalleryInput.Name != nil {
-		existingGallery.Name = *updatingGalleryInput.Name
-	}
-	if updatingGalleryInput.Price != nil {
-		existingGallery.Price = *updatingGalleryInput.Price
-	}
-	if updatingGalleryInput.Location != nil {
-		existingGallery.Location = *updatingGalleryInput.Location
-	}
+	updateGallery(existingGallery, updatingGalleryInput)
 
 	if err := r.GalleryUsecase.GalleryRepo.UpdateOne(c, existingGallery); err != nil {
 		util.Raise500Error(c, err)
@@ -73,4 +65,28 @@ func (r *Resolver) UpdateGallery(c *gin.Context) {
 		"status": "success",
 		"data":   existingGallery,
 	})
+}
+
+func updateGallery(gallery *model.Gallery, input model.GalleryInput) {
+	if input.Name != nil {
+		gallery.Name = *input.Name
+	}
+	if input.Price != nil {
+		gallery.Price = *input.Price
+	}
+	if input.Location != nil {
+		gallery.Location = *input.Location
+	}
+	if input.Hours != nil {
+		gallery.Hours = *input.Hours
+	}
+	if input.Description != nil {
+		gallery.Description = input.Description
+	}
+	if input.DeliveryTime != nil {
+		gallery.DeliveryTime = *input.DeliveryTime
+	}
+	if input.Included != nil {
+		gallery.Included = input.Included
+	}
 }
