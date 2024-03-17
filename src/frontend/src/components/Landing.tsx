@@ -14,9 +14,10 @@ const LandingPage = () => {
   const [selectedOption, setSelectedOption] = useState("By photographer");
   const [searchPlace, setSearchPlace] = useState("Set Location");
   const [selectDate, setSelectDate] = useState("Select Date");
-  const [priceRange, setPriceRange] = useState("Set Price Range");
-  const [selectedOptionSideBar, setSelectedOptionSideBar] =
-    useState("Recommended");
+  const [minPrice , setMinPrice] = useState(1);
+  const [maxPrice , setMaxPrice] = useState(9999);
+  const [isPopoverOpen , setIsPopoverOpen] = useState(false);
+  const [selectedOptionSideBar, setSelectedOptionSideBar] = useState("Recommended");
   const [selectedGender, setSelectedGender] = useState("All");
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
@@ -57,15 +58,19 @@ const LandingPage = () => {
         <Navbar />
         <SearchBar
           searchGallery={searchGallery}
-          setSearchgallery={setSearchGallery}
+          setSearchGallery={setSearchGallery}
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
           searchPlace={searchPlace}
           setSearchPlace={setSearchPlace}
           selectDate={selectDate}
           setSelectDate={setSelectDate}
-          priceRange={priceRange}
-          setPriceRange={setPriceRange}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          isPopoverOpen={isPopoverOpen}
+          setIsPopoverOpen={setIsPopoverOpen}
         />
         <div className="w-1/5 static">
           <SideBarLandingPage

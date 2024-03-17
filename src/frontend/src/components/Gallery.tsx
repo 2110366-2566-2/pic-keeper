@@ -46,7 +46,6 @@ const GalleryComponent = ({ galleryId, photographerId, price }: Props) => {
 
   return (
     <div className="rounded-xl shadow-lg bg-white overflow-hidden">
-      {/* Check how many pictures the gallery have 1,2,3? */}
       {listOfImages.length === 1 ? (
         <div className="px-2 pt-2">
           <div className="relative w-full h-64">
@@ -106,8 +105,6 @@ const GalleryComponent = ({ galleryId, photographerId, price }: Props) => {
           </div>
         </div>
       )}
-      {/* End of checking */}
-
       <div className="relative flex flex-row space-x-4 p-4">
         <div className="text-4xl flex justify-center items-center sm:content-none">
           <FaUserCircle />

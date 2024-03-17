@@ -8,23 +8,34 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
 
+interface Props {
+  searchGallery: string;
+  setSearchGallery: Function;
+  selectedOption: string;
+  setSelectedOption: Function;
+  searchPlace: string;
+  setSearchPlace: Function;
+  selectDate: string;
+  setSelectDate: Function;
+  minPrice: number;
+  setMinPrice: Function;
+  maxPrice: number;
+  setMaxPrice: Function;
+  isPopoverOpen : boolean;
+  setIsPopoverOpen : Function;
+}
+
 const SearchBar = (data: Props) => {
   const classNames = (...classes: string[]) =>
     classes.filter(Boolean).join(" ");
 
-  const [searchGallery, setSearchGallery] = useState("Search Gallery");
-  const [selectedOption, setSelectedOption] = useState("By photographer");
-  const [searchPlace, setSearchPlace] = useState("Set Location");
-  const [selectDate, setSelectDate] = useState("Select Date");
-  const [priceRange, setPriceRange] = useState("Set Price Range");
-  
   return (
     <div className="grid grid-cols-7 gap-4 pt-4 pb-4">
       <div className="">
         <Menu as="div" className="relative inline-block text-left">
           <div className="flex">
             <Menu.Button className="inline-flex w-full justify-center rounded-md px-5 py-2 text-sm font-medium hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
-              {selectedOption}
+              {data.selectedOption}
               <RiArrowDropDownLine className="text-xl" />
             </Menu.Button>
           </div>
@@ -43,9 +54,9 @@ const SearchBar = (data: Props) => {
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={() => setSelectedOption("By photographer")}
+                      onClick={() => data.setSelectedOption("By photographer")}
                       className={classNames(
-                        selectedOption == "By photographer"
+                        data.selectedOption == "By photographer"
                           ? "text-amber-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
@@ -60,9 +71,9 @@ const SearchBar = (data: Props) => {
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={() => setSelectedOption("By gallery name")}
+                      onClick={() => data.setSelectedOption("By gallery name")}
                       className={classNames(
-                        selectedOption == "By gallery name"
+                        data.selectedOption == "By gallery name"
                           ? "text-amber-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
@@ -83,7 +94,7 @@ const SearchBar = (data: Props) => {
           type="text"
           className="p-2 pl-4 outline outline-amber-400 rounded-md w-full"
           placeholder={
-            selectedOption === "By photographer"
+            data.selectedOption === "By photographer"
               ? "Search photographer"
               : "Search gallery name"
           }
@@ -97,11 +108,9 @@ const SearchBar = (data: Props) => {
         <input
           type="text"
           className="p-2 pl-4 outline outline-gray-900 rounded-md w-full text-gray-900"
-          placeholder={
-            selectDate
-          }
+          placeholder={data.selectDate}
         />
-        <FaRegCalendarAlt 
+        <FaRegCalendarAlt
           className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
           size={20}
         />
@@ -110,11 +119,9 @@ const SearchBar = (data: Props) => {
         <input
           type="text"
           className="p-2 pl-4 outline outline-gray-900 rounded-md w-full text-gray-900"
-          placeholder={
-            searchPlace
-          }
+          placeholder={data.searchPlace}
         />
-        <MdOutlineLocationOn 
+        <MdOutlineLocationOn
           className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
           size={20}
         />
@@ -123,49 +130,20 @@ const SearchBar = (data: Props) => {
         <input
           type="text"
           className="p-2 pl-4 outline outline-gray-900 rounded-md w-full text-gray-900"
-          placeholder={
-            priceRange
-          }
+          placeholder={`${data.minPrice || "min"} - ${data.maxPrice || "max"} THB`}
+          readOnly // make the input read-only if it's just for displaying the selected range
         />
-        <FaMoneyBill1Wave 
+        <FaMoneyBill1Wave
           className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
           size={20}
         />
       </div>
       <div className="relative">
         <button className="p-2 pl-4 bg-gray-400 rounded-md w-full text-white">
-            Search
-          </button>
+          Search
+        </button>
       </div>
     </div>
-    //   <div className="bg-white shadow p-4 flex space-x-2">
-    //   <div className="flex items-center border-2 rounded overflow-hidden">
-    //     <select className="p-2 outline-none cursor-pointer">
-    //       <option>By photographer</option>
-    //       <option>Option 1</option>
-    //       <option>Option 2</option>
-    //     </select>
-    //     <input type="text" className="p-2 outline-none" placeholder="Search Gallery" />
-    //   </div>
-    //   <div className="flex items-center border-2 rounded overflow-hidden">
-    //     <input type="text" className="p-2 outline-none" placeholder="17 Sep - 18 Sep" />
-    //     <button className="p-2 outline-none">
-    //       <i className="far fa-calendar-alt"></i>
-    //     </button>
-    //   </div>
-    //   <div className="flex items-center border-2 rounded overflow-hidden">
-    //     <input type="text" className="p-2 outline-none" placeholder="Pathum Wan" />
-    //     <button className="p-2 outline-none">
-    //       <i className="fas fa-map-marker-alt"></i>
-    //     </button>
-    //   </div>
-    //   <div className="flex items-center border-2 rounded overflow-hidden">
-    //     <input type="text" className="p-2 outline-none" placeholder="1,400 - 2,000 THB" />
-    //   </div>
-    //   <button className="flex items-center justify-center px-4 bg-gray-500 text-white rounded">
-    //     Search
-    //   </button>
-    // </div>
   );
 };
 
