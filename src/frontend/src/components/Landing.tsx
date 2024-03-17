@@ -28,7 +28,7 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchAllGalleries = async () => {
       const response = await customerGalleriesService.search(searchFilter);
-      setListOfGalleries(response.data);
+      if (response.data) setListOfGalleries(response.data);
       console.log(response);
     };
 
