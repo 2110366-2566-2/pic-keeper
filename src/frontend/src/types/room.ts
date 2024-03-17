@@ -1,8 +1,11 @@
+import { Gallery } from "./gallery";
+
 export interface Room {
   id: string;
   created_at: string;
   updated_at: string;
   deleted_at?: string;
+  gallery: Gallery;
 }
 
 export interface UserRoomLookup {
@@ -26,6 +29,7 @@ export interface Conversation {
 
 export interface RoomMemberInput {
   member_ids: string[];
+  gallery_id: string;
 }
 
 export interface Message {
