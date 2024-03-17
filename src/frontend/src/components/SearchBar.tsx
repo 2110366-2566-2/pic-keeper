@@ -7,6 +7,7 @@ import { IoSearch } from "react-icons/io5";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
+import { MdOutlinePriceCheck } from "react-icons/md";
 
 interface Props {
   searchGallery: string;
@@ -21,20 +22,31 @@ interface Props {
   setMinPrice: Function;
   maxPrice: number;
   setMaxPrice: Function;
-  isPopoverOpen : boolean;
-  setIsPopoverOpen : Function;
+  isPopoverOpen: boolean;
+  setIsPopoverOpen: Function;
 }
 
 const SearchBar = (data: Props) => {
   const classNames = (...classes: string[]) =>
     classes.filter(Boolean).join(" ");
 
+  const togglePopover = () => {
+    if (data.minPrice <= data.maxPrice) {
+      setErrorMessage("");
+      data.setIsPopoverOpen(!data.isPopoverOpen);
+    } else {
+      setErrorMessage("Invalid Input");
+    }
+  };
+
+  const [errorMessage, setErrorMessage] = useState("");
+
   return (
-    <div className="grid grid-cols-7 gap-4 pt-4 pb-4">
+    <div className="grid grid-cols-7 gap-4 pt-4 pb-4 mx-4">
       <div className="">
         <Menu as="div" className="relative inline-block text-left">
           <div className="flex">
-            <Menu.Button className="inline-flex w-full justify-center rounded-md px-5 py-2 text-sm font-medium hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+            <Menu.Button className="whitespace-nowrap inline-flex w-full justify-center rounded-md px-5 py-2 text-sm font-medium hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
               {data.selectedOption}
               <RiArrowDropDownLine className="text-xl" />
             </Menu.Button>
@@ -60,7 +72,7 @@ const SearchBar = (data: Props) => {
                           ? "text-amber-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
-                        "block px-4 py-2 text-sm text-gray-700"
+                        "block px-4 py-2 text-sm text-gray-700 "
                       )}
                     >
                       By photographer
@@ -77,7 +89,7 @@ const SearchBar = (data: Props) => {
                           ? "text-amber-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
-                        "block py-2 text-sm text-gray-900 w-full"
+                        "block py-2 text-sm text-gray-900 w-full "
                       )}
                     >
                       By gallery name
@@ -129,14 +141,58 @@ const SearchBar = (data: Props) => {
       <div className="relative">
         <input
           type="text"
+          onClick={togglePopover}
           className="p-2 pl-4 outline outline-gray-900 rounded-md w-full text-gray-900"
-          placeholder={`${data.minPrice || "min"} - ${data.maxPrice || "max"} THB`}
-          readOnly // make the input read-only if it's just for displaying the selected range
+          placeholder={`฿${data.minPrice || "0.00"} - ฿${
+            data.maxPrice || "0.00"
+          }`}
+          readOnly
         />
-        <FaMoneyBill1Wave
-          className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
-          size={20}
-        />
+        {
+          data.isPopoverOpen ? (
+            <MdOutlinePriceCheck 
+              className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
+              size={20}
+              onClick={togglePopover}
+            />
+          ) :
+            <FaMoneyBill1Wave
+              className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
+              size={20}
+              onClick={togglePopover}
+            />
+        }
+        {data.isPopoverOpen && (
+          <div className="absolute z-10 p-4 mt-2 bg-white shadow-lg left-1/2 transform -translate-x-1/2 rounded-xl">
+            <div className="flex flex-row space-x-4">
+              <div className="">
+                Min Price
+                <input
+                  type="number"
+                  value={data.minPrice}
+                  onChange={(e) => data.setMinPrice(e.target.value)}
+                  placeholder="฿ 0.00"
+                  className="px-4 py-2 border rounded focus:ring focus:border-blue-300"
+                />
+                {errorMessage && (
+                  <div className="text-red-500 text-sm">
+                    {errorMessage}
+                  </div>
+                )}
+              </div>
+              <div className="">
+                Max Price
+                <input
+                  type="number"
+                  value={data.maxPrice}
+                  onChange={(e) => data.setMaxPrice(e.target.value)}
+                  placeholder="฿ 0.00"
+                  className="px-4 py-2 border rounded focus:ring focus:border-blue-300"
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div className="relative">
         <button className="p-2 pl-4 bg-gray-400 rounded-md w-full text-white">

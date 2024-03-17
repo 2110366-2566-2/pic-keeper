@@ -14,10 +14,11 @@ const LandingPage = () => {
   const [selectedOption, setSelectedOption] = useState("By photographer");
   const [searchPlace, setSearchPlace] = useState("Set Location");
   const [selectDate, setSelectDate] = useState("Select Date");
-  const [minPrice , setMinPrice] = useState(1);
-  const [maxPrice , setMaxPrice] = useState(9999);
-  const [isPopoverOpen , setIsPopoverOpen] = useState(false);
-  const [selectedOptionSideBar, setSelectedOptionSideBar] = useState("Recommended");
+  const [minPrice, setMinPrice] = useState(1);
+  const [maxPrice, setMaxPrice] = useState(9999);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(true);
+  const [selectedOptionSideBar, setSelectedOptionSideBar] =
+    useState("Recommended");
   const [selectedGender, setSelectedGender] = useState("All");
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
@@ -34,7 +35,7 @@ const LandingPage = () => {
   }, [searchFilter]);
 
   useEffect(() => {
-    const createGallery = async () => { 
+    const createGallery = async () => {
       const newGallery: NewGallery = {
         name: "Gallery01",
         location: "Location01",
@@ -54,8 +55,10 @@ const LandingPage = () => {
 
   return (
     <main>
-      <div className="fixed top-0 left-0 right-0">
+      <div className="fixed top-0 left-0 right-0 z-50">
         <Navbar />
+      </div>
+      <div className="fixed top-0 left-0 right-0 mt-16 z-40">
         <SearchBar
           searchGallery={searchGallery}
           setSearchGallery={setSearchGallery}
@@ -72,29 +75,28 @@ const LandingPage = () => {
           isPopoverOpen={isPopoverOpen}
           setIsPopoverOpen={setIsPopoverOpen}
         />
-        <div className="w-1/5 static">
-          <SideBarLandingPage
-            selectedOption={selectedOptionSideBar}
-            setSelectedOption={setSelectedOptionSideBar}
-            selectedGender={selectedGender}
-            setSelectedGender={setSelectedGender}
-          />
-        </div>
-        <div className="mx-5 z-20 w-4/5">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {listOfGalleries &&
-              listOfGalleries.map((Gallery, index) => (
-                <GalleryComponent
-                  key={index}
-                  galleryId={Gallery.id}
-                  photographerId={Gallery.photographer_id}
-                  price={Gallery.price}
-                />
-              ))}
-          </div>
+      </div>
+      <div className="fixed w-1/5 mt-32">
+        <SideBarLandingPage
+          selectedOption={selectedOptionSideBar}
+          setSelectedOption={setSelectedOptionSideBar}
+          selectedGender={selectedGender}
+          setSelectedGender={setSelectedGender}
+        />
+      </div>
+      <div className="mx-5 z-20 w-4/5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {listOfGalleries &&
+            listOfGalleries.map((Gallery, index) => (
+              <GalleryComponent
+                key={index}
+                galleryId={Gallery.id}
+                photographerId={Gallery.photographer_id}
+                price={Gallery.price}
+              />
+            ))}
         </div>
       </div>
-      <div></div>
     </main>
   );
 };
