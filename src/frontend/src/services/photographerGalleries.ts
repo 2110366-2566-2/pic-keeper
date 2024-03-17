@@ -16,7 +16,7 @@ const getAllMyGalleries = async () => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -28,7 +28,7 @@ const createGallery = async (newGallery: NewGallery) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -60,7 +60,7 @@ const updateGallery = async (id: string, newGallery: NewGallery) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -71,7 +71,7 @@ const deleteGallery = async (id: string) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -82,7 +82,7 @@ const deletePhotoFromGallery = async (id: string, photoId: string) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -93,7 +93,7 @@ const getGallery = async (id: string) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 const photographerGalleriesService = {
