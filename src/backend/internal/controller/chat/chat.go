@@ -3,6 +3,7 @@ package chat
 import (
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"errors"
@@ -53,11 +54,11 @@ func newConversation(msg Message) model.Conversation {
 	}
 }
 
-func newNotification(msg Message) model.Notification {
-	return model.Notification{
+func newNotification(roomId, receiverId uuid.UUID) *model.Notification {
+	return &model.Notification{
 		Id:      uuid.New(),
-		UserId:  msg.Sender,
-		RoomId:  msg.Receiver,
+		UserId:  receiverId,
+		RoomId:  roomId,
 		Noticed: false,
 	}
 }
@@ -217,6 +218,8 @@ loop:
 			log.Printf("sender: %s\n", msg.Sender)
 			log.Printf("text: %s\n", msg.Text)
 
+			var notiWg sync.WaitGroup
+
 			switch msg.Type {
 			case MessageTypeStatus:
 				// requesting the status of a particular user
@@ -230,11 +233,22 @@ loop:
 					log.Panicf("error creating conversation: %s\n", err.Error())
 					continue
 				}
-				notification := newNotification(msg)
-				if err := c.Resolver.NotificationUsecase.NotificationRepo.AddOne(ctx, &notification); err != nil {
-					log.Panicf("error creating noti.: %s\n", err.Error())
-					continue
-				}
+
+				notiWg.Add(1)
+				go func(msg Message, notiWg *sync.WaitGroup, c *Chat) {
+					defer notiWg.Done()
+					users := c.rooms.GetUsers(msg.Receiver)
+					notis := []*model.Notification{}
+					for _, user := range users {
+						if user == msg.Sender {
+							continue
+						}
+						notis = append(notis, newNotification(msg.Receiver, user))
+					}
+					if err := c.Resolver.NotificationUsecase.NotificationRepo.AddBatch(ctx, notis); err != nil {
+						log.Panicf("error creating noti.: %s\n", err.Error())
+					}
+				}(msg, &notiWg, c)
 
 				msg.ID = conversation.Id
 				msg.Timestamp = conversation.CreatedAt
@@ -245,6 +259,7 @@ loop:
 				log.Println(err.Error())
 				log.Println()
 			}
+			notiWg.Wait()
 		}
 	}
 }
