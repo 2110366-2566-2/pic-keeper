@@ -1,11 +1,11 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
+import { NewGallery } from "@/types/gallery";
 import {
-  GalleryResponse,
   GalleryListResponse,
-  NewGallery,
-  DeleteResponse,
+  GalleryResponse,
   PhotoResponse,
-} from "@/types";
+  DeleteResponse,
+} from "@/types/response";
 
 const photographerGalleryBaseUrl = "/photographers/galleries/v1";
 

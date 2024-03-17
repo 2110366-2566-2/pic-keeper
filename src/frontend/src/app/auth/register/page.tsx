@@ -1,4 +1,4 @@
-import Register from "@/components/RegisterForm";
+import Register from "@/components/Auth/RegisterForm";
 
 export default function Home() {
   return (

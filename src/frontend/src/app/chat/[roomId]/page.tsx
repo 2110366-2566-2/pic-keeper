@@ -1,4 +1,4 @@
-import Chat from "@/components/Chat";
+import Chat from "@/components/Chat/Chat";
 
 const Home = ({ params }: { params: { roomId: string } }) => {
   if (!params.roomId) {
