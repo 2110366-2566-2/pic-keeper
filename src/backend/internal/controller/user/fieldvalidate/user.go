@@ -81,7 +81,7 @@ func Register(newUser model.UserInput) []error {
 func UpdateUser(input model.UserUpdateInput) []error {
 	fieldErrs := []error{}
 
-	if input.About == nil && input.Email == nil && input.Firstname == nil && input.Gender == nil && input.Lastname == nil && input.Location == nil && input.Password == nil && input.PhoneNumber == nil && input.Username == nil {
+	if input.About == nil && input.Email == nil && input.Firstname == nil && input.Gender == nil && input.Lastname == nil && input.Address == nil && input.Password == nil && input.PhoneNumber == nil && input.Username == nil {
 		fieldErrs = append(fieldErrs, errors.New(
 			"one of the update fields must be changed",
 		))

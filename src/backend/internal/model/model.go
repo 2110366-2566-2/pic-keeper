@@ -39,7 +39,7 @@ type User struct {
 	Lastname           string    `bun:"lastname,type:varchar" json:"lastname"`
 	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
 	About              *string   `bun:"about,type:varchar" json:"about"`
-	Location           *string   `bun:"location,type:varchar" json:"location"`
+	Address            *string   `bun:"address,type:varchar" json:"address"`
 	PhoneNumber        *string   `bun:"phone_number,type:varchar" json:"phone_number"`
 	Gender             *string   `bun:"gender,type:varchar" json:"gender"`
 }
@@ -60,7 +60,7 @@ type UserUpdateInput struct {
 	Gender      *string `json:"gender" example:"Male"`
 	About       *string `json:"about" example:"Hello"`
 	Username    *string `json:"username" example:"test"`
-	Location    *string `bun:"name,type:varchar" json:"location"`
+	Address     *string `json:"address" example:"Bangkok"`
 }
 
 type Administrator struct {

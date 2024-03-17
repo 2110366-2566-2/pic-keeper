@@ -6,6 +6,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/repository"
 	"github.com/Roongkun/software-eng-ii/internal/repository/postgres"
+	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 )
 
@@ -33,4 +34,8 @@ func (u *UserUseCase) ListPendingPhotographers(ctx context.Context) ([]*model.Us
 
 func (u *UserUseCase) FindOneByUsername(ctx context.Context, username string) (*model.User, error) {
 	return u.UserRepo.FindOneByEmail(ctx, username)
+}
+
+func (u *UserUseCase) CheckUsernameAlreadyBeenUsed(ctx context.Context, username string, proposedUserId uuid.UUID) (bool, error) {
+	return u.UserRepo.CheckUsernameAlreadyBeenUsed(ctx, username, proposedUserId)
 }
