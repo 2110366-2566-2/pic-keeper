@@ -20,16 +20,16 @@ const LandingPage = () => {
   const [selectedGender, setSelectedGender] = useState("All");
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
-  const [searchFiter, setSearchFilter] = useState<SearchFilter>({});
+  const [searchFilter, setSearchFilter] = useState<SearchFilter>({});
 
   useEffect(() => {
     const fetchAllGalleries = async () => {
-      const response = await customerGalleriesService.search(searchFiter);
+      const response = await customerGalleriesService.search(searchFilter);
       setListOfGalleries(response.data);
     };
 
     fetchAllGalleries();
-  }, [searchFiter]);
+  }, [searchFilter]);
 
   useEffect(() => {
     const createGallery = async () => {
