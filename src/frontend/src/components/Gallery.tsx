@@ -12,9 +12,11 @@ interface Props {
   galleryId: string;
   photographerId: string;
   price: number;
+  galleryName: string;
+  galleryLocation: string;
 }
 
-const GalleryComponent = ({ galleryId, photographerId, price }: Props) => {
+const GalleryComponent = ({galleryId , photographerId , price , galleryName , galleryLocation}: Props) => {
   const [listOfImages, setListOfImages] = useState<string[]>([]);
   const [galleryInfo, setGalleryInfo] = useState<Gallery>();
   const [photographer, setPhotographer] = useState<User>();
@@ -24,22 +26,26 @@ const GalleryComponent = ({ galleryId, photographerId, price }: Props) => {
       const response = await customerGalleriesService.getPhotoUrlsListInGallery(
         galleryId
       );
-      setListOfImages(response.data);
+      if (response.data) {
+        setListOfImages(response.data);
+      }
+      else {
+        setListOfImages([])
+      } 
     };
 
     const fetchGalleryInfo = async () => {
       const response = await photographerGalleryService.getGallery(galleryId);
-      setGalleryInfo(response.data);
+      if (response.data) setGalleryInfo(response.data);
     };
-
     fetchAllImages();
     fetchGalleryInfo();
-  });
+  }, [] );
 
   useEffect(() => {
     const fetchPhotographerInfo = async () => {
       const response = await userService.getUserById(photographerId);
-      setPhotographer(response.data);
+      if (response.data) setPhotographer(response.data);
     };
 
     fetchPhotographerInfo();
@@ -51,8 +57,8 @@ const GalleryComponent = ({ galleryId, photographerId, price }: Props) => {
         <div className="px-2 pt-2">
           <div className="relative w-full h-64">
             <Image
-              src={"/images/image1.jpg"}
-              alt="Tiger"
+              src={listOfImages[0]}
+              alt="pic"
               layout="fill"
               objectFit="cover"
               className="rounded-2xl"

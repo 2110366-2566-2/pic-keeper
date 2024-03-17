@@ -16,8 +16,6 @@ interface Props {
   setSelectedOption: Function;
   searchPlace: string;
   setSearchPlace: Function;
-  selectDate: string;
-  setSelectDate: Function;
   minPrice: number;
   setMinPrice: Function;
   maxPrice: number;
@@ -101,7 +99,7 @@ const SearchBar = (data: Props) => {
           </Transition>
         </Menu>
       </div>
-      <div className="relative col-span-2">
+      <div className="relative col-span-3">
         <input
           type="text"
           className="p-2 pl-4 outline outline-amber-400 rounded-md w-full"
@@ -113,17 +111,6 @@ const SearchBar = (data: Props) => {
         />
         <IoSearch
           className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900"
-          size={20}
-        />
-      </div>
-      <div className="relative">
-        <input
-          type="text"
-          className="p-2 pl-4 outline outline-gray-900 rounded-md w-full text-gray-900"
-          placeholder={data.selectDate}
-        />
-        <FaRegCalendarAlt
-          className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
           size={20}
         />
       </div>
