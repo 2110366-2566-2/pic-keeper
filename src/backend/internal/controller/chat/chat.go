@@ -55,7 +55,7 @@ func newConversation(msg Message) model.Conversation {
 	}
 }
 
-func newNotification(roomId, receiverId, convId uuid.UUID) *model.Notification {
+func newNotification(roomId, receiverId uuid.UUID, convId *uuid.UUID) *model.Notification {
 	return &model.Notification{
 		Id:             uuid.New(),
 		UserId:         receiverId,
@@ -249,7 +249,7 @@ loop:
 						if lookup.UserId == conversation.UserId {
 							continue
 						}
-						notis = append(notis, newNotification(msg.Receiver, lookup.UserId, conversation.Id))
+						notis = append(notis, newNotification(msg.Receiver, lookup.UserId, &conversation.Id))
 					}
 					if err := c.Resolver.NotificationUsecase.NotificationRepo.AddBatch(ctx, notis); err != nil {
 						log.Panicf("error creating noti.: %s\n", err.Error())

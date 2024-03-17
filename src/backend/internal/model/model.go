@@ -144,9 +144,10 @@ type Photo struct {
 
 type Notification struct {
 	bun.BaseModel  `bun:"table:notifications,alias:noti"`
-	Id             uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	UserId         uuid.UUID `bun:"user_id,type:uuid" json:"user_id"` // the receiver
-	RoomId         uuid.UUID `bun:"room_id,type:uuid" json:"room_id"` // the room in which the message was sent
-	ConversationId uuid.UUID `bun:"conversation_id,type:uuid" json:"conversation_id"`
-	Noticed        bool      `bun:"noticed,type:boolean" json:"noticed"`
+	Id             uuid.UUID     `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	UserId         uuid.UUID     `bun:"user_id,type:uuid" json:"user_id"` // the receiver
+	RoomId         uuid.UUID     `bun:"room_id,type:uuid" json:"room_id"` // the room in which the message was sent
+	ConversationId *uuid.UUID    `bun:"conversation_id,type:uuid" json:"-"`
+	Conversation   *Conversation `bun:"-" json:"conversation"`
+	Noticed        bool          `bun:"noticed,type:boolean" json:"noticed"`
 }
