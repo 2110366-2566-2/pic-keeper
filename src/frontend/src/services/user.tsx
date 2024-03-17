@@ -5,6 +5,7 @@ import {
   GetUserInfoResponse,
   UserResponse,
 } from "@/types/response";
+import { UserUpdateInput } from "@/types/user";
 
 import { signOut } from "next-auth/react";
 
@@ -86,6 +87,18 @@ const getSelfStatus = async () => {
   }
 };
 
+const updateUserProfile = async (userUpdateInput: UserUpdateInput) => {
+  try {
+    const { data } = await apiClientWithAuth.put<UserResponse>(
+      `${userBaseUrl}`,
+      userUpdateInput
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const userService = {
   logout,
   uploadProfile,
@@ -93,6 +106,7 @@ const userService = {
   getUserById,
   requestVerify,
   getSelfStatus,
+  updateUserProfile,
 };
 
 export default userService;

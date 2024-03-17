@@ -23,6 +23,18 @@ export interface User {
   verification_status: PhotographerStatus;
 }
 
+export interface UserUpdateInput {
+  email?: string;
+  password?: string;
+  phoneNumber?: string;
+  firstname?: string;
+  lastname?: string;
+  gender?: string;
+  about?: string;
+  username?: string;
+  address?: string;
+}
+
 export enum Gender {
   Male = "Male",
   Female = "Female",

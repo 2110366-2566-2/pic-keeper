@@ -1,5 +1,4 @@
-import { Header, Verification } from "@/components/Admin";
-import SideNavbar from "@/components/User/MyGalleries/SideNavbar";
+import { Header, Verification, SideNavbar } from "@/components/Admin";
 
 function Dashboard() {
   return (
