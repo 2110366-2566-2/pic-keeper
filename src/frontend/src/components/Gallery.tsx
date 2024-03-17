@@ -4,7 +4,6 @@ import { FaUserCircle } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import customerGalleriesService from "@/services/customerGalleries";
 import photographerGalleryService from "@/services/photographerGalleries";
-import user from "@/services/user";
 import { User } from "@/types/user";
 import { Gallery } from "@/types/gallery";
 import userService from "@/services/user";
@@ -45,15 +44,19 @@ const GalleryComponent = ({
       if (response.data) setGalleryInfo(response.data);
     };
 
+    fetchAllImages();
+    fetchGalleryInfo();
+  }, [galleryId]);
+
+  useEffect(() => {
     const getUserById = async () => {
       const response = await userService.getUserById(photographerId);
       console.log(response.data);
       if (response.data) setPhotographer(response.data);
     };
-    fetchAllImages();
-    fetchGalleryInfo();
     getUserById();
-  }, []);
+  }, [photographerId]);
+
   return (
     <div className="rounded-xl shadow-lg bg-white overflow-hidden">
       {listOfImages.length === 1 ? (
