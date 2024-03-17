@@ -1,12 +1,11 @@
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
-import Verification from "@/components/Verification";
+import { Header, Verification } from "@/components/Admin";
+import SideNavbar from "@/components/User/MyGalleries/SideNavbar";
 
 function Dashboard() {
   return (
     <>
       <div className="min-h-screen bg-gray-100 flex">
-        <Sidebar />
+        <SideNavbar />
         <main className="w-screen">
           <Header />
           <div className="p-4">

@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { MdEdit } from "react-icons/md";
 
-const AccountManagePage = () => {
+const AccountManagement = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phonenumber, setPhoneNumber] = useState("");
-  const [accountnumber, setAccountNumber] = useState("");
-  const [bankname, setBankName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [bankName, setBankName] = useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -65,7 +65,7 @@ const AccountManagePage = () => {
                 type="text"
                 placeholder="Phone number"
                 className="form-input mt-2"
-                value={phonenumber}
+                value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </div>
@@ -79,7 +79,7 @@ const AccountManagePage = () => {
                 type="text"
                 placeholder="Account number"
                 className="form-input mt-2"
-                value={accountnumber}
+                value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value)}
               />
             </div>
@@ -90,7 +90,7 @@ const AccountManagePage = () => {
               <select
                 className="text-black form-input mt-2"
                 id="bank-select"
-                value={bankname}
+                value={bankName}
                 onChange={handleBankChange}
               >
                 <option value="SCB">SCB</option>
@@ -123,4 +123,4 @@ const AccountManagePage = () => {
   );
 };
 
-export default AccountManagePage;
+export default AccountManagement;

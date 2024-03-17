@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Modal from "./Modal";
+import Modal from "../shared/Modal";
 import authService from "@/services/auth";
 
 const RegisterForm = () => {

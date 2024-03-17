@@ -1,7 +1,7 @@
 // src/app/user/layout.tsx
 import React from "react";
-import SideNavbar from "@/components/SideNavbar";
-import NavBar from "@/components/Navbar";
+import SideNavbar from "@/components/User/MyGalleries/SideNavbar";
+import NavBar from "@/components/shared/Navbar";
 
 export default function UserLayout({
   children,
@@ -13,7 +13,7 @@ export default function UserLayout({
       <NavBar />
       <div className="flex h-full">
         <SideNavbar />
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col flex-1 ">
           <main className="flex-grow">{children}</main>
         </div>
       </div>
