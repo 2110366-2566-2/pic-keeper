@@ -7,7 +7,7 @@ import {
   PhotoResponse,
 } from "@/types";
 
-const photographerGalleryBaseUrl = "/photographers/v1/galleries";
+const photographerGalleryBaseUrl = "/photographers/galleries/v1";
 
 const getAllMyGalleries = async () => {
   try {
@@ -96,7 +96,7 @@ const getGallery = async (id: string) => {
     return error;
   }
 };
-const photographerGalleryService = {
+const photographerGalleriesService = {
   getAllMyGalleries,
   createGallery,
   uploadPhotoToGallery,
@@ -106,4 +106,4 @@ const photographerGalleryService = {
   getGallery,
 };
 
-export default photographerGalleryService;
+export default photographerGalleriesService;
