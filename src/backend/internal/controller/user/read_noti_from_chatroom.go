@@ -26,12 +26,25 @@ func (r *Resolver) ReadNotificationFromRoom(c *gin.Context) {
 		return
 	}
 
+	if len(toBeUpdatedNoti) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "success",
+			"data":   nil,
+		})
+		c.Abort()
+		return
+	}
+
 	for _, noti := range toBeUpdatedNoti {
 		noti.Noticed = true
 	}
 
 	if err := r.NotificationUsecase.ReadNotificationFromThisRoom(c, toBeUpdatedNoti); err != nil {
 		util.Raise500Error(c, err)
+		return
+	}
+
+	if ok := PopulateConversation(toBeUpdatedNoti, c, r); !ok {
 		return
 	}
 

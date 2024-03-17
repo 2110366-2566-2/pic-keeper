@@ -22,7 +22,7 @@ func (r *Resolver) GetAllUnreadNotifications(c *gin.Context) {
 		return
 	}
 
-	if ok := populateConversation(unreadNotis, c, r); !ok {
+	if ok := PopulateConversation(unreadNotis, c, r); !ok {
 		return
 	}
 
@@ -46,7 +46,7 @@ func (r *Resolver) GetAllUnreadNotificationsFromRoom(c *gin.Context) {
 		return
 	}
 
-	if ok := populateConversation(unreadNotis, c, r); !ok {
+	if ok := PopulateConversation(unreadNotis, c, r); !ok {
 		return
 	}
 
@@ -68,7 +68,7 @@ func getUser(c *gin.Context) (*model.User, bool) {
 	return &userObj, true
 }
 
-func populateConversation(allNoti []*model.Notification, c *gin.Context, r *Resolver) bool {
+func PopulateConversation(allNoti []*model.Notification, c *gin.Context, r *Resolver) bool {
 	mapConvIdToNoti := map[uuid.UUID]*model.Notification{}
 	allConversationIds := []uuid.UUID{}
 	for _, noti := range allNoti {
