@@ -30,7 +30,7 @@ const LandingPage = () => {
     const fetchAllGalleries = async () => {
       const response = await customerGalleriesService.search(searchFilter);
       if (response.data) setListOfGalleries(response.data);
-      console.log(response);
+      // console.log(response);
     };
 
     fetchAllGalleries();
@@ -68,7 +68,7 @@ const LandingPage = () => {
             setSelectedGender={setSelectedGender}
           />
         </div>
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-48 w-4/5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-48 w-4/5">
           {listOfGalleries &&
             listOfGalleries.map((Gallery, index) => (
               <GalleryComponent
@@ -80,7 +80,7 @@ const LandingPage = () => {
                 price={Gallery.price}
               />
             ))}
-        </div> */}
+        </div>
       </div>
     </main>
   );

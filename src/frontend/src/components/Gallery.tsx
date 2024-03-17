@@ -4,8 +4,9 @@ import { FaUserCircle } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import customerGalleriesService from "@/services/customerGalleries";
 import photographerGalleryService from "@/services/photographerGalleries";
+import user from "@/services/user";
 import { User } from "@/types/user";
-import { Gallery } from "@/types/gallery"
+import { Gallery } from "@/types/gallery";
 import userService from "@/services/user";
 
 interface Props {
@@ -16,7 +17,13 @@ interface Props {
   galleryLocation: string;
 }
 
-const GalleryComponent = ({galleryId , photographerId , price , galleryName , galleryLocation}: Props) => {
+const GalleryComponent = ({
+  galleryId,
+  photographerId,
+  price,
+  galleryName,
+  galleryLocation,
+}: Props) => {
   const [listOfImages, setListOfImages] = useState<string[]>([]);
   const [galleryInfo, setGalleryInfo] = useState<Gallery>();
   const [photographer, setPhotographer] = useState<User>();
@@ -28,29 +35,25 @@ const GalleryComponent = ({galleryId , photographerId , price , galleryName , ga
       );
       if (response.data) {
         setListOfImages(response.data);
+      } else {
+        setListOfImages([]);
       }
-      else {
-        setListOfImages([])
-      } 
     };
 
     const fetchGalleryInfo = async () => {
       const response = await photographerGalleryService.getGallery(galleryId);
       if (response.data) setGalleryInfo(response.data);
     };
-    fetchAllImages();
-    fetchGalleryInfo();
-  }, [] );
 
-  useEffect(() => {
-    const fetchPhotographerInfo = async () => {
+    const getUserById = async () => {
       const response = await userService.getUserById(photographerId);
+      console.log(response.data);
       if (response.data) setPhotographer(response.data);
     };
-
-    fetchPhotographerInfo();
-  });
-
+    fetchAllImages();
+    fetchGalleryInfo();
+    getUserById();
+  }, []);
   return (
     <div className="rounded-xl shadow-lg bg-white overflow-hidden">
       {listOfImages.length === 1 ? (
@@ -113,9 +116,19 @@ const GalleryComponent = ({galleryId , photographerId , price , galleryName , ga
         </div>
       )}
       <div className="relative flex flex-row space-x-4 p-4">
-        <div className="text-4xl flex justify-center items-center sm:content-none">
-          <FaUserCircle />
-        </div>
+        {photographer?.profile_picture_key ? (
+          <Image
+            src={photographer.profile_picture_key}
+            alt="Tiger"
+            layout="fill"
+            objectFit="cover"
+            className="text-4xl flex justify-center items-center sm:content-none rounded-full"
+          />
+        ) : (
+          <div className="text-4xl flex justify-center items-center sm:content-none">
+            <FaUserCircle />
+          </div>
+        )}
         <div className="flex-grow">
           <div className="font-semibold">{galleryInfo?.name}</div>
           <div className="text-gray-400 shrink-0 min-w-max font-light">

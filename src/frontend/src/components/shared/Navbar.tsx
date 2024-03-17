@@ -10,7 +10,7 @@ import Image from "next/image";
 import { Fragment } from "react";
 import { MdOutlineArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { useSession } from "next-auth/react";
-import userService from "@/services/user";
+import userService  from "@/services/user";
 
 const NavBar = () => {
   const pathName = usePathname();
