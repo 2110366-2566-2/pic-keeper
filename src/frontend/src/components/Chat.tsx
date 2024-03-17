@@ -4,9 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { useWebSocket } from "@/context/WebSocketContext";
-import { Conversation, Message } from "@/types";
+
 import roomService from "@/services/room";
 import { isDifferentDay } from "@/utils/date";
+import { Conversation } from "@/types/room";
 
 interface ChatProps {
   roomId: string;
@@ -22,7 +23,9 @@ const Chat = ({ roomId }: ChatProps) => {
   useEffect(() => {
     const fetchOldConversation = async () => {
       const conversations = await roomService.getAllConversations(roomId);
-      setConversations(conversations.data.reverse());
+      if (conversations.data) {
+        setConversations(conversations.data.reverse());
+      }
     };
     fetchOldConversation();
   }, [roomId]);
@@ -84,14 +87,14 @@ const Chat = ({ roomId }: ChatProps) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                     className={`flex justify-${
-                      conversation.user_id === session?.user.data.id
+                      conversation.user_id === session?.user.data?.id
                         ? "end"
                         : "start"
                     }`}
                   >
                     <div
                       className={`p-3 m-1 rounded-lg shadow ${
-                        conversation.user_id === session?.user.data.id
+                        conversation.user_id === session?.user.data?.id
                           ? "bg-slate-800 text-white"
                           : "bg-slate-200"
                       }`}
@@ -113,12 +116,12 @@ const Chat = ({ roomId }: ChatProps) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 className={`flex justify-${
-                  message.sender === session?.user.data.id ? "end" : "start"
+                  message.sender === session?.user.data?.id ? "end" : "start"
                 }`}
               >
                 <div
                   className={`p-3 m-1 rounded-lg shadow ${
-                    message.sender === session?.user.data.id
+                    message.sender === session?.user.data?.id
                       ? "bg-slate-800 text-white"
                       : "bg-slate-200"
                   }`}

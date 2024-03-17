@@ -1,18 +1,18 @@
 import apiClient from "@/libs/apiClient";
+import { LoginCredentials } from "@/types/auth";
 import {
   GoogleLoginResponse,
-  LoginCredentials,
   LoginResponse,
-  NewUser,
   RefreshTokenResponse,
-  RegisterCustomerResponse,
-} from "@/types";
+  UserResponse,
+} from "@/types/response";
+import { NewUser } from "@/types/user";
 
 const authBaseUrl = `/authen/v1`;
 
 const register = async (newUser: NewUser) => {
   try {
-    const { data } = await apiClient.post<RegisterCustomerResponse>(
+    const { data } = await apiClient.post<UserResponse>(
       `${authBaseUrl}/register`,
       newUser
     );

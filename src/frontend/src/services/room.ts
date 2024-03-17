@@ -1,9 +1,9 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
-  ConversationListResponse,
-  RoomMemberInput,
   UserRoomLookUpListResponse,
-} from "@/types";
+  ConversationListResponse,
+} from "@/types/response";
+import { RoomMemberInput } from "@/types/room";
 
 const roomBaseUrl = "/rooms/v1";
 

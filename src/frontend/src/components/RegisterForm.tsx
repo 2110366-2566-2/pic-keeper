@@ -50,7 +50,7 @@ const RegisterForm = () => {
         password,
       });
       setModalMessage(
-        `${user.data.firstname} ${user.data.lastname} created successfully!`
+        `${user.data?.firstname} ${user.data?.lastname} created successfully!`
       );
       setSuccess(true);
       setIsModalOpen(true);

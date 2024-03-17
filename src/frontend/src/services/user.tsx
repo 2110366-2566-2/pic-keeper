@@ -1,10 +1,11 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
-  GetUserInfoResponse,
   LogoutResponse,
   UploadProfilePictureResponse,
+  GetUserInfoResponse,
   UserResponse,
-} from "@/types";
+} from "@/types/response";
+
 import { signOut } from "next-auth/react";
 
 const userBaseUrl = "/users/v1";

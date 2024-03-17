@@ -1,5 +1,6 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
-import { GalleryListResponse, SearchFilter, UrlsListResponse } from "@/types";
+import { SearchFilter } from "@/types/gallery";
+import { GalleryListResponse, UrlsListResponse } from "@/types/response";
 
 const customerGalleriesBaseUrl = "customers/galleries/v1/";
 

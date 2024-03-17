@@ -1,5 +1,6 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
-import { BookingListResponse, BookingProposal, BookingResponse } from "@/types";
+import { BookingProposal } from "@/types/booking";
+import { BookingResponse, BookingListResponse } from "@/types/response";
 
 const bookingBaseUrl = "customers/bookings/v1";
 

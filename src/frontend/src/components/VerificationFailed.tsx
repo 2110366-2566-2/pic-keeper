@@ -6,21 +6,12 @@ import Image from "next/image";
 import { IoIosArrowBack, IoIosArrowForward, IoIosAdd } from "react-icons/io";
 import { HiOutlinePlusSm } from "react-icons/hi";
 import { GrLocation } from "react-icons/gr";
+import { PhotographerStatus } from "@/types/user";
 
 // Define Status enum inside the component if it's not imported
-enum Status {
-  Unverified = "UNVERIFIED",
-  Pending = "PENDING",
-  Verified = "VERIFIED",
-  Failed = "FAILED",
-}
 
 // Accept setStatus as a prop
-const VerificationFailed = ({
-  setStatus,
-}: {
-  setStatus: (status: Status) => void;
-}) => {
+const VerificationFailed = () => {
   const [idNumber, setIdNumber] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
@@ -89,7 +80,6 @@ const VerificationFailed = ({
     // Submit the form data
     // Simulate successful form submission
     // Update the parent component's status to show the PendingVerification component
-    setStatus(Status.Pending);
   };
   return (
     <form className="h-full w-full m-auto" onSubmit={onSubmit}>

@@ -1,45 +1,54 @@
 "use client";
 
-import React, { useState } from "react";
-// import { useSession } from 'next-auth/react'; // if you were using next-auth
+import React, { useEffect, useState, useMemo } from "react";
 import AddNewGallery from "@/components/AddNewGallery";
 import PendingVerification from "@/components/PendingVerification";
 import PhotographerVerification from "@/components/PhotographerVerification";
 import VerificationFailed from "@/components/VerificationFailed";
-import { PhotographerStatus, User } from "../../../../types"; // Path to your types file
+import { PhotographerStatus, User } from "@/types/user";
+import userService from "@/services/user";
 
 const MyGalleriesPage = () => {
-  // Example session data structure. Replace with actual session retrieval logic
-  const [user, setUser] = useState<User>({
-    // ...other user fields
-    verification_status: PhotographerStatus.PhotographerNotVerifiedStatus,
-  });
+  const [user, setUser] = useState<User>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string>();
 
-  // Function to update the user's verification status
-  const setStatus = (newStatus: PhotographerStatus) => {
-    setUser((currentUser) => ({
-      ...currentUser,
-      verification_status: newStatus,
-    }));
-    // Here you would also update the status in your backend or session
-  };
+  useEffect(() => {
+    (async () => {
+      try {
+        setIsLoading(true);
+        const response = await userService.getMyUserInfo();
+        if (response.data) {
+          setUser(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+        setError("Failed to fetch user info. Please Login");
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, []);
 
-  const renderContent = () => {
-    switch (user.verification_status) {
-      case PhotographerStatus.PhotographerNotVerifiedStatus:
-        return <PhotographerVerification setStatus={setStatus} />;
-      case PhotographerStatus.PhotographerPendingStatus:
+  const content = useMemo(() => {
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+
+    switch (user?.verification_status) {
+      case PhotographerStatus.NotVerified:
+        return <PhotographerVerification />;
+      case PhotographerStatus.Pending:
         return <PendingVerification />;
-      case PhotographerStatus.PhotographerRejectedStatus:
-        return <VerificationFailed setStatus={setStatus} />;
-      case PhotographerStatus.PhotographerVerifiedStatus:
+      case PhotographerStatus.Rejected:
+        return <VerificationFailed />;
+      case PhotographerStatus.Verified:
         return <AddNewGallery />;
       default:
         return <div>Unknown status</div>;
     }
-  };
+  }, [isLoading, error, user]);
 
-  return <div className="max-w-4xl m-auto mx-4">{renderContent()}</div>;
+  return <div className="max-w-4xl m-auto mx-4">{content}</div>;
 };
 
 export default MyGalleriesPage;

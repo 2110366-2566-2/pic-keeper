@@ -10,8 +10,9 @@ import React, {
   useCallback,
 } from "react";
 import { useSession } from "next-auth/react";
-import { Message, SendMessage } from "@/types";
+
 import authService from "@/services/auth";
+import { Message, SendMessage } from "@/types/room";
 
 interface IWebSocketContext {
   sendMessage: (messageData: SendMessage) => void;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Gender } from "@/types";
+import { Gender } from "@/types/user";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { MdEdit } from "react-icons/md";
