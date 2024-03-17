@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import AddNewGallery from "@/components/AddNewGallery";
-import PendingVerification from "@/components/PendingVerification";
-import PhotographerVerification from "@/components/PhotographerVerification";
-import VerificationFailed from "@/components/VerificationFailed";
 import { PhotographerStatus, User } from "@/types/user";
 import userService from "@/services/user";
+import {
+  PhotographerVerification,
+  PendingVerification,
+  VerificationFailed,
+  AddNewGallery,
+} from "@/components/MyGalleries";
 
 const MyGalleriesPage = () => {
   const [user, setUser] = useState<User>();
