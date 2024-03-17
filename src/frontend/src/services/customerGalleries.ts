@@ -1,7 +1,7 @@
 import apiClient from "@/libs/apiClient";
 import { GalleryListResponse, SearchFilter, UrlsListResponse } from "@/types";
 
-const customerGalleriesBaseUrl = "customers/galleries/v1";
+const customerGalleriesBaseUrl = "/customers/galleries/v1";
 
 const search = async (searchFilter: SearchFilter = {}) => {
   try {
