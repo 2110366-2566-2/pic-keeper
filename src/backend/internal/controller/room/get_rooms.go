@@ -12,21 +12,13 @@ func (r *Resolver) GetRooms(c *gin.Context) {
 	user := c.MustGet("user")
 	userObj, ok := user.(model.User)
 	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  "could not bind json",
-		})
-		c.Abort()
+		util.Raise400Error(c, "could not bind json")
 		return
 	}
 
 	roomLookups, err := r.LookupUsecase.FindByUserId(c, userObj.Id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 

@@ -1,7 +1,7 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import { BookingListResponse, BookingResponse } from "@/types/response";
 
-const photographerBookingBaseUrl = "photographers/v1/bookings";
+const photographerBookingBaseUrl = "/photographers/v1/bookings";
 
 const getPendingCancellations = async () => {
   try {

@@ -7,7 +7,7 @@ import {
   DeleteResponse,
 } from "@/types/response";
 
-const photographerGalleryBaseUrl = "/photographers/v1/galleries";
+const photographerGalleryBaseUrl = "/photographers/galleries/v1";
 
 const getAllMyGalleries = async () => {
   try {
@@ -16,7 +16,7 @@ const getAllMyGalleries = async () => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -28,7 +28,7 @@ const createGallery = async (newGallery: NewGallery) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -60,7 +60,7 @@ const updateGallery = async (id: string, newGallery: NewGallery) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -71,7 +71,7 @@ const deleteGallery = async (id: string) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -82,7 +82,7 @@ const deletePhotoFromGallery = async (id: string, photoId: string) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
@@ -93,10 +93,10 @@ const getGallery = async (id: string) => {
     );
     return data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
-const photographerGalleryService = {
+const photographerGalleriesService = {
   getAllMyGalleries,
   createGallery,
   uploadPhotoToGallery,
@@ -106,4 +106,4 @@ const photographerGalleryService = {
   getGallery,
 };
 
-export default photographerGalleryService;
+export default photographerGalleriesService;

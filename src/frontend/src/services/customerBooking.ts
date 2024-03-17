@@ -2,7 +2,7 @@ import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import { BookingProposal } from "@/types/booking";
 import { BookingResponse, BookingListResponse } from "@/types/response";
 
-const bookingBaseUrl = "customers/bookings/v1";
+const bookingBaseUrl = "/customers/bookings/v1";
 
 const createBooking = async (bookingProposal: BookingProposal) => {
   try {
