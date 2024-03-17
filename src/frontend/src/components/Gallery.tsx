@@ -1,31 +1,50 @@
 import React from "react";
 import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import customerGalleriesService from "@/services/customerGalleries";
+import photographerGalleryService from "@/services/photographerGalleries";
+import { Gallery, User } from "@/types";
+import userService from "@/services/user";
 
-type Props = {
-  GalleryName: string;
-  Photographer: string;
-  Price: number;
-};
+interface Props {
+  galleryId: string;
+  photographerId: string;
+  price: number;
+}
 
-const GalleryComponent = (data: Props) => {
-  const [ listOfImages , setListOfImages ] = useState<string[]>([])
+const GalleryComponent = ({ galleryId, photographerId, price }: Props) => {
+  const [listOfImages, setListOfImages] = useState<string[]>([]);
+  const [galleryInfo, setGalleryInfo] = useState<Gallery>();
+  const [photographer, setPhotographer] = useState<User>();
 
   useEffect(() => {
     const fetchAllImages = async () => {
-      const response = await customerGalleriesService.getPhotoUrlsListInGallery(data.GalleryName)
-      setListOfImages(response);
+      const response = await customerGalleriesService.getPhotoUrlsListInGallery(
+        galleryId
+      );
+      setListOfImages(response.data);
+    };
+
+    const fetchGalleryInfo = async () => {
+      const response = await photographerGalleryService.getGallery(galleryId);
+      setGalleryInfo(response.data);
     };
 
     fetchAllImages();
-  }, []);
+    fetchGalleryInfo();
+  });
 
-  
+  useEffect(() => {
+    const fetchPhotographerInfo = async () => {
+      const response = await userService.getUserById(photographerId);
+      setPhotographer(response.data);
+    };
+
+    fetchPhotographerInfo();
+  });
 
   return (
-
     <div className="rounded-xl shadow-lg bg-white overflow-hidden">
       {/* Check how many pictures the gallery have 1,2,3? */}
       {listOfImages.length === 1 ? (
@@ -94,13 +113,13 @@ const GalleryComponent = (data: Props) => {
           <FaUserCircle />
         </div>
         <div className="flex-grow">
-          <div className="font-semibold">{data.GalleryName}</div>
+          <div className="font-semibold">{galleryInfo?.name}</div>
           <div className="text-gray-400 shrink-0 min-w-max font-light">
-            by {data.Photographer}
+            by {photographer?.firstname} {photographer?.lastname}
           </div>
         </div>
         <div className="text-amber-500 font-bold text-ellipsis">
-          {data.Price} THB
+          {price} THB
         </div>
       </div>
     </div>

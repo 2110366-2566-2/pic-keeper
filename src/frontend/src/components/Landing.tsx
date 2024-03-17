@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Gallery , SearchFilter , NewGallery} from "@/types";
+import { Gallery, SearchFilter, NewGallery } from "@/types";
 import SearchBar from "@/components/SearchBar";
 import GalleryComponent from "./Gallery";
 import Navbar from "@/components/Navbar";
@@ -7,10 +7,7 @@ import SideBarLandingPage from "./SideBarLandingPage";
 import photographerGalleryService from "@/services/photographerGalleries";
 import customerGalleriesService from "@/services/customerGalleries";
 
-
-
 // FOR MOCKING DATA
-
 
 const LandingPage = () => {
   const [searchGallery, setSearchGallery] = useState("Search Gallery");
@@ -18,34 +15,36 @@ const LandingPage = () => {
   const [searchPlace, setSearchPlace] = useState("Set Location");
   const [selectDate, setSelectDate] = useState("Select Date");
   const [priceRange, setPriceRange] = useState("Set Price Range");
-  const [selectedOptionSideBar, setSelectedOptionSideBar] = useState("Recommended");
+  const [selectedOptionSideBar, setSelectedOptionSideBar] =
+    useState("Recommended");
   const [selectedGender, setSelectedGender] = useState("All");
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
-  const [searchFiter, setSearchFilter] = useState<SearchFilter>({});
-
+  const [searchFilter, setSearchFilter] = useState<SearchFilter>({});
 
   useEffect(() => {
     const fetchAllGalleries = async () => {
-      const response = await customerGalleriesService.search(searchFiter)
-      setListOfGalleries(response);
+      const response = await customerGalleriesService.search(searchFilter);
+      setListOfGalleries(response.data);
     };
 
     fetchAllGalleries();
-  }, []);
+  }, [searchFilter]);
 
   useEffect(() => {
     const createGallery = async () => { 
       const newGallery: NewGallery = {
         name: "Gallery01",
         location: "Location01",
-        price: 100
+        price: 100,
       };
       try {
-        const response = await photographerGalleryService.createGallery(newGallery);
-        console.log('Gallery created successfully', response);
+        const response = await photographerGalleryService.createGallery(
+          newGallery
+        );
+        console.log("Gallery created successfully", response);
       } catch (error) {
-        console.error('Error creating gallery', error);
+        console.error("Error creating gallery", error);
       }
     };
     createGallery();
@@ -78,7 +77,12 @@ const LandingPage = () => {
         <div className="mx-5 z-20 w-4/5">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {listOfGalleries.map((Gallery, index) => (
-              <GalleryComponent key={index} GalleryName={Gallery.id} Photographer={Gallery.photographer_id} Price={Gallery.price}/>
+              <GalleryComponent
+                key={index}
+                galleryId={Gallery.id}
+                photographerId={Gallery.photographer_id}
+                price={Gallery.price}
+              />
             ))}
           </div>
         </div>
