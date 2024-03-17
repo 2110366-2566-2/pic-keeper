@@ -41,6 +41,27 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+func newConversation(msg Message) model.Conversation {
+	return model.Conversation{
+		Id:        uuid.New(),
+		Text:      msg.Text,
+		UserId:    msg.Sender,
+		RoomId:    msg.Receiver,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		DeletedAt: nil,
+	}
+}
+
+func newNotification(msg Message) model.Notification {
+	return model.Notification{
+		Id:      uuid.New(),
+		UserId:  msg.Sender,
+		RoomId:  msg.Receiver,
+		Noticed: false,
+	}
+}
+
 type Chat struct {
 	// this sends message to a room
 	broadcast chan Message
@@ -204,19 +225,17 @@ loop:
 			case MessageTypeAuth:
 				msg.Text = msg.Sender.String()
 			case MessageTypeMessage:
-				conversation := model.Conversation{
-					Id:        uuid.New(),
-					Text:      msg.Text,
-					UserId:    msg.Sender,
-					RoomId:    msg.Receiver,
-					CreatedAt: time.Now(),
-					UpdatedAt: time.Now(),
-					DeletedAt: nil,
-				}
+				conversation := newConversation(msg)
 				if err := c.Resolver.ConversationUsecase.ConversationRepo.AddOne(ctx, &conversation); err != nil {
-					log.Panicf("error creating reply: %s\n", err.Error())
+					log.Panicf("error creating conversation: %s\n", err.Error())
 					continue
 				}
+				notification := newNotification(msg)
+				if err := c.Resolver.NotificationUsecase.NotificationRepo.AddOne(ctx, &notification); err != nil {
+					log.Panicf("error creating noti.: %s\n", err.Error())
+					continue
+				}
+
 				msg.ID = conversation.Id
 				msg.Timestamp = conversation.CreatedAt
 			default:
