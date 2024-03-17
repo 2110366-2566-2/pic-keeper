@@ -25,11 +25,11 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchAllGalleries = async () => {
       const response = await customerGalleriesService.search(searchFiter);
-      setListOfGalleries(response);
+      setListOfGalleries(response.data);
     };
 
     fetchAllGalleries();
-  }, []);
+  }, [searchFiter]);
 
   useEffect(() => {
     const createGallery = async () => {
