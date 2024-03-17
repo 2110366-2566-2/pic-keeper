@@ -24,7 +24,6 @@ export default function Home() {
   return (
     <main>
       <Landing/>
-
         {/* This is section of displayed gallery view */}
         {/* <div className="mx-5 z-20 w-4/5">
           <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">

@@ -35,7 +35,7 @@ const LandingPage = () => {
   }, []);
 
   useEffect(() => {
-    const createGallery = async () => {
+    const createGallery = async () => { 
       const newGallery: NewGallery = {
         name: "Gallery01",
         location: "Location01",
