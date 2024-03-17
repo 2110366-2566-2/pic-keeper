@@ -19,11 +19,6 @@ const NavBar = () => {
 
   const navigation = [
     {
-      name: "Search",
-      href: "/search",
-      current: pathName === "/search",
-    },
-    {
       name: "My Booking",
       href: "/myBooking",
       current: pathName === "/myBooking",
