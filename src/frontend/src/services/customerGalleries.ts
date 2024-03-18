@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import apiClient from "@/libs/apiClient";
+=======
+import apiClient from "@/libs/apiClientWithAuth";
+>>>>>>> cf1138745ed440c8c59ec6d4129af1a842809de1
 import { SearchFilter } from "@/types/gallery";
 import { GalleryListResponse, UrlsListResponse } from "@/types/response";
 

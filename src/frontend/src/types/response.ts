@@ -1,6 +1,6 @@
 import { Booking } from "./booking";
 import { Gallery, Photo } from "./gallery";
-import { Conversation, UserRoomLookup } from "./room";
+import { Conversation, Room, UserRoomLookup } from "./room";
 import { PhotographerStatus, User } from "./user";
 
 export interface SuccessResponse<T> {
@@ -41,6 +41,8 @@ export type PhotoResponse = SuccessResponse<Photo>;
 export type UserRoomLookUpListResponse = SuccessResponse<UserRoomLookup[]>;
 
 export type ConversationListResponse = SuccessResponse<Conversation[]>;
+
+export type RoomResponse = SuccessResponse<Room>;
 
 export interface LoginResponse extends SuccessResponse<User> {
   session_token: string;

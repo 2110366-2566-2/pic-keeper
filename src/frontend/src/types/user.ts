@@ -21,6 +21,19 @@ export interface User {
   logged_out: string;
   profile_picture_key: string;
   verification_status: PhotographerStatus;
+  phone_number: string;
+}
+
+export interface UserUpdateInput {
+  email?: string;
+  password?: string;
+  phone_number?: string;
+  firstname?: string;
+  lastname?: string;
+  gender?: string;
+  about?: string;
+  username?: string;
+  address?: string;
 }
 
 export enum Gender {
