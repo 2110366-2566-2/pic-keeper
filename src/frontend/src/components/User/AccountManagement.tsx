@@ -2,9 +2,9 @@
 
 import userService from "@/services/user";
 import { UserUpdateInput } from "@/types/user";
-import { User } from "next-auth";
-import { useEffect, useRef, useState } from "react";
-import { MdEdit } from "react-icons/md";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const AccountManagement = () => {
   const [email, setEmail] = useState("");
@@ -12,17 +12,15 @@ const AccountManagement = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         const userInfo = await userService.getMyUserInfo();
         if (userInfo.data) {
-          setEmail(userInfo.data?.email);
-        }
-
-        if (userInfo.data?.phone_number) {
-          setPhoneNumber(userInfo.data?.phone_number);
+          setEmail(userInfo.data.email);
+          setPhoneNumber(userInfo.data.phone_number);
         }
       } catch (error) {
         console.error("Failed to fetch user info:", error);
@@ -43,11 +41,10 @@ const AccountManagement = () => {
 
     if (Object.keys(userUpdateInput).length > 0) {
       try {
-        const updatedUser = await userService.updateUserProfile(
-          userUpdateInput
-        );
-        console.log("User successfully updated", updatedUser);
-        // Optionally, reset form or give user feedback
+        await userService.updateUserProfile(userUpdateInput);
+        if (email || password) {
+          await signOut({ redirect: true, callbackUrl: "/auth/login" });
+        }
       } catch (error) {
         console.error("Error updating user", error);
         // Handle error, maybe show user feedback
@@ -66,7 +63,7 @@ const AccountManagement = () => {
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-6 gap-x-6 gap-y-3">
             <div className="sm:col-span-4">
               <h2 className="text-title">Account management</h2>
-              <p className="text-standard font-semiboldtext-gray-700">
+              <p className="text-standard font-semibold text-gray-700">
                 Make changes to your personal information or account type.
               </p>
             </div>
@@ -101,7 +98,7 @@ const AccountManagement = () => {
                 Phone Number
               </label>
               <input
-                id="phonenum"
+                id="phoneNumber"
                 type="text"
                 placeholder="Phone number"
                 className="form-input mt-2"
@@ -115,7 +112,7 @@ const AccountManagement = () => {
                 Account Number
               </label>
               <input
-                id="accountnum"
+                id="accountNumber"
                 type="text"
                 placeholder="Account number"
                 className="form-input mt-2"
