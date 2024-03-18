@@ -6,6 +6,7 @@ import {
   PhotoResponse,
   DeleteResponse,
 } from "@/types/response";
+import { Axios } from "axios";
 
 const photographerGalleryBaseUrl = "/photographers/galleries/v1";
 
@@ -32,12 +33,16 @@ const createGallery = async (newGallery: NewGallery) => {
   }
 };
 
-const uploadPhotoToGallery = async (id: string, file: File) => {
+const uploadPhotoToGallery = async (
+  apiClientForForm: Axios,
+  id: string,
+  file: File
+) => {
   try {
     const formData = new FormData();
 
     formData.append("picture", file);
-    const { data } = await apiClientWithAuth.post<PhotoResponse>(
+    const { data } = await apiClientForForm.post<PhotoResponse>(
       `${photographerGalleryBaseUrl}/${id}`,
       formData,
       {
