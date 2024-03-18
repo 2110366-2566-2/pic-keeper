@@ -14,7 +14,7 @@ export default function Home() {
     <main>
       <NavBar />
       <div className="" onClick={handleOnClick}>
-        Pic-Keeper
+        Pic-Keeper<CreateGallery/>
       </div>
     </main>
   );

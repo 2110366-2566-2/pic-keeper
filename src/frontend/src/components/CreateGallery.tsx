@@ -10,6 +10,7 @@ const CreateGallery = () => {
   const [additionalInputs, setAdditionalInputs] = useState(1);
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
+  const [images, setImages] = useState([]);
   const [isDisabled, setIsDisabled] = useState(false);
   const [borderVisible, setBorderVisible] = useState(false);
 
@@ -42,7 +43,6 @@ const CreateGallery = () => {
           </button>
           
           <div className="flex flex-col items-center justify-center rounded-lg" style={{ width: '25vw', height: '30vh' }}>
-
           {!file && (
             <div className="flex flex-col items-center justify-center rounded-lg" style={{ width: '25vw', height: '30vh', backgroundColor: '#FBFAFA' }}>
               <Image
@@ -51,6 +51,7 @@ const CreateGallery = () => {
                 width={100}
                 height={100}
               />
+          
               <input type="file" ref={fileInputRef} id="fileInput" className="hidden" onChange={handleFileChange} />
               <button className="mt-8 text-white rounded px-6 py-1" style={{ backgroundColor: '#E19007'}} onClick={handleBrowseClick}>Browse</button>
               <div className="mt-4">
@@ -114,7 +115,18 @@ const CreateGallery = () => {
               />
             </div>
           )}
+          {file && (
+            <div className="selected-image rounded-2xl overflow-hidden" style={{ width: '100%', height: '100%', position: 'relative' }}>
+              <Image
+                src={URL.createObjectURL(file)}
+                alt="Selected Image"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
+          )}
         </div>
+        
           {borderVisible && <div className="absolute inset-0 rounded-2xl border-4 border-yellow-500 pointer-events-none"></div>}
           {/* <GalleryItem /> */}
           {/* {file && (
