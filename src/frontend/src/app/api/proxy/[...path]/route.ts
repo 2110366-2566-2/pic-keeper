@@ -1,5 +1,5 @@
 import authService from "@/services/auth";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
@@ -21,17 +21,33 @@ async function handler(
   }
 
   const url = `/${path.join("/")}`;
+  let config: AxiosRequestConfig = {
+    method: req.method,
+    url,
+    headers: {
+      ...req.headers,
+      Authorization: `Bearer ${session.user.session_token}`, // Correctly include the token
+    },
+  };
+
+  if (req.body && req.method !== "GET" && req.method !== "DELETE") {
+    const requestBody = await readRequestBody(req.body);
+    const jsonData = tryParseJSON(requestBody);
+    if (jsonData) {
+      // Conditionally add data if JSON is valid
+      config = { ...config, data: jsonData };
+    }
+  }
 
   const makeRequest = async (token: string) => {
     try {
+      const safeHeaders: { [key: string]: any } = { ...config.headers };
+      delete safeHeaders["host"];
+      delete safeHeaders["connection"];
+      safeHeaders["Authorization"] = `Bearer ${token}`;
       const { data, status } = await axiosInstance({
-        method: req.method,
-        url,
-        headers: {
-          ...req.headers,
-          Authorization: `Bearer ${token}`,
-        },
-        data: req.body,
+        ...config,
+        headers: safeHeaders,
       });
       return NextResponse.json(data, { status });
     } catch (error) {
@@ -67,7 +83,8 @@ async function processRequestWithTokenRetry(
 
         return await makeRequest(refreshed_session_token);
       } catch (refreshError) {
-        redirect("/auth/login");
+        //TODO: In current version next-auth cant handle sign out from server side
+        return handleError(refreshError);
       }
     } else {
       return handleError(error);
@@ -86,6 +103,24 @@ function handleError(error: unknown) {
     { error: "An unexpected error occurred" },
     { status: 500 }
   );
+}
+
+async function readRequestBody(request: NextApiRequest) {
+  const chunks = [];
+  for await (const chunk of request) {
+    chunks.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk));
+  }
+  return Buffer.concat(chunks).toString("utf-8");
+}
+
+function tryParseJSON(jsonString: string) {
+  try {
+    let obj = JSON.parse(jsonString);
+    if (obj && typeof obj === "object") {
+      return obj;
+    }
+  } catch (e) {}
+  return false;
 }
 
 export { handler as GET, handler as POST, handler as PUT, handler as DELETE };

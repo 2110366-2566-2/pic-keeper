@@ -1,5 +1,8 @@
 "use client";
 
+import userService from "@/services/user";
+import { UserUpdateInput } from "@/types/user";
+import { User } from "next-auth";
 import { useEffect, useRef, useState } from "react";
 import { MdEdit } from "react-icons/md";
 
@@ -10,9 +13,46 @@ const AccountManagement = () => {
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userInfo = await userService.getMyUserInfo();
+        if (userInfo.data) {
+          setEmail(userInfo.data?.email);
+        }
+
+        if (userInfo.data?.phone_number) {
+          setPhoneNumber(userInfo.data?.phone_number);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // TODO: Add logic to handle form submission
+    let userUpdateInput: Partial<UserUpdateInput> = {};
+
+    // Dynamically add non-empty fields to the userUpdateInput object
+    if (email !== "") userUpdateInput.email = email;
+    if (password !== "") userUpdateInput.password = password;
+    if (phoneNumber !== "") userUpdateInput.phone_number = phoneNumber;
+
+    if (Object.keys(userUpdateInput).length > 0) {
+      try {
+        const updatedUser = await userService.updateUserProfile(
+          userUpdateInput
+        );
+        console.log("User successfully updated", updatedUser);
+        // Optionally, reset form or give user feedback
+      } catch (error) {
+        console.error("Error updating user", error);
+        // Handle error, maybe show user feedback
+      }
+    }
   };
 
   const handleBankChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
