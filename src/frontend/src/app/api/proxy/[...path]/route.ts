@@ -28,9 +28,12 @@ async function handler(
   };
 
   // Dynamically populate headers from the request
-  req.headers.forEach((value, key) => {
+  req.headers.forEach((value: string, key: string) => {
     if (!["host", "connection"].includes(key)) {
       // Exclude specific headers
+      if (!config.headers) {
+        config.headers = {};
+      }
       config.headers[key] = value;
     }
   });
