@@ -6,6 +6,7 @@ import {
   UserResponse,
 } from "@/types/response";
 import { UserUpdateInput } from "@/types/user";
+import { Axios } from "axios";
 
 import { signOut } from "next-auth/react";
 
@@ -23,19 +24,13 @@ const logout = async () => {
   }
 };
 
-const uploadProfile = async (file: File) => {
+const uploadProfile = async (apiClientForForm: Axios, file: File) => {
   try {
     const formData = new FormData();
-
     formData.append("profilePicture", file);
-    const { data } = await apiClientWithAuth.post<UploadProfilePictureResponse>(
+    const { data } = await apiClientForForm.post<UploadProfilePictureResponse>(
       `${userBaseUrl}/upload-profile`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      formData
     );
     return data;
   } catch (error) {
