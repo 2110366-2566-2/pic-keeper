@@ -1,3 +1,4 @@
+import apiClient from "@/libs/apiClient";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
   LogoutResponse,
@@ -55,7 +56,7 @@ const getMyUserInfo = async () => {
 
 const getUserById = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<GetUserInfoResponse>(
+    const { data } = await apiClient.get<GetUserInfoResponse>(
       `${userBaseUrl}/get-user/${id}`
     );
     return data;
