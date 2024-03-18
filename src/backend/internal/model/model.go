@@ -20,6 +20,12 @@ const (
 	PhotographerRejectedStatus    = "REJECTED"
 )
 
+const (
+	MALE   = "MALE"
+	FEMALE = "FEMALE"
+	OTHER  = "OTHER"
+)
+
 type User struct {
 	bun.BaseModel      `bun:"table:users,alias:u"`
 	Id                 uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
@@ -32,6 +38,10 @@ type User struct {
 	Firstname          string    `bun:"firstname,type:varchar" json:"firstname"`
 	Lastname           string    `bun:"lastname,type:varchar" json:"lastname"`
 	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
+	About              *string   `bun:"about,type:varchar" json:"about"`
+	Address            *string   `bun:"address,type:varchar" json:"address"`
+	PhoneNumber        *string   `bun:"phone_number,type:varchar" json:"phone_number"`
+	Gender             *string   `bun:"gender,type:varchar" json:"gender"`
 }
 
 type UserInput struct {
@@ -39,6 +49,18 @@ type UserInput struct {
 	Password  *string `json:"password" example:"root"`
 	Firstname string  `json:"firstname" example:"test"`
 	Lastname  string  `json:"lastname" example:"test"`
+}
+
+type UserUpdateInput struct {
+	Email       *string `json:"email" example:"test@mail.com"`
+	Password    *string `json:"password" example:"root"`
+	PhoneNumber *string `json:"phone_number" example:"096198923"`
+	Firstname   *string `json:"firstname" example:"test"`
+	Lastname    *string `json:"lastname" example:"test"`
+	Gender      *string `json:"gender" example:"Male"`
+	About       *string `json:"about" example:"Hello"`
+	Username    *string `json:"username" example:"test"`
+	Address     *string `json:"address" example:"Bangkok"`
 }
 
 type Administrator struct {
@@ -83,7 +105,8 @@ type Booking struct {
 	bun.BaseModel `bun:"table:bookings,alias:bookings"`
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	CustomerId    uuid.UUID `bun:"customer_id,type:uuid" json:"customer_id"`
-	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
+	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"-"`
+	Gallery       Gallery   `bun:"-" json:"gallery"`
 	StartTime     time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
 	EndTime       time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 	Status        string    `bun:"status,type:varchar" json:"status"`
@@ -101,6 +124,8 @@ type SearchFilter struct {
 type Room struct {
 	bun.BaseModel `bun:"table:rooms,alias:rooms"`
 	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	GalleryId     uuid.UUID  `bun:"gallery_id,type:uuid" json:"-"`
+	Gallery       Gallery    `bun:"-" json:"gallery"`
 	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
 	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
 	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`
@@ -129,6 +154,7 @@ type Conversation struct {
 
 type RoomMemberInput struct {
 	MemberIds []uuid.UUID `binding:"required" json:"member_ids"`
+	GalleryId uuid.UUID   `json:"gallery_id"`
 }
 
 type Photo struct {
