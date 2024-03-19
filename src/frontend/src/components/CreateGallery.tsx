@@ -7,6 +7,8 @@ import { HiOutlinePlusSm } from "react-icons/hi";
 import { GrLocation } from "react-icons/gr";
 import { classNames } from "@/utils/list";
 import photographerGalleriesService from "@/services/photographerGalleries";
+import useAxiosAuth from "@/hooks/useAxiosAuth";
+import { useRouter } from "next/navigation";
 
 interface FileWithPreview {
   file: File;
@@ -26,7 +28,11 @@ const CreateGallery = () => {
   const [deliveryTime, setDeliveryTime] = useState<number | string>("");
   const [included, setIncluded] = useState<string[]>([]);
 
+  const router = useRouter();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const axiosAuth = useAxiosAuth();
 
   const handleAddInput = () => {
     setAdditionalInputs((currentInputs) => [
@@ -63,7 +69,7 @@ const CreateGallery = () => {
     setIncluded(updatedIncluded);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newGalleryData = {
       name,
@@ -74,7 +80,25 @@ const CreateGallery = () => {
       delivery_time: Number(deliveryTime),
       included,
     };
-    photographerGalleriesService.createGallery(newGalleryData);
+    const createdGallery = await photographerGalleriesService.createGallery(
+      newGalleryData
+    );
+    if (createdGallery.data) {
+      try {
+        await Promise.all(
+          files.map((file) =>
+            photographerGalleriesService.uploadPhotoToGallery(
+              axiosAuth,
+              createdGallery.data!.id,
+              file.file
+            )
+          )
+        );
+        router.push("/settings/my-galleries");
+      } catch (error) {
+        console.error("Failed to upload images atomically:", error);
+      }
+    }
   };
 
   return (
@@ -109,7 +133,7 @@ const CreateGallery = () => {
               />
               <button
                 className="mt-8 text-white bg-amber-500 rounded px-6 py-1"
-                onClick={fileInputRef.current?.click}
+                onClick={() => fileInputRef.current?.click()}
               >
                 Browse
               </button>
@@ -163,7 +187,7 @@ const CreateGallery = () => {
                 : "ring-1 ring-gray-200",
               "flex-shrink-0 relative w-36 h-36 rounded-lg bg-gray-200 overflow-hidden cursor-pointer flex items-center justify-center"
             )}
-            onClick={fileInputRef.current?.click}
+            onClick={() => fileInputRef.current?.click()}
           >
             <HiOutlinePlusSm className="text-4xl text-gray-500" />
           </div>
