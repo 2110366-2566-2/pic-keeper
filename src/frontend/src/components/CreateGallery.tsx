@@ -229,7 +229,7 @@ const CreateGallery = () => {
                 <div className="flex items-center gap-2">
                   <input
                     id="hours"
-                    type="text"
+                    type="number"
                     className="form-input"
                     value={hours}
                     onChange={(e) => setHours(e.target.value)}
@@ -261,7 +261,7 @@ const CreateGallery = () => {
                 <div className="flex items-center gap-2">
                   <input
                     id="deliveryTime"
-                    type="text"
+                    type="number"
                     className="form-input"
                     value={deliveryTime}
                     onChange={(e) => setDeliveryTime(e.target.value)}
@@ -300,7 +300,7 @@ const CreateGallery = () => {
                 </label>
                 <div className="flex items-center gap-2">
                   <input
-                    type="text"
+                    type="number"
                     className="form-input"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
