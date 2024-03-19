@@ -4,12 +4,20 @@ export interface Gallery {
   location: string;
   name: string;
   price: number;
+  hours: number;
+  description: string | null;
+  delivery_time: number;
+  included: string[];
 }
 
 export interface NewGallery {
   name?: string;
   location?: string;
   price?: number;
+  hours?: number;
+  description?: string | null;
+  delivery_time?: number;
+  included?: string[];
 }
 
 export interface SearchFilter {
