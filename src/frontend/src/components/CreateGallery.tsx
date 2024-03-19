@@ -6,6 +6,7 @@ import { IoIosArrowBack, IoIosArrowForward, IoIosAdd } from "react-icons/io";
 import { HiOutlinePlusSm } from "react-icons/hi";
 import { GrLocation } from "react-icons/gr";
 import { classNames } from "@/utils/list";
+import photographerGalleriesService from "@/services/photographerGalleries";
 
 interface FileWithPreview {
   file: File;
@@ -13,14 +14,26 @@ interface FileWithPreview {
 }
 
 const CreateGallery = () => {
-  const [additionalInputs, setAdditionalInputs] = useState(1);
+  const [additionalInputs, setAdditionalInputs] = useState<number[]>([]);
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(-1);
+
+  const [name, setName] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [price, setPrice] = useState<number | string>("");
+  const [hours, setHours] = useState<number | string>("");
+  const [description, setDescription] = useState<string>("");
+  const [deliveryTime, setDeliveryTime] = useState<number | string>("");
+  const [included, setIncluded] = useState<string[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddInput = () => {
-    setAdditionalInputs(additionalInputs + 1);
+    setAdditionalInputs((currentInputs) => [
+      ...currentInputs,
+      currentInputs.length,
+    ]);
+    setIncluded((currentIncluded) => [...currentIncluded, ""]);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,8 +57,24 @@ const CreateGallery = () => {
     console.log(currentImageIndex);
   };
 
-  const handleBrowseClick = () => {
-    fileInputRef.current?.click();
+  const handleIncludedChange = (index: number, value: string) => {
+    const updatedIncluded = [...included];
+    updatedIncluded[index] = value;
+    setIncluded(updatedIncluded);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const newGalleryData = {
+      name,
+      location,
+      price: Number(price),
+      hours: Number(hours),
+      description,
+      delivery_time: Number(deliveryTime),
+      included,
+    };
+    photographerGalleriesService.createGallery(newGalleryData);
   };
 
   return (
@@ -80,7 +109,7 @@ const CreateGallery = () => {
               />
               <button
                 className="mt-8 text-white bg-amber-500 rounded px-6 py-1"
-                onClick={handleBrowseClick}
+                onClick={fileInputRef.current?.click}
               >
                 Browse
               </button>
@@ -134,27 +163,39 @@ const CreateGallery = () => {
                 : "ring-1 ring-gray-200",
               "flex-shrink-0 relative w-36 h-36 rounded-lg bg-gray-200 overflow-hidden cursor-pointer flex items-center justify-center"
             )}
-            onClick={handleBrowseClick}
+            onClick={fileInputRef.current?.click}
           >
             <HiOutlinePlusSm className="text-4xl text-gray-500" />
           </div>
         </div>
       </div>
 
-      <div className="col-span-2 flex-1">
+      <form className="col-span-2 flex-1 " onSubmit={handleSubmit}>
         <div className="overflow-y-scroll h-[62vh]">
           <div className="flex flex-col overflow-y-auto gap-2">
             <div className="flex flex-col">
               <label htmlFor="gallery" className="label-normal">
                 Gallery name
               </label>
-              <input id="gallery" type="text" className="form-input" />
+              <input
+                id="gallery"
+                type="text"
+                className="form-input"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
             <div className="flex flex-col">
               <label htmlFor="description" className="label-normal">
                 Description
               </label>
-              <textarea id="description" rows={4} className="form-input" />
+              <textarea
+                id="description"
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="form-input"
+              />
             </div>
             <div className="flex items-center gap-4">
               <div>
@@ -162,7 +203,13 @@ const CreateGallery = () => {
                   Hours
                 </label>
                 <div className="flex items-center gap-2">
-                  <input id="hours" type="text" className="form-input"></input>
+                  <input
+                    id="hours"
+                    type="text"
+                    className="form-input"
+                    value={hours}
+                    onChange={(e) => setHours(e.target.value)}
+                  />
                   <span className="label-normal">Hrs</span>
                 </div>
               </div>
@@ -171,7 +218,13 @@ const CreateGallery = () => {
                   Location
                 </label>
                 <div className="relative">
-                  <input id="location" type="text" className="form-input" />
+                  <input
+                    id="location"
+                    type="text"
+                    className="form-input"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                     <GrLocation />
                   </div>
@@ -182,7 +235,13 @@ const CreateGallery = () => {
                   Delivery time
                 </label>
                 <div className="flex items-center gap-2">
-                  <input id="deliveryTime" type="text" className="form-input" />
+                  <input
+                    id="deliveryTime"
+                    type="text"
+                    className="form-input"
+                    value={deliveryTime}
+                    onChange={(e) => setDeliveryTime(e.target.value)}
+                  />
                   <span className="label-normal">Days</span>
                 </div>
               </div>
@@ -190,26 +249,38 @@ const CreateGallery = () => {
             <div className="flex flex-col">
               <span className="mr-2">What includes in this package</span>
             </div>
-            {[...Array(additionalInputs)].map((_, index) => (
-              <input key={index} type="text" className="form-input" />
+            {additionalInputs.map((index) => (
+              <div key={index} className="flex flex-col mb-4">
+                <input
+                  id={`included-${index}`}
+                  type="text"
+                  className="form-input"
+                  value={included[index] || ""}
+                  onChange={(e) => handleIncludedChange(index, e.target.value)}
+                />
+              </div>
             ))}
             {/* Click to add button */}
-            <div className="flex items-center">
-              <button
-                className="text-yellow-600 flex items-center"
-                onClick={handleAddInput}
-              >
-                <IoIosAdd className="w-8 h-auto" />
-                Click to add
-              </button>
-            </div>
+            <button
+              className="text-yellow-600 flex items-center"
+              onClick={handleAddInput}
+            >
+              <IoIosAdd className="w-8 h-auto" />
+              Click to add
+            </button>
+
             <div className="flex items-center">
               <div className="flex flex-col ">
                 <label id="price" className="label-normal">
                   Price
                 </label>
                 <div className="flex items-center gap-2">
-                  <input type="text" className="form-input" />
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
                   <span className="label-normal">THB</span>
                 </div>
               </div>
@@ -219,9 +290,11 @@ const CreateGallery = () => {
 
         <div className="flex justify-end gap-2">
           <button className="btn-cancel mt-4 px-2">Cancel</button>
-          <button className="btn-primary mt-4 px-5">Save</button>
+          <button type="submit" className="btn-primary mt-4 px-5">
+            Save
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
