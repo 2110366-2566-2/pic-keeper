@@ -55,6 +55,7 @@ const googleLogin = async () => {
     const { data } = await apiClient.post<GoogleLoginResponse>(
       `${authBaseUrl}/google/login`
     );
+    console.log("Google!",data);
     return data;
   } catch (error) {
     throw error;

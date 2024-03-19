@@ -1,5 +1,5 @@
 'use client'
-import BookingPage from "@/components/Booking";
+import BookingPage from "@/components/Booking/Booking";
 
 
 const Home = () => {

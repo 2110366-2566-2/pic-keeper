@@ -1,12 +1,13 @@
 "use client";
+import { Booking, BookingStatus } from "@/types/booking";
 
 interface Content { //Will be fixed soon
   id?: string;
-  name?: string;
-  customer?: { name: string; imageUrl: string };
-  date?: string;
-  price?: string;
+  galleryname?: string;
+  start_time?: string;
+  price?: any;
   status?: string;
+  location?:string;
 }
 
 export default function BookingModal(props: {
@@ -28,15 +29,22 @@ export default function BookingModal(props: {
           className="fixed bg-black bg-opacity-50 inset-0 flex items-center justify-center "
         >
           <div className="max-w-md w-full max-h-[500px] h-full px-4 bg-white shadow-lg rounded-2xl ">
-            <div className=" py-6 px-8 flex flex-col w-full h-full overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-slate-500 scrollbar-track-slate-300  ">
+            <div className=" py-6 px-8 flex flex-col w-full h-full overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-slate-500 scrollbar-track-slate-300  ">
               <p className="text-base font-semibold">
                 Appointment ID {props.content.id}
               </p>
-              <p>15 days from now.</p>
-              <p className="text-2xl font-bold py-2">Gallery name</p>
-              <div className="flex gap-x-2 items-baseline mb-2">
-                <p className="text-base font-bold">&bull; Status </p>
-                <p className="text-sm font-semibold">Action taken on 12/01</p>
+              <p className="text-sm font-semibold text-stone-400">15 days from now</p>
+              <p className="text-2xl font-bold py-2">{props.content.galleryname}</p>
+              <div className="flex flex-wrap gap-x-2 items-baseline mb-2">
+               
+                {(props.content.status==BookingStatus.BookingCancelledStatus)?  <p className="text-base font-bold text-red-600">&bull; Cancelled </p>:<></>} 
+                {(props.content.status==BookingStatus.BookingCompletedStatus)? <p className="text-base font-bold text-amber-500">&bull; Completed </p>:<></>} 
+                {(props.content.status==BookingStatus.BookingCustomerReqCancelStatus)? <p className="text-base font-bold text-orange-500">&bull; Cancellation requested </p>:<></>} 
+                {(props.content.status==BookingStatus.BookingPaidOutStatus)? <p className="text-base font-bold text-blue-500">&bull; Paid out </p>:<></>} 
+                {(props.content.status==BookingStatus.BookingPaidStatus)? <p className="text-base font-bold text-emerald-500">&bull; User paid </p>:<></>} 
+                {(props.content.status==BookingStatus.BookingPhotographerReqCancelStatus)? <p className="text-base font-bold text-orange-500">&bull; ancellation requested </p>:<></>} 
+               
+                <p className="text-sm font-semibold text-stone-400">Action taken on 12/01</p>
               </div>
               <div className="flex flex-col gap-y-2">
                 <div className="flex gap-x-2 ">
@@ -50,12 +58,12 @@ export default function BookingModal(props: {
                     <path
                       d="M8 7V3M16 7V3M7 11H17M5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21Z"
                       stroke="#0C0A09"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   </svg>{" "}
-                  {props.content.date}
+                  {props.content.start_time}
                 </div>
                 <div className="flex gap-x-2 ">
                   <svg
@@ -79,19 +87,19 @@ export default function BookingModal(props: {
                 <div className="flex gap-x-2 ">
                   <svg
                     width="24"
-                    height="17"
+                    height="20"
                     viewBox="0 0 14 17"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M2.05051 2.10114C3.36333 0.788317 5.14389 0.0507813 7.0005 0.0507812C8.85711 0.0507813 10.6377 0.788317 11.9505 2.10114C13.2633 3.41396 14.0009 5.19453 14.0009 7.05114C14.0009 8.90775 13.2633 10.6883 11.9505 12.0011L7.0005 16.9511L2.05051 12.0011C1.40042 11.3511 0.884739 10.5794 0.532912 9.73009C0.181084 8.88076 0 7.97045 0 7.05114C0 6.13183 0.181084 5.22152 0.532912 4.37219C0.884739 3.52286 1.40042 2.75116 2.05051 2.10114ZM7.0005 9.05114C7.53094 9.05114 8.03965 8.84042 8.41472 8.46535C8.78979 8.09028 9.00051 7.58157 9.00051 7.05114C9.00051 6.52071 8.78979 6.012 8.41472 5.63692C8.03965 5.26185 7.53094 5.05114 7.0005 5.05114C6.47007 5.05114 5.96136 5.26185 5.58629 5.63692C5.21122 6.012 5.0005 6.52071 5.0005 7.05114C5.0005 7.58157 5.21122 8.09028 5.58629 8.46535C5.96136 8.84042 6.47007 9.05114 7.0005 9.05114Z"
                       fill="black"
                     />
                   </svg>
-                  {props.content.name}
+                  {props.content.location}
                 </div>
                 <div className="flex gap-x-2 mb-4 ">
                   <svg
@@ -117,11 +125,11 @@ export default function BookingModal(props: {
                     height="24"
                     viewBox="0 0 24 24"
                   >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                     <g
                       id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     ></g>
                     <g id="SVGRepo_iconCarrier">
                       <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
@@ -137,11 +145,11 @@ export default function BookingModal(props: {
                     height="24"
                     viewBox="0 0 24 24"
                   >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                     <g
                       id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     ></g>
                     <g id="SVGRepo_iconCarrier">
                       <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
@@ -157,11 +165,11 @@ export default function BookingModal(props: {
                     height="24"
                     viewBox="0 0 24 24"
                   >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                     <g
                       id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     ></g>
                     <g id="SVGRepo_iconCarrier">
                       <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
@@ -177,11 +185,11 @@ export default function BookingModal(props: {
                     height="24"
                     viewBox="0 0 24 24"
                   >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                     <g
                       id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     ></g>
                     <g id="SVGRepo_iconCarrier">
                       <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
@@ -195,7 +203,7 @@ export default function BookingModal(props: {
               <hr className="h-px my-4 bg-gray-200 border-2 dark:bg-gray-700" />
 
               <div className="text-lg flex font-bold justify-between">
-                <div>Total</div> <div>{props.content.price}</div>
+                <div>Total</div> <div>{props.content.price}{" THB"}</div>
               </div>
               <button
                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"

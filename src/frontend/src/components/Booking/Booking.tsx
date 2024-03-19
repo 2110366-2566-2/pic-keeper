@@ -1,65 +1,83 @@
 "use client";
-import { useState, useEffect } from "react";
+import customerBookingService from "@/services/customerBooking";
+import { Booking, BookingStatus } from "@/types/booking";
+import { useEffect, useState } from "react";
 import BookingCard from "./BookingCard";
 import BookingModal from "./BookingModal";
-import { Booking, BookingStatus } from "@/types";
+
+
+
 
 interface BookingTmp {
   id: string;
-  name: string;
-  customer: { name: string; imageUrl: string };
-  date: string;
-  price: string;
+  customer_id:string;
+  gallery_id: string;
+  start_time: string;
+  end_time: string;
   status: BookingStatus;
+  created_at: string;
+  updated_at: string;
 }
 
-const mockData: BookingTmp[] = [
+const mockData: Booking[] = [
   {
     id: "#B1201",
-    name: "Object 1 Lorem ipsum dolor sit amet",
-    customer: { name: "Baboom", imageUrl: "/images/signup.png" },
-    date: "10/02/2024",
-    price: "6,000",
+    customer_id:"string",
+    gallery_id: "string",
+    start_time: "10/02/2024",
+    end_time: "string",
+    created_at: "string",
+    updated_at: "string",
     status: BookingStatus.BookingCancelledStatus,
   },
   {
     id: "#B1201",
-    name: "Object 1 Lorem ipsum dolor sit amet",
-    customer: { name: "Baboom", imageUrl: "/images/signup.png" },
-    date: "10/02/2024",
-    price: "6,000",
+    customer_id:"string",
+    gallery_id: "string",
+    start_time: "10/02/2024",
+    end_time: "string",
+    created_at: "string",
+    updated_at: "string",
     status: BookingStatus.BookingPaidStatus,
   },
   {
     id: "#B1201",
-    name: "Object 1 Lorem ipsum dolor sit amet",
-    customer: { name: "Baboom", imageUrl: "/images/signup.png" },
-    date: "10/02/2024",
-    price: "6,000",
+    customer_id:"string",
+    gallery_id: "string",
+    start_time: "10/02/2024",
+    end_time: "string",
+    created_at: "string",
+    updated_at: "string",
     status: BookingStatus.BookingPaidStatus,
   },
   {
-    id: "#B1202", // Corrected id value to make each object unique
-    name: "Object 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-    customer: { name: "Baboom", imageUrl: "/images/no-picture.jpeg" },
-    date: "10/02/2024",
-    price: "6,000",
+    id: "#B1201",
+    customer_id:"string",
+    gallery_id: "string",
+    start_time: "10/02/2024",
+    end_time: "string",
+    created_at: "string",
+    updated_at: "string",
     status: BookingStatus.BookingPaidOutStatus,
   },
   {
-    id: "#B1203", // Corrected id value to make each object unique
-    name: "Object 3 Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-    customer: { name: "Baboom", imageUrl: "/images/no-picture.jpeg" },
-    date: "10/02/2024",
-    price: "6,000",
+    id: "#B1201",
+    customer_id:"string",
+    gallery_id: "string",
+    start_time: "10/02/2024",
+    end_time: "string",
+    created_at: "string",
+    updated_at: "string",
     status: BookingStatus.BookingCompletedStatus,
   },
   {
     id: "#B1201",
-    name: "Object 1 Lorem ipsum dolor sit amet",
-    customer: { name: "Baboom", imageUrl: "/images/signup.png" },
-    date: "10/02/2024",
-    price: "6,000",
+    customer_id:"string",
+    gallery_id: "string",
+    start_time: "10/02/2024",
+    end_time: "string",
+    created_at: "string",
+    updated_at: "string",
     status: BookingStatus.BookingCustomerReqCancelStatus,
   },
 ];
@@ -75,15 +93,27 @@ export default function BookingPage() {
 
   //-------Fetch Object will be replaced later--------------------------------------
   const getAllBookings = async () => {
+    const result= await customerBookingService.getAllBookings();
+    console.log("Fetch complete: ",result);
+    //return result.data
     return mockData;
   };
   const getPendingCancellations = async () => {
+    const result= await customerBookingService.getPendingCancellations();
+    console.log("Fetch pending complete: ",result);
+    //return result.data
     return [mockData[5]];
   };
   const getUpcomingBookings = async () => {
+    const result= await customerBookingService.getUpcomingBookings();
+    console.log("Fetch coming complete: ",result);
+    //return result.data
     return [mockData[1], mockData[2]];
   };
   const getPastBookings = async () => {
+    const result= await customerBookingService.getPastBookings();
+    console.log("Fetch Past complete: ",result);
+    //return result.data
     return [mockData[3], mockData[4]];
   };
 
@@ -118,15 +148,16 @@ export default function BookingPage() {
   };
 
   //renderBooking Cards
-  const renderedBookings = bookingLists.map((obj) => {
+  const renderedBookings = bookingLists.map((booking,index) => {
+    
     return (
-      <>
         <BookingCard
-          props={obj}
+          key={index}
+          props={booking}
           openModal={openModal}
           setModalProps={setModalProps}
         />
-      </>
+      
     );
   });
 
