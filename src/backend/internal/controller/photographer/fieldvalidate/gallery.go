@@ -24,6 +24,16 @@ func CreateGallery(input model.GalleryInput) []error {
 			"the price of the new gallery must be provided",
 		))
 	}
+	if input.Hours == nil {
+		fieldErrs = append(fieldErrs, errors.New(
+			"the hours of the new gallery must be provided",
+		))
+	}
+	if input.DeliveryTime == nil {
+		fieldErrs = append(fieldErrs, errors.New(
+			"the delivery time of the new gallery must be provided",
+		))
+	}
 
 	return fieldErrs
 }

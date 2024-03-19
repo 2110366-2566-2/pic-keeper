@@ -35,6 +35,7 @@ func (r *Resolver) InitializeRoom(c *gin.Context) {
 	roomId := uuid.New()
 	newRoom := &model.Room{
 		Id:        roomId,
+		GalleryId: input.GalleryId,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		DeletedAt: nil,

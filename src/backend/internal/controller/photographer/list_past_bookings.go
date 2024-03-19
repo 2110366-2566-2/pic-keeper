@@ -17,7 +17,7 @@ func (r *Resolver) ListPastBookings(c *gin.Context) {
 	}
 
 	acceptedStatus := []string{model.BookingCompletedStatus, model.BookingPaidOutStatus}
-	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, userObj.Id, acceptedStatus...)
+	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, userObj.Id, r.GalleryUsecase, acceptedStatus...)
 	if err != nil {
 		util.Raise500Error(c, err)
 		return

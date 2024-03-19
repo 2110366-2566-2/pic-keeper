@@ -1,9 +1,10 @@
-import apiClientWithAuth from "@/libs/apiClientWithAuth";
-import { GalleryListResponse, SearchFilter, UrlsListResponse } from "@/types";
+import apiClient from "@/libs/apiClientWithAuth";
+import { SearchFilter } from "@/types/gallery";
+import { GalleryListResponse, UrlsListResponse } from "@/types/response";
 
-const customerGalleriesBaseUrl = "customers/galleries/v1/";
+const customerGalleriesBaseUrl = "/customers/galleries/v1";
 
-const search = async (searchFilter: SearchFilter) => {
+const search = async (searchFilter: SearchFilter = {}) => {
   try {
     const queryParams = new URLSearchParams();
     Object.entries(searchFilter).forEach(([key, value]) => {
@@ -12,10 +13,11 @@ const search = async (searchFilter: SearchFilter) => {
       }
     });
 
-    const response = await apiClientWithAuth.get<GalleryListResponse>(
-      `${customerGalleriesBaseUrl}?${queryParams.toString()}`
+    console.log(`${customerGalleriesBaseUrl}/search?${queryParams.toString()}`);
+    const { data } = await apiClient.get<GalleryListResponse>(
+      `${customerGalleriesBaseUrl}/search?${queryParams.toString()}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -23,10 +25,10 @@ const search = async (searchFilter: SearchFilter) => {
 
 const getPhotoUrlsListInGallery = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.get<UrlsListResponse>(
+    const { data } = await apiClient.get<UrlsListResponse>(
       `${customerGalleriesBaseUrl}/${id}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }

@@ -1,19 +1,20 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import {
-  ConversationListResponse,
-  RoomMemberInput,
   UserRoomLookUpListResponse,
-} from "@/types";
+  ConversationListResponse,
+  RoomResponse,
+} from "@/types/response";
+import { RoomMemberInput } from "@/types/room";
 
-const roomBaseUrl = "/room/v1";
+const roomBaseUrl = "/rooms/v1";
 
 const createRoom = async (roomMembers: RoomMemberInput) => {
   try {
-    const response = await apiClientWithAuth.post<UserRoomLookUpListResponse>(
+    const { data } = await apiClientWithAuth.post<UserRoomLookUpListResponse>(
       roomBaseUrl,
       roomMembers
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }
@@ -21,10 +22,21 @@ const createRoom = async (roomMembers: RoomMemberInput) => {
 
 const getAllRooms = async () => {
   try {
-    const response = await apiClientWithAuth.get<UserRoomLookUpListResponse>(
+    const { data } = await apiClientWithAuth.get<UserRoomLookUpListResponse>(
       roomBaseUrl
     );
-    return response.data;
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getRoomInfo = async (id: string) => {
+  try {
+    const { data } = await apiClientWithAuth.get<RoomResponse>(
+      `roomBaseUrl/${id}`
+    );
+    return data;
   } catch (error) {
     throw error;
   }
@@ -32,10 +44,10 @@ const getAllRooms = async () => {
 
 const getAllConversations = async (id: string) => {
   try {
-    const response = await apiClientWithAuth.get<ConversationListResponse>(
+    const { data } = await apiClientWithAuth.get<ConversationListResponse>(
       `${roomBaseUrl}/${id}`
     );
-    return response.data;
+    return data;
   } catch (error) {
     throw error;
   }

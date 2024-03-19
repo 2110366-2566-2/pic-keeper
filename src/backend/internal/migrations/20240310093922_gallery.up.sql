@@ -2,7 +2,12 @@ CREATE TABLE galleries(
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     photographer_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name varchar(255) NOT NULL,
-    price integer NOT NULL
+    price integer NOT NULL,
+    location varchar(255) NOT NULL,
+    hours integer NOT NULL,
+    description varchar(2000),
+    delivery_time integer NOT NULL,
+    included varchar(255)[]
 );
 
 CREATE TYPE booking_status AS enum(

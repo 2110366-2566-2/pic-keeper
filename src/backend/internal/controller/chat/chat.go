@@ -5,7 +5,11 @@ import (
 	"net/http"
 	"time"
 
+	"errors"
+
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/Roongkun/software-eng-ii/internal/third-party/auth"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -233,9 +237,6 @@ func (c *Chat) Broadcast(msg Message) error {
 	// get all users in the room
 	users := c.rooms.GetUsers(msg.Receiver)
 	for _, user := range users {
-		if user == msg.Sender {
-			continue
-		}
 		sessionIds := c.lookupTable.Get(UserId(user))
 		for _, sid := range sessionIds {
 			sess := c.sessions.Get(sid)
@@ -318,30 +319,56 @@ func ping(ws *websocket.Conn) {
 }
 
 func (c *Chat) ServeWS(gc *gin.Context) {
+
 	if gc.Request.Method != http.MethodGet {
-		gc.JSON(http.StatusMethodNotAllowed, gin.H{
-			"status": "failed",
-			"error":  "method not allowed",
-		})
-		gc.Abort()
+		util.Raise405Error(gc, "method not allowed")
 		return
 	}
 
 	ws, err := upgrader.Upgrade(gc.Writer, gc.Request, nil)
 	if err != nil {
-		gc.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
+		util.Raise400Error(gc, err.Error())
+		return
 	}
 
 	defer ws.Close()
 
-	user := gc.MustGet("user")
-	userModel := user.(model.User)
+	token := gc.Param("session-token")
+	if token == "" {
+		util.Raise400Error(gc, "No session token provided")
+		return
+	}
+
+	secretKey, exist := gc.Get("secretKey")
+	if !exist {
+		err := errors.New("secret key not found")
+		util.Raise500Error(gc, err)
+		return
+	}
+	jwtWrapper := auth.JwtWrapper{
+		SecretKey: secretKey.(string),
+		Issuer:    "AuthProvider",
+	}
+
+	claims, err := jwtWrapper.ValidateToken(gc, token, false)
+	if err != nil {
+		util.Raise500Error(gc, err)
+		return
+	}
+
+	user, err := c.Resolver.UserUsecase.UserRepo.FindOneByEmail(gc, claims.Email)
+	if err != nil {
+		util.Raise500Error(gc, err)
+		return
+	}
+
+	if user.LoggedOut {
+		util.Raise401Error(gc, "you have logged out, please log in again")
+		return
+	}
 
 	session := c.newSession(ws)
-	close := c.Bind(UserId(userModel.Id), SessionId(session.id))
+	close := c.Bind(UserId(user.Id), SessionId(session.id))
 	defer close()
 
 	// notify that a user went online
@@ -363,7 +390,7 @@ func (c *Chat) ServeWS(gc *gin.Context) {
 			break
 		}
 
-		msg.Sender = userModel.Id
+		msg.Sender = user.Id
 		c.broadcast <- msg
 	}
 }
