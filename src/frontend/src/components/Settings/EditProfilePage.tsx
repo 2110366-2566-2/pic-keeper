@@ -21,6 +21,7 @@ const EditProfilePage = () => {
   const [address, setAddress] = useState("");
 
   const apiClientForForm = useAxiosAuth();
+  const { data: session, update } = useSession();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -35,7 +36,7 @@ const EditProfilePage = () => {
         setAbout(userInfo.data?.about || "");
         setUsername(userInfo.data?.username || "");
         setAddress(userInfo.data?.address || "");
-        // For photo preview, you'll need the URL if you store it separately
+        setPhotoPreview(userInfo.profile_picture_url);
       } catch (error) {
         console.error("Failed to fetch user info", error);
       }
@@ -78,9 +79,31 @@ const EditProfilePage = () => {
 
     try {
       // Update user profile
-      await userService.updateUserProfile(userUpdateInput);
+      const updatedUser = await userService.updateUserProfile(userUpdateInput);
       // Upload profile picture if it has been changed
-      if (photo) await userService.uploadProfile(apiClientForForm, photo);
+      if (session) {
+        const updatedSession = {
+          ...session,
+          user: { ...session.user, data: updatedUser.data },
+        };
+        await update(updatedSession);
+      }
+      if (photo) {
+        const updatedPhoto = await userService.uploadProfile(
+          apiClientForForm,
+          photo
+        );
+        if (session) {
+          const updatedSession = {
+            ...session,
+            user: {
+              ...session.user,
+              profile_picture_url: updatedPhoto.profile_picture_url,
+            },
+          };
+          await update(updatedSession);
+        }
+      }
 
       // Optionally, show success message or redirect
     } catch (error) {

@@ -1,6 +1,6 @@
 // src/app/user/layout.tsx
 import React from "react";
-import NavBar from "@/components/shared/Navbar";
+import NavBar from "@/components/shared/Navbar/Navbar";
 
 export default function UserLayout({
   children,

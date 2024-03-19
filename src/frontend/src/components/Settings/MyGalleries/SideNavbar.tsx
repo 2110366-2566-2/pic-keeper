@@ -9,10 +9,10 @@ const SideNavbar = () => {
   const router = useRouter();
 
   const navigation = [
-    { name: "Edit profile", href: "/user/edit-profile" },
-    { name: "Account management", href: "/user/account-management" },
-    { name: "My galleries", href: "/user/my-galleries" },
-    { name: "History", href: "/user/history" },
+    { name: "Edit profile", href: "/settings/edit-profile" },
+    { name: "Account management", href: "/settings/account-management" },
+    { name: "My galleries", href: "/settings/my-galleries" },
+    { name: "History", href: "/settings/history" },
     // Add more navigation items if needed
   ];
 
