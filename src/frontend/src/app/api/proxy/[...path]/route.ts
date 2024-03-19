@@ -1,14 +1,12 @@
-import authService from "@/services/auth";
+import type { NextApiRequest } from "next";
+import { NextResponse } from "next/server";
 import axios, { AxiosRequestConfig } from "axios";
-import { NextApiRequest } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { NextResponse } from "next/server";
-import { redirect } from "next/navigation";
+import authService from "@/services/auth";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-  headers: { "Content-Type": "application/json" },
 });
 
 async function handler(
@@ -19,18 +17,33 @@ async function handler(
   if (!session?.user?.session_token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
   const url = `/${path.join("/")}`;
   let config: AxiosRequestConfig = {
     method: req.method,
     url,
     headers: {
       ...req.headers,
-      Authorization: `Bearer ${session.user.session_token}`, // Correctly include the token
+      Authorization: `Bearer ${session.user.session_token}`,
     },
   };
 
-  if (req.body && req.method !== "GET" && req.method !== "DELETE") {
+  // Dynamically populate headers from the request
+  req.headers.forEach((value: string, key: string) => {
+    if (!["host", "connection"].includes(key)) {
+      // Exclude specific headers
+      if (!config.headers) {
+        config.headers = {};
+      }
+      config.headers[key] = value;
+    }
+  });
+
+  // Handle multipart/form-data and other content types differently
+  const contentType = req.headers.get("content-type");
+  if (contentType && contentType.includes("multipart/form-data")) {
+    // Forward the raw request stream for multipart/form-data
+    config.data = req;
+  } else if (req.body && req.method !== "GET" && req.method !== "DELETE") {
     const requestBody = await readRequestBody(req.body);
     const jsonData = tryParseJSON(requestBody);
     if (jsonData) {
@@ -39,56 +52,50 @@ async function handler(
     }
   }
 
-  const makeRequest = async (token: string) => {
-    try {
-      const safeHeaders: { [key: string]: any } = { ...config.headers };
-      delete safeHeaders["host"];
-      delete safeHeaders["connection"];
-      safeHeaders["Authorization"] = `Bearer ${token}`;
-      const { data, status } = await axiosInstance({
-        ...config,
-        headers: safeHeaders,
-      });
-      return NextResponse.json(data, { status });
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  return await processRequestWithTokenRetry(
-    session.user.session_token,
-    makeRequest
-  );
+  return makeRequestAndHandleTokenRefresh(session.user.session_token, config);
 }
 
-async function processRequestWithTokenRetry(
+async function makeRequestAndHandleTokenRefresh(
   token: string,
-  makeRequest: {
-    (token: string): Promise<NextResponse<any> | undefined>;
-    (arg0: string): any;
-  }
+  config: AxiosRequestConfig
 ) {
   try {
-    return await makeRequest(token);
+    const safeHeaders: { [key: string]: any } = { ...config.headers };
+    delete safeHeaders.host;
+    delete safeHeaders.connection; // Remove connection-specific headers
+    safeHeaders.Authorization = `Bearer ${token}`;
+
+    const { data, status } = await axiosInstance({
+      ...config,
+      headers: safeHeaders,
+    });
+    return NextResponse.json(data, { status });
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      try {
-        const { refreshed_session_token } = await authService.refreshToken(
-          token
-        );
-        const session = await getServerSession(authOptions);
-        if (session) {
-          session.user.session_token = refreshed_session_token;
-        }
-
-        return await makeRequest(refreshed_session_token);
-      } catch (refreshError) {
-        //TODO: In current version next-auth cant handle sign out from server side
-        return handleError(refreshError);
+      const newToken = await tryRefreshingToken(token);
+      if (newToken) {
+        return makeRequestAndHandleTokenRefresh(newToken, config);
+      } else {
+        return handleError(error);
       }
     } else {
       return handleError(error);
     }
+  }
+}
+
+async function tryRefreshingToken(oldToken: string): Promise<string | null> {
+  try {
+    const { refreshed_session_token } = await authService.refreshToken(
+      oldToken
+    );
+    //TODO: Update the session with the new token if necessary
+
+    return refreshed_session_token;
+  } catch (error) {
+    //TODO: Handle token refresh error (maybe log out the user or notify them)
+    console.log(error);
+    return null;
   }
 }
 

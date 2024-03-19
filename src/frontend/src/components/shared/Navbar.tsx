@@ -7,15 +7,38 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { IoMdClose } from "react-icons/io";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import Image from "next/image";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { MdOutlineArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { useSession } from "next-auth/react";
+<<<<<<< HEAD
 import userService  from "@/services/user";
+=======
+import userService from "@/services/user";
+import { User } from "@/types/user";
+>>>>>>> 73158882482c8133ea1430ae4f728bd9ecada3a4
 
 const NavBar = () => {
   const pathName = usePathname();
 
   const { data: session } = useSession();
+  const [user, setUser] = useState<User>();
+  const [profilePicture, setProfilePicture] = useState("");
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await userService.getMyUserInfo();
+        if (response.data) {
+          setUser(response.data);
+          setProfilePicture(response.profile_picture_url);
+        }
+      } catch (error) {
+        console.log("error");
+      }
+    };
+
+    fetchUserInfo();
+  }, [session]);
 
   const navigation = [
     {
@@ -119,16 +142,14 @@ const NavBar = () => {
                                 fill={true}
                                 src={
                                   session
-                                    ? session.user.profile_picture_url
+                                    ? profilePicture
                                     : "/images/no-picture.jpeg"
                                 }
                                 alt=""
                               />
                             </div>
 
-                            <h2>
-                              {session ? session.user.data?.firstname : "Guest"}
-                            </h2>
+                            <h2>{session ? user?.firstname : "Guest"}</h2>
                             {open ? (
                               <MdArrowDropUp />
                             ) : (

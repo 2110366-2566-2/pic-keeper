@@ -3,7 +3,6 @@
 import userService from "@/services/user";
 import { UserUpdateInput } from "@/types/user";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const AccountManagement = () => {
@@ -12,7 +11,6 @@ const AccountManagement = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
-  const router = useRouter();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
