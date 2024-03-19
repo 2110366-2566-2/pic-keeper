@@ -3,14 +3,15 @@ import userService from '@/services/user'
 import { useEffect, useState } from 'react';
 import { User } from '@/types/user'
 import { profile } from 'console';
+import { useSession } from 'next-auth/react';
 
-const Home = (userId:string) => {
+const Home = ({params} : {params: { userId : string}}) => {
 
   const [profileUser, setProfileUser] = useState<User>()
 
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await userService.getUserById(userId)
+      const response = await userService.getUserById(params.userId)
       if (response.data)  setProfileUser(response.data)
     }
     fetchUser();
