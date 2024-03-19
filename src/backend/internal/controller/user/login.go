@@ -111,9 +111,10 @@ func (r *Resolver) Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"status":              "success",
-		"session_token":       token,
 		"data":                existedUser,
 		"profile_picture_url": util.GetProfilePictureUrl(existedUser.ProfilePictureKey),
 	})

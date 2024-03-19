@@ -102,9 +102,9 @@ func (r *Resolver) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
-		"status":        "success",
-		"session-token": token,
+		"status": "success",
 	})
 
 }

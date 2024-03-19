@@ -71,8 +71,8 @@ func (r *Resolver) RefreshToken(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
-		"status":                  "success",
-		"refreshed_session_token": token,
+		"status": "success",
 	})
 }
