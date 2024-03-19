@@ -7,11 +7,13 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type ContextKey string
-type LoginCredentials struct {
-	Email    string `json:"email" example:"test@mail.com"`
-	Password string `json:"password" example:"abc123"`
-}
+type (
+	ContextKey       string
+	LoginCredentials struct {
+		Email    string `json:"email" example:"test@mail.com"`
+		Password string `json:"password" example:"abc123"`
+	}
+)
 
 const (
 	PhotographerNotVerifiedStatus = "NOT_VERIFIED"
@@ -38,6 +40,7 @@ type User struct {
 	Firstname          string    `bun:"firstname,type:varchar" json:"firstname"`
 	Lastname           string    `bun:"lastname,type:varchar" json:"lastname"`
 	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
+	IsAdmin            bool      `bun:"is_admin,type:boolean" json:"is_admin"`
 	About              *string   `bun:"about,type:varchar" json:"about"`
 	Address            *string   `bun:"address,type:varchar" json:"address"`
 	PhoneNumber        *string   `bun:"phone_number,type:varchar" json:"phone_number"`
@@ -61,14 +64,6 @@ type UserUpdateInput struct {
 	About       *string `json:"about" example:"Hello"`
 	Username    *string `json:"username" example:"test"`
 	Address     *string `json:"address" example:"Bangkok"`
-}
-
-type Administrator struct {
-	bun.BaseModel `bun:"table:administrators,alias:admin"`
-	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	Email         string    `bun:"email,type:varchar" json:"email"`
-	Password      string    `bun:"password,type:varchar" json:"password"`
-	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
 }
 
 type Gallery struct {

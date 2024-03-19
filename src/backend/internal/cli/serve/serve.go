@@ -67,24 +67,6 @@ var ServeCmd = &cobra.Command{
 			log.Fatalf("Failed to initialize S3: %v", err)
 		}
 
-		admin := r.Group("/admin")
-		{
-			admin := admin.Group("/v1")
-			admin.Use(retrieveAdminSecretConf(appCfg))
-			admin.POST("/login", handler.Admin.Login)
-			admin.GET("/refresh", handler.Admin.RefreshToken)
-			admin.Use(middleware.ValidateCredentials)
-			admin.Use(handler.Admin.GetAdminInstance)
-
-			verification := admin.Group("/verifications")
-			{
-				verification.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
-				verification.PUT("/verify/:id", handler.Admin.Verify)
-				verification.PUT("/reject/:id", handler.Admin.Reject)
-			}
-			admin.PUT("/logout", handler.Admin.Logout)
-		}
-
 		authen := r.Group("/authen")
 		{
 			authen := authen.Group("/v1")
@@ -126,6 +108,14 @@ var ServeCmd = &cobra.Command{
 			users.PUT("/", handler.User.UpdateUserProfile)
 			users.PUT("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
+		}
+
+		admin := validated.Group("/admin")
+		{
+			admin := admin.Group("/v1")
+			admin.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
+			admin.PUT("/verify/:id", handler.Admin.Verify)
+			admin.PUT("/reject/:id", handler.Admin.Reject)
 		}
 
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
