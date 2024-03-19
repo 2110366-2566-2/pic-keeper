@@ -13,7 +13,10 @@ export default function Home() {
   fetchUserInfo();
   return (
     <main>
-      <div className="">Pic-Keeper</div>
+      <div className="w-screen h-screen">
+        <NavBar />
+        <div className="">Pic-Keeper</div>
+      </div>
     </main>
   );
 }
