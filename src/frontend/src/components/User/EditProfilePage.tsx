@@ -1,6 +1,11 @@
 "use client";
 
-import { Gender } from "@/types/user";
+import useAxiosAuth from "@/hooks/useAxiosAuth";
+import userService from "@/services/user";
+import { UploadProfilePictureResponse } from "@/types/response";
+import { Gender, UserUpdateInput } from "@/types/user";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { MdEdit } from "react-icons/md";
@@ -10,12 +15,34 @@ const EditProfilePage = () => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
-  const [gender, setGender] = useState<Gender | "">("");
+  const [gender, setGender] = useState<Gender | undefined>(undefined);
   const [about, setAbout] = useState("");
   const [username, setUsername] = useState("");
-  const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
+
+  const apiClientForForm = useAxiosAuth();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userInfo = await userService.getMyUserInfo();
+        // Assume userInfo.data has the user info based on your API's response structure
+        setName(userInfo.data?.firstname || "");
+        setSurname(userInfo.data?.lastname || "");
+        setGender(userInfo.data?.gender || undefined);
+        setAbout(userInfo.data?.about || "");
+        setUsername(userInfo.data?.username || "");
+        setAddress(userInfo.data?.address || "");
+        // For photo preview, you'll need the URL if you store it separately
+      } catch (error) {
+        console.error("Failed to fetch user info", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   const handleEditPhotoClick = () => {
     fileInputRef.current?.click();
@@ -37,9 +64,29 @@ const EditProfilePage = () => {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // TODO: Add logic to handle form submission
+    // Construct user update input object
+    const userUpdateInput: UserUpdateInput = {
+      firstname: name,
+      lastname: surname,
+      gender,
+      about,
+      username,
+      address,
+    };
+
+    try {
+      // Update user profile
+      await userService.updateUserProfile(userUpdateInput);
+      // Upload profile picture if it has been changed
+      if (photo) await userService.uploadProfile(apiClientForForm, photo);
+
+      // Optionally, show success message or redirect
+    } catch (error) {
+      console.error("Failed to update profile", error);
+      // Optionally, show error message
+    }
   };
 
   useEffect(() => {
@@ -162,16 +209,16 @@ const EditProfilePage = () => {
               />
             </div>
             <div className="sm:col-span-4">
-              <label htmlFor="location" className="label-normal">
+              <label htmlFor="address" className="label-normal">
                 Location
               </label>
               <input
-                id="location"
+                id="address"
                 type="text"
                 placeholder="Location"
                 className="form-input mt-2"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
             </div>
           </div>

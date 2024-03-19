@@ -21,15 +21,19 @@ export interface User {
   logged_out: string;
   profile_picture_key: string;
   verification_status: PhotographerStatus;
+  phone_number: string;
+  about: string;
+  address: string;
+  gender: Gender;
 }
 
 export interface UserUpdateInput {
   email?: string;
   password?: string;
-  phoneNumber?: string;
+  phone_number?: string;
   firstname?: string;
   lastname?: string;
-  gender?: string;
+  gender?: Gender;
   about?: string;
   username?: string;
   address?: string;
