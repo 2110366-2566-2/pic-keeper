@@ -108,9 +108,6 @@ const NavBar = () => {
                     </nav>
                   </div>
                 </div>
-                {/* <button className="flex-1 max-w-xl border-[1px] border-gray-300 px-2 py-[0.1rem] text-start text-gray-300 font-thin rounded">
-                  Search
-                </button> */}
                 <div className="inset-y-0 right-0 flex gap-2 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                   <IoNotificationsOutline className="text-gray-900 cursor-pointer" />
                   {/* Profile dropdown */}
@@ -157,7 +154,7 @@ const NavBar = () => {
                             {!session ? (
                               <Menu.Item>
                                 {({ active }) => (
-                                  <a
+                                  <Link
                                     href="/auth/login"
                                     className={classNames(
                                       "text-amber-700",
@@ -166,7 +163,7 @@ const NavBar = () => {
                                     )}
                                   >
                                     Login / Register
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ) : (
@@ -174,20 +171,20 @@ const NavBar = () => {
                             )}
                             <Menu.Item>
                               {({ active }) => (
-                                <a
-                                  href="user/edit-profile"
+                                <Link
+                                  href="/user/edit-profile"
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
                                     "block px-4 py-2 text-sm text-gray-700"
                                   )}
                                 >
                                   Your Profile
-                                </a>
+                                </Link>
                               )}
                             </Menu.Item>
                             <Menu.Item>
                               {({ active }) => (
-                                <a
+                                <Link
                                   href="/report-issues"
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
@@ -195,12 +192,12 @@ const NavBar = () => {
                                   )}
                                 >
                                   Report issues
-                                </a>
+                                </Link>
                               )}
                             </Menu.Item>
                             <Menu.Item>
                               {({ active }) => (
-                                <a
+                                <Link
                                   href="/settings"
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
@@ -208,7 +205,7 @@ const NavBar = () => {
                                   )}
                                 >
                                   Settings
-                                </a>
+                                </Link>
                               )}
                             </Menu.Item>
                             {session ? (
