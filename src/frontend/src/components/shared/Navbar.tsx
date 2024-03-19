@@ -7,34 +7,23 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { IoMdClose } from "react-icons/io";
 import { HiOutlineBars3 } from "react-icons/hi2";
 import Image from "next/image";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 import { MdOutlineArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import userService from "@/services/user";
-import { User } from "@/types/user";
 
 const NavBar = () => {
   const pathName = usePathname();
 
-  const { data: session } = useSession();
-  const [user, setUser] = useState<User>();
-  const [profilePicture, setProfilePicture] = useState("");
+  const { data: session, update } = useSession();
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const response = await userService.getMyUserInfo();
-        if (response.data) {
-          setUser(response.data);
-          setProfilePicture(response.profile_picture_url);
-        }
-      } catch (error) {
-        console.log("error");
-      }
-    };
-
-    fetchUserInfo();
-  }, [session]);
+    const visibilityHandler = () =>
+      document.visibilityState === "visible" && update();
+    window.addEventListener("visibilitychange", visibilityHandler, false);
+    return () =>
+      window.removeEventListener("visibilitychange", visibilityHandler, false);
+  }, [update]);
 
   const navigation = [
     {
@@ -138,14 +127,16 @@ const NavBar = () => {
                                 fill={true}
                                 src={
                                   session
-                                    ? profilePicture
+                                    ? session.user.profile_picture_url
                                     : "/images/no-picture.jpeg"
                                 }
                                 alt=""
                               />
                             </div>
 
-                            <h2>{session ? user?.firstname : "Guest"}</h2>
+                            <h2>
+                              {session ? session.user.data?.firstname : "Guest"}
+                            </h2>
                             {open ? (
                               <MdArrowDropUp />
                             ) : (
