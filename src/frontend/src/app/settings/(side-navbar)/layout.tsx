@@ -1,6 +1,6 @@
 // src/app/user/layout.tsx
 import React from "react";
-import SideNavbar from "@/components/User/MyGalleries/SideNavbar";
+import SideNavbar from "@/components/Settings/MyGalleries/SideNavbar";
 import NavBar from "@/components/shared/Navbar";
 
 export default function UserLayout({

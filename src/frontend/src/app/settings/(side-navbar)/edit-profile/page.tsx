@@ -1,4 +1,4 @@
-import EditProfilePage from "@/components/User/EditProfilePage";
+import EditProfilePage from "@/components/Settings/EditProfilePage";
 
 const Home = () => {
   return (

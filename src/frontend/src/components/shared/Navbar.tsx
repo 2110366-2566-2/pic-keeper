@@ -15,15 +15,7 @@ import userService from "@/services/user";
 const NavBar = () => {
   const pathName = usePathname();
 
-  const { data: session, update } = useSession();
-
-  useEffect(() => {
-    const visibilityHandler = () =>
-      document.visibilityState === "visible" && update();
-    window.addEventListener("visibilitychange", visibilityHandler, false);
-    return () =>
-      window.removeEventListener("visibilitychange", visibilityHandler, false);
-  }, [update]);
+  const { data: session } = useSession();
 
   const navigation = [
     {
@@ -198,7 +190,7 @@ const NavBar = () => {
                             <Menu.Item>
                               {({ active }) => (
                                 <Link
-                                  href="/settings"
+                                  href="/settings/edit-profile"
                                   className={classNames(
                                     active ? "bg-gray-100" : "",
                                     "block px-4 py-2 text-sm text-gray-700"
