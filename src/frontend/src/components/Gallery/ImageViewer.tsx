@@ -7,8 +7,8 @@ interface Props {
   imageUrls: string[];
 }
 
-const ImageViewerWithUploader = ({ imageUrls }: Props) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(-1);
+const ImageViewer = ({ imageUrls }: Props) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const navigateImages = (direction: "left" | "right") => {
     setCurrentImageIndex((prevIndex) => {
@@ -72,4 +72,4 @@ const ImageViewerWithUploader = ({ imageUrls }: Props) => {
   );
 };
 
-export default ImageViewerWithUploader;
+export default ImageViewer;
