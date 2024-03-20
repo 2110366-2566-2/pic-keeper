@@ -52,7 +52,7 @@ const MyGallery = ({ galleryId }: Props) => {
     <div className="mx-auto rounded-lg shadow-lg p-6 grid grid-cols-1 md:grid-cols-4 gap-8 bg-white text-gray-800">
       <ImageViewer imageUrls={imageUrls} />
 
-      <div className="md:col-span-2 space-y-6">
+      <div className="md:col-span-2 space-y-6 flex flex-col">
         <h1 className="text-3xl font-bold text-gray-900 leading-tight">
           {gallery.name}
         </h1>
@@ -71,7 +71,7 @@ const MyGallery = ({ galleryId }: Props) => {
             {gallery.description}
           </p>
         </div>
-        <div className="space-y-4 rounded-xl ring-1 p-4 ring-gray-300">
+        <div className="space-y-4 rounded-xl ring-1 p-4 ring-gray-300 max-h-64 overflow-y-scroll">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-900">Package</h2>
             <p className="text-lg font-bold text-amber-600">
@@ -98,6 +98,7 @@ const MyGallery = ({ galleryId }: Props) => {
             ))}
           </ul>
         </div>
+        <button className="self-end btn-primary px-16">Chat</button>
       </div>
     </div>
   );
