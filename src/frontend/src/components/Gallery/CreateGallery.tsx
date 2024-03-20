@@ -155,7 +155,7 @@ const CreateGallery = () => {
               <span className="mr-2">What includes in this package</span>
             </div>
             {additionalInputs.map((index) => (
-              <div key={index} className="flex flex-col mb-4">
+              <div key={index} className="flex flex-col mb-2">
                 <input
                   id={`included-${index}`}
                   type="text"
@@ -167,6 +167,7 @@ const CreateGallery = () => {
             ))}
             {/* Click to add button */}
             <button
+              type="button"
               className="text-yellow-600 flex items-center"
               onClick={handleAddInput}
             >

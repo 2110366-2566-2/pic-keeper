@@ -47,7 +47,7 @@ const ImageViewer = ({ imageUrls }: Props) => {
         </button>
       </div>
 
-      <div className="flex overflow-x-auto space-x-4 p-1 scrollbar-hide">
+      <div className="flex items-center justify-center overflow-x-auto space-x-4 p-1 scrollbar-hide">
         {imageUrls.map((imgUrl, index) => (
           <div
             key={index}
