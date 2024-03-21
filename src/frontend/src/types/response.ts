@@ -43,6 +43,7 @@ export type UserRoomLookUpListResponse = SuccessResponse<UserRoomLookup[]>;
 export type ConversationListResponse = SuccessResponse<Conversation[]>;
 
 export type RoomResponse = SuccessResponse<Room>;
+export type RoomListResponse = SuccessResponse<Room[]>;
 
 export interface LoginResponse extends SuccessResponse<User> {
   session_token: string;
