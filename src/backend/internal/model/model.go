@@ -82,6 +82,7 @@ type GalleryInput struct {
 }
 
 const (
+	BookingDraftStatus                 = "DRAFT"
 	BookingPaidStatus                  = "USER_PAID"
 	BookingCancelledStatus             = "CANCELLED"
 	BookingCustomerReqCancelStatus     = "C_REQ_CANCEL"

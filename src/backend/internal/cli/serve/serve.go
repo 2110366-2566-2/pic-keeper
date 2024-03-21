@@ -141,6 +141,7 @@ var ServeCmd = &cobra.Command{
 		customerBookings := validated.Group("/customers/bookings/v1")
 		{
 			customerBookings.POST("/", handler.User.CreateBooking)
+			customerBookings.GET("/get-qr/:id", handler.User.GetQRCode)
 			customerBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
 			customerBookings.GET("/upcoming", handler.User.ListUpcomingBookings)
 			customerBookings.GET("/past", handler.User.ListPastBookings)
@@ -158,6 +159,9 @@ var ServeCmd = &cobra.Command{
 			rooms.GET("/:id", handler.Room.GetRoom)
 			rooms.GET("/conversation/:id", handler.Room.GetAllConversations)
 		}
+
+		r.GET("/payment/:bookingId", handler.User.MakeBookingPayment)
+
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 
