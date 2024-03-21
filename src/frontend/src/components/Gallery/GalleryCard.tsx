@@ -12,17 +12,9 @@ interface Props {
   galleryId: string;
   photographerId: string;
   price: number;
-  galleryName: string;
-  galleryLocation: string;
 }
 
-const GalleryCard = ({
-  galleryId,
-  photographerId,
-  price,
-  galleryName,
-  galleryLocation,
-}: Props) => {
+const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
   const [listOfImages, setListOfImages] = useState<string[]>([]);
   const [galleryInfo, setGalleryInfo] = useState<Gallery>();
   const [photographer, setPhotographer] = useState<User>();

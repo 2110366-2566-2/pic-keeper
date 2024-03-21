@@ -64,14 +64,12 @@ const LandingPage = () => {
         </div>
         <div className="grid grid-cols-auto-fill-400 gap-4 pt-48 w-4/5">
           {listOfGalleries &&
-            listOfGalleries.map((Gallery, index) => (
+            listOfGalleries.map((gallery, index) => (
               <GalleryCard
                 key={index}
-                galleryId={Gallery.id}
-                galleryName={Gallery.name}
-                galleryLocation={Gallery.location}
-                photographerId={Gallery.photographer_id}
-                price={Gallery.price}
+                galleryId={gallery.id}
+                photographerId={gallery.photographer_id}
+                price={gallery.price}
               />
             ))}
         </div>
