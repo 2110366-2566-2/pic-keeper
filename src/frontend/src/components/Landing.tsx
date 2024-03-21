@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { Gallery } from "@/types/gallery";
 import { SearchFilter } from "@/types/gallery";
-import SearchBar from "@/components/SearchBar";
 import Navbar from "@/components/shared/Navbar/Navbar";
-import SideBarLandingPage from "./SideBarLandingPage";
 import customerGalleriesService from "@/services/customerGalleries";
-import { GalleryCard } from "@/components/Gallery";
+import { GalleryCard, GalleryFilter, SearchBar } from "@/components/Gallery";
 
 const LandingPage = () => {
   const [searchGallery, setSearchGallery] = useState("Search Gallery");
@@ -57,7 +55,7 @@ const LandingPage = () => {
       </div>
       <div className="flex flex-row">
         <div className="w-1/5 mt-32">
-          <SideBarLandingPage
+          <GalleryFilter
             selectedOption={selectedOptionSideBar}
             setSelectedOption={setSelectedOptionSideBar}
             selectedGender={selectedGender}
