@@ -27,7 +27,7 @@ const Home = ({params} : {params: { userId : string}}) => {
             <div className="text-xl">{profileUser?.firstname}</div>
             <div className="text-xl">{profileUser?.lastname}</div>
           </div>
-          <div className=""></div>
+          <div className="">{profileUser?.gender}</div>
         </div>
         <button className="bg-amber-500 rounded-md text-white p-2 px-5 absolute bottom-4 right-4">
           Edit
