@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { User } from "@/types/user";
 import { UserResponse } from "@/types/response";
 import { GalleryResponse } from "@/types/response";
+import { isDifferentDay, transformDate } from "@/utils/date";
 
 interface Booking11 {
   id: string;
@@ -27,33 +28,37 @@ interface BookOptions {
 
 interface customerProp {
   profile_picture_url: string;
-  data: { firstname: string; lastname: string; username: string };
+  data: {
+    firstname: string | undefined;
+    lastname: string | undefined;
+    username: string | undefined;
+  };
 }
 
-interface galleryProp{
-  location:string;
-  price:any;
-  galleryname:string;
+interface galleryProp {
+  location: string | undefined;
+  price: number | undefined;
+  galleryname: string | undefined;
 }
 export default function BookingCard(options: BookOptions) {
-  const [customer, setCustomer] = useState<customerProp| null>();
+  const [customer, setCustomer] = useState<customerProp | null>();
   const [gallery, setGallery] = useState<galleryProp | null>();
 
   const getCustomer = async () => {
-    //const result = await userService.getUserById(options.props.customer_id);
-    //console.log("Fetch complete: ", result);
-    //return result
+    const result = await userService.getUserById(options.props.customer_id);
+    console.log("Fetch complete Customer: ", result);
     return {
-      profile_picture_url: "/images/signup.png",
-      data: { firstname: "Jack", lastname: "kto789", username: "kaboom" },
+      profile_picture_url: result.profile_picture_url,
+      data: {
+        firstname: result.data?.firstname,
+        lastname: result.data?.lastname,
+        username: result.data?.username,
+      },
     };
-  };
-
-  const getGallery = async () => {
-    //const result = await photographerGalleriesService.getGallery(  options.props.gallery_id );
-    //console.log("Fetch complete: ", result.data);
-    //return result.data
-    return { location: "Bangkok", price: 6000 ,galleryname:"Test Gallery"};
+    // return {
+    //   profile_picture_url: "/images/signup.png",
+    //   data: { firstname: "Jack", lastname: "kto789", username: "kaboom" },
+    // };
   };
 
   useEffect(() => {
@@ -61,13 +66,10 @@ export default function BookingCard(options: BookOptions) {
     const initialFetch = async () => {
       const cus = await getCustomer();
       setCustomer(cus);
-
-      const gall = await getGallery();
-      setGallery(gall);
     };
 
     initialFetch();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -75,14 +77,16 @@ export default function BookingCard(options: BookOptions) {
         className="bg-white my-4 py-8 grid sm:grid-cols-5  lg:grid-cols-10 gap-x-3 gap-y-3 py-3 rounded-lg shadow-md hover:shadow-stone-400"
         onClick={() => {
           options.openModal();
-          const mergedObj= {...options.props,...gallery,...customer};
+          const mergedObj = { ...options.props, ...customer };
           console.log(mergedObj);
           options.setModalProps(mergedObj);
         }}
       >
-        <div className="pl-4 text-base font-semibold">{options.props.id}</div>
+        <div className="pl-4 text-base font-semibold truncate">{options.props.id}</div>
         <div className="col-span-2 pl-4">
-          <p className="text-base font-semibold">{gallery? gallery.galleryname:""}</p>
+          <p className="text-base font-semibold">
+            {options.props.gallery.name}
+          </p>
           <div className="flex gap-x-2">
             <div>
               <svg
@@ -101,7 +105,9 @@ export default function BookingCard(options: BookOptions) {
               </svg>
             </div>
 
-            <p className="font-semibold text-stone-400">{gallery? gallery.location:""}</p>
+            <p className="font-semibold text-stone-400">
+              {options.props.gallery.location}
+            </p>
           </div>
         </div>
         <div className="col-span-2 flex gap-x-2 pl-4">
@@ -109,14 +115,21 @@ export default function BookingCard(options: BookOptions) {
             <Image
               className="object-cover rounded-full"
               fill={true}
-              src={customer ? customer.profile_picture_url : ""}
+              src={
+                customer
+                  ? customer.profile_picture_url
+                  : "/images/no-picture.jpeg"
+              }
               alt=""
             />
           </div>
           <div className="">
-            <p className="text-sm font-semibold">Customer name</p>
+            <p className="text-sm font-semibold">
+              {customer ? customer.data.firstname : ""}{" "}
+              {customer ? customer.data.lastname : ""}
+            </p>
             <p className="text-sm font-semibold text-stone-400">
-              @{customer ? customer.data.username : ""}
+              @{customer ? customer.data.firstname : ""}
             </p>
           </div>
         </div>
@@ -137,27 +150,72 @@ export default function BookingCard(options: BookOptions) {
                 strokeLinejoin="round"
               />
             </svg>
-            {options.props.start_time}
+            {transformDate(options.props.start_time).day}/
+            {transformDate(options.props.start_time).month}/
+            {transformDate(options.props.start_time).year}
           </p>
-          <p className="text-base font-semibold">14.00 - 18.00</p>
+          <p className="text-base font-semibold">
+            {transformDate(options.props.start_time).hour}{"."}{transformDate(options.props.start_time).minute}
+            {" - "}
+            {transformDate(options.props.end_time).hour}{"."}{transformDate(options.props.end_time).minute}
+          </p>
           <p className="text-xs font-semibold text-stone-400">
             15 days from now
           </p>
         </div>
         <div className="text-base font-bold pl-4">
-          <span>{gallery? gallery.price:""} THB</span>
+          <span>{options.props.gallery.price} THB</span>
         </div>
         <div className="col-span-2 pl-4">
-          <p className="text-base font-bold">
-              {(options.props.status==BookingStatus.BookingCancelledStatus)?  <p className="text-base font-bold text-red-600">&bull; Cancelled </p>:<></>} 
-              {(options.props.status==BookingStatus.BookingCompletedStatus)? <p className="text-base font-bold text-amber-500">&bull; Completed </p>:<></>} 
-              {(options.props.status==BookingStatus.BookingCustomerReqCancelStatus)? <p className="text-base font-bold text-orange-500">&bull; Cancellation requested </p>:<></>} 
-              {(options.props.status==BookingStatus.BookingPaidOutStatus)? <p className="text-base font-bold text-blue-500">&bull; Paid out </p>:<></>} 
-              {(options.props.status==BookingStatus.BookingPaidStatus)? <p className="text-base font-bold text-emerald-500">&bull; User paid </p>:<></>} 
-              {(options.props.status==BookingStatus.BookingPhotographerReqCancelStatus)? <p className="text-base font-bold text-orange-500">&bull; ancellation requested </p>:<></>} 
+          <div className="text-base font-bold">
+            {options.props.status == BookingStatus.BookingCancelledStatus ? (
+              <p className="text-base font-bold text-red-600">
+                &bull; Cancelled{" "}
+              </p>
+            ) : (
+              <></>
+            )}
+            {options.props.status == BookingStatus.BookingCompletedStatus ? (
+              <p className="text-base font-bold text-amber-500">
+                &bull; Completed{" "}
+              </p>
+            ) : (
+              <></>
+            )}
+            {options.props.status ==
+            BookingStatus.BookingCustomerReqCancelStatus ? (
+              <p className="text-base font-bold text-orange-500">
+                &bull; Cancellation requested{" "}
+              </p>
+            ) : (
+              <></>
+            )}
+            {options.props.status == BookingStatus.BookingPaidOutStatus ? (
+              <p className="text-base font-bold text-blue-500">
+                &bull; Paid out{" "}
+              </p>
+            ) : (
+              <></>
+            )}
+            {options.props.status == BookingStatus.BookingPaidStatus ? (
+              <p className="text-base font-bold text-emerald-500">
+                &bull; User paid{" "}
+              </p>
+            ) : (
+              <></>
+            )}
+            {options.props.status ==
+            BookingStatus.BookingPhotographerReqCancelStatus ? (
+              <p className="text-base font-bold text-orange-500">
+                &bull; ancellation requested{" "}
+              </p>
+            ) : (
+              <></>
+            )}
+          </div>
+          <p className="text-sm font-semibold text-stone-400">
+            Action taken on 12/01
           </p>
-          <p className="text-sm font-semibold text-stone-400">Action taken on 12/01</p>
-
         </div>
       </div>
     </>

@@ -1,3 +1,5 @@
+import { Gallery } from "./gallery";
+
 export enum BookingStatus {
   BookingPaidStatus = "USER_PAID",
   BookingCancelledStatus = "CANCELLED",
@@ -16,7 +18,7 @@ export interface BookingProposal {
 export interface Booking {
   id: string;
   customer_id: string;
-  gallery_id: string;
+  gallery: Gallery;
   start_time: string;
   end_time: string;
   status: BookingStatus;

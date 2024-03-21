@@ -1,30 +1,24 @@
 "use client";
 import customerBookingService from "@/services/customerBooking";
+import photographerBookingService from "@/services/photographerBooking";
 import { Booking, BookingStatus } from "@/types/booking";
 import { useEffect, useState } from "react";
 import BookingCard from "./BookingCard";
 import BookingModal from "./BookingModal";
+import { list } from "postcss";
 
-
-
-
-interface BookingTmp {
-  id: string;
-  customer_id:string;
-  gallery_id: string;
-  start_time: string;
-  end_time: string;
-  status: BookingStatus;
-  created_at: string;
-  updated_at: string;
-}
 
 const mockData: Booking[] = [
   {
     id: "#B1201",
     customer_id:"string",
-    gallery_id: "string",
-    start_time: "10/02/2024",
+    gallery: {
+      id: "#Efdsf789",
+      photographer_id: "string",
+      location: "Chula",
+      name: "string",
+      price: 6000},
+    start_time: "0001-01-01T00:00:00Z",
     end_time: "string",
     created_at: "string",
     updated_at: "string",
@@ -33,8 +27,13 @@ const mockData: Booking[] = [
   {
     id: "#B1201",
     customer_id:"string",
-    gallery_id: "string",
-    start_time: "10/02/2024",
+    gallery: {
+      id: "#Efdsf789",
+      photographer_id: "string",
+      location: "Chula",
+      name: "string",
+      price: 6000},
+    start_time: "0001-01-01T00:00:00Z",
     end_time: "string",
     created_at: "string",
     updated_at: "string",
@@ -43,8 +42,13 @@ const mockData: Booking[] = [
   {
     id: "#B1201",
     customer_id:"string",
-    gallery_id: "string",
-    start_time: "10/02/2024",
+    gallery: {
+      id: "#Efdsf789",
+      photographer_id: "string",
+      location: "Chula",
+      name: "string",
+      price: 6000},
+    start_time: "0001-01-01T00:00:00Z",
     end_time: "string",
     created_at: "string",
     updated_at: "string",
@@ -53,8 +57,13 @@ const mockData: Booking[] = [
   {
     id: "#B1201",
     customer_id:"string",
-    gallery_id: "string",
-    start_time: "10/02/2024",
+    gallery: {
+      id: "#Efdsf789",
+      photographer_id: "string",
+      location: "Chula",
+      name: "string",
+      price: 6000},
+    start_time: "0001-01-01T00:00:00Z",
     end_time: "string",
     created_at: "string",
     updated_at: "string",
@@ -63,8 +72,13 @@ const mockData: Booking[] = [
   {
     id: "#B1201",
     customer_id:"string",
-    gallery_id: "string",
-    start_time: "10/02/2024",
+    gallery: {
+      id: "#Efdsf789",
+      photographer_id: "string",
+      location: "Chula",
+      name: "string",
+      price: 6000},
+    start_time: "0001-01-01T00:00:00Z",
     end_time: "string",
     created_at: "string",
     updated_at: "string",
@@ -73,8 +87,13 @@ const mockData: Booking[] = [
   {
     id: "#B1201",
     customer_id:"string",
-    gallery_id: "string",
-    start_time: "10/02/2024",
+    gallery: {
+      id: "#Efdsf789",
+      photographer_id: "string",
+      location: "Chula",
+      name: "string",
+      price: 6000},
+    start_time: "0001-01-01T00:00:00Z",
     end_time: "string",
     created_at: "string",
     updated_at: "string",
@@ -85,7 +104,7 @@ const mockData: Booking[] = [
 export default function BookingPage() {
   //----------Instance Var------------
 
-  const [bookingLists, setBookingLists] = useState<BookingTmp[]>([]);
+  const [bookingLists, setBookingLists] = useState<Booking[]|null>([]);
   const [allAppointment, setAllAppointment] = useState<Boolean>(true);
   const [upComing, setUpComing] = useState<Boolean>(false);
   const [past, setPast] = useState<Boolean>(false);
@@ -93,28 +112,139 @@ export default function BookingPage() {
 
   //-------Fetch Object will be replaced later--------------------------------------
   const getAllBookings = async () => {
-    const result= await customerBookingService.getAllBookings();
-    console.log("Fetch complete: ",result);
-    //return result.data
-    return mockData;
+    let resultCustomer:Array<Booking>;
+    let resultPhotographer:Array<Booking>;
+  
+    try{
+      const res= await customerBookingService.getAllBookings();
+      if(res.data){
+        resultCustomer=res.data;
+      }
+      else{
+        resultCustomer=[]
+      }
+    }
+    catch(err){
+      resultCustomer=[];
+    }
+
+    try{
+      const res= await photographerBookingService.getMyBookings();
+      if(res.data){
+        resultPhotographer=res.data;
+      }
+      else{
+        resultPhotographer=[]
+      }
+    }
+    catch(err){
+      resultPhotographer=[];
+    }
+    console.log("Fetch Customer: ",resultCustomer);
+    console.log("Fetch Photographer ",resultPhotographer);
+    return [...resultCustomer, ...resultPhotographer];
+    //return mockData;
   };
   const getPendingCancellations = async () => {
-    const result= await customerBookingService.getPendingCancellations();
-    console.log("Fetch pending complete: ",result);
-    //return result.data
-    return [mockData[5]];
+
+    let resultCustomer:Array<Booking>;
+    let resultPhotographer:Array<Booking>;
+  
+    try{
+      const res= await customerBookingService.getPendingCancellations();
+      if(res.data){
+        resultCustomer=res.data;
+      }
+      else{
+        resultCustomer=[]
+      }
+    }
+    catch(err){
+      resultCustomer=[];
+    }
+
+    try{
+      const res= await photographerBookingService.getPendingCancellations();
+      if(res.data){
+        resultPhotographer=res.data;
+      }
+      else{
+        resultPhotographer=[]
+      }
+    }
+    catch(err){
+      resultPhotographer=[];
+    }
+    return [...resultCustomer, ...resultPhotographer];
+   
+    //return [mockData[5]];
   };
+
   const getUpcomingBookings = async () => {
-    const result= await customerBookingService.getUpcomingBookings();
-    console.log("Fetch coming complete: ",result);
-    //return result.data
-    return [mockData[1], mockData[2]];
+    let resultCustomer:Array<Booking>;
+    let resultPhotographer:Array<Booking>;
+  
+    try{
+      const res= await customerBookingService.getUpcomingBookings();
+      if(res.data){
+        resultCustomer=res.data;
+      }
+      else{
+        resultCustomer=[]
+      }
+    }
+    catch(err){
+      resultCustomer=[];
+    }
+
+    try{
+      const res= await photographerBookingService.getUpcomingBookings();
+      if(res.data){
+        resultPhotographer=res.data;
+      }
+      else{
+        resultPhotographer=[]
+      }
+    }
+    catch(err){
+      resultPhotographer=[];
+    }
+    return [...resultCustomer, ...resultPhotographer];
+   
+    //return [mockData[1], mockData[2]];
   };
   const getPastBookings = async () => {
-    const result= await customerBookingService.getPastBookings();
-    console.log("Fetch Past complete: ",result);
-    //return result.data
-    return [mockData[3], mockData[4]];
+    let resultCustomer:Array<Booking>;
+    let resultPhotographer:Array<Booking>;
+  
+    try{
+      const res= await customerBookingService.getPastBookings();
+      if(res.data){
+        resultCustomer=res.data;
+      }
+      else{
+        resultCustomer=[]
+      }
+    }
+    catch(err){
+      resultCustomer=[];
+    }
+
+    try{
+      const res= await photographerBookingService.getPastBookings();
+      if(res.data){
+        resultPhotographer=res.data;
+      }
+      else{
+        resultPhotographer=[]
+      }
+    }
+    catch(err){
+      resultPhotographer=[];
+    }
+    return [...resultCustomer, ...resultPhotographer];
+   
+    //return [mockData[3], mockData[4]];
   };
 
   //---Use Effect--------
@@ -134,10 +264,10 @@ export default function BookingPage() {
 
   //-----------End--Fetch--------------------------------
 
-  const [modalProps, setModalProps] = useState({});
+  const [modalProps, setModalProps] = useState<Object>({});
 
   //----------Modal--------------
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -148,7 +278,7 @@ export default function BookingPage() {
   };
 
   //renderBooking Cards
-  const renderedBookings = bookingLists.map((booking,index) => {
+  const renderedBookings = bookingLists?.map((booking,index) => {
     
     return (
         <BookingCard

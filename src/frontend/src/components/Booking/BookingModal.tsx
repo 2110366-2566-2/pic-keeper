@@ -1,13 +1,20 @@
 "use client";
 import { Booking, BookingStatus } from "@/types/booking";
+import { transformDate } from "@/utils/date";
+import { useSession } from "next-auth/react";
 
-interface Content { //Will be fixed soon
+interface Content {
+  //Will be fixed soon
   id?: string;
-  galleryname?: string;
+  gallery?: {
+    location: string;
+    name: string;
+    price: number;
+    photographer_id: string;
+  };
   start_time?: string;
-  price?: any;
+  end_time?: string;
   status?: string;
-  location?:string;
 }
 
 export default function BookingModal(props: {
@@ -15,6 +22,13 @@ export default function BookingModal(props: {
   closeModal: Function;
   content: Content;
 }) {
+  const session = useSession();
+  const isPackageOwner = () => {
+    return (
+      props.content.gallery?.photographer_id === session.data?.user.data?.id
+    );
+  };
+
   if (!props.content) {
     return <></>;
   }
@@ -29,24 +43,72 @@ export default function BookingModal(props: {
           className="fixed bg-black bg-opacity-50 inset-0 flex items-center justify-center "
         >
           <div className="max-w-md w-full max-h-[500px] h-full px-4 bg-white shadow-lg rounded-2xl ">
-            <div className=" py-6 px-8 flex flex-col w-full h-full overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-slate-500 scrollbar-track-slate-300  ">
-              <p className="text-base font-semibold">
-                Appointment ID {props.content.id}
-              </p>
-              <p className="text-sm font-semibold text-stone-400">15 days from now</p>
-              <p className="text-2xl font-bold py-2">{props.content.galleryname}</p>
-              <div className="flex flex-wrap gap-x-2 items-baseline mb-2">
-               
-                {(props.content.status==BookingStatus.BookingCancelledStatus)?  <p className="text-base font-bold text-red-600">&bull; Cancelled </p>:<></>} 
-                {(props.content.status==BookingStatus.BookingCompletedStatus)? <p className="text-base font-bold text-amber-500">&bull; Completed </p>:<></>} 
-                {(props.content.status==BookingStatus.BookingCustomerReqCancelStatus)? <p className="text-base font-bold text-orange-500">&bull; Cancellation requested </p>:<></>} 
-                {(props.content.status==BookingStatus.BookingPaidOutStatus)? <p className="text-base font-bold text-blue-500">&bull; Paid out </p>:<></>} 
-                {(props.content.status==BookingStatus.BookingPaidStatus)? <p className="text-base font-bold text-emerald-500">&bull; User paid </p>:<></>} 
-                {(props.content.status==BookingStatus.BookingPhotographerReqCancelStatus)? <p className="text-base font-bold text-orange-500">&bull; ancellation requested </p>:<></>} 
-               
-                <p className="text-sm font-semibold text-stone-400">Action taken on 12/01</p>
+            <div className=" py-6 px-8 flex flex-col w-full h-full overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-slate-500 scrollbar-track-slate-300 ">
+              <div>
+                <p className="text-base font-semibold text-nowrap truncate ">
+                  Appointment ID {props.content.id}
+                </p>
               </div>
-              <div className="flex flex-col gap-y-2">
+
+              <p className="text-sm font-semibold text-stone-400">
+                15 days from now
+              </p>
+              <p className="text-2xl font-bold py-2">
+                {props.content.gallery?.name}
+              </p>
+              <div className="flex flex-wrap gap-x-2 items-baseline mb-2">
+                {props.content.status ==
+                BookingStatus.BookingCancelledStatus ? (
+                  <p className="text-base font-bold text-red-600">
+                    &bull; Cancelled{" "}
+                  </p>
+                ) : (
+                  <></>
+                )}
+                {props.content.status ==
+                BookingStatus.BookingCompletedStatus ? (
+                  <p className="text-base font-bold text-amber-500">
+                    &bull; Completed{" "}
+                  </p>
+                ) : (
+                  <></>
+                )}
+                {props.content.status ==
+                BookingStatus.BookingCustomerReqCancelStatus ? (
+                  <p className="text-base font-bold text-orange-500">
+                    &bull; Cancellation requested{" "}
+                  </p>
+                ) : (
+                  <></>
+                )}
+                {props.content.status == BookingStatus.BookingPaidOutStatus ? (
+                  <p className="text-base font-bold text-blue-500">
+                    &bull; Paid out{" "}
+                  </p>
+                ) : (
+                  <></>
+                )}
+                {props.content.status == BookingStatus.BookingPaidStatus ? (
+                  <p className="text-base font-bold text-emerald-500">
+                    &bull; User paid{" "}
+                  </p>
+                ) : (
+                  <></>
+                )}
+                {props.content.status ==
+                BookingStatus.BookingPhotographerReqCancelStatus ? (
+                  <p className="text-base font-bold text-orange-500">
+                    &bull; ancellation requested{" "}
+                  </p>
+                ) : (
+                  <></>
+                )}
+
+                <p className="text-sm font-semibold text-stone-400">
+                  Action taken on 12/01
+                </p>
+              </div>
+              <div className="flex flex-col gap-y-2 font-semibold mb-4">
                 <div className="flex gap-x-2 ">
                   <svg
                     width="24"
@@ -63,7 +125,20 @@ export default function BookingModal(props: {
                       strokeLinejoin="round"
                     />
                   </svg>{" "}
-                  {props.content.start_time}
+                  <div>
+                    {transformDate(props.content.start_time as string).day}/
+                    {transformDate(props.content.start_time as string).month}/
+                    {transformDate(props.content.start_time as string).year}
+                  </div>
+                  <div>
+                    {transformDate(props.content.start_time as string).hour}
+                    {"."}
+                    {transformDate(props.content.start_time as string).minute}
+                    {" - "}
+                    {transformDate(props.content.end_time as string).hour}
+                    {"."}
+                    {transformDate(props.content.end_time as string).minute}
+                  </div>
                 </div>
                 <div className="flex gap-x-2 ">
                   <svg
@@ -99,9 +174,9 @@ export default function BookingModal(props: {
                       fill="black"
                     />
                   </svg>
-                  {props.content.location}
+                  {props.content.gallery?.location}
                 </div>
-                <div className="flex gap-x-2 mb-4 ">
+                <div className="flex gap-x-2 mb-4 text-stone-400">
                   <svg
                     width="24"
                     height="21"
@@ -117,7 +192,7 @@ export default function BookingModal(props: {
                   10 days delivery
                 </div>
 
-                <div className="flex gap-x-2 text-sm font-semibold">
+                <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="#000000"
@@ -137,7 +212,7 @@ export default function BookingModal(props: {
                   </svg>
                   10 printed image
                 </div>
-                <div className="flex gap-x-2 text-sm font-semibold">
+                <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="#000000"
@@ -157,7 +232,7 @@ export default function BookingModal(props: {
                   </svg>
                   RAW file
                 </div>
-                <div className="flex gap-x-2 text-sm font-semibold">
+                <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="#000000"
@@ -177,7 +252,7 @@ export default function BookingModal(props: {
                   </svg>
                   1 VDO
                 </div>
-                <div className="flex gap-x-2 text-sm font-semibold">
+                <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="#000000"
@@ -199,20 +274,42 @@ export default function BookingModal(props: {
                 </div>
               </div>
 
+              <div className="text-lg flex font-bold justify-between">
+                <div>Total</div>{" "}
+                <div>
+                  {props.content.gallery?.price}
+                  {" THB"}
+                </div>
+              </div>
 
               <hr className="h-px my-4 bg-gray-200 border-2 dark:bg-gray-700" />
 
-              <div className="text-lg flex font-bold justify-between">
-                <div>Total</div> <div>{props.content.price}{" THB"}</div>
-              </div>
+              {isPackageOwner() &&
+              props.content.status == BookingStatus.BookingCompletedStatus ? (
+                <div className="text-lg font-bold mt-2 font-semibold ">
+                  Photographer
+                </div>
+              ) : (
+                <></>
+              )}
+
               <button
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                className="mt-4 px-4 py-2 bg-orange-400 text-white rounded font-semibold text-lg"
                 onClick={() => {
                   props.closeModal();
                 }}
               >
                 Chat
               </button>
+
+              {isPackageOwner() &&
+              props.content.status == BookingStatus.BookingPaidStatus ? (
+                <div className="text-center mt-4 font-semibold text-red-500">
+                  Request for cancellation
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div>
