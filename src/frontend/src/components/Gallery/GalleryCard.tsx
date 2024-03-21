@@ -1,14 +1,12 @@
 import React from "react";
 import Image from "next/image";
-import { FaUserCircle } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import customerGalleriesService from "@/services/customerGalleries";
 import photographerGalleryService from "@/services/photographerGalleries";
 import { User } from "@/types/user";
 import { Gallery } from "@/types/gallery";
 import userService from "@/services/user";
-import ProfileMenu from "./shared/Navbar/ProfileMenu";
-import ProfileImage from "./shared/ProfileImage";
+import ProfileImage from "../shared/ProfileImage";
 
 interface Props {
   galleryId: string;
@@ -18,7 +16,7 @@ interface Props {
   galleryLocation: string;
 }
 
-const GalleryComponent = ({
+const GalleryCard = ({
   galleryId,
   photographerId,
   price,
@@ -140,4 +138,4 @@ const GalleryComponent = ({
   );
 };
 
-export default GalleryComponent;
+export default GalleryCard;

@@ -1,21 +1,16 @@
 import { useState, useEffect } from "react";
 import { Gallery } from "@/types/gallery";
 import { SearchFilter } from "@/types/gallery";
-import { NewGallery } from "@/types/gallery";
 import SearchBar from "@/components/SearchBar";
-import GalleryComponent from "./Gallery";
 import Navbar from "@/components/shared/Navbar/Navbar";
 import SideBarLandingPage from "./SideBarLandingPage";
-import photographerGalleryService from "@/services/photographerGalleries";
 import customerGalleriesService from "@/services/customerGalleries";
-
-// FOR MOCKING DATA
+import { GalleryCard } from "@/components/Gallery";
 
 const LandingPage = () => {
   const [searchGallery, setSearchGallery] = useState("Search Gallery");
   const [selectedOption, setSelectedOption] = useState("By photographer");
   const [searchPlace, setSearchPlace] = useState("Set Location");
-  const [selectDate, setSelectDate] = useState("Select Date");
   const [minPrice, setMinPrice] = useState(1);
   const [maxPrice, setMaxPrice] = useState(9999);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -69,10 +64,10 @@ const LandingPage = () => {
             setSelectedGender={setSelectedGender}
           />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-48 w-4/5">
+        <div className="grid grid-cols-auto-fill-400 gap-4 pt-48 w-4/5">
           {listOfGalleries &&
             listOfGalleries.map((Gallery, index) => (
-              <GalleryComponent
+              <GalleryCard
                 key={index}
                 galleryId={Gallery.id}
                 galleryName={Gallery.name}
