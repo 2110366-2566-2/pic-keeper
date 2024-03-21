@@ -4,6 +4,7 @@ import { SearchFilter } from "@/types/gallery";
 import Navbar from "@/components/shared/Navbar/Navbar";
 import customerGalleriesService from "@/services/customerGalleries";
 import { GalleryCard, GalleryFilter, SearchBar } from "@/components/Gallery";
+import { Gender } from "@/types/user";
 
 const LandingPage = () => {
   const [searchGallery, setSearchGallery] = useState("Search Gallery");
@@ -14,7 +15,7 @@ const LandingPage = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [selectedOptionSideBar, setSelectedOptionSideBar] =
     useState("Recommended");
-  const [selectedGender, setSelectedGender] = useState("All");
+  const [selectedGender, setSelectedGender] = useState<Gender | undefined>();
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
   const [searchFilter, setSearchFilter] = useState<SearchFilter>({});

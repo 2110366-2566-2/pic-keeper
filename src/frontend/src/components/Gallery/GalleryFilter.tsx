@@ -1,4 +1,5 @@
 "use client";
+import { Gender } from "@/types/user";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
@@ -6,7 +7,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 interface Props {
   selectedOption: string;
   setSelectedOption: Function;
-  selectedGender: string;
+  selectedGender: Gender | undefined;
   setSelectedGender: Function;
 }
 
@@ -14,8 +15,9 @@ const GalleryFilter = (data: Props) => {
   const classNames = (...classes: string[]) =>
     classes.filter(Boolean).join(" ");
 
-  const handleGenderSelect = (gender: string) => {
-    data.setSelectedGender(gender);
+  const handleGenderSelect = (gender: Gender) => {
+    const isAlreadySelected = data.selectedGender === gender;
+    data.setSelectedGender(isAlreadySelected ? undefined : gender);
   };
 
   return (
@@ -97,36 +99,19 @@ const GalleryFilter = (data: Props) => {
       <div className="">
         <div className="font-semibold">Gender of Photographer</div>
         <div className="grid grid-cols-3 gap-3 py-2">
-          <button
-            className={
-              data.selectedGender === "Male"
-                ? "outline outline-amber-400 rounded-md p-1 text-amber-400"
-                : "rounded-md p-1"
-            }
-            onClick={() => handleGenderSelect("Male")}
-          >
-            Male
-          </button>
-          <button
-            className={
-              data.selectedGender === "Female"
-                ? "outline outline-amber-400 rounded-md p-1 text-amber-400"
-                : "rounded-md p-1"
-            }
-            onClick={() => handleGenderSelect("Female")}
-          >
-            Female
-          </button>
-          <button
-            className={
-              data.selectedGender === "All"
-                ? "outline outline-amber-400 rounded-md p-1 text-amber-400"
-                : " rounded-md p-1"
-            }
-            onClick={() => handleGenderSelect("All")}
-          >
-            All
-          </button>
+          {Object.values(Gender).map((gender) => (
+            <button
+              key={gender}
+              className={
+                data.selectedGender === gender
+                  ? "outline outline-amber-400 rounded-md p-1 text-amber-400"
+                  : "rounded-md p-1"
+              }
+              onClick={() => handleGenderSelect(gender)}
+            >
+              {gender}
+            </button>
+          ))}
         </div>
       </div>
     </div>
