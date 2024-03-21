@@ -4,13 +4,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import authService from "@/services/auth";
-import { AxiosError } from "axios";
 import { useModal } from "@/context/ModalContext";
 import GoogleBtn from "./GoogleBtn";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 const RegisterForm = () => {
   const router = useRouter();
   const { openModal, closeModal } = useModal();
+  const showError = useErrorModal();
 
   const [email, setEmail] = useState("");
   const [firstname, setFirstname] = useState("");
@@ -68,18 +69,7 @@ const RegisterForm = () => {
       );
       setSuccess(true);
     } catch (error) {
-      const errorMessage =
-        error instanceof AxiosError ? error.message : "An unexpected error";
-      openModal(
-        <div>
-          {" "}
-          <p className="text-standard text-gray-500">{errorMessage}</p>
-          <button onClick={handleCloseModal} className="btn-danger mt-4 px-4">
-            Close
-          </button>
-        </div>,
-        "An error occurred while creating the user."
-      );
+      showError(error, "An error occurred while creating the user.");
       setSuccess(false);
     }
   };

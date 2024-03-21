@@ -8,13 +8,12 @@ import useApiWithAuth from "@/hooks/useApiWithAuth";
 import { useRouter } from "next/navigation";
 import { FileWithPreview } from "@/types/gallery";
 import ImageViewerWithUploader from "./ImageViewerWithUploader";
-import { useModal } from "@/context/ModalContext";
-import { AxiosError } from "axios";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 const CreateGallery = () => {
   const router = useRouter();
   const axiosAuth = useApiWithAuth();
-  const { openModal, closeModal } = useModal();
+  const showError = useErrorModal();
 
   const [files, setFiles] = useState<FileWithPreview[]>([]);
 
@@ -69,18 +68,7 @@ const CreateGallery = () => {
         router.push("/settings/my-galleries");
       }
     } catch (error) {
-      const errorMessage =
-        error instanceof AxiosError ? error.message : "An unexpected error";
-      openModal(
-        <div>
-          {" "}
-          <p className="text-standard text-gray-500">{errorMessage}</p>
-          <button onClick={closeModal} className="btn-danger mt-4 px-4">
-            Close
-          </button>
-        </div>,
-        "An error occurred while creating the gallery."
-      );
+      showError(error, "An error occurred while creating the gallery.");
     }
   };
 

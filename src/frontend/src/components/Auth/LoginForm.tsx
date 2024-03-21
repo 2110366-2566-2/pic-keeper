@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import authService from "@/services/auth";
 import { useModal } from "@/context/ModalContext";
 import GoogleBtn from "./GoogleBtn";
 import { Role } from "@/types/user";
@@ -33,7 +32,9 @@ const LoginForm = () => {
       openModal(
         <div className="flex flex-col">
           {" "}
-          <p className="text-standard text-gray-500">{res.error}</p>
+          <p className="text-standard text-gray-500">
+            Incorrect name or password
+          </p>
           <button
             onClick={closeModal}
             className="btn-danger mt-4 px-4 self-end"
