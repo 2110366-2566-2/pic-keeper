@@ -41,7 +41,7 @@ const Login = () => {
         "Login Error!"
       );
     } else {
-      router.push("/");
+      router.push("/admin/dashboard");
     }
   };
 
