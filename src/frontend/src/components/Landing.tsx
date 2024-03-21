@@ -4,7 +4,7 @@ import { SearchFilter } from "@/types/gallery";
 import { NewGallery } from "@/types/gallery";
 import SearchBar from "@/components/SearchBar";
 import GalleryComponent from "./Gallery";
-import Navbar from "@/components/shared/Navbar";
+import Navbar from "@/components/shared/Navbar/Navbar";
 import SideBarLandingPage from "./SideBarLandingPage";
 import photographerGalleryService from "@/services/photographerGalleries";
 import customerGalleriesService from "@/services/customerGalleries";
@@ -19,8 +19,7 @@ const LandingPage = () => {
   const [minPrice, setMinPrice] = useState(1);
   const [maxPrice, setMaxPrice] = useState(9999);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [selectedOptionSideBar, setSelectedOptionSideBar] =
-    useState("Recommended");
+  const [selectedOptionSideBar, setSelectedOptionSideBar] = useState("Recommended");
   const [selectedGender, setSelectedGender] = useState("All");
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
@@ -35,6 +34,8 @@ const LandingPage = () => {
 
     fetchAllGalleries();
   }, [searchFilter]);
+
+
 
   return (
     <main>
@@ -56,6 +57,8 @@ const LandingPage = () => {
             setMaxPrice={setMaxPrice}
             isPopoverOpen={isPopoverOpen}
             setIsPopoverOpen={setIsPopoverOpen}
+            searchFilter={searchFilter}
+            setSearchFilter={setSearchFilter}
           />
         </div>
       </div>

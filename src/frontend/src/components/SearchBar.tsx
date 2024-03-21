@@ -8,6 +8,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
 import { MdOutlinePriceCheck } from "react-icons/md";
+import { SearchFilter } from "@/types/gallery";
 
 interface Props {
   searchGallery: string;
@@ -22,6 +23,8 @@ interface Props {
   setMaxPrice: Function;
   isPopoverOpen: boolean;
   setIsPopoverOpen: Function;
+  searchFilter: SearchFilter;
+  setSearchFilter: Function;
 }
 
 const SearchBar = (data: Props) => {
