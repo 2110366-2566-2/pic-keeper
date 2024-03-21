@@ -108,7 +108,11 @@ async function tryRefreshingToken(oldToken: string): Promise<string | null> {
 function handleError(error: unknown) {
   if (axios.isAxiosError(error)) {
     return NextResponse.json(
-      { error: error.response?.data },
+      {
+        error:
+          error.response?.data ||
+          "Please check if the backend server currently running",
+      },
       { status: error.response?.status || 503 }
     );
   }

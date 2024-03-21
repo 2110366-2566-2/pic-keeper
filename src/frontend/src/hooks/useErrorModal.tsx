@@ -7,9 +7,10 @@ import { useState } from "react";
 export function useErrorModal() {
   const { openModal, closeModal } = useModal();
   const showError = (error: unknown, title: string = "An error occurred") => {
+    console.log(error);
     const errorMessage =
       error instanceof AxiosError
-        ? error.response?.data.error.error
+        ? error.response?.data.error?.error || error.response?.data.error
         : "An unexpected error occurred";
     const content = (
       <div className="flex flex-col">
