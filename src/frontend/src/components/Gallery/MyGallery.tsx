@@ -54,7 +54,7 @@ const MyGallery = ({ galleryId }: Props) => {
           setImageUrls(imageResponse.data);
         }
       } catch (error) {
-        showError(error, "An error occurred while getting gallery information");
+        showError(error, "Failed to fetch gallery info");
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
