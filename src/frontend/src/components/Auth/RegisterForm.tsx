@@ -74,13 +74,8 @@ const RegisterForm = () => {
         <div>
           {" "}
           <p className="text-standard text-gray-500">{errorMessage}</p>
-          <button
-            onClick={handleCloseModal}
-            className={`btn ${
-              success ? "btn-success" : "btn-danger"
-            } mt-4 px-4`}
-          >
-            {success ? "Continue" : "Close"}
+          <button onClick={handleCloseModal} className="btn-danger mt-4 px-4">
+            Close
           </button>
         </div>,
         "An error occurred while creating the user."

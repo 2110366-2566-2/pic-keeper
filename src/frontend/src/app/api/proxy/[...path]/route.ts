@@ -57,7 +57,8 @@ async function handler(
 
 async function makeRequestAndHandleTokenRefresh(
   token: string,
-  config: AxiosRequestConfig
+  config: AxiosRequestConfig,
+  attemptedRefresh: boolean = false
 ) {
   try {
     const safeHeaders: { [key: string]: any } = { ...config.headers };
@@ -71,10 +72,15 @@ async function makeRequestAndHandleTokenRefresh(
     });
     return NextResponse.json(data, { status });
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
+    if (
+      axios.isAxiosError(error) &&
+      error.response?.status === 401 &&
+      !attemptedRefresh &&
+      !attemptedRefresh
+    ) {
       const newToken = await tryRefreshingToken(token);
       if (newToken) {
-        return makeRequestAndHandleTokenRefresh(newToken, config);
+        return makeRequestAndHandleTokenRefresh(newToken, config, true);
       } else {
         return handleError(error);
       }
@@ -103,7 +109,7 @@ function handleError(error: unknown) {
   if (axios.isAxiosError(error)) {
     return NextResponse.json(
       { error: error.response?.data },
-      { status: error.response?.status }
+      { status: error.response?.status || 503 }
     );
   }
   return NextResponse.json(

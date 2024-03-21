@@ -8,8 +8,14 @@ import useApiWithAuth from "@/hooks/useApiWithAuth";
 import { useRouter } from "next/navigation";
 import { FileWithPreview } from "@/types/gallery";
 import ImageViewerWithUploader from "./ImageViewerWithUploader";
+import { useModal } from "@/context/ModalContext";
+import { AxiosError } from "axios";
 
 const CreateGallery = () => {
+  const router = useRouter();
+  const axiosAuth = useApiWithAuth();
+  const { openModal, closeModal } = useModal();
+
   const [files, setFiles] = useState<FileWithPreview[]>([]);
 
   const [additionalInputs, setAdditionalInputs] = useState<number[]>([]);
@@ -20,10 +26,6 @@ const CreateGallery = () => {
   const [description, setDescription] = useState<string>("");
   const [deliveryTime, setDeliveryTime] = useState<number | string>("");
   const [included, setIncluded] = useState<string[]>([]);
-
-  const router = useRouter();
-
-  const axiosAuth = useApiWithAuth();
 
   const handleAddInput = () => {
     setAdditionalInputs((currentInputs) => [
@@ -50,11 +52,11 @@ const CreateGallery = () => {
       delivery_time: Number(deliveryTime),
       included,
     };
-    const createdGallery = await photographerGalleriesService.createGallery(
-      newGalleryData
-    );
-    if (createdGallery.data) {
-      try {
+    try {
+      const createdGallery = await photographerGalleriesService.createGallery(
+        newGalleryData
+      );
+      if (createdGallery.data) {
         await Promise.all(
           files.map((file) =>
             photographerGalleriesService.uploadPhotoToGallery(
@@ -65,9 +67,20 @@ const CreateGallery = () => {
           )
         );
         router.push("/settings/my-galleries");
-      } catch (error) {
-        console.error("Failed to upload images atomically:", error);
       }
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError ? error.message : "An unexpected error";
+      openModal(
+        <div>
+          {" "}
+          <p className="text-standard text-gray-500">{errorMessage}</p>
+          <button onClick={closeModal} className="btn-danger mt-4 px-4">
+            Close
+          </button>
+        </div>,
+        "An error occurred while creating the gallery."
+      );
     }
   };
 
