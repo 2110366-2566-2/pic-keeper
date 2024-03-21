@@ -1,3 +1,5 @@
+"use clinet";
+
 import React from "react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
@@ -7,6 +9,7 @@ import { User } from "@/types/user";
 import { Gallery } from "@/types/gallery";
 import userService from "@/services/user";
 import ProfileImage from "../shared/ProfileImage";
+import { useRouter } from "next/navigation";
 
 interface Props {
   galleryId: string;
@@ -19,6 +22,7 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
   const [galleryInfo, setGalleryInfo] = useState<Gallery>();
   const [photographer, setPhotographer] = useState<User>();
   const [photographerProfile, setPhotographerProfile] = useState<string>("");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchAllImages = async () => {
@@ -53,8 +57,15 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
     getUserById();
   }, [photographerId]);
 
+  const handleCardClick = () => {
+    router.push(`/galleries/${galleryId}`);
+  };
+
   return (
-    <div className="rounded-xl shadow-lg bg-white overflow-hidden">
+    <div
+      className="rounded-xl shadow-lg bg-white overflow-hidden cursor-pointer"
+      onClick={handleCardClick}
+    >
       {listOfImages.length === 1 ? (
         <div className="px-2 pt-2">
           <div className="relative w-full h-64">
