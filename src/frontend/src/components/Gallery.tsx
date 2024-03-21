@@ -7,6 +7,8 @@ import photographerGalleryService from "@/services/photographerGalleries";
 import { User } from "@/types/user";
 import { Gallery } from "@/types/gallery";
 import userService from "@/services/user";
+import ProfileMenu from "./shared/Navbar/ProfileMenu";
+import ProfileImage from "./shared/ProfileImage";
 
 interface Props {
   galleryId: string;
@@ -26,6 +28,7 @@ const GalleryComponent = ({
   const [listOfImages, setListOfImages] = useState<string[]>([]);
   const [galleryInfo, setGalleryInfo] = useState<Gallery>();
   const [photographer, setPhotographer] = useState<User>();
+  const [photographerProfile, setPhotographerProfile] = useState<string>("");
 
   useEffect(() => {
     const fetchAllImages = async () => {
@@ -34,6 +37,7 @@ const GalleryComponent = ({
       );
       if (response.data) {
         setListOfImages(response.data);
+        console.log(response.data);
       } else {
         setListOfImages([]);
       }
@@ -51,8 +55,10 @@ const GalleryComponent = ({
   useEffect(() => {
     const getUserById = async () => {
       const response = await userService.getUserById(photographerId);
-      console.log(response.data);
-      if (response.data) setPhotographer(response.data);
+      if (response.data) {
+        setPhotographer(response.data);
+        setPhotographerProfile(response.profile_picture_url);
+      }
     };
     getUserById();
   }, [photographerId]);
@@ -119,19 +125,7 @@ const GalleryComponent = ({
         </div>
       )}
       <div className="relative flex flex-row space-x-4 p-4">
-        {photographer?.profile_picture_key ? (
-          <Image
-            src={photographer.profile_picture_key}
-            alt="Tiger"
-            layout="fill"
-            objectFit="cover"
-            className="text-4xl flex justify-center items-center sm:content-none rounded-full"
-          />
-        ) : (
-          <div className="text-4xl flex justify-center items-center sm:content-none">
-            <FaUserCircle />
-          </div>
-        )}
+        <ProfileImage src={photographerProfile} size={8} />
         <div className="flex-grow">
           <div className="font-semibold">{galleryInfo?.name}</div>
           <div className="text-gray-400 shrink-0 min-w-max font-light">

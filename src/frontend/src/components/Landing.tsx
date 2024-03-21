@@ -19,7 +19,8 @@ const LandingPage = () => {
   const [minPrice, setMinPrice] = useState(1);
   const [maxPrice, setMaxPrice] = useState(9999);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [selectedOptionSideBar, setSelectedOptionSideBar] = useState("Recommended");
+  const [selectedOptionSideBar, setSelectedOptionSideBar] =
+    useState("Recommended");
   const [selectedGender, setSelectedGender] = useState("All");
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
