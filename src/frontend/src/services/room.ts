@@ -56,6 +56,7 @@ const getAllConversations = async (id: string) => {
 const roomService = {
   createRoom,
   getAllRooms,
+  getRoomInfo,
   getAllConversations,
 };
 
