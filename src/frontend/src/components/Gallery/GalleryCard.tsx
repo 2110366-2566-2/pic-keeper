@@ -57,6 +57,13 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
 
   const renderImages = () => {
     switch (listOfImages.length) {
+      case 0:
+        return (
+          <div className="px-2 pt-2">
+            <div className="relative w-full h-64 text-center">No Image</div>
+          </div>
+        );
+
       case 1:
         return (
           <div className="px-2 pt-2">
