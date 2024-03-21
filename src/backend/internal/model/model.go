@@ -73,12 +73,20 @@ type Gallery struct {
 	Location       string    `bun:"location,type:varchar" json:"location"`
 	Name           string    `bun:"name,type:varchar" json:"name"`
 	Price          int       `bun:"price,type:integer" json:"price"`
+	Hours          int       `bun:"hours,type:integer" json:"hours"`
+	Description    *string   `bun:"description,type:varchar" json:"description"`
+	DeliveryTime   int       `bun:"delivery_time,type:integer" json:"delivery_time"`
+	Included       []string  `bun:",array" json:"included"`
 }
 
 type GalleryInput struct {
-	Name     *string `bun:"name,type:varchar" json:"name"`
-	Location *string `bun:"name,type:varchar" json:"location"`
-	Price    *int    `bun:"price,type:integer" json:"price"`
+	Name         *string  `bun:"name,type:varchar" json:"name"`
+	Location     *string  `bun:"name,type:varchar" json:"location"`
+	Price        *int     `bun:"price,type:integer" json:"price"`
+	Hours        *int     `bun:"hours,type:integer" json:"hours"`
+	Description  *string  `bun:"description,type:varchar" json:"description"`
+	DeliveryTime *int     `bun:"delivery_time,type:integer" json:"delivery_time"`
+	Included     []string `bun:",array" json:"included"`
 }
 
 const (

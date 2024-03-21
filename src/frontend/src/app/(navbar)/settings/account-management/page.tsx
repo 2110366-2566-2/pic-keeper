@@ -1,4 +1,4 @@
-import AccountManagement from "@/components/User/AccountManagement";
+import AccountManagement from "@/components/Settings/AccountManagement";
 
 const Home = () => {
   return (

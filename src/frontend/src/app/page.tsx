@@ -1,5 +1,5 @@
 "use client";
-import NavBar from "@/components/shared/Navbar";
+import NavBar from "@/components/shared/Navbar/Navbar";
 import userService from "@/services/user";
 import { useSession } from "next-auth/react";
 
@@ -13,8 +13,10 @@ export default function Home() {
   fetchUserInfo();
   return (
     <main>
-      <NavBar />
-      <div className="">Pic-Keeper</div>
+      <div className="w-screen h-screen">
+        <NavBar />
+        <div className="">Pic-Keeper</div>
+      </div>
     </main>
   );
 }
