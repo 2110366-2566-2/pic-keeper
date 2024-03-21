@@ -6,6 +6,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import authService from "@/services/auth";
 import { useModal } from "@/context/ModalContext";
+import GoogleBtn from "./GoogleBtn";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -67,17 +68,6 @@ const LoginForm = () => {
     );
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const response = await authService.googleLogin();
-      if (response.status == "success") {
-        router.push(response.url);
-      }
-    } catch (error) {
-      console.log("error ja");
-    }
-  };
-
   return (
     <>
       <div className="w-screen h-screen">
@@ -96,29 +86,7 @@ const LoginForm = () => {
                 </h2>
               </div>
               <div className="w-full flex flex-col items-stretch gap-4">
-                <button
-                  className="text-center form-input form-input-normal text-gray-500"
-                  onClick={handleGoogleLogin}
-                >
-                  <Image
-                    src={"/images/google-logo.svg"}
-                    alt="google"
-                    className="absolute"
-                    width={25}
-                    height={25}
-                  />
-                  Continue with Google
-                </button>
-                <button className="text-center form-input form-input-normal text-gray-500">
-                  <Image
-                    src={"/images/facebook-logo.svg"}
-                    alt="google"
-                    className="absolute"
-                    width={25}
-                    height={25}
-                  />
-                  Continue with Facebook
-                </button>
+                <GoogleBtn />
               </div>
               <p className="text-standard text-center m-1">
                 or continue with email
