@@ -1,6 +1,6 @@
 "use client";
 
-import useAxiosAuth from "@/hooks/useAxiosAuth";
+import useApiWithAuth from "@/hooks/useApiWithAuth";
 import userService from "@/services/user";
 import { UploadProfilePictureResponse } from "@/types/response";
 import { Gender, UserUpdateInput } from "@/types/user";
@@ -20,7 +20,7 @@ const EditProfilePage = () => {
   const [username, setUsername] = useState("");
   const [address, setAddress] = useState("");
 
-  const apiClientForForm = useAxiosAuth();
+  const apiClientForForm = useApiWithAuth();
   const { data: session, update } = useSession();
 
   const fileInputRef = useRef<HTMLInputElement>(null);

@@ -1,10 +1,10 @@
 "use client";
 import apiClient from "@/libs/apiClient";
-import authService from "@/services/auth";
+import adminService from "@/services/admin";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
-const useAxiosAuth = () => {
+const useApiWithAuth = () => {
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const useAxiosAuth = () => {
         const prevRequest = error?.config;
         if (error?.response?.status === 401 && !prevRequest?.sent && session) {
           prevRequest.sent = true;
-          const response = await authService.refreshToken(
+          const response = await adminService.refreshToken(
             session?.user.session_token
           );
           prevRequest.headers[
@@ -48,4 +48,4 @@ const useAxiosAuth = () => {
   return apiClient;
 };
 
-export default useAxiosAuth;
+export default useApiWithAuth;

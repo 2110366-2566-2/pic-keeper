@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { GrLocation } from "react-icons/gr";
 import photographerGalleriesService from "@/services/photographerGalleries";
-import useAxiosAuth from "@/hooks/useAxiosAuth";
+import useApiWithAuth from "@/hooks/useApiWithAuth";
 import { useRouter } from "next/navigation";
 import { FileWithPreview } from "@/types/gallery";
 import ImageViewerWithUploader from "./ImageViewerWithUploader";
@@ -23,7 +23,7 @@ const CreateGallery = () => {
 
   const router = useRouter();
 
-  const axiosAuth = useAxiosAuth();
+  const axiosAuth = useApiWithAuth();
 
   const handleAddInput = () => {
     setAdditionalInputs((currentInputs) => [
