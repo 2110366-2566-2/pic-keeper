@@ -32,3 +32,8 @@ export interface Photo {
   gallery_id: string;
   photo_key: string;
 }
+
+export interface FileWithPreview {
+  file: File;
+  preview: string;
+}

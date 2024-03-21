@@ -28,7 +28,7 @@ func (p *PhotoUseCase) FindUrlsByGalleryId(ctx context.Context, galleryId uuid.U
 
 	var urls []string
 	for _, photo := range photos {
-		urls = append(urls, util.GetProfilePictureUrl(&photo.PhotoKey))
+		urls = append(urls, util.GetGalleryPictureUrl(&photo.PhotoKey))
 	}
 
 	return urls, nil
