@@ -3,11 +3,13 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Modal from "../shared/Modal";
 import authService from "@/services/auth";
+import { AxiosError } from "axios";
+import { useModal } from "@/context/ModalContext";
 
 const RegisterForm = () => {
   const router = useRouter();
+  const { openModal, closeModal } = useModal();
 
   const [email, setEmail] = useState("");
   const [firstname, setFirstname] = useState("");
@@ -15,12 +17,10 @@ const RegisterForm = () => {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const handleCloseModal = () => {
+    closeModal();
     if (success) {
       router.push("/auth/login");
     }
@@ -49,16 +49,42 @@ const RegisterForm = () => {
         lastname,
         password,
       });
-      setModalMessage(
-        `${user.data?.firstname} ${user.data?.lastname} created successfully!`
+      openModal(
+        <div className="flex flex-col">
+          {" "}
+          <p className="text-standard text-gray-500">
+            {user.data?.firstname} {user.data?.lastname} has successfully
+            created
+          </p>
+          <button
+            onClick={handleCloseModal}
+            className="btn-success mt-4 px-4 self-end"
+          >
+            Continue
+          </button>
+        </div>,
+        "Success"
       );
       setSuccess(true);
-      setIsModalOpen(true);
     } catch (error) {
-      const errorMessage = "An error occurred while creating the user.";
-      setModalMessage(errorMessage);
+      const errorMessage =
+        error instanceof AxiosError ? error.message : "An unexpected error";
+      openModal(
+        <div>
+          {" "}
+          <p className="text-standard text-gray-500">{errorMessage}</p>
+          <button
+            onClick={handleCloseModal}
+            className={`btn ${
+              success ? "btn-success" : "btn-danger"
+            } mt-4 px-4`}
+          >
+            {success ? "Continue" : "Close"}
+          </button>
+        </div>,
+        "An error occurred while creating the user."
+      );
       setSuccess(false);
-      setIsModalOpen(true);
     }
   };
 
@@ -188,19 +214,6 @@ const RegisterForm = () => {
           />
         </div>
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        closeModal={closeModal}
-        title={success ? "Register Successful" : "Register Error!"}
-      >
-        <p className="text-standard text-gray-500">{modalMessage}</p>
-        <button
-          onClick={closeModal}
-          className={`btn ${success ? "btn-success" : "btn-danger"} mt-4 px-4`}
-        >
-          {success ? "Continue" : "Close"}
-        </button>
-      </Modal>
     </>
   );
 };
