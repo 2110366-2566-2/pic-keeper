@@ -1,5 +1,4 @@
 import apiClient from "@/libs/apiClient";
-import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import { LoginCredentials } from "@/types/auth";
 import {
   LoginResponse,
@@ -8,6 +7,7 @@ import {
   UserListResponse,
   UserResponse,
 } from "@/types/response";
+import { Axios } from "axios";
 import { signOut } from "next-auth/react";
 
 const adminBaseUrl = "/admin/v1";
@@ -24,7 +24,7 @@ const login = async (loginCredentials: LoginCredentials) => {
   }
 };
 
-const refresh = async (token: string) => {
+const refreshToken = async (token: string) => {
   try {
     const { data } = await apiClient.get<RefreshTokenResponse>(
       `${adminBaseUrl}/refresh`,
@@ -40,9 +40,9 @@ const refresh = async (token: string) => {
   }
 };
 
-const listPendingPhotographer = async () => {
+const listPendingPhotographer = async (apiWithAuthForAdmin: Axios) => {
   try {
-    const { data } = await apiClientWithAuth.get<UserListResponse>(
+    const { data } = await apiWithAuthForAdmin.get<UserListResponse>(
       `${adminBaseUrl}/verifications/pending-photographers`
     );
     return data;
@@ -51,9 +51,9 @@ const listPendingPhotographer = async () => {
   }
 };
 
-const verify = async (id: string) => {
+const verify = async (apiWithAuthForAdmin: Axios, id: string) => {
   try {
-    const { data } = await apiClientWithAuth.put<UserResponse>(
+    const { data } = await apiWithAuthForAdmin.put<UserResponse>(
       `${adminBaseUrl}/verifications/verify/${id}`
     );
     return data;
@@ -62,9 +62,9 @@ const verify = async (id: string) => {
   }
 };
 
-const reject = async (id: string) => {
+const reject = async (apiWithAuthForAdmin: Axios, id: string) => {
   try {
-    const { data } = await apiClientWithAuth.put<UserResponse>(
+    const { data } = await apiWithAuthForAdmin.put<UserResponse>(
       `${adminBaseUrl}/verifications/reject/${id}`
     );
     return data;
@@ -73,9 +73,9 @@ const reject = async (id: string) => {
   }
 };
 
-const logout = async () => {
+const logout = async (apiWithAuthForAdmin: Axios) => {
   try {
-    const { data } = await apiClientWithAuth.put<LogoutResponse>(
+    const { data } = await apiWithAuthForAdmin.put<LogoutResponse>(
       `${adminBaseUrl}/logout`
     );
     signOut();
@@ -87,7 +87,7 @@ const logout = async () => {
 
 const adminService = {
   login,
-  refresh,
+  refreshToken,
   listPendingPhotographer,
   verify,
   reject,
