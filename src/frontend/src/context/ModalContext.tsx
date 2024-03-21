@@ -6,6 +6,7 @@ import {
   useState,
   ReactNode,
   useCallback,
+  useEffect,
 } from "react";
 
 interface ModalContextType {
@@ -39,11 +40,20 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({
     setIsOpen(true);
   }, []);
 
-  const closeModal = useCallback(() => {
+  const closeModal = useCallback(async () => {
     setIsOpen(false);
-    setContent(null);
-    setTitle("");
   }, []);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (!isOpen) {
+      timeoutId = setTimeout(() => {
+        setContent(null);
+        setTitle("");
+      }, 300);
+    }
+    return () => clearTimeout(timeoutId);
+  }, [isOpen]);
 
   return (
     <ModalContext.Provider
