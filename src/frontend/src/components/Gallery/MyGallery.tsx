@@ -7,8 +7,11 @@ import ImageViewer from "./ImageViewer";
 import ProfileImage from "../shared/ProfileImage";
 import { User } from "@/types/user";
 import userService from "@/services/user";
-import { IoIosCamera, IoIosLocate, IoIosTime } from "react-icons/io";
-import { IoLocateSharp, IoLocation, IoLocationSharp } from "react-icons/io5";
+import { IoIosCamera, IoIosTime } from "react-icons/io";
+import { IoLocationSharp } from "react-icons/io5";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { MdModeEdit } from "react-icons/md";
 
 interface Props {
   galleryId: string;
@@ -19,6 +22,10 @@ const MyGallery = ({ galleryId }: Props) => {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [photographer, setPhotographer] = useState<User>();
   const [profilePicture, setProfilePicture] = useState<string>("");
+
+  const { data: session } = useSession();
+  const router = useRouter();
+
   useEffect(() => {
     (async () => {
       try {
@@ -45,6 +52,19 @@ const MyGallery = ({ galleryId }: Props) => {
     })();
   }, [galleryId]);
 
+  const handleDeleteClick = async () => {
+    try {
+      const deleteResponse = await photographerGalleriesService.deleteGallery(
+        galleryId
+      );
+      router.push("/");
+    } catch (error) {}
+  };
+
+  const handleEditClick = async () => {
+    router.push(`/galleries/${galleryId}/edit`);
+  };
+
   if (!gallery || !photographer) {
     return <div>No gallery or photographer specified</div>;
   }
@@ -53,9 +73,20 @@ const MyGallery = ({ galleryId }: Props) => {
       <ImageViewer imageUrls={imageUrls} />
 
       <div className="md:col-span-2 space-y-6 flex flex-col">
-        <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-          {gallery.name}
-        </h1>
+        <div className="flex justify-between">
+          <h1 className="text-3xl font-bold text-gray-900 leading-tight">
+            {gallery.name}
+          </h1>
+          {photographer.id === session?.user.data?.id && (
+            <button
+              className="self-end btn-primary px-6 flex items-center gap-2"
+              onClick={handleEditClick}
+            >
+              <MdModeEdit className="inline" />
+              Edit
+            </button>
+          )}
+        </div>
         <div className="flex items-center gap-4">
           <ProfileImage src={profilePicture} size={16} />
           <div>
@@ -98,7 +129,17 @@ const MyGallery = ({ galleryId }: Props) => {
             ))}
           </ul>
         </div>
-        <button className="self-end btn-primary px-16">Chat</button>
+        {photographer.id !== session?.user.data?.id && (
+          <button className="self-end btn-primary px-16">Chat</button>
+        )}
+        {photographer.id === session?.user.data?.id && (
+          <button
+            className="self-end btn-danger px-16"
+            onClick={handleDeleteClick}
+          >
+            Delete
+          </button>
+        )}
       </div>
     </div>
   );
