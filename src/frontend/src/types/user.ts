@@ -22,6 +22,9 @@ export interface User {
   profile_picture_key: string;
   verification_status: PhotographerStatus;
   phone_number: string;
+  about: string;
+  address: string;
+  gender: Gender;
 }
 
 export interface UserUpdateInput {
@@ -30,16 +33,16 @@ export interface UserUpdateInput {
   phone_number?: string;
   firstname?: string;
   lastname?: string;
-  gender?: string;
+  gender?: Gender;
   about?: string;
   username?: string;
   address?: string;
 }
 
 export enum Gender {
-  Male = "Male",
-  Female = "Female",
-  Other = "Other",
+  Male = "MALE",
+  Female = "FEMALE",
+  Other = "OTHER",
 }
 
 export enum PhotographerStatus {

@@ -8,7 +8,7 @@ import {
   PendingVerification,
   VerificationFailed,
   AddNewGallery,
-} from "@/components/User/MyGalleries";
+} from "@/components/Settings/MyGalleries";
 
 const MyGalleriesPage = () => {
   const [user, setUser] = useState<User>();
