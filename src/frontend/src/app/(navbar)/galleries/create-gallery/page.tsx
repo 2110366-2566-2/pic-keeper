@@ -1,4 +1,4 @@
-import CreateGallery from "@/components/CreateGallery";
+import CreateGallery from "@/components/Gallery/CreateGallery";
 
 const Home = () => {
   return (

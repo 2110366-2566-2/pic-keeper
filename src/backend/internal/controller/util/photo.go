@@ -95,3 +95,12 @@ func GetProfilePictureUrl(profilePictureKey *string) string {
 	url := fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", *profilePictureKey)
 	return url
 }
+
+func GetGalleryPictureUrl(galleryPictureKey *string) string {
+	if galleryPictureKey == nil {
+		return ""
+	}
+
+	url := fmt.Sprintf("http://localhost:4566/%s/%s", "gallery-photos", *galleryPictureKey)
+	return url
+}

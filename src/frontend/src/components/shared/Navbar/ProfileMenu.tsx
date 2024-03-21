@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment, ReactNode } from "react";
 import { MdArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
+import ProfileImage from "../ProfileImage";
 
 interface Props {
   href: string;
@@ -36,17 +37,13 @@ const ProfileMenu = () => {
       {({ open }) => (
         <>
           <Menu.Button className="flex items-center gap-2 text-sm rounded-full focus:ring-2 focus:ring-offset-2 focus:outline-none">
-            <div className="w-8 h-8 relative rounded-full">
-              <Image
-                src={
-                  session?.user?.profile_picture_url ||
-                  "/images/no-picture.jpeg"
-                }
-                alt=""
-                className="rounded-full object-cover"
-                fill={true}
-              />
-            </div>
+            <ProfileImage
+              src={
+                session?.user?.profile_picture_url || "/images/no-picture.jpeg"
+              }
+              size={8}
+            />
+
             <span>{session?.user.data?.firstname || "Guest"}</span>
             {open ? <MdArrowDropUp /> : <MdOutlineArrowDropDown />}
           </Menu.Button>
