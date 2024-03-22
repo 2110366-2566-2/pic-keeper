@@ -47,7 +47,6 @@ func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
 			util.Raise500Error(c, err)
 			return
 		}
-
 		room.Gallery = *gallery
 	}
 
