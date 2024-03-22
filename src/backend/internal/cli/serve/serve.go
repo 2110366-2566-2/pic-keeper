@@ -7,6 +7,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/Roongkun/software-eng-ii/internal/controller/chat"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/gin-contrib/cors"
@@ -49,6 +50,7 @@ var ServeCmd = &cobra.Command{
 		db := databases.ConnectSQLDB(appCfg.Database.Postgres.DSN)
 		handler := controller.NewHandler(db)
 		redisClient := databases.ConnectRedis(appCfg.Database.Redis.DSN)
+		util.InitNgrokEndpoint(appCfg.NgrokEndpoint)
 
 		autoUpdateBookingStatus(handler)
 
