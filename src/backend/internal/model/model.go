@@ -7,11 +7,13 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type ContextKey string
-type LoginCredentials struct {
-	Email    string `json:"email" example:"test@mail.com"`
-	Password string `json:"password" example:"abc123"`
-}
+type (
+	ContextKey       string
+	LoginCredentials struct {
+		Email    string `json:"email" example:"test@mail.com"`
+		Password string `json:"password" example:"abc123"`
+	}
+)
 
 const (
 	PhotographerNotVerifiedStatus = "NOT_VERIFIED"
@@ -38,6 +40,7 @@ type User struct {
 	Firstname          string    `bun:"firstname,type:varchar" json:"firstname"`
 	Lastname           string    `bun:"lastname,type:varchar" json:"lastname"`
 	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
+	IsAdmin            bool      `bun:"is_admin,type:boolean" json:"is_admin"`
 	About              *string   `bun:"about,type:varchar" json:"about"`
 	Address            *string   `bun:"address,type:varchar" json:"address"`
 	PhoneNumber        *string   `bun:"phone_number,type:varchar" json:"phone_number"`
@@ -63,14 +66,6 @@ type UserUpdateInput struct {
 	Address     *string `json:"address" example:"Bangkok"`
 }
 
-type Administrator struct {
-	bun.BaseModel `bun:"table:administrators,alias:admin"`
-	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	Email         string    `bun:"email,type:varchar" json:"email"`
-	Password      string    `bun:"password,type:varchar" json:"password"`
-	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
-}
-
 type Gallery struct {
 	bun.BaseModel  `bun:"table:galleries,alias:galleries"`
 	Id             uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
@@ -78,21 +73,31 @@ type Gallery struct {
 	Location       string    `bun:"location,type:varchar" json:"location"`
 	Name           string    `bun:"name,type:varchar" json:"name"`
 	Price          int       `bun:"price,type:integer" json:"price"`
+	Hours          int       `bun:"hours,type:integer" json:"hours"`
+	Description    *string   `bun:"description,type:varchar" json:"description"`
+	DeliveryTime   int       `bun:"delivery_time,type:integer" json:"delivery_time"`
+	Included       []string  `bun:",array" json:"included"`
 }
 
 type GalleryInput struct {
-	Name     *string `bun:"name,type:varchar" json:"name"`
-	Location *string `bun:"name,type:varchar" json:"location"`
-	Price    *int    `bun:"price,type:integer" json:"price"`
+	Name         *string  `bun:"name,type:varchar" json:"name"`
+	Location     *string  `bun:"name,type:varchar" json:"location"`
+	Price        *int     `bun:"price,type:integer" json:"price"`
+	Hours        *int     `bun:"hours,type:integer" json:"hours"`
+	Description  *string  `bun:"description,type:varchar" json:"description"`
+	DeliveryTime *int     `bun:"delivery_time,type:integer" json:"delivery_time"`
+	Included     []string `bun:",array" json:"included"`
 }
 
 const (
+	BookingDraftStatus                 = "DRAFT"
 	BookingPaidStatus                  = "USER_PAID"
 	BookingCancelledStatus             = "CANCELLED"
 	BookingCustomerReqCancelStatus     = "C_REQ_CANCEL"
 	BookingPhotographerReqCancelStatus = "P_REQ_CANCEL"
 	BookingCompletedStatus             = "COMPLETED"
 	BookingPaidOutStatus               = "PAID_OUT"
+	BookingRefundReqStatus             = "REQ_REFUND"
 )
 
 type BookingProposal struct {

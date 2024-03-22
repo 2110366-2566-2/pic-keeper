@@ -27,7 +27,7 @@ interface BookOptions {
 }
 
 interface customerProp {
-  profile_picture_url: string;
+  profile_picture_url: string | undefined;
   data: {
     firstname: string | undefined;
     lastname: string | undefined;
@@ -55,10 +55,6 @@ export default function BookingCard(options: BookOptions) {
         username: result.data?.username,
       },
     };
-    // return {
-    //   profile_picture_url: "/images/signup.png",
-    //   data: { firstname: "Jack", lastname: "kto789", username: "kaboom" },
-    // };
   };
 
   useEffect(() => {
@@ -82,7 +78,9 @@ export default function BookingCard(options: BookOptions) {
           options.setModalProps(mergedObj);
         }}
       >
-        <div className="pl-4 text-base font-semibold truncate">{options.props.id}</div>
+        <div className="pl-4 text-base font-semibold truncate">
+          {options.props.id}
+        </div>
         <div className="col-span-2 pl-4">
           <p className="text-base font-semibold">
             {options.props.gallery.name}
@@ -116,7 +114,7 @@ export default function BookingCard(options: BookOptions) {
               className="object-cover rounded-full"
               fill={true}
               src={
-                customer
+                customer?.profile_picture_url
                   ? customer.profile_picture_url
                   : "/images/no-picture.jpeg"
               }
@@ -155,9 +153,13 @@ export default function BookingCard(options: BookOptions) {
             {transformDate(options.props.start_time).year}
           </p>
           <p className="text-base font-semibold">
-            {transformDate(options.props.start_time).hour}{"."}{transformDate(options.props.start_time).minute}
+            {transformDate(options.props.start_time).hour}
+            {"."}
+            {transformDate(options.props.start_time).minute}
             {" - "}
-            {transformDate(options.props.end_time).hour}{"."}{transformDate(options.props.end_time).minute}
+            {transformDate(options.props.end_time).hour}
+            {"."}
+            {transformDate(options.props.end_time).minute}
           </p>
           <p className="text-xs font-semibold text-stone-400">
             15 days from now

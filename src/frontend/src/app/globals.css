@@ -3,24 +3,24 @@
 @tailwind utilities;
 
 @layer components {
-  .btn {
-    @apply rounded-md py-2 text-white;
-  }
-
   .btn-primary {
-    @apply bg-amber-500;
+    @apply rounded-md py-2 text-white bg-amber-500;
   }
 
   .btn-success {
-    @apply bg-green-400 hover:bg-green-500;
+    @apply rounded-md py-2 text-white bg-green-400 hover:bg-green-500;
   }
 
   .btn-danger {
-    @apply bg-red-400;
+    @apply rounded-md py-2 text-white bg-red-400;
+  }
+
+  .btn-cancel {
+    @apply rounded-md py-2 text-white bg-gray-400;
   }
 
   .form-input {
-    @apply block w-full border-0 py-2 px-3.5 rounded-md z-10 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6 placeholder:text-gray-400;
+    @apply block w-full border-0 py-2 px-3.5 rounded-md z-10 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-amber-400 sm:text-sm sm:leading-6 placeholder:text-gray-400 focus:outline-none;
   }
 
   .form-input-error {

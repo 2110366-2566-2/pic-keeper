@@ -1,6 +1,6 @@
 // src/app/user/layout.tsx
 import React from "react";
-import NavBar from "@/components/shared/Navbar";
+import { NavBar } from "@/components/shared";
 
 export default function UserLayout({
   children,
@@ -12,7 +12,7 @@ export default function UserLayout({
       <NavBar />
       <div className="flex h-full">
         <div className="flex flex-col flex-1">
-          <main className="flex-grow">{children}</main>
+          <main className="flex-grow bg-zinc-50">{children}</main>
         </div>
       </div>
     </div>

@@ -1,20 +1,13 @@
 "use client";
-import NavBar from "@/components/shared/Navbar";
-import userService from "@/services/user";
-import { useSession } from "next-auth/react";
+import NavBar from "@/components/shared/Navbar/Navbar";
 
 export default function Home() {
-  const { data: session } = useSession();
-
-  const fetchUserInfo = async () => {
-    const response = await userService.getMyUserInfo();
-    console.log(response);
-  };
-  fetchUserInfo();
   return (
     <main>
-      <NavBar />
-      <div className="">Pic-Keeper</div>
+      <div className="w-screen h-screen">
+        <NavBar />
+        <div className="">Pic-Keeper</div>
+      </div>
     </main>
   );
 }

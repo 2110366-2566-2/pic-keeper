@@ -1,12 +1,14 @@
 import { Gallery } from "./gallery";
 
 export enum BookingStatus {
+  BookingDraftStatus = "DRAFT",
   BookingPaidStatus = "USER_PAID",
   BookingCancelledStatus = "CANCELLED",
   BookingCustomerReqCancelStatus = "C_REQ_CANCEL",
   BookingPhotographerReqCancelStatus = "P_REQ_CANCEL",
   BookingCompletedStatus = "COMPLETED",
   BookingPaidOutStatus = "PAID_OUT",
+  BookingRefundReqStatus = "REQ_REFUND",
 }
 
 export interface BookingProposal {

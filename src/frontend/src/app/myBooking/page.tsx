@@ -5,7 +5,7 @@ import BookingPage from "@/components/Booking/Booking";
 const Home = () => {
 
   return (
-    <div className="max-w-full m-auto bg-zinc-50">
+    <div className="max-w-full m-auto ">
       <BookingPage />
     </div>
   );

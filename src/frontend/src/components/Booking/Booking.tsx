@@ -7,100 +7,6 @@ import BookingCard from "./BookingCard";
 import BookingModal from "./BookingModal";
 import { list } from "postcss";
 
-
-const mockData: Booking[] = [
-  {
-    id: "#B1201",
-    customer_id:"string",
-    gallery: {
-      id: "#Efdsf789",
-      photographer_id: "string",
-      location: "Chula",
-      name: "string",
-      price: 6000},
-    start_time: "0001-01-01T00:00:00Z",
-    end_time: "string",
-    created_at: "string",
-    updated_at: "string",
-    status: BookingStatus.BookingCancelledStatus,
-  },
-  {
-    id: "#B1201",
-    customer_id:"string",
-    gallery: {
-      id: "#Efdsf789",
-      photographer_id: "string",
-      location: "Chula",
-      name: "string",
-      price: 6000},
-    start_time: "0001-01-01T00:00:00Z",
-    end_time: "string",
-    created_at: "string",
-    updated_at: "string",
-    status: BookingStatus.BookingPaidStatus,
-  },
-  {
-    id: "#B1201",
-    customer_id:"string",
-    gallery: {
-      id: "#Efdsf789",
-      photographer_id: "string",
-      location: "Chula",
-      name: "string",
-      price: 6000},
-    start_time: "0001-01-01T00:00:00Z",
-    end_time: "string",
-    created_at: "string",
-    updated_at: "string",
-    status: BookingStatus.BookingPaidStatus,
-  },
-  {
-    id: "#B1201",
-    customer_id:"string",
-    gallery: {
-      id: "#Efdsf789",
-      photographer_id: "string",
-      location: "Chula",
-      name: "string",
-      price: 6000},
-    start_time: "0001-01-01T00:00:00Z",
-    end_time: "string",
-    created_at: "string",
-    updated_at: "string",
-    status: BookingStatus.BookingPaidOutStatus,
-  },
-  {
-    id: "#B1201",
-    customer_id:"string",
-    gallery: {
-      id: "#Efdsf789",
-      photographer_id: "string",
-      location: "Chula",
-      name: "string",
-      price: 6000},
-    start_time: "0001-01-01T00:00:00Z",
-    end_time: "string",
-    created_at: "string",
-    updated_at: "string",
-    status: BookingStatus.BookingCompletedStatus,
-  },
-  {
-    id: "#B1201",
-    customer_id:"string",
-    gallery: {
-      id: "#Efdsf789",
-      photographer_id: "string",
-      location: "Chula",
-      name: "string",
-      price: 6000},
-    start_time: "0001-01-01T00:00:00Z",
-    end_time: "string",
-    created_at: "string",
-    updated_at: "string",
-    status: BookingStatus.BookingCustomerReqCancelStatus,
-  },
-];
-
 export default function BookingPage() {
   //----------Instance Var------------
 
@@ -292,7 +198,7 @@ export default function BookingPage() {
   });
 
   return (
-    <div className="w-full h-screen px-16 z-1">
+    <div className="w-full h-screen px-16">
       <div className="flex flex-col ">
         <div>
           <h2 className="text-3xl mt-8 pb-4 font-semibold">My Bookings</h2>

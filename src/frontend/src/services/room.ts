@@ -3,6 +3,7 @@ import {
   UserRoomLookUpListResponse,
   ConversationListResponse,
   RoomResponse,
+  RoomListResponse,
 } from "@/types/response";
 import { RoomMemberInput } from "@/types/room";
 
@@ -22,9 +23,7 @@ const createRoom = async (roomMembers: RoomMemberInput) => {
 
 const getAllRooms = async () => {
   try {
-    const { data } = await apiClientWithAuth.get<UserRoomLookUpListResponse>(
-      roomBaseUrl
-    );
+    const { data } = await apiClientWithAuth.get<RoomListResponse>(roomBaseUrl);
     return data;
   } catch (error) {
     throw error;
@@ -56,6 +55,7 @@ const getAllConversations = async (id: string) => {
 const roomService = {
   createRoom,
   getAllRooms,
+  getRoomInfo,
   getAllConversations,
 };
 
