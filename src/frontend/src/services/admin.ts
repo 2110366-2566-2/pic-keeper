@@ -1,14 +1,5 @@
-import apiClient from "@/libs/apiClient";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
-import { LoginCredentials } from "@/types/auth";
-import {
-  LoginResponse,
-  LogoutResponse,
-  RefreshTokenResponse,
-  UserListResponse,
-  UserResponse,
-} from "@/types/response";
-import { signOut } from "next-auth/react";
+import { UserListResponse, UserResponse } from "@/types/response";
 
 const adminBaseUrl = "/admin/v1";
 
