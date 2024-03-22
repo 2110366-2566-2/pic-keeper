@@ -79,3 +79,5 @@ func (b *BookingDB) UpdateStatusRoutine(ctx context.Context, currentTime time.Ti
 
 	return nil
 }
+
+func (b *BookingDB) ListPendingRefundBookings(ctx context.Context)

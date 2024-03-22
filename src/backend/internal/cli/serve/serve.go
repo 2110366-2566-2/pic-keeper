@@ -117,8 +117,8 @@ var ServeCmd = &cobra.Command{
 			admin.PUT("/verify/:id", handler.Admin.Verify)
 			admin.PUT("/reject/:id", handler.Admin.Reject)
 			admin.GET("/pending-refund-bookings", handler.Admin.ListPendingRefundBookings)
-			admin.PUT("/bookings/reject/:id", handler.Admin.RejectRefundBooking)
-			admin.PUT("/bookings/refund/:id", handler.Admin.AcceptRefundBooking)
+			// admin.PUT("/bookings/reject/:id", handler.Admin.RejectRefundBooking)
+			// admin.PUT("/bookings/refund/:id", handler.Admin.AcceptRefundBooking)
 		}
 
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
@@ -138,7 +138,7 @@ var ServeCmd = &cobra.Command{
 			phtgBookings.GET("/past", handler.Photographer.ListPastBookings)
 			phtgBookings.GET("/my-bookings", handler.Photographer.MyBookings)
 			phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
-			phtgBookings.PUT("/req-refund/:id", handler.Photographer.ReqestRefundBooking)
+			// phtgBookings.PUT("/req-refund/:id", handler.Photographer.ReqestRefundBooking)
 			phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
 		}
 
@@ -152,7 +152,7 @@ var ServeCmd = &cobra.Command{
 			customerBookings.GET("/my-bookings", handler.User.MyBookings)
 			customerBookings.GET("/:id", handler.User.GetOneBooking)
 			customerBookings.PUT("/cancel/:id", handler.User.CancelBooking)
-			customerBookings.PUT("/req-refund/:id", handler.User.ReqestRefundBooking)
+			// customerBookings.PUT("/req-refund/:id", handler.User.ReqestRefundBooking)
 			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
