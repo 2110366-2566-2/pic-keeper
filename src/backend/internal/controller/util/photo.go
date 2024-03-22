@@ -105,3 +105,12 @@ func GetPaymentQRCodeUrl(qrPaymentKey *string) string {
 
 	return fmt.Sprintf("%s/%s/%s", baseUrl, s3utils.QRPaymentBucket, *qrPaymentKey)
 }
+
+func GetGalleryPictureUrl(galleryPictureKey *string) string {
+	if galleryPictureKey == nil {
+		return ""
+	}
+
+	url := fmt.Sprintf("%s/%s/%s", baseUrl, s3utils.GalleryPhotoBucket, *galleryPictureKey)
+	return url
+}

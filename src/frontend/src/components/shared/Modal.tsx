@@ -1,19 +1,11 @@
+"use client";
+
+import { useModal } from "@/context/ModalContext";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
-type ModalProps = {
-  isOpen: boolean;
-  closeModal: () => void;
-  title: string;
-  children: React.ReactNode; // for the main content of the modal
-};
-
-export default function Modal({
-  isOpen,
-  closeModal,
-  title,
-  children,
-}: ModalProps) {
+export default function Modal() {
+  const { isOpen, closeModal, content, title } = useModal();
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10 max-w-xl" onClose={closeModal}>
@@ -47,7 +39,7 @@ export default function Modal({
                 >
                   {title}
                 </Dialog.Title>
-                <div className="mt-2"> {children}</div>
+                <div className="mt-2"> {content}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
