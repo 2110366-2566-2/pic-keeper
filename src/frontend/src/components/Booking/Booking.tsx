@@ -7,6 +7,28 @@ import BookingCard from "./BookingCard";
 import BookingModal from "./BookingModal";
 import { list } from "postcss";
 
+const mockData:Booking={
+  "id": "6ae48b2e-e6a3-43a0-8c69-cb677d56c257",
+  "customer_id": "3099fe61-ce94-4689-9553-45ef54ff511f",
+  "gallery": {
+      "id": "a0598881-cea7-48d0-90d0-ee7c0aa5fa27",
+      "photographer_id": "1ea3b074-61c4-4ca5-8e9a-0942f09111d8",
+      "location": "Chula",
+      "name": "Test Gallery",
+      "price": 6000,
+      "hours": 4,
+      "description": null,
+      "delivery_time": 10,
+      "included": []
+  },
+  "start_time": "2024-01-20T09:00:00Z",
+  "end_time": "2024-01-20T09:20:00Z",
+  "status": BookingStatus.BookingPaidOutStatus,
+  "created_at": "2024-03-22T13:04:18.277234Z",
+  "updated_at": "2024-03-22T13:04:18.277234Z"
+}
+
+
 export default function BookingPage() {
   //----------Instance Var------------
 
@@ -49,7 +71,7 @@ export default function BookingPage() {
     console.log("Fetch Customer: ",resultCustomer);
     console.log("Fetch Photographer ",resultPhotographer);
     return [...resultCustomer, ...resultPhotographer];
-    //return mockData;
+    //return [mockData,mockData,mockData,mockData];
   };
   const getPendingCancellations = async () => {
 

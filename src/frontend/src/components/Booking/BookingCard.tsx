@@ -9,16 +9,7 @@ import { UserResponse } from "@/types/response";
 import { GalleryResponse } from "@/types/response";
 import { isDifferentDay, transformDate } from "@/utils/date";
 
-interface Booking11 {
-  id: string;
-  customer_id: string;
-  gallery_id: string;
-  start_time: string;
-  end_time: string;
-  status: BookingStatus;
-  created_at: string;
-  updated_at: string;
-}
+
 
 interface BookOptions {
   props: Booking;
