@@ -13,8 +13,6 @@ import (
 	"github.com/skip2/go-qrcode"
 )
 
-var baseTargetURI = "https://darling-relaxing-colt.ngrok-free.app/payment"
-
 func (r *Resolver) GetQRCode(c *gin.Context) {
 	user := c.MustGet("user")
 	userObj, ok := user.(model.User)
@@ -42,7 +40,7 @@ func (r *Resolver) GetQRCode(c *gin.Context) {
 		return
 	}
 
-	png, err := qrcode.Encode(fmt.Sprintf("%s/%s", baseTargetURI, paramId), qrcode.Medium, 256)
+	png, err := qrcode.Encode(fmt.Sprintf("%s/%s", util.NgrokEndpoint, paramId), qrcode.Medium, 256)
 	if err != nil {
 		util.Raise500Error(c, err)
 		return
