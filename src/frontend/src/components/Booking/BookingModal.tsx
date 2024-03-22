@@ -53,7 +53,7 @@ export default function BookingModal(props: {
             className="fixed bg-black bg-opacity-50 inset-0 flex items-center justify-center "
           >
             <div
-              className={`max-w-md w-full max-h-[500px] h-full px-4 bg-white shadow-lg rounded-2xl transition-opacity md:opacity-100 opacity-30 duration-500`}
+              className={`max-w-md w-full max-h-[500px] h-full px-4 bg-white shadow-lg rounded-2xl`}
             >
               <div className=" py-6 px-8 flex flex-col w-full h-full overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-slate-500 scrollbar-track-slate-300 ">
                 <div>
