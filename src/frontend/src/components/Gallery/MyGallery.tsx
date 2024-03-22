@@ -44,7 +44,9 @@ const MyGallery = ({ galleryId }: Props) => {
           );
           if (photographerResponse.data) {
             setPhotographer(photographerResponse.data);
-            setProfilePicture(photographerResponse.profile_picture_url);
+            setProfilePicture(
+              photographerResponse.profile_picture_url || "/images/nature.svg"
+            );
           }
         }
 
