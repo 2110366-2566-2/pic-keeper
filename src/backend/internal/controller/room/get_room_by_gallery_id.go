@@ -41,6 +41,16 @@ func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
 		return
 	}
 
+	if exist {
+		gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, room.GalleryId)
+		if err != nil {
+			util.Raise500Error(c, err)
+			return
+		}
+
+		room.Gallery = *gallery
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 		"exist":  exist,
