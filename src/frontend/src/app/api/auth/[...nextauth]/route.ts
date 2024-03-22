@@ -51,26 +51,6 @@ export const authOptions: AuthOptions = {
               }
             }
             break;
-          case Role.Admin:
-            try {
-              const user = await adminService.login({
-                email: credentials.email,
-                password: credentials.password,
-              });
-              if (user) {
-                return { ...user, role: credentials.role };
-              }
-            } catch (error) {
-              if (error instanceof AxiosError) {
-                console.log(error);
-                throw new Error(
-                  error.response?.data.error || "Authentication failed"
-                );
-              } else {
-                throw new Error("An unexpected error occurred");
-              }
-            }
-            break;
 
           case "google":
             // Attempt Google login via cookie
