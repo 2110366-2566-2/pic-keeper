@@ -54,7 +54,6 @@ func (r *Resolver) GetQRCode(c *gin.Context) {
 
 	contentType := http.DetectContentType(png)
 	buffer := bytes.NewBuffer(png)
-
 	if err := s3basics.UploadFile(c, s3utils.QRPaymentBucket, paramId, buffer, contentType); err != nil {
 		util.Raise500Error(c, err)
 		return
