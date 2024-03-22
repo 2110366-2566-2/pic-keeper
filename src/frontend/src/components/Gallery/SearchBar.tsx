@@ -70,7 +70,7 @@ const SearchBar = (data: Props) => {
                       onClick={() => data.setSelectedOption("By photographer")}
                       className={classNames(
                         data.selectedOption == "By photographer"
-                          ? "text-amber-500 underline underline-offset-1"
+                          ? "text-yellow-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
                         "block px-4 py-2 text-sm text-gray-700 "
@@ -105,7 +105,7 @@ const SearchBar = (data: Props) => {
       <div className="relative col-span-3">
         <input
           type="text"
-          className="p-2 pl-4 outline outline-amber-400 rounded-md w-full"
+          className="form-input ring-amber-400 hover:ring-amber-500 hover:ring-3"
           placeholder={
             data.selectedOption === "By photographer"
               ? "Search photographer"
@@ -113,14 +113,14 @@ const SearchBar = (data: Props) => {
           }
         />
         <IoSearch
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-90"
           size={20}
         />
       </div>
       <div className="relative">
         <input
           type="text"
-          className="p-2 pl-4 outline outline-gray-900 rounded-md w-full text-gray-900"
+          className="form-input ring-gray-800 hover:ring-gray-900 focus:ring-gray-900 hover:ring-3"
           placeholder={data.searchPlace}
         />
         <MdOutlineLocationOn

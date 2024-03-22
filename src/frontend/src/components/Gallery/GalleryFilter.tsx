@@ -48,7 +48,7 @@ const GalleryFilter = (data: Props) => {
                     onClick={() => data.setSelectedOption("Recommended")}
                     className={classNames(
                       data.selectedOption == "Recommended"
-                        ? "text-amber-500 underline underline-offset-1 "
+                        ? "text-yellow-500 underline underline-offset-1 "
                         : "",
                       active ? "bg-gray-100" : "",
                       "block px-4 py-2 text-sm text-gray-700 w-full"
@@ -65,7 +65,7 @@ const GalleryFilter = (data: Props) => {
                     onClick={() => data.setSelectedOption("Rating")}
                     className={classNames(
                       data.selectedOption == "Rating"
-                        ? "text-amber-500 underline underline-offset-1"
+                        ? "text-yellow-500 underline underline-offset-1"
                         : "",
                       active ? "bg-gray-100" : "",
                       "block px-4 py-2 text-sm text-gray-900 w-full"
@@ -81,7 +81,7 @@ const GalleryFilter = (data: Props) => {
                     onClick={() => data.setSelectedOption("Price")}
                     className={classNames(
                       data.selectedOption == "Price"
-                        ? "text-amber-500 underline underline-offset-1"
+                        ? "text-yellow-500 underline underline-offset-1"
                         : "",
                       active ? "bg-gray-100" : "",
                       "block px-4 py-2 text-sm text-gray-900 w-full"
