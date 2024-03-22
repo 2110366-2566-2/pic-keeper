@@ -9,10 +9,9 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *Resolver) GetRoomByGalleryId(c *gin.Context) {
-
-	galleryId := c.Param("galleryId")
-	uuid, err := uuid.Parse(galleryId)
+func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
+	paramId := c.Param("galleryId")
+	galleryId, err := uuid.Parse(paramId)
 	if err != nil {
 		util.Raise400Error(c, "UUID not provided or invalid")
 		return
@@ -31,30 +30,20 @@ func (r *Resolver) GetRoomByGalleryId(c *gin.Context) {
 		return
 	}
 
-	room := model.Room{}
+	roomIdsBelongToUser := []uuid.UUID{}
 	for _, roomLookup := range roomLookups {
-		existingRoom, err := r.RoomUsecase.RoomRepo.FindOneById(c, roomLookup.RoomId)
-		if err != nil {
-			util.Raise500Error(c, err)
-			return
-		}
+		roomIdsBelongToUser = append(roomIdsBelongToUser, roomLookup.RoomId)
+	}
 
-		gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, existingRoom.GalleryId)
-		if err != nil {
-			util.Raise500Error(c, err)
-			return
-		}
-
-		existingRoom.Gallery = *gallery
-		if gallery.Id == uuid {
-			room = *existingRoom
-			break
-		}
-
+	exist, room, err := r.RoomUsecase.FindRoomOfUserByGalleryId(c, roomIdsBelongToUser, galleryId)
+	if err != nil {
+		util.Raise500Error(c, err)
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
+		"exist":  exist,
 		"data":   room,
 	})
 }
