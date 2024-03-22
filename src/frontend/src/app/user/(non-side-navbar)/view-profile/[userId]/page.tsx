@@ -45,7 +45,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
               {session?.user.data?.username}
             </div>
             {session?.user.data?.verification_status === "VERIFIED" ? (
-              <div className="p-1 bg-neutral-300 rounded-2xl text-neutral-500 text-xs">
+              <div className="p-1 bg-neutral-300 rounded-2xl text-neutral-500 text-xs h-6 mt-1">
                 Photograher
               </div>
             ) : (
