@@ -13,5 +13,5 @@ type Booking interface {
 	FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, status ...string) ([]*model.Booking, error)
 	FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, status ...string) ([]*model.Booking, error)
 	UpdateStatusRoutine(ctx context.Context, currentTime time.Time) error
-	ListPendingRefundBooking(ctx context.Context) ([]*model.Booking, error)
+	ListPendingRefundBookings(ctx context.Context) ([]*model.Booking, error)
 }

@@ -1,6 +1,8 @@
 package admin
 
 import (
+	"net/http"
+
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
@@ -24,4 +26,9 @@ func (r *Resolver) ListPendingRefundBookings(c *gin.Context) {
 		util.Raise500Error(c, err)
 		return
 	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
+		"data":   pendingRefundBookings,
+	})
 }
