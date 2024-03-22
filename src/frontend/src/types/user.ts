@@ -25,6 +25,7 @@ export interface User {
   about: string;
   address: string;
   gender: Gender;
+  is_admin: boolean;
 }
 
 export interface UserUpdateInput {

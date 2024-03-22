@@ -72,3 +72,5 @@ export interface GetUserInfoResponse extends SuccessResponse<User> {
 export interface DeleteResponse extends SuccessResponse<string> {}
 
 export type UrlsListResponse = SuccessResponse<string[]>;
+
+export type StringResponse = SuccessResponse<string>;
