@@ -48,7 +48,7 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		GalleryId:  bookingProposal.GalleryId,
 		StartTime:  bookingProposal.StartTime,
 		EndTime:    bookingProposal.EndTime,
-		Status:     model.BookingPaidStatus,
+		Status:     model.BookingDraftStatus,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
