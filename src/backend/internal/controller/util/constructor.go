@@ -44,6 +44,7 @@ func UserConstructor(c *gin.Context) (model.User, []error) {
 		Firstname:          newUser.Firstname,
 		Lastname:           newUser.Lastname,
 		VerificationStatus: model.PhotographerNotVerifiedStatus,
+		IsAdmin:            false,
 	}
 
 	return result, nil
