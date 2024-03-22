@@ -12,6 +12,9 @@ import { IoLocationSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MdModeEdit } from "react-icons/md";
+import { AxiosError } from "axios";
+import { useModal } from "@/context/ModalContext";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 interface Props {
   galleryId: string;
@@ -25,6 +28,8 @@ const MyGallery = ({ galleryId }: Props) => {
 
   const { data: session } = useSession();
   const router = useRouter();
+  const { openModal, closeModal } = useModal();
+  const showError = useErrorModal();
 
   useEffect(() => {
     (async () => {
@@ -48,17 +53,39 @@ const MyGallery = ({ galleryId }: Props) => {
         if (imageResponse.data) {
           setImageUrls(imageResponse.data);
         }
-      } catch (error) {}
+      } catch (error) {
+        showError(error, "Failed to fetch gallery info");
+      }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [galleryId]);
 
   const handleDeleteClick = async () => {
+    openModal(
+      <div className="flex flex-col">
+        <p className="text-standard text-gray-500">
+          This will delete your gallery from PicKeeper.
+        </p>
+        <div className="self-end flex gap-4">
+          <button onClick={closeModal} className="btn mt-4 px-4">
+            Cancel
+          </button>
+          <button onClick={deleteGallery} className="btn-danger mt-4 px-4 ">
+            Delete
+          </button>
+        </div>
+      </div>,
+      "Are you sure?"
+    );
+  };
+
+  const deleteGallery = async () => {
     try {
-      const deleteResponse = await photographerGalleriesService.deleteGallery(
-        galleryId
-      );
+      await photographerGalleriesService.deleteGallery(galleryId);
       router.push("/");
-    } catch (error) {}
+    } catch (error) {
+      showError(error, "An error occurred while deleting gallery");
+    }
   };
 
   const handleEditClick = async () => {

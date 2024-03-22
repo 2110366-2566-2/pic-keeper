@@ -4,9 +4,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import authService from "@/services/auth";
 import { useModal } from "@/context/ModalContext";
 import GoogleBtn from "./GoogleBtn";
+import { Role } from "@/types/user";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -24,6 +24,7 @@ const LoginForm = () => {
     const res = await signIn("credentials", {
       email: email,
       password: password,
+      role: Role.User,
       redirect: false,
     });
 

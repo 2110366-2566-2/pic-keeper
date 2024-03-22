@@ -52,3 +52,8 @@ export enum PhotographerStatus {
   Verified = "VERIFIED",
   Rejected = "REJECTED",
 }
+
+export enum Role {
+  User = "USER",
+  Admin = "ADMIN",
+}

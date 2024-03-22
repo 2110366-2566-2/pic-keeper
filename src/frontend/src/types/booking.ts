@@ -6,7 +6,7 @@ export enum BookingStatus {
   BookingPhotographerReqCancelStatus = "P_REQ_CANCEL",
   BookingCompletedStatus = "COMPLETED",
   BookingPaidOutStatus = "PAID_OUT",
-  BookingRefendReqStatus = "REQ_REFUND",
+  BookingRefundReqStatus = "REQ_REFUND",
 }
 
 export interface BookingProposal {

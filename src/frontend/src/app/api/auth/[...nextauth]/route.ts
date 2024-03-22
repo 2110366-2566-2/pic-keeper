@@ -5,6 +5,8 @@ import NextAuth from "next-auth";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { parse } from "cookie";
+import adminService from "@/services/admin";
+import { Role } from "@/types/user";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -18,55 +20,72 @@ export const authOptions: AuthOptions = {
       credentials: {
         email: { label: "Email", type: "email", placeholder: "email" },
         password: { label: "Password", type: "password" },
+        role: {
+          label: "Role",
+          type: "text",
+          placeholder: "user/admin (leave empty for Google login)",
+        },
       },
       async authorize(credentials, req) {
         if (!credentials) return null;
-        if (credentials.email && credentials.password) {
-          try {
-            const user = await authService.login({
-              email: credentials.email,
-              password: credentials.password,
-            });
-            if (user) {
-              return user as any;
-            }
-          } catch (error) {
-            if (error instanceof AxiosError) {
-              throw error;
-            } else {
-              throw error;
-            }
-          }
 
-          // Attempt to authenticate using a cookie if credentials are not provided
-        } else {
-          const cookies = parse(req.headers?.cookie || ""); // Safely parse cookies
-          const sessionToken = cookies["session_token"];
+        const loginType = credentials.role ? credentials.role : "google";
 
-          if (sessionToken) {
-            // Retrieve user information
-            const axiosInstance = axios.create({
-              baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-              headers: { Authorization: `Bearer ${sessionToken}` },
-            });
+        switch (loginType) {
+          case Role.User:
             try {
-              const { data: userProfile } = await axiosInstance.get(
-                `/users/v1/get-my-user-info`
-              );
-              return userProfile
-                ? { ...userProfile, session_token: sessionToken }
-                : null;
+              const user = await authService.login({
+                email: credentials.email,
+                password: credentials.password,
+              });
+              if (user) {
+                return { ...user, role: credentials.role };
+              }
             } catch (error) {
               if (error instanceof AxiosError) {
-                throw error;
+                throw new Error(
+                  error.response?.data.error || "Authentication failed"
+                );
               } else {
-                throw error;
+                throw new Error("An unexpected error occurred");
               }
             }
-          }
+            break;
+
+          case "google":
+            // Attempt Google login via cookie
+            const cookies = parse(req.headers?.cookie || "");
+            const sessionToken = cookies["session_token"];
+
+            if (sessionToken) {
+              try {
+                const axiosInstance = axios.create({
+                  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+                  headers: { Authorization: `Bearer ${sessionToken}` },
+                });
+                const { data: userProfile } = await axiosInstance.get(
+                  `/users/v1/get-my-user-info`
+                );
+                return userProfile
+                  ? { ...userProfile, session_token: sessionToken }
+                  : null;
+              } catch (error) {
+                if (error instanceof AxiosError) {
+                  throw new Error(
+                    error.response?.data.error || "Google Authentication failed"
+                  );
+                } else {
+                  throw new Error(
+                    "An unexpected error occurred during Google authentication"
+                  );
+                }
+              }
+            }
+            break;
+          default:
+            // If the case does not match any of the above, return null
+            return null;
         }
-        // If neither method succeeds, return null to indicate authentication failure
-        return null;
       },
     }),
   ],
