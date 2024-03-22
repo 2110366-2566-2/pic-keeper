@@ -32,9 +32,9 @@ export const authOptions: AuthOptions = {
             }
           } catch (error) {
             if (error instanceof AxiosError) {
-              // console.log(error.response?.data);
+              throw error;
             } else {
-              // console.log(error);
+              throw error;
             }
           }
 
@@ -58,11 +58,10 @@ export const authOptions: AuthOptions = {
                 : null;
             } catch (error) {
               if (error instanceof AxiosError) {
-                // console.log(error.response?.data);
+                throw error;
               } else {
-                // console.log(error);
+                throw error;
               }
-              return null;
             }
           }
         }

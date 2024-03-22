@@ -3,28 +3,19 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Modal from "../shared/Modal";
 import { signIn } from "next-auth/react";
 import authService from "@/services/auth";
+import { useModal } from "@/context/ModalContext";
+import GoogleBtn from "./GoogleBtn";
 
 const LoginForm = () => {
   const router = useRouter();
+  const { openModal, closeModal } = useModal();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
-    useState(false);
   const [loginError, setLoginError] = useState(false);
-  const closeModal = () => {
-    setIsModalOpen(false);
-    if (success) {
-      router.push("/");
-    }
-  };
 
   const onSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -37,10 +28,22 @@ const LoginForm = () => {
     });
 
     if (res?.error) {
-      setModalMessage("Incorrect username or password.");
-      setSuccess(false);
+      openModal(
+        <div className="flex flex-col">
+          {" "}
+          <p className="text-standard text-gray-500">
+            Incorrect name or password
+          </p>
+          <button
+            onClick={closeModal}
+            className="btn-danger mt-4 px-4 self-end"
+          >
+            Close
+          </button>
+        </div>,
+        "Login Error!"
+      );
       setLoginError(true); // Set login error state
-      setIsModalOpen(true);
     } else {
       router.push("/");
     }
@@ -48,26 +51,21 @@ const LoginForm = () => {
 
   const handleForgotPasswordClick = (event: React.MouseEvent) => {
     event.preventDefault();
-    // Here you can set the message for the forgot password modal
-    setModalMessage(
-      "Sadly, we have not implemented a system for this function yet. We would gladly advise you to create a new account. 😅"
+    openModal(
+      <div className="flex flex-col">
+        <p className="text-standard text-gray-500">
+          Sadly, we have not implemented a system for this function yet. We
+          would gladly advise you to create a new account. 😅
+        </p>
+        <button
+          onClick={closeModal}
+          className="btn btn-danger mt-4 px-4 self-end"
+        >
+          Got it, thanks!
+        </button>
+      </div>,
+      "Oops!"
     );
-    setIsForgotPasswordModalOpen(true);
-  };
-
-  const closeForgotPasswordModal = () => {
-    setIsForgotPasswordModalOpen(false);
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      const response = await authService.googleLogin();
-      if (response.status == "success") {
-        router.push(response.url);
-      }
-    } catch (error) {
-      console.log("error ja");
-    }
   };
 
   return (
@@ -88,29 +86,7 @@ const LoginForm = () => {
                 </h2>
               </div>
               <div className="w-full flex flex-col items-stretch gap-4">
-                <button
-                  className="text-center form-input form-input-normal text-gray-500"
-                  onClick={handleGoogleLogin}
-                >
-                  <Image
-                    src={"/images/google-logo.svg"}
-                    alt="google"
-                    className="absolute"
-                    width={25}
-                    height={25}
-                  />
-                  Continue with Google
-                </button>
-                <button className="text-center form-input form-input-normal text-gray-500">
-                  <Image
-                    src={"/images/facebook-logo.svg"}
-                    alt="google"
-                    className="absolute"
-                    width={25}
-                    height={25}
-                  />
-                  Continue with Facebook
-                </button>
+                <GoogleBtn />
               </div>
               <p className="text-standard text-center m-1">
                 or continue with email
@@ -184,32 +160,6 @@ const LoginForm = () => {
           />
         </div>
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        closeModal={closeModal}
-        title={success ? "Login Successful" : "Login Error!"}
-      >
-        <p className="text-standard text-gray-500">{modalMessage}</p>
-        <button
-          onClick={closeModal}
-          className={`btn ${success ? "btn-success" : "btn-danger"} mt-4 px-4`}
-        >
-          {success ? "Continue" : "Close"}
-        </button>
-      </Modal>
-      <Modal
-        isOpen={isForgotPasswordModalOpen}
-        closeModal={closeForgotPasswordModal}
-        title="Oops!"
-      >
-        <p className="text-standard text-gray-500">{modalMessage}</p>
-        <button
-          onClick={closeForgotPasswordModal}
-          className="btn btn-primary mt-4 px-4"
-        >
-          Got it, thanks!
-        </button>
-      </Modal>
     </>
   );
 };
