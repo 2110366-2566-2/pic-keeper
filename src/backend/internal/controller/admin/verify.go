@@ -3,7 +3,6 @@ package admin
 import (
 	"net/http"
 
-	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -21,10 +20,8 @@ import (
 // @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Issues with finding the photographer in the database"
 // @Router       /admin/v1/verifications/verify/:id [get]
 func (r *Resolver) Verify(c *gin.Context) {
-	admin := c.MustGet("user")
-	adminObj, ok := admin.(model.User)
+	adminObj, ok := getAdmin(c)
 	if !ok {
-		util.Raise400Error(c, "could not bind json")
 		return
 	}
 

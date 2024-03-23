@@ -4,15 +4,12 @@ import (
 	"net/http"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
 func (r *Resolver) ListPendingRefundBookings(c *gin.Context) {
-	admin := c.MustGet("user")
-	adminObj, ok := admin.(model.User)
+	adminObj, ok := getAdmin(c)
 	if !ok {
-		util.Raise400Error(c, "could not bind json")
 		return
 	}
 
