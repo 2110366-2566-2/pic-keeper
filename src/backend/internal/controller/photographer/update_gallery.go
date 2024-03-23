@@ -11,15 +11,8 @@ import (
 )
 
 func (r *Resolver) UpdateGallery(c *gin.Context) {
-	user, exists := c.Get("user")
-	if !exists {
-		util.Raise400Error(c, "Failed to retrieve photographer from context")
-		return
-	}
-
-	userObj, ok := user.(model.User)
+	photographer, ok := getPhotographer(c)
 	if !ok {
-		util.Raise400Error(c, "Invalid object type in context")
 		return
 	}
 
@@ -48,7 +41,7 @@ func (r *Resolver) UpdateGallery(c *gin.Context) {
 	}
 
 	// dbValidate
-	if userObj.Id != existingGallery.PhotographerId {
+	if photographer.Id != existingGallery.PhotographerId {
 		util.Raise403Error(c, "You have no permission to edit this gallery")
 		return
 	}
