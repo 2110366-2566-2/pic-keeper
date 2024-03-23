@@ -33,6 +33,7 @@ func (r *Resolver) ReportIssue(c *gin.Context) {
 		Description: *issueInput.Description,
 		ReporterId:  user.Id,
 		Status:      model.IssueOpenStatus,
+		Subject:     model.IssueTechnicalSubject,
 		CreatedAt:   time.Now(),
 		DueDate:     time.Now().Add(3 * 24 * time.Hour),
 	}
@@ -41,6 +42,8 @@ func (r *Resolver) ReportIssue(c *gin.Context) {
 		util.Raise500Error(c, err)
 		return
 	}
+
+	issue.Reporter = *user
 
 	c.JSON(http.StatusCreated, gin.H{
 		"status": "success",
