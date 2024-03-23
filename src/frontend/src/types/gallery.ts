@@ -4,12 +4,20 @@ export interface Gallery {
   location: string;
   name: string;
   price: number;
+  hours: number;
+  description: string | null;
+  delivery_time: number;
+  included: string[];
 }
 
 export interface NewGallery {
   name?: string;
   location?: string;
   price?: number;
+  hours?: number;
+  description?: string | null;
+  delivery_time?: number;
+  included?: string[];
 }
 
 export interface SearchFilter {
@@ -23,4 +31,9 @@ export interface Photo {
   id: string;
   gallery_id: string;
   photo_key: string;
+}
+
+export interface FileWithPreview {
+  file: File;
+  preview: string;
 }

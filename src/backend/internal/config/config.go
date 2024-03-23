@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-//go:embed template.yaml
+//go:embed template.yml
 var configTemplate []byte
 
 func MustReadMultipleAppConfigFiles(listOfOverrideConfigFilePath []string) *App {
@@ -46,7 +46,7 @@ func ReadMultipleAppConfigFiles(listOfOverrideConfigFilePath []string) (*App, er
 		}
 
 	}
-	var config = new(App)
+	config := new(App)
 	if err := baseViper.Unmarshal(config); err != nil {
 		return nil, errors.Wrap(err, "could not unmarshal config")
 	}

@@ -54,6 +54,10 @@ func (r *Resolver) CreateGallery(c *gin.Context) {
 		PhotographerId: userObj.Id,
 		Name:           *galleryInput.Name,
 		Price:          *galleryInput.Price,
+		Hours:          *galleryInput.Hours,
+		Description:    galleryInput.Description,
+		DeliveryTime:   *galleryInput.DeliveryTime,
+		Included:       galleryInput.Included,
 	}
 
 	if err := r.GalleryUsecase.GalleryRepo.AddOne(c, &newGallery); err != nil {

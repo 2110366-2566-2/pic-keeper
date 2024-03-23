@@ -1,0 +1,18 @@
+database:
+  postgres:
+    dsn: ""
+  mongodb:
+    dsn: ""
+  redis:
+    dsn: ""
+
+secretKey: ""
+
+administrator_secretKey: ""
+
+ngrok_endpoint: ""
+
+oauth2_google:
+  client_id: ""
+  client_secret: ""
+  redirect_url: ""

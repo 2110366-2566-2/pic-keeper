@@ -25,6 +25,7 @@ export interface User {
   about: string;
   address: string;
   gender: Gender;
+  is_admin: boolean;
 }
 
 export interface UserUpdateInput {
@@ -40,9 +41,9 @@ export interface UserUpdateInput {
 }
 
 export enum Gender {
-  Male = "Male",
-  Female = "Female",
-  Other = "Other",
+  Male = "MALE",
+  Female = "FEMALE",
+  Other = "OTHER",
 }
 
 export enum PhotographerStatus {
@@ -50,4 +51,9 @@ export enum PhotographerStatus {
   Pending = "PENDING",
   Verified = "VERIFIED",
   Rejected = "REJECTED",
+}
+
+export enum Role {
+  User = "USER",
+  Admin = "ADMIN",
 }
