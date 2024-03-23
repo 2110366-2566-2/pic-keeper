@@ -7,6 +7,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/Roongkun/software-eng-ii/internal/controller/chat"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/gin-contrib/cors"
@@ -49,6 +50,7 @@ var ServeCmd = &cobra.Command{
 		db := databases.ConnectSQLDB(appCfg.Database.Postgres.DSN)
 		handler := controller.NewHandler(db)
 		redisClient := databases.ConnectRedis(appCfg.Database.Redis.DSN)
+		util.InitNgrokEndpoint(appCfg.NgrokEndpoint)
 
 		autoUpdateBookingStatus(handler)
 
@@ -65,24 +67,6 @@ var ServeCmd = &cobra.Command{
 
 		if err := s3utils.InitializeS3(); err != nil {
 			log.Fatalf("Failed to initialize S3: %v", err)
-		}
-
-		admin := r.Group("/admin")
-		{
-			admin := admin.Group("/v1")
-			admin.Use(retrieveAdminSecretConf(appCfg))
-			admin.POST("/login", handler.Admin.Login)
-			admin.GET("/refresh", handler.Admin.RefreshToken)
-			admin.Use(middleware.ValidateCredentials)
-			admin.Use(handler.Admin.GetAdminInstance)
-
-			verification := admin.Group("/verifications")
-			{
-				verification.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
-				verification.PUT("/verify/:id", handler.Admin.Verify)
-				verification.PUT("/reject/:id", handler.Admin.Reject)
-			}
-			admin.PUT("/logout", handler.Admin.Logout)
 		}
 
 		authen := r.Group("/authen")
@@ -107,6 +91,12 @@ var ServeCmd = &cobra.Command{
 			chats.GET("/ws/:session-token", chatEntity.ServeWS)
 		}
 
+		customerGalleries := r.Group("/customers/galleries/v1")
+		{
+			customerGalleries.GET("/search", handler.User.SearchGalleries)
+			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
+		}
+
 		validated := r.Group("/", middleware.UserAuthorizationMiddleware)
 		validated.Use(handler.User.GetUserInstance)
 
@@ -117,8 +107,17 @@ var ServeCmd = &cobra.Command{
 			users.POST("/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
 			users.GET("/get-user/:id", handler.User.GetUserInfo)
+			users.PUT("/", handler.User.UpdateUserProfile)
 			users.PUT("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
+		}
+
+		admin := validated.Group("/admin")
+		{
+			admin := admin.Group("/v1")
+			admin.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
+			admin.PUT("/verify/:id", handler.Admin.Verify)
+			admin.PUT("/reject/:id", handler.Admin.Reject)
 		}
 
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
@@ -144,6 +143,7 @@ var ServeCmd = &cobra.Command{
 		customerBookings := validated.Group("/customers/bookings/v1")
 		{
 			customerBookings.POST("/", handler.User.CreateBooking)
+			customerBookings.GET("/get-qr/:id", handler.User.GetQRCode)
 			customerBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
 			customerBookings.GET("/upcoming", handler.User.ListUpcomingBookings)
 			customerBookings.GET("/past", handler.User.ListPastBookings)
@@ -153,19 +153,17 @@ var ServeCmd = &cobra.Command{
 			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
-		customerGalleries := validated.Group("/customers/galleries/v1")
-		{
-			customerGalleries.GET("/search", handler.User.SearchGalleries)
-			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
-		}
-
-		rooms := validated.Group("/room")
+		rooms := validated.Group("/rooms")
 		{
 			rooms := rooms.Group("/v1")
 			rooms.POST("/", handler.Room.InitializeRoom)
 			rooms.GET("/", handler.Room.GetRooms)
-			rooms.GET("/:id", handler.Room.GetAllConversations)
+			rooms.GET("/:id", handler.Room.GetRoom)
+			rooms.GET("/conversation/:id", handler.Room.GetAllConversations)
 		}
+
+		r.GET("/payment/:bookingId", handler.User.MakeBookingPayment)
+
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 

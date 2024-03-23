@@ -17,7 +17,7 @@ func (r *Resolver) ListPastBookings(c *gin.Context) {
 	}
 
 	acceptedStatus := []string{model.BookingCompletedStatus, model.BookingPaidOutStatus}
-	bookings, err := r.BookingUsecase.FindByUserIdWithStatus(c, userObj.Id, acceptedStatus...)
+	bookings, err := r.BookingUsecase.FindByUserIdWithStatus(c, userObj.Id, r.GalleryUsecase, acceptedStatus...)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

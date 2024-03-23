@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/nfnt/resize"
 )
 
@@ -28,7 +29,6 @@ func validateImage(file io.ReadSeeker) (string, error) {
 }
 
 func decodeImage(contentType string, file io.Reader) (image.Image, error) {
-
 	var img image.Image
 	var err error
 	switch contentType {
@@ -87,11 +87,30 @@ func FormatImage(file multipart.File) (*bytes.Buffer, string, error) {
 	return buf, contentType, nil
 }
 
+const baseUrl = "http://localhost:4566"
+
 func GetProfilePictureUrl(profilePictureKey *string) string {
 	if profilePictureKey == nil {
 		return ""
 	}
 	// TODO: Add aws endpoint to config
-	url := fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", *profilePictureKey)
+	url := fmt.Sprintf("%s/%s/%s", baseUrl, s3utils.ProfilePicBucket, *profilePictureKey)
+	return url
+}
+
+func GetPaymentQRCodeUrl(qrPaymentKey *string) string {
+	if qrPaymentKey == nil {
+		return ""
+	}
+
+	return fmt.Sprintf("%s/%s/%s", baseUrl, s3utils.QRPaymentBucket, *qrPaymentKey)
+}
+
+func GetGalleryPictureUrl(galleryPictureKey *string) string {
+	if galleryPictureKey == nil {
+		return ""
+	}
+
+	url := fmt.Sprintf("%s/%s/%s", baseUrl, s3utils.GalleryPhotoBucket, *galleryPictureKey)
 	return url
 }

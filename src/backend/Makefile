@@ -39,3 +39,7 @@ clean:
 .PHONY: up
 up:
 	air -c .air.toml
+
+.PHONY: migrate
+migrate: 
+	go run main.go migrate up -c $(VALUES_PATH)

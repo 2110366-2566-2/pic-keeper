@@ -25,6 +25,7 @@ import (
 //
 // @Router       /authen/v1/login [post]
 func (r *Resolver) Login(c *gin.Context) {
+
 	cred := model.LoginCredentials{}
 	if err := c.BindJSON(&cred); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

@@ -53,7 +53,7 @@ func (b *BookingDB) FindByPhotographerIdWithStatus(ctx context.Context, phtgId u
 	}
 
 	query = query.WhereGroup(" AND ", func(q *bun.SelectQuery) *bun.SelectQuery {
-		return q.Where("package_id IN (?)", subq)
+		return q.Where("gallery_id IN (?)", subq)
 	})
 
 	if err := query.Scan(ctx, &bookings); err != nil {

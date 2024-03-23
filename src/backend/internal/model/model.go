@@ -7,17 +7,25 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type ContextKey string
-type LoginCredentials struct {
-	Email    string `json:"email" example:"test@mail.com"`
-	Password string `json:"password" example:"abc123"`
-}
+type (
+	ContextKey       string
+	LoginCredentials struct {
+		Email    string `json:"email" example:"test@mail.com"`
+		Password string `json:"password" example:"abc123"`
+	}
+)
 
 const (
 	PhotographerNotVerifiedStatus = "NOT_VERIFIED"
 	PhotographerPendingStatus     = "PENDING"
 	PhotographerVerifiedStatus    = "VERIFIED"
 	PhotographerRejectedStatus    = "REJECTED"
+)
+
+const (
+	MALE   = "MALE"
+	FEMALE = "FEMALE"
+	OTHER  = "OTHER"
 )
 
 type User struct {
@@ -32,6 +40,11 @@ type User struct {
 	Firstname          string    `bun:"firstname,type:varchar" json:"firstname"`
 	Lastname           string    `bun:"lastname,type:varchar" json:"lastname"`
 	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
+	IsAdmin            bool      `bun:"is_admin,type:boolean" json:"is_admin"`
+	About              *string   `bun:"about,type:varchar" json:"about"`
+	Address            *string   `bun:"address,type:varchar" json:"address"`
+	PhoneNumber        *string   `bun:"phone_number,type:varchar" json:"phone_number"`
+	Gender             *string   `bun:"gender,type:varchar" json:"gender"`
 }
 
 type UserInput struct {
@@ -41,12 +54,16 @@ type UserInput struct {
 	Lastname  string  `json:"lastname" example:"test"`
 }
 
-type Administrator struct {
-	bun.BaseModel `bun:"table:administrators,alias:admin"`
-	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	Email         string    `bun:"email,type:varchar" json:"email"`
-	Password      string    `bun:"password,type:varchar" json:"password"`
-	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
+type UserUpdateInput struct {
+	Email       *string `json:"email" example:"test@mail.com"`
+	Password    *string `json:"password" example:"root"`
+	PhoneNumber *string `json:"phone_number" example:"096198923"`
+	Firstname   *string `json:"firstname" example:"test"`
+	Lastname    *string `json:"lastname" example:"test"`
+	Gender      *string `json:"gender" example:"Male"`
+	About       *string `json:"about" example:"Hello"`
+	Username    *string `json:"username" example:"test"`
+	Address     *string `json:"address" example:"Bangkok"`
 }
 
 type Gallery struct {
@@ -56,21 +73,31 @@ type Gallery struct {
 	Location       string    `bun:"location,type:varchar" json:"location"`
 	Name           string    `bun:"name,type:varchar" json:"name"`
 	Price          int       `bun:"price,type:integer" json:"price"`
+	Hours          int       `bun:"hours,type:integer" json:"hours"`
+	Description    *string   `bun:"description,type:varchar" json:"description"`
+	DeliveryTime   int       `bun:"delivery_time,type:integer" json:"delivery_time"`
+	Included       []string  `bun:",array" json:"included"`
 }
 
 type GalleryInput struct {
-	Name     *string `bun:"name,type:varchar" json:"name"`
-	Location *string `bun:"name,type:varchar" json:"location"`
-	Price    *int    `bun:"price,type:integer" json:"price"`
+	Name         *string  `bun:"name,type:varchar" json:"name"`
+	Location     *string  `bun:"name,type:varchar" json:"location"`
+	Price        *int     `bun:"price,type:integer" json:"price"`
+	Hours        *int     `bun:"hours,type:integer" json:"hours"`
+	Description  *string  `bun:"description,type:varchar" json:"description"`
+	DeliveryTime *int     `bun:"delivery_time,type:integer" json:"delivery_time"`
+	Included     []string `bun:",array" json:"included"`
 }
 
 const (
+	BookingDraftStatus                 = "DRAFT"
 	BookingPaidStatus                  = "USER_PAID"
 	BookingCancelledStatus             = "CANCELLED"
 	BookingCustomerReqCancelStatus     = "C_REQ_CANCEL"
 	BookingPhotographerReqCancelStatus = "P_REQ_CANCEL"
 	BookingCompletedStatus             = "COMPLETED"
 	BookingPaidOutStatus               = "PAID_OUT"
+	BookingRefundReqStatus             = "REQ_REFUND"
 )
 
 type BookingProposal struct {
@@ -83,7 +110,8 @@ type Booking struct {
 	bun.BaseModel `bun:"table:bookings,alias:bookings"`
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	CustomerId    uuid.UUID `bun:"customer_id,type:uuid" json:"customer_id"`
-	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
+	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"-"`
+	Gallery       Gallery   `bun:"-" json:"gallery"`
 	StartTime     time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
 	EndTime       time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 	Status        string    `bun:"status,type:varchar" json:"status"`
@@ -101,6 +129,8 @@ type SearchFilter struct {
 type Room struct {
 	bun.BaseModel `bun:"table:rooms,alias:rooms"`
 	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	GalleryId     uuid.UUID  `bun:"gallery_id,type:uuid" json:"-"`
+	Gallery       Gallery    `bun:"-" json:"gallery"`
 	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
 	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
 	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`
@@ -129,6 +159,7 @@ type Conversation struct {
 
 type RoomMemberInput struct {
 	MemberIds []uuid.UUID `binding:"required" json:"member_ids"`
+	GalleryId uuid.UUID   `json:"gallery_id"`
 }
 
 type Photo struct {

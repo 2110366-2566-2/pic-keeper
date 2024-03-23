@@ -14,3 +14,5 @@
 **/volume
 
 backend/internal/config/volume/cache/
+
+**/.vscode/settings.json

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -47,7 +48,7 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		GalleryId:  bookingProposal.GalleryId,
 		StartTime:  bookingProposal.StartTime,
 		EndTime:    bookingProposal.EndTime,
-		Status:     model.BookingPaidStatus,
+		Status:     model.BookingDraftStatus,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
 	}
@@ -60,6 +61,14 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, bookingProposal.GalleryId)
+	if err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
+	newBooking.Gallery = *gallery
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
