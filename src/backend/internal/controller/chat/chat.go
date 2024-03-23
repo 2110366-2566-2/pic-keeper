@@ -1,8 +1,10 @@
 package chat
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"errors"
@@ -39,6 +41,28 @@ var upgrader = websocket.Upgrader{
 		return true
 		// for the ease of development
 	},
+}
+
+func newConversation(msg Message) model.Conversation {
+	return model.Conversation{
+		Id:        uuid.New(),
+		Text:      msg.Text,
+		UserId:    msg.Sender,
+		RoomId:    msg.Receiver,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		DeletedAt: nil,
+	}
+}
+
+func newNotification(roomId, receiverId uuid.UUID, convId *uuid.UUID) *model.Notification {
+	return &model.Notification{
+		Id:             uuid.New(),
+		UserId:         receiverId,
+		RoomId:         roomId,
+		ConversationId: convId,
+		Noticed:        false,
+	}
 }
 
 type Chat struct {
@@ -196,6 +220,8 @@ loop:
 			log.Printf("sender: %s\n", msg.Sender)
 			log.Printf("text: %s\n", msg.Text)
 
+			var notiWg sync.WaitGroup
+
 			switch msg.Type {
 			case MessageTypeStatus:
 				// requesting the status of a particular user
@@ -204,19 +230,32 @@ loop:
 			case MessageTypeAuth:
 				msg.Text = msg.Sender.String()
 			case MessageTypeMessage:
-				conversation := model.Conversation{
-					Id:        uuid.New(),
-					Text:      msg.Text,
-					UserId:    msg.Sender,
-					RoomId:    msg.Receiver,
-					CreatedAt: time.Now(),
-					UpdatedAt: time.Now(),
-					DeletedAt: nil,
-				}
+				conversation := newConversation(msg)
 				if err := c.Resolver.ConversationUsecase.ConversationRepo.AddOne(ctx, &conversation); err != nil {
-					log.Panicf("error creating reply: %s\n", err.Error())
+					log.Panicf("error creating conversation: %s\n", err.Error())
 					continue
 				}
+
+				notiWg.Add(1)
+				go func(conversation model.Conversation, notiWg *sync.WaitGroup, c *Chat) {
+					defer notiWg.Done()
+					lookups, err := c.Resolver.LookupUsecase.FindByRoomId(context.Background(), conversation.RoomId)
+					if err != nil {
+						log.Panicf("error: %s\n", err.Error())
+					}
+					notis := []*model.Notification{}
+					for _, lookup := range lookups {
+						log.Println(lookup.UserId)
+						if lookup.UserId == conversation.UserId {
+							continue
+						}
+						notis = append(notis, newNotification(msg.Receiver, lookup.UserId, &conversation.Id))
+					}
+					if err := c.Resolver.NotificationUsecase.NotificationRepo.AddBatch(ctx, notis); err != nil {
+						log.Panicf("error creating noti.: %s\n", err.Error())
+					}
+				}(conversation, &notiWg, c)
+
 				msg.ID = conversation.Id
 				msg.Timestamp = conversation.CreatedAt
 			default:
@@ -226,6 +265,7 @@ loop:
 				log.Println(err.Error())
 				log.Println()
 			}
+			notiWg.Wait()
 		}
 	}
 }

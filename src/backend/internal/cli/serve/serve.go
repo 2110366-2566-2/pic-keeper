@@ -110,6 +110,9 @@ var ServeCmd = &cobra.Command{
 			users.PUT("/", handler.User.UpdateUserProfile)
 			users.PUT("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
+			users.GET("/noti", handler.User.GetAllUnreadNotifications)
+			users.GET("/noti/:roomId", handler.User.GetAllUnreadNotificationsFromRoom)
+			users.PUT("/read-noti/:roomId", handler.User.ReadNotificationFromRoom)
 		}
 
 		admin := validated.Group("/admin")
