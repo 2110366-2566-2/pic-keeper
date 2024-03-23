@@ -299,7 +299,7 @@ export default function BookingModal(props: {
 
                 {isPackageOwner() &&
                 props.content.status == BookingStatus.BookingCompletedStatus ? (
-                  <div className="text-lg font-bold mt-2 font-semibold ">
+                  <div className="text-lg mt-2 font-semibold ">
                     Photographer
                   </div>
                 ) : (

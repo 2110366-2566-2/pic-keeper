@@ -9,8 +9,6 @@ import { UserResponse } from "@/types/response";
 import { GalleryResponse } from "@/types/response";
 import { isDifferentDay, transformDate } from "@/utils/date";
 
-
-
 interface BookOptions {
   props: Booking;
   openModal: Function;
@@ -61,7 +59,7 @@ export default function BookingCard(options: BookOptions) {
   return (
     <>
       <div
-        className="bg-white my-4 py-8 grid sm:grid-cols-5  lg:grid-cols-10 gap-x-3 gap-y-3 py-3 rounded-lg shadow-md hover:shadow-stone-400"
+        className="bg-white my-4 grid sm:grid-cols-5  lg:grid-cols-10 gap-x-3 gap-y-3 py-3 rounded-lg shadow-md hover:shadow-stone-400"
         onClick={() => {
           options.openModal();
           const mergedObj = { ...options.props, ...customer };
@@ -200,7 +198,7 @@ export default function BookingCard(options: BookOptions) {
             {options.props.status ==
             BookingStatus.BookingPhotographerReqCancelStatus ? (
               <p className="text-base font-bold text-orange-500">
-                &bull; ancellation requested{" "}
+                &bull; cancellation requested{" "}
               </p>
             ) : (
               <></>
