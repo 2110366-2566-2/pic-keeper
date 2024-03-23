@@ -31,11 +31,11 @@ const LandingPage = () => {
 
   return (
     <main>
-      <div className="fixed flex flex-col">
-        <div className="top-0 left-0 right-0 z-50">
+      <div className="flex flex-col">
+        <div className="fixed top-0 left-0 right-0 z-50">
           <Navbar />
         </div>
-        <div className="top-0 left-0 right-0 z-40">
+        <div className="fixed top-16 left-0 right-0 z-40 bg-white">
           <SearchBar
             searchGallery={searchGallery}
             setSearchGallery={setSearchGallery}
@@ -54,8 +54,8 @@ const LandingPage = () => {
           />
         </div>
       </div>
-      <div className="flex flex-row">
-        <div className="w-1/5 mt-32">
+      <div className="flex flex-row mt-36">
+        <div className="fixed w-1/5 z-30">
           <GalleryFilter
             selectedOption={selectedOptionSideBar}
             setSelectedOption={setSelectedOptionSideBar}
@@ -63,7 +63,7 @@ const LandingPage = () => {
             setSelectedGender={setSelectedGender}
           />
         </div>
-        <div className="grid grid-cols-auto-fill-400 gap-4 pt-48 w-4/5">
+        <div className="grid grid-cols-auto-fill-400 gap-4 w-4/5 ml-72 p-1">
           {listOfGalleries &&
             listOfGalleries.map((gallery, index) => (
               <GalleryCard

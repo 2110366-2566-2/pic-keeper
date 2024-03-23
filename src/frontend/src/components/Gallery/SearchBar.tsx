@@ -87,7 +87,7 @@ const SearchBar = (data: Props) => {
                       onClick={() => data.setSelectedOption("By gallery name")}
                       className={classNames(
                         data.selectedOption == "By gallery name"
-                          ? "text-amber-500 underline underline-offset-1"
+                          ? "text-yellow-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
                         "block py-2 text-sm text-gray-900 w-full "
@@ -105,7 +105,7 @@ const SearchBar = (data: Props) => {
       <div className="relative col-span-3">
         <input
           type="text"
-          className="form-input ring-amber-400 hover:ring-amber-500 hover:ring-3"
+          className="form-input ring-yellow-400 hover:ring-yellow-500 hover:ring-3"
           placeholder={
             data.selectedOption === "By photographer"
               ? "Search photographer"
@@ -132,26 +132,25 @@ const SearchBar = (data: Props) => {
         <input
           type="text"
           onClick={togglePopover}
-          className="p-2 pl-4 outline outline-gray-900 rounded-md w-full text-gray-900"
+          className="form-input ring-gray-800 hover:ring-gray-900 focus:ring-gray-900 hover:ring-3"
           placeholder={`฿${data.minPrice || "0.00"} - ฿${
             data.maxPrice || "0.00"
           }`}
           readOnly
         />
-        {
-          data.isPopoverOpen ? (
-            <MdOutlinePriceCheck 
-              className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
-              size={20}
-              onClick={togglePopover}
-            />
-          ) :
-            <FaMoneyBill1Wave
-              className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
-              size={20}
-              onClick={togglePopover}
-            />
-        }
+        {data.isPopoverOpen ? (
+          <MdOutlinePriceCheck
+            className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
+            size={20}
+            onClick={togglePopover}
+          />
+        ) : (
+          <FaMoneyBill1Wave
+            className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
+            size={20}
+            onClick={togglePopover}
+          />
+        )}
         {data.isPopoverOpen && (
           <div className="absolute z-10 p-4 mt-2 bg-white shadow-lg left-1/2 transform -translate-x-1/2 rounded-xl">
             <div className="flex flex-row space-x-4">
@@ -165,9 +164,7 @@ const SearchBar = (data: Props) => {
                   className="px-4 py-2 border rounded focus:ring focus:border-blue-300"
                 />
                 {errorMessage && (
-                  <div className="text-red-500 text-sm">
-                    {errorMessage}
-                  </div>
+                  <div className="text-red-500 text-sm">{errorMessage}</div>
                 )}
               </div>
               <div className="">

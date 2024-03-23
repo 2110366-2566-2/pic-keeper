@@ -31,6 +31,7 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
       setListOfImages(response.data || []);
     };
 
+
     const fetchGalleryInfo = async () => {
       const response = await photographerGalleryService.getGallery(galleryId);
       if (response.data) setGalleryInfo(response.data);
