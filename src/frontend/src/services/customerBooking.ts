@@ -1,6 +1,10 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import { BookingProposal } from "@/types/booking";
-import { BookingResponse, BookingListResponse } from "@/types/response";
+import {
+  BookingResponse,
+  BookingListResponse,
+  StringResponse,
+} from "@/types/response";
 
 const bookingBaseUrl = "/customers/bookings/v1";
 
@@ -86,6 +90,17 @@ const approveCancelBooking = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.get<BookingResponse>(
       `${bookingBaseUrl}/approve-cancel/${id}`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getQRCode = async (id: string) => {
+  try {
+    const { data } = await apiClientWithAuth.get<StringResponse>(
+      `${bookingBaseUrl}/get-qr/${id}`
     );
     return data;
   } catch (error) {

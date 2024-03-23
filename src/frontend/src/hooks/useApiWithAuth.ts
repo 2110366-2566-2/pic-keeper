@@ -4,7 +4,7 @@ import authService from "@/services/auth";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
-const useAxiosAuth = () => {
+const useApiWithAuth = () => {
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -48,4 +48,4 @@ const useAxiosAuth = () => {
   return apiClient;
 };
 
-export default useAxiosAuth;
+export default useApiWithAuth;
