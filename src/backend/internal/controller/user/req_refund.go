@@ -2,6 +2,7 @@ package user
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
@@ -35,6 +36,21 @@ func (r *Resolver) RequestRefundBooking(c *gin.Context) {
 
 	booking.Status = model.BookingRefundReqStatus
 	if err := r.BookingUsecase.BookingRepo.UpdateOne(c, booking); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
+	newIssue := &model.Issue{
+		Id:          uuid.New(),
+		Subject:     model.IssueRefundSubject,
+		CreatedAt:   time.Now(),
+		DueDate:     booking.EndTime.Add(3 * 24 * time.Hour),
+		Status:      model.IssueOpenStatus,
+		ReporterId:  user.Id,
+		Description: bookingId.String(),
+	}
+
+	if err := r.IssueUsecase.IssueRepo.AddOne(c, newIssue); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}

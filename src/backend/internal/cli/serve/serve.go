@@ -109,6 +109,7 @@ var ServeCmd = &cobra.Command{
 			users.PUT("/", handler.User.UpdateUserProfile)
 			users.PUT("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
+			users.POST("/report-issue", handler.User.ReportIssue)
 		}
 
 		admin := validated.Group("/admin")
@@ -120,6 +121,8 @@ var ServeCmd = &cobra.Command{
 			admin.GET("/pending-refund-bookings", handler.Admin.ListPendingRefundBookings)
 			admin.PUT("/bookings/reject/:id", handler.Admin.RejectRefundBooking)
 			admin.PUT("/bookings/refund/:id", handler.Admin.ApproveRefundBooking)
+			admin.GET("/issues", handler.Admin.GetIssuesWithOption)
+			admin.GET("/issue-header", handler.Admin.GetIssueHeaderMetadata)
 		}
 
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
