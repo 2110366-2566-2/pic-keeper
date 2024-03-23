@@ -76,7 +76,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
           Edit
         </Link>
       </div>
-      <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-6">
+      <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
         <div className="w-full shadow-md rounded-md p-4 space-y-4 sm:w-3/12">
           <div className="text-xl font-semibold text-amber-500">About</div>
           <article className="text-wrap text-md text-gray-600">
