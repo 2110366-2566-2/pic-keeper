@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/google/uuid"
@@ -32,7 +33,6 @@ func (u *UserDB) CheckExistenceByEmail(ctx context.Context, email string) (bool,
 	var user model.User
 
 	exist, err := u.db.NewSelect().Model(&user).Where("email = ?", email).Exists(ctx)
-
 	if err != nil {
 		return false, err
 	}
@@ -61,4 +61,16 @@ func (u *UserDB) CheckUsernameAlreadyBeenUsed(ctx context.Context, username stri
 	var user model.User
 	exist, err := u.db.NewSelect().Model(&user).Where("username = ? AND id != ?", username, proposedUserId).Exists(ctx)
 	return exist, err
+}
+
+func (u *UserDB) FindPhotographerIdsNameAlike(ctx context.Context, name string) ([]uuid.UUID, error) {
+	var user model.User
+	var ids []uuid.UUID
+	nameCondition := fmt.Sprintf("%%%s%%", name)
+
+	if err := u.db.NewSelect().Model(&user).Where("verification_status = ? AND (firstname LIKE ? OR username LIKE ? OR lastname LIKE ?)", model.PhotographerVerifiedStatus, nameCondition, nameCondition, nameCondition).Column("id").Scan(ctx, &ids); err != nil {
+		return nil, err
+	}
+
+	return ids, nil
 }
