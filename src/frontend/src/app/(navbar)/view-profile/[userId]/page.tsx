@@ -1,17 +1,33 @@
 "use client";
 import userService from "@/services/user";
+import Link from "next/link";
+import Image from "next/image";
+import customerGalleriesService from "@/services/customerGalleries";
+import GalleryComponent from "@/components/Gallery";
 import { useEffect, useState } from "react";
 import { User } from "@/types/user";
 import { profile } from "console";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
-import Image from "next/image";
 import { capitalizeFirstLetter } from "@/utils/string";
 import { MdEdit } from "react-icons/md";
+import { SearchFilter } from "@/types/gallery";
+import { Gallery } from "@/types/gallery";
 
 const Home = ({ params }: { params: { userId: string } }) => {
   const { data: session } = useSession();
   const [profilePicture, setProfilePicture] = useState("");
+  const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
+  const [searchFilter, setSearchFilter] = useState<SearchFilter>({});
+
+  useEffect(() => {
+    const fetchAllGalleries = async () => {
+      const response = await customerGalleriesService.search(searchFilter);
+      if (response.data) setListOfGalleries(response.data);
+      // console.log(response);
+    };
+
+    fetchAllGalleries();
+  }, [searchFilter]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -99,7 +115,18 @@ const Home = ({ params }: { params: { userId: string } }) => {
             Galleries
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-          {/* GALLERY COMPONENT */}
+            {/* GALLERY COMPONENT */}
+            {listOfGalleries &&
+              listOfGalleries.map((Gallery, index) => (
+                <GalleryComponent
+                  key={index}
+                  galleryId={Gallery.id}
+                  galleryName={Gallery.name}
+                  galleryLocation={Gallery.location}
+                  photographerId={Gallery.photographer_id}
+                  price={Gallery.price}
+                />
+              ))}
           </div>
         </div>
       </div>
