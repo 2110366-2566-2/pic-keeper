@@ -34,9 +34,9 @@ func (r *Resolver) GetIssuesWithOption(c *gin.Context) {
 	userIds := []uuid.UUID{}
 	for _, issue := range issues {
 		if _, exist := userIdsToIssue[issue.ReporterId]; !exist {
-			userIdsToIssue[issue.ReporterId] = append(userIdsToIssue[issue.ReporterId], issue)
 			userIds = append(userIds, issue.ReporterId)
 		}
+		userIdsToIssue[issue.ReporterId] = append(userIdsToIssue[issue.ReporterId], issue)
 	}
 
 	users, err := r.UserUsecase.UserRepo.FindByIds(c, userIds...)
