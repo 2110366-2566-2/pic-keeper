@@ -20,24 +20,24 @@ func NewIssueDB(db *bun.DB) *IssueDB {
 	}
 }
 
-func (i *IssueDB) FindIssuesWithFilter(ctx context.Context, filters model.IssueFilter) ([]*model.Issue, error) {
+func (i *IssueDB) FindIssuesWithFilter(ctx context.Context, filter model.IssueFilter) ([]*model.Issue, error) {
 	var issues []*model.Issue
 	query := i.db.NewSelect().Model(&issues)
 
-	if filters.Subject != nil {
-		query = query.Where("subject = ?", *filters.Subject)
+	if filter.Subject != nil {
+		query = query.Where("subject = ?", *filter.Subject)
 	}
-	if filters.CreatedAt != nil {
-		query = query.Where("created_at = ?", *filters.CreatedAt)
+	if filter.CreatedAt != nil {
+		query = query.Where("created_at = ?", *filter.CreatedAt)
 	}
-	if filters.DueDate != nil {
-		query = query.Where("due_date = ?", *filters.DueDate)
+	if filter.DueDate != nil {
+		query = query.Where("due_date = ?", *filter.DueDate)
 	}
-	if filters.ReporterId != nil {
-		query = query.Where("reporter_id = ?", *filters.ReporterId)
+	if filter.ReporterId != nil {
+		query = query.Where("reporter_id = ?", *filter.ReporterId)
 	}
-	if filters.Status != nil {
-		query = query.Where("status = ?", *filters.Status)
+	if filter.Status != nil {
+		query = query.Where("status = ?", *filter.Status)
 	}
 
 	if err := query.Scan(ctx, &issues); err != nil {
@@ -47,7 +47,7 @@ func (i *IssueDB) FindIssuesWithFilter(ctx context.Context, filters model.IssueF
 	return issues, nil
 }
 
-func (i *IssueDB) FindHeaderMetadata(ctx context.Context) (*model.IssueHeaderMetadata, error) {
+func (i *IssueDB) GetIssueHeaderMetadata(ctx context.Context) (*model.IssueHeaderMetadata, error) {
 	var issue model.Issue
 	var result model.IssueHeaderMetadata
 

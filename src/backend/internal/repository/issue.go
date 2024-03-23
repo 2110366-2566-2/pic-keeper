@@ -8,5 +8,6 @@ import (
 
 type Issue interface {
 	BaseRepo[model.Issue]
-	FindIssuesWithFilters(ctx context.Context, filters model.IssueFilter) ([]*model.Issue, error)
+	FindIssuesWithFilter(ctx context.Context, filter model.IssueFilter) ([]*model.Issue, error)
+	GetIssueHeaderMetadata(ctx context.Context) (*model.IssueHeaderMetadata, error)
 }

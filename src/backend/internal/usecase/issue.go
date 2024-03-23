@@ -19,6 +19,10 @@ func NewIssueUseCase(db *bun.DB) *IssueUseCase {
 	}
 }
 
-func (i *IssueUseCase) FindIssuesWithFilter(ctx context.Context, filters model.IssueFilter) ([]*model.Issue, error) {
-	return i.IssueRepo.FindIssuesWithFilter(ctx, filters)
+func (i *IssueUseCase) FindIssuesWithFilter(ctx context.Context, filter model.IssueFilter) ([]*model.Issue, error) {
+	return i.IssueRepo.FindIssuesWithFilter(ctx, filter)
+}
+
+func (i *IssueUseCase) GetIssueHeaderMetadata(ctx context.Context) (*model.IssueHeaderMetadata, error) {
+	return i.IssueRepo.GetIssueHeaderMetadata(ctx)
 }
