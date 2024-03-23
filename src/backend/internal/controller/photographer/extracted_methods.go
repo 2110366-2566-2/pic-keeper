@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *Resolver) getPhotographer(c *gin.Context) (*model.User, bool) {
+func getPhotographer(c *gin.Context) (*model.User, bool) {
 	photographer := c.MustGet("user")
 	phtgObj, ok := photographer.(model.User)
 	if !ok {

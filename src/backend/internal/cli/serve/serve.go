@@ -138,7 +138,6 @@ var ServeCmd = &cobra.Command{
 			phtgBookings.GET("/past", handler.Photographer.ListPastBookings)
 			phtgBookings.GET("/my-bookings", handler.Photographer.MyBookings)
 			phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
-			phtgBookings.PUT("/req-refund/:id", handler.Photographer.RequestRefundBooking)
 			phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
 		}
 
