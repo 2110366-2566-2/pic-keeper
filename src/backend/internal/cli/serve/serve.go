@@ -117,7 +117,7 @@ var ServeCmd = &cobra.Command{
 			admin.PUT("/verify/:id", handler.Admin.Verify)
 			admin.PUT("/reject/:id", handler.Admin.Reject)
 			admin.GET("/pending-refund-bookings", handler.Admin.ListPendingRefundBookings)
-			// admin.PUT("/bookings/reject/:id", handler.Admin.RejectRefundBooking)
+			admin.PUT("/bookings/reject/:id", handler.Admin.RejectRefundBooking)
 			// admin.PUT("/bookings/refund/:id", handler.Admin.AcceptRefundBooking)
 		}
 
