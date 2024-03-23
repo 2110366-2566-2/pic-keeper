@@ -73,6 +73,7 @@ var ServeCmd = &cobra.Command{
 			authen.POST("/register", handler.User.Register)
 			authen.POST("/login", handler.User.Login)
 			authen.GET("/refresh", handler.User.RefreshToken)
+
 			google := authen.Group("/google")
 			{
 				google.Use(setOAuth2GoogleConf(appCfg))
