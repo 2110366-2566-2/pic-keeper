@@ -71,7 +71,7 @@ const ProfileMenu = () => {
                 </Menu.Item>
               ) : (
                 <>
-                  <MenuItem href="/view-profile">Your Profile</MenuItem>
+                  <MenuItem href={`/view-profile/${session.user.data?.id}`}>Your Profile</MenuItem>
                   <MenuItem href="/settings/edit-profile">Settings</MenuItem>
                   <MenuItem href="/report-issues">Report issues</MenuItem>
                   <Menu.Item>

@@ -4,7 +4,7 @@ import { SearchFilter } from "@/types/gallery";
 import { NewGallery } from "@/types/gallery";
 import SearchBar from "@/components/SearchBar";
 import GalleryComponent from "./Gallery";
-import Navbar from "@/components/shared/Navbar";
+import Navbar from "@/components/shared/Navbar/Navbar";
 import SideBarLandingPage from "./SideBarLandingPage";
 import photographerGalleryService from "@/services/photographerGalleries";
 import customerGalleriesService from "@/services/customerGalleries";

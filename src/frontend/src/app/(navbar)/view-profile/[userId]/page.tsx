@@ -32,7 +32,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await userService.getMyUserInfo();
+        const response = await userService.getUserById(params.userId);
         if (response.data) {
           setProfilePicture(response.profile_picture_url ?? "");
         }
@@ -85,12 +85,16 @@ const Home = ({ params }: { params: { userId: string } }) => {
               "Not specified"}
           </div>
         </div>
-        <Link
-          href="/settings/edit-profile"
-          className="bg-amber-500 rounded-md text-white p-2 px-3 absolute bottom-4 right-4 flex flex-row"
-        >
-          Edit
-        </Link>
+        {
+          session?.user.data?.id === params.userId ? (
+            <Link
+              href="/settings/edit-profile"
+              className="bg-amber-500 rounded-md text-white p-2 px-3 absolute bottom-4 right-4 flex flex-row"
+            >
+              Edit
+            </Link>
+          ) : null
+        }
       </div>
       <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
         <div className="w-full shadow-md rounded-md p-4 space-y-4 sm:w-3/12">
