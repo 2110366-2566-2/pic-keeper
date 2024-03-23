@@ -196,11 +196,11 @@ type IssueInput struct {
 }
 
 type IssueFilter struct {
-	ReporterId *uuid.UUID `json:"reporter_id"`
-	Status     *string    `json:"status"`
-	DueDate    *time.Time `json:"due_date"`
-	CreatedAt  *time.Time `json:"created_at"`
-	Subject    *string    `json:"subject"`
+	ReporterId *uuid.UUID `form:"reporter_id"`
+	Status     *string    `form:"status"`
+	DueDate    *time.Time `form:"due_date"`
+	CreatedAt  *time.Time `form:"created_at"`
+	Subject    *string    `form:"subject"`
 }
 
 type IssueHeaderMetadata struct {
