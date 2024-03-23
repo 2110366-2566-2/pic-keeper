@@ -202,3 +202,10 @@ type IssueFilter struct {
 	CreatedAt  *time.Time `json:"created_at"`
 	Subject    *string    `json:"subject"`
 }
+
+type IssueHeaderMetadata struct {
+	PendingTickets  int `json:"pending_tickets"`
+	TicketsToday    int `json:"tickets_today"`
+	TicketsDueToday int `json:"tickets_due_today"`
+	ClosedTickets   int `json:"closed_tickets"`
+}
