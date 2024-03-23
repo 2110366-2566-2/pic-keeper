@@ -18,7 +18,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
   const [profilePicture, setProfilePicture] = useState("");
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
   const searchFilter: SearchFilter = { photographer_id: params.userId };
-  
+
   useEffect(() => {
     const fetchAllGalleries = async () => {
       const response = await customerGalleriesService.search(searchFilter);
@@ -114,7 +114,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
           <div className="text-amber-500 font-semibold text-xl p-4">
             Galleries
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
             {/* GALLERY COMPONENT */}
             {listOfGalleries &&
               listOfGalleries.map((Gallery, index) => (
