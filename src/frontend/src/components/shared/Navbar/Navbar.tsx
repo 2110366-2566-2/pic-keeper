@@ -16,8 +16,8 @@ const NavBar = () => {
   const navigation = [
     {
       name: "My Booking",
-      href: "/myBooking",
-      current: pathName === "/myBooking",
+      href: "/my-booking",
+      current: pathName === "/my-booking",
     },
   ];
 
