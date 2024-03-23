@@ -5,6 +5,9 @@ import Navbar from "@/components/shared/Navbar/Navbar";
 import customerGalleriesService from "@/services/customerGalleries";
 import { GalleryCard, GalleryFilter, SearchBar } from "@/components/Gallery";
 import { Gender } from "@/types/user";
+import { IoIosAddCircle } from "react-icons/io";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const LandingPage = () => {
   const [searchGallery, setSearchGallery] = useState("Search Gallery");
@@ -19,6 +22,8 @@ const LandingPage = () => {
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
   const [searchFilter, setSearchFilter] = useState<SearchFilter>({});
+
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchAllGalleries = async () => {
@@ -75,6 +80,16 @@ const LandingPage = () => {
             ))}
         </div>
       </div>
+      {
+        session?.user.data?.verification_status === 'VERIFIED' && (
+          <Link href="/galleries/create-gallery">
+            <IoIosAddCircle
+              className="absolute bottom-10 right-10 text-yellow-500"
+              size={65}
+            />
+          </Link>
+        
+        )}  
     </main>
   );
 };
