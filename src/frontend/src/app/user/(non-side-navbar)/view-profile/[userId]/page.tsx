@@ -98,6 +98,9 @@ const Home = ({ params }: { params: { userId: string } }) => {
           <div className="text-amber-500 font-semibold text-xl p-4">
             Galleries
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+          {/* GALLERY COMPONENT */}
+          </div>
         </div>
       </div>
     </main>
