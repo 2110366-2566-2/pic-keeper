@@ -1,5 +1,6 @@
 import GalleryComponent from "./GalleryComponent";
 import { FaUserCircle } from "react-icons/fa";
+import Chat from "./Chat";
 
 const ChatSystem = () => {
     return (
@@ -84,8 +85,8 @@ const ChatSystem = () => {
 
                 {/* chat box */}
                 <div className="w-[45%] grid place-items-center">
-                    <div className="w-[95%] h-[95%] bg-white rounded-xl shadow-lg flex items-center justify-center text-5xl">
-                        Chat
+                    <div className="w-[95%] h-[95%] bg-white rounded-xl shadow-lg flex items-center justify-center text-lg">
+                        <Chat roomId={'6a758de4-b696-48da-9c3b-44ee353840b5'} />
                     </div>
                 </div>
 

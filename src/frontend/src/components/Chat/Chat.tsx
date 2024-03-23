@@ -59,6 +59,7 @@ const Chat = ({ roomId }: ChatProps) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      <div>real chat</div>
       <div className="flex-grow p-4 overflow-y-auto">
         {/* Render conversations */}
         {conversations.length > 0 &&
