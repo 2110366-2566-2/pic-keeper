@@ -138,7 +138,7 @@ var ServeCmd = &cobra.Command{
 			phtgBookings.GET("/past", handler.Photographer.ListPastBookings)
 			phtgBookings.GET("/my-bookings", handler.Photographer.MyBookings)
 			phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
-			// phtgBookings.PUT("/req-refund/:id", handler.Photographer.ReqestRefundBooking)
+			phtgBookings.PUT("/req-refund/:id", handler.Photographer.RequestRefundBooking)
 			phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
 		}
 
@@ -152,7 +152,7 @@ var ServeCmd = &cobra.Command{
 			customerBookings.GET("/my-bookings", handler.User.MyBookings)
 			customerBookings.GET("/:id", handler.User.GetOneBooking)
 			customerBookings.PUT("/cancel/:id", handler.User.CancelBooking)
-			// customerBookings.PUT("/req-refund/:id", handler.User.ReqestRefundBooking)
+			customerBookings.PUT("/req-refund/:id", handler.User.RequestRefundBooking)
 			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
