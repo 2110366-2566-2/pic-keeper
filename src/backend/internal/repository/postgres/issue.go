@@ -57,7 +57,7 @@ func (i *IssueDB) GetIssueHeaderMetadata(ctx context.Context) (*model.IssueHeade
 	}
 	result.PendingTickets = count
 
-	date := time.Now().Format("2024-01-01")
+	date := time.Now().Format("2006-01-02")
 	count, err = i.db.NewSelect().Model(&issue).Where("DATE(created_at) = ?", date).Count(ctx)
 	if err != nil {
 		return nil, err

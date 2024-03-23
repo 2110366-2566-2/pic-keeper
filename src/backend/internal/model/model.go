@@ -182,7 +182,7 @@ const (
 type Issue struct {
 	bun.BaseModel `bun:"table:issues,alias:issues"`
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	ReporterId    uuid.UUID `bun:"reported_id,type:uuid" json:"-"`
+	ReporterId    uuid.UUID `bun:"reporter_id,type:uuid" json:"-"`
 	Reporter      User      `bun:"-" json:"reporter"`
 	Status        string    `bun:"status,type:varchar" json:"status"`
 	Subject       string    `bun:"subject,type:varchar" json:"subject"`
