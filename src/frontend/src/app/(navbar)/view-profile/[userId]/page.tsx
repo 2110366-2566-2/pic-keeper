@@ -17,8 +17,8 @@ const Home = ({ params }: { params: { userId: string } }) => {
   const { data: session } = useSession();
   const [profilePicture, setProfilePicture] = useState("");
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
-  const [searchFilter, setSearchFilter] = useState<SearchFilter>({});
-
+  const searchFilter: SearchFilter = { photographer_id: params.userId };
+  
   useEffect(() => {
     const fetchAllGalleries = async () => {
       const response = await customerGalleriesService.search(searchFilter);
@@ -27,7 +27,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
     };
 
     fetchAllGalleries();
-  }, [searchFilter]);
+  }, []);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
