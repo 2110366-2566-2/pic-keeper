@@ -16,8 +16,7 @@ func (r *Resolver) ListPendingRefundBookings(c *gin.Context) {
 		return
 	}
 
-	if !adminObj.IsAdmin {
-		util.Raise401Error(c, "only administrators are allowed to list pending refund bookings")
+	if ok := checkIsAdmin(adminObj, c); !ok {
 		return
 	}
 

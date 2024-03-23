@@ -27,8 +27,8 @@ func (r *Resolver) Verify(c *gin.Context) {
 		util.Raise400Error(c, "could not bind json")
 		return
 	}
-	if !adminObj.IsAdmin {
-		util.Raise401Error(c, "only administrators are allowed to reject or verifiy photographers")
+
+	if ok := checkIsAdmin(adminObj, c); !ok {
 		return
 	}
 
