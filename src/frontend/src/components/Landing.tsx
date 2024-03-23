@@ -28,7 +28,6 @@ const LandingPage = () => {
     const fetchAllGalleries = async () => {
       const response = await customerGalleriesService.search(searchFilter);
       if (response.data) setListOfGalleries(response.data);
-      console.log(response.data)
     };
 
     fetchAllGalleries();
