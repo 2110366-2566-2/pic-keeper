@@ -16,8 +16,7 @@ const LandingPage = () => {
   const [minPrice, setMinPrice] = useState(1);
   const [maxPrice, setMaxPrice] = useState(9999);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [selectedOptionSideBar, setSelectedOptionSideBar] =
-    useState("Recommended");
+  const [selectedOptionSideBar, setSelectedOptionSideBar] = useState("Recommended");
   const [selectedGender, setSelectedGender] = useState<Gender | undefined>();
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
@@ -29,6 +28,7 @@ const LandingPage = () => {
     const fetchAllGalleries = async () => {
       const response = await customerGalleriesService.search(searchFilter);
       if (response.data) setListOfGalleries(response.data);
+      console.log(response.data)
     };
 
     fetchAllGalleries();
@@ -88,7 +88,6 @@ const LandingPage = () => {
               size={65}
             />
           </Link>
-        
         )}  
     </main>
   );

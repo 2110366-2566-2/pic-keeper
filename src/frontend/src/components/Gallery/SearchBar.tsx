@@ -182,7 +182,15 @@ const SearchBar = (data: Props) => {
         )}
       </div>
       <div className="relative">
-        <button className="p-2 pl-4 bg-gray-400 rounded-md w-full text-white">
+        <button className="p-2 pl-4 bg-gray-400 rounded-md w-full text-white transition duration-300s ease-in-out hover:bg-gray-500" onClick={() => data.setSearchFilter(
+          {
+            searchGallery: data.searchGallery,
+            selectedOption: data.selectedOption,
+            searchPlace: data.searchPlace,
+            minPrice: data.minPrice,
+            maxPrice: data.maxPrice,
+          }
+        )}>
           Search
         </button>
       </div>
