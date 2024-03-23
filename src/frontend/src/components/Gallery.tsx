@@ -26,6 +26,22 @@ const GalleryComponent = ({
   const [listOfImages, setListOfImages] = useState<string[]>([]);
   const [galleryInfo, setGalleryInfo] = useState<Gallery>();
   const [photographer, setPhotographer] = useState<User>();
+  const [profilePicture, setProfilePicture] = useState("");
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await userService.getMyUserInfo();
+        if (response.data) {
+          setProfilePicture(response.profile_picture_url);
+        }
+      } catch (error) {
+        console.log("error");
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   useEffect(() => {
     const fetchAllImages = async () => {
@@ -119,9 +135,9 @@ const GalleryComponent = ({
         </div>
       )}
       <div className="relative flex flex-row space-x-4 p-4">
-        {photographer?.profile_picture_key ? (
+        {profilePicture ? (
           <Image
-            src={photographer.profile_picture_key}
+            src={profilePicture}
             alt="Tiger"
             layout="fill"
             objectFit="cover"
