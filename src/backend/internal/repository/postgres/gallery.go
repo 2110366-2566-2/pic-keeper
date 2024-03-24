@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/google/uuid"
@@ -35,6 +36,8 @@ func (p *GalleryDB) SearchWithFilter(ctx context.Context, filter *model.SearchFi
 
 	if filter.PhotographerId != nil {
 		query.Where("photographer_id = ?", *filter.PhotographerId)
+	} else if filter.MatchedConditionPhotographerIds != nil && len(filter.MatchedConditionPhotographerIds) > 0 {
+		query.Where("photographer_id IN (?)", bun.In(filter.MatchedConditionPhotographerIds))
 	}
 
 	if filter.Location != nil {
@@ -46,6 +49,10 @@ func (p *GalleryDB) SearchWithFilter(ctx context.Context, filter *model.SearchFi
 	}
 	if filter.MaxPrice != nil {
 		query.Where("price <= ?", *filter.MaxPrice)
+	}
+
+	if filter.GalleryName != nil {
+		query.Where("name LIKE ?", fmt.Sprintf("%%%s%%", *filter.GalleryName))
 	}
 
 	if err := query.Scan(ctx, &galleries); err != nil {
