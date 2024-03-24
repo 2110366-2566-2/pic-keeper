@@ -1,26 +1,27 @@
 "use client";
+import { Gender } from "@/types/user";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import { IoSearch } from "react-icons/io5";
 
 interface Props {
-  selectedOption : string,
-  setSelectedOption : Function,
-  selectedGender : string,
-  setSelectedGender : Function
+  selectedOption: string;
+  setSelectedOption: Function;
+  selectedGender: Gender | undefined;
+  setSelectedGender: Function;
 }
 
-const SideBarLandingPage = (data : Props) => {
+const GalleryFilter = (data: Props) => {
   const classNames = (...classes: string[]) =>
     classes.filter(Boolean).join(" ");
 
-  const handleGenderSelect = (gender:string) => {
-    data.setSelectedGender(gender);
+  const handleGenderSelect = (gender: Gender) => {
+    const isAlreadySelected = data.selectedGender === gender;
+    data.setSelectedGender(isAlreadySelected ? undefined : gender);
   };
 
   return (
-    <div className="pt-10 flex flex-col px-4 space-y-4">
+    <div className="flex flex-col p-5 space-y-4">
       <div className="font-semibold">Sort By</div>
       <Menu as="div" className="relative inline-block text-left">
         <div className="flex">
@@ -47,7 +48,7 @@ const SideBarLandingPage = (data : Props) => {
                     onClick={() => data.setSelectedOption("Recommended")}
                     className={classNames(
                       data.selectedOption == "Recommended"
-                        ? "text-amber-500 underline underline-offset-1 "
+                        ? "text-yellow-500 underline underline-offset-1 "
                         : "",
                       active ? "bg-gray-100" : "",
                       "block px-4 py-2 text-sm text-gray-700 w-full"
@@ -64,7 +65,7 @@ const SideBarLandingPage = (data : Props) => {
                     onClick={() => data.setSelectedOption("Rating")}
                     className={classNames(
                       data.selectedOption == "Rating"
-                        ? "text-amber-500 underline underline-offset-1"
+                        ? "text-yellow-500 underline underline-offset-1"
                         : "",
                       active ? "bg-gray-100" : "",
                       "block px-4 py-2 text-sm text-gray-900 w-full"
@@ -80,7 +81,7 @@ const SideBarLandingPage = (data : Props) => {
                     onClick={() => data.setSelectedOption("Price")}
                     className={classNames(
                       data.selectedOption == "Price"
-                        ? "text-amber-500 underline underline-offset-1"
+                        ? "text-yellow-500 underline underline-offset-1"
                         : "",
                       active ? "bg-gray-100" : "",
                       "block px-4 py-2 text-sm text-gray-900 w-full"
@@ -97,26 +98,24 @@ const SideBarLandingPage = (data : Props) => {
       <div className="font-semibold">Filter By</div>
       <div className="">
         <div className="font-semibold">Gender of Photographer</div>
-        <div className="grid grid-cols-3 gap-3 py-2">
-            <button 
-                className={data.selectedGender === "Male" ? "outline outline-amber-400 rounded-md p-1 text-amber-400":"rounded-md p-1"} 
-                onClick={() => handleGenderSelect("Male")}>
-                    Male
+        <div className="grid grid-cols-3 gap-8 py-2">
+          {Object.values(Gender).map((gender) => (
+            <button
+              key={gender}
+              className={
+                data.selectedGender === gender
+                  ? "outline outline-amber-400 rounded-md p-1 text-amber-400"
+                  : "rounded-md p-1"
+              }
+              onClick={() => handleGenderSelect(gender)}
+            >
+              {gender}
             </button>
-            <button 
-                className={data.selectedGender === "Female" ? "outline outline-amber-400 rounded-md p-1 text-amber-400":"rounded-md p-1"} 
-                onClick={() => handleGenderSelect("Female")}>
-                    Female
-            </button>
-            <button 
-                className={data.selectedGender === "All" ? "outline outline-amber-400 rounded-md p-1 text-amber-400":" rounded-md p-1"} 
-                onClick={() => handleGenderSelect("All")}>
-                    All
-            </button>
+          ))}
         </div>
       </div>
     </div>
   );
 };
 
-export default SideBarLandingPage;
+export default GalleryFilter;

@@ -8,6 +8,7 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
 import { MdOutlinePriceCheck } from "react-icons/md";
+import { SearchFilter } from "@/types/gallery";
 
 interface Props {
   searchGallery: string;
@@ -22,6 +23,8 @@ interface Props {
   setMaxPrice: Function;
   isPopoverOpen: boolean;
   setIsPopoverOpen: Function;
+  searchFilter: SearchFilter;
+  setSearchFilter: Function;
 }
 
 const SearchBar = (data: Props) => {
@@ -67,7 +70,7 @@ const SearchBar = (data: Props) => {
                       onClick={() => data.setSelectedOption("By photographer")}
                       className={classNames(
                         data.selectedOption == "By photographer"
-                          ? "text-amber-500 underline underline-offset-1"
+                          ? "text-yellow-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
                         "block px-4 py-2 text-sm text-gray-700 "
@@ -84,7 +87,7 @@ const SearchBar = (data: Props) => {
                       onClick={() => data.setSelectedOption("By gallery name")}
                       className={classNames(
                         data.selectedOption == "By gallery name"
-                          ? "text-amber-500 underline underline-offset-1"
+                          ? "text-yellow-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
                         "block py-2 text-sm text-gray-900 w-full "
@@ -102,7 +105,7 @@ const SearchBar = (data: Props) => {
       <div className="relative col-span-3">
         <input
           type="text"
-          className="p-2 pl-4 outline outline-amber-400 rounded-md w-full"
+          className="form-input ring-yellow-400 hover:ring-yellow-500 hover:ring-3"
           placeholder={
             data.selectedOption === "By photographer"
               ? "Search photographer"
@@ -110,14 +113,14 @@ const SearchBar = (data: Props) => {
           }
         />
         <IoSearch
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-90"
           size={20}
         />
       </div>
       <div className="relative">
         <input
           type="text"
-          className="p-2 pl-4 outline outline-gray-900 rounded-md w-full text-gray-900"
+          className="form-input ring-gray-800 hover:ring-gray-900 focus:ring-gray-900 hover:ring-3"
           placeholder={data.searchPlace}
         />
         <MdOutlineLocationOn
@@ -129,26 +132,25 @@ const SearchBar = (data: Props) => {
         <input
           type="text"
           onClick={togglePopover}
-          className="p-2 pl-4 outline outline-gray-900 rounded-md w-full text-gray-900"
+          className="form-input ring-gray-800 hover:ring-gray-900 focus:ring-gray-900 hover:ring-3"
           placeholder={`฿${data.minPrice || "0.00"} - ฿${
             data.maxPrice || "0.00"
           }`}
           readOnly
         />
-        {
-          data.isPopoverOpen ? (
-            <MdOutlinePriceCheck 
-              className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
-              size={20}
-              onClick={togglePopover}
-            />
-          ) :
-            <FaMoneyBill1Wave
-              className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
-              size={20}
-              onClick={togglePopover}
-            />
-        }
+        {data.isPopoverOpen ? (
+          <MdOutlinePriceCheck
+            className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
+            size={20}
+            onClick={togglePopover}
+          />
+        ) : (
+          <FaMoneyBill1Wave
+            className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
+            size={20}
+            onClick={togglePopover}
+          />
+        )}
         {data.isPopoverOpen && (
           <div className="absolute z-10 p-4 mt-2 bg-white shadow-lg left-1/2 transform -translate-x-1/2 rounded-xl">
             <div className="flex flex-row space-x-4">
@@ -162,9 +164,7 @@ const SearchBar = (data: Props) => {
                   className="px-4 py-2 border rounded focus:ring focus:border-blue-300"
                 />
                 {errorMessage && (
-                  <div className="text-red-500 text-sm">
-                    {errorMessage}
-                  </div>
+                  <div className="text-red-500 text-sm">{errorMessage}</div>
                 )}
               </div>
               <div className="">
@@ -182,7 +182,15 @@ const SearchBar = (data: Props) => {
         )}
       </div>
       <div className="relative">
-        <button className="p-2 pl-4 bg-gray-400 rounded-md w-full text-white">
+        <button className="p-2 pl-4 bg-gray-400 rounded-md w-full text-white transition duration-300s ease-in-out hover:bg-gray-500" onClick={() => data.setSearchFilter(
+          {
+            searchGallery: data.searchGallery,
+            selectedOption: data.selectedOption,
+            searchPlace: data.searchPlace,
+            minPrice: data.minPrice,
+            maxPrice: data.maxPrice,
+          }
+        )}>
           Search
         </button>
       </div>
