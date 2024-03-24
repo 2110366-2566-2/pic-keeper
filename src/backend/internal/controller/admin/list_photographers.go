@@ -3,8 +3,6 @@ package admin
 import (
 	"net/http"
 
-	"github.com/Roongkun/software-eng-ii/internal/controller/util"
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,15 +18,12 @@ import (
 //
 // @Router       /admin/v1/verifications/pending-photographers [get]
 func (r *Resolver) ListPendingPhotographers(c *gin.Context) {
-	admin := c.MustGet("user")
-	adminObj, ok := admin.(model.User)
+	adminObj, ok := getAdmin(c)
 	if !ok {
-		util.Raise400Error(c, "could not bind json")
 		return
 	}
 
-	if !adminObj.IsAdmin {
-		util.Raise403Error(c, "only administrators are allowed to reject or verifiy photographers")
+	if ok := checkIsAdmin(adminObj, c); !ok {
 		return
 	}
 

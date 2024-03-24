@@ -75,6 +75,7 @@ var ServeCmd = &cobra.Command{
 			authen.POST("/register", handler.User.Register)
 			authen.POST("/login", handler.User.Login)
 			authen.GET("/refresh", handler.User.RefreshToken)
+
 			google := authen.Group("/google")
 			{
 				google.Use(setOAuth2GoogleConf(appCfg))
@@ -97,6 +98,16 @@ var ServeCmd = &cobra.Command{
 			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
 		}
 
+		usersNonValidated := r.Group("/users/v1")
+		{
+			usersNonValidated.GET("/get-user/:id", handler.User.GetUserInfo)
+		}
+
+		phtgGalleriesNonValidated := r.Group("photographers/galleries/v1")
+		{
+			phtgGalleriesNonValidated.GET("/:id", handler.Photographer.GetOneGallery)
+		}
+
 		validated := r.Group("/", middleware.UserAuthorizationMiddleware)
 		validated.Use(handler.User.GetUserInstance)
 
@@ -106,10 +117,10 @@ var ServeCmd = &cobra.Command{
 			users.PUT("/logout", handler.User.Logout)
 			users.POST("/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
-			users.GET("/get-user/:id", handler.User.GetUserInfo)
 			users.PUT("/", handler.User.UpdateUserProfile)
 			users.PUT("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
+			users.POST("/report-issue", handler.User.ReportIssue)
 		}
 
 		admin := validated.Group("/admin")
@@ -118,6 +129,11 @@ var ServeCmd = &cobra.Command{
 			admin.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
 			admin.PUT("/verify/:id", handler.Admin.Verify)
 			admin.PUT("/reject/:id", handler.Admin.Reject)
+			admin.GET("/pending-refund-bookings", handler.Admin.ListPendingRefundBookings)
+			admin.PUT("/bookings/reject/:id", handler.Admin.RejectRefundBooking)
+			admin.PUT("/bookings/refund/:id", handler.Admin.ApproveRefundBooking)
+			admin.GET("/issues", handler.Admin.GetIssuesWithOption)
+			admin.GET("/issue-header", handler.Admin.GetIssueHeaderMetadata)
 		}
 
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
@@ -129,7 +145,6 @@ var ServeCmd = &cobra.Command{
 			phtgGalleries.PUT("/:id", handler.Photographer.UpdateGallery)
 			phtgGalleries.DELETE("/:id/:photoId", handler.Photographer.DeletePhoto)
 			phtgGalleries.DELETE("/:id", handler.Photographer.DeleteGallery)
-			phtgGalleries.GET("/:id", handler.Photographer.GetOneGallery)
 
 			phtgBookings := photographers.Group("/bookings/v1")
 			phtgBookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
@@ -150,6 +165,7 @@ var ServeCmd = &cobra.Command{
 			customerBookings.GET("/my-bookings", handler.User.MyBookings)
 			customerBookings.GET("/:id", handler.User.GetOneBooking)
 			customerBookings.PUT("/cancel/:id", handler.User.CancelBooking)
+			customerBookings.PUT("/req-refund/:id", handler.User.RequestRefundBooking)
 			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
@@ -160,6 +176,7 @@ var ServeCmd = &cobra.Command{
 			rooms.GET("/", handler.Room.GetRooms)
 			rooms.GET("/:id", handler.Room.GetRoom)
 			rooms.GET("/conversation/:id", handler.Room.GetAllConversations)
+			rooms.GET("/gallery/:galleryId", handler.Room.GetRoomOfUserByGalleryId)
 		}
 
 		r.GET("/payment/:bookingId", handler.User.MakeBookingPayment)

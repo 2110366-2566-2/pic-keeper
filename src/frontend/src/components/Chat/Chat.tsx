@@ -4,10 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { useWebSocket } from "@/context/WebSocketContext";
-
 import roomService from "@/services/room";
 import { isDifferentDay } from "@/utils/date";
 import { Conversation } from "@/types/room";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 interface ChatProps {
   roomId: string;
@@ -19,15 +19,21 @@ const Chat = ({ roomId }: ChatProps) => {
   const { data: session } = useSession();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const bottomOfChat = useRef<HTMLDivElement>(null);
+  const showError = useErrorModal();
 
   useEffect(() => {
     const fetchOldConversation = async () => {
-      const conversations = await roomService.getAllConversations(roomId);
-      if (conversations.data) {
-        setConversations(conversations.data.reverse());
+      try {
+        const conversations = await roomService.getAllConversations(roomId);
+        if (conversations.data) {
+          setConversations(conversations.data.reverse());
+        }
+      } catch (error) {
+        showError(error);
       }
     };
     fetchOldConversation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   useEffect(() => {

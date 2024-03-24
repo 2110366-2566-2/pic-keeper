@@ -1,4 +1,4 @@
-import MyGallery from "@/components/Gallery/MyGallery";
+import GalleryInfo from "@/components/Gallery/GalleryInfo";
 
 const Home = ({ params }: { params: { galleryId: string } }) => {
   if (!params.galleryId) {
@@ -6,7 +6,7 @@ const Home = ({ params }: { params: { galleryId: string } }) => {
   }
   return (
     <div className="max-w-6xl h-[95vh] m-auto flex items-center justify-center">
-      <MyGallery galleryId={params.galleryId} />
+      <GalleryInfo galleryId={params.galleryId} />
     </div>
   );
 };

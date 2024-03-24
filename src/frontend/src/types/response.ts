@@ -74,3 +74,8 @@ export interface DeleteResponse extends SuccessResponse<string> {}
 export type UrlsListResponse = SuccessResponse<string[]>;
 
 export type StringResponse = SuccessResponse<string>;
+
+export interface GetRoomOfUserByGalleryIdResponse
+  extends SuccessResponse<Room> {
+  exist: boolean;
+}
