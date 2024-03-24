@@ -29,10 +29,12 @@ func (i *IssueDB) FindIssuesWithFilter(ctx context.Context, filter model.IssueFi
 		query = query.Where("subject = ?", *filter.Subject)
 	}
 	if filter.CreatedAt != nil {
-		query = query.Where("created_at = ?", *filter.CreatedAt)
+		date := (*filter.CreatedAt).Format("2006-01-02")
+		query = query.Where("DATE(created_at) = ?", date)
 	}
 	if filter.DueDate != nil {
-		query = query.Where("due_date = ?", *filter.DueDate)
+		date := (*filter.DueDate).Format("2006-01-02")
+		query = query.Where("DATE(due_date) = ?", date)
 	}
 	if filter.ReporterId != nil {
 		query = query.Where("reporter_id = ?", uuid.MustParse(*filter.ReporterId))

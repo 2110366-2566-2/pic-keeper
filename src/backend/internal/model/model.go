@@ -201,8 +201,8 @@ type IssueInput struct {
 type IssueFilter struct {
 	ReporterId *string    `binding:"omitempty,uuid" form:"reporter_id"`
 	Status     *string    `form:"status"`
-	DueDate    *time.Time `form:"due_date"`
-	CreatedAt  *time.Time `form:"created_at"`
+	DueDate    *time.Time `form:"due_date" time_format:"2006-01-02" time_utc:"7"`
+	CreatedAt  *time.Time `form:"created_at" time_format:"2006-01-02" time_utc:"7"`
 	Subject    *string    `form:"subject"`
 }
 
