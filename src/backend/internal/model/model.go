@@ -168,3 +168,44 @@ type Photo struct {
 	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
 	PhotoKey      string    `bun:"photo_key,type:varchar" json:"photo_key"`
 }
+
+const (
+	IssueOpenStatus   = "OPEN"
+	IssueClosedStatus = "CLOSED"
+)
+
+const (
+	IssueRefundSubject    = "REFUND"
+	IssueTechnicalSubject = "TECHNICAL"
+)
+
+type Issue struct {
+	bun.BaseModel `bun:"table:issues,alias:issues"`
+	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	ReporterId    uuid.UUID `bun:"reporter_id,type:uuid" json:"-"`
+	Reporter      User      `bun:"-" json:"reporter"`
+	Status        string    `bun:"status,type:varchar" json:"status"`
+	Subject       string    `bun:"subject,type:varchar" json:"subject"`
+	DueDate       time.Time `bun:"due_date,type:timestamptz,default:now()" json:"due_date"`
+	Description   string    `bun:"description,type:varchar" json:"description"`
+	CreatedAt     time.Time `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+}
+
+type IssueInput struct {
+	Description *string `json:"description"`
+}
+
+type IssueFilter struct {
+	ReporterId *uuid.UUID `form:"reporter_id"`
+	Status     *string    `form:"status"`
+	DueDate    *time.Time `form:"due_date"`
+	CreatedAt  *time.Time `form:"created_at"`
+	Subject    *string    `form:"subject"`
+}
+
+type IssueHeaderMetadata struct {
+	PendingTickets  int `json:"pending_tickets"`
+	TicketsToday    int `json:"tickets_today"`
+	TicketsDueToday int `json:"tickets_due_today"`
+	ClosedTickets   int `json:"closed_tickets"`
+}

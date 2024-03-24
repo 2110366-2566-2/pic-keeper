@@ -75,6 +75,7 @@ var ServeCmd = &cobra.Command{
 			authen.POST("/register", handler.User.Register)
 			authen.POST("/login", handler.User.Login)
 			authen.GET("/refresh", handler.User.RefreshToken)
+
 			google := authen.Group("/google")
 			{
 				google.Use(setOAuth2GoogleConf(appCfg))
@@ -119,6 +120,7 @@ var ServeCmd = &cobra.Command{
 			users.PUT("/", handler.User.UpdateUserProfile)
 			users.PUT("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
+			users.POST("/report-issue", handler.User.ReportIssue)
 		}
 
 		admin := validated.Group("/admin")
@@ -127,6 +129,11 @@ var ServeCmd = &cobra.Command{
 			admin.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
 			admin.PUT("/verify/:id", handler.Admin.Verify)
 			admin.PUT("/reject/:id", handler.Admin.Reject)
+			admin.GET("/pending-refund-bookings", handler.Admin.ListPendingRefundBookings)
+			admin.PUT("/bookings/reject/:id", handler.Admin.RejectRefundBooking)
+			admin.PUT("/bookings/refund/:id", handler.Admin.ApproveRefundBooking)
+			admin.GET("/issues", handler.Admin.GetIssuesWithOption)
+			admin.GET("/issue-header", handler.Admin.GetIssueHeaderMetadata)
 		}
 
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
@@ -158,6 +165,7 @@ var ServeCmd = &cobra.Command{
 			customerBookings.GET("/my-bookings", handler.User.MyBookings)
 			customerBookings.GET("/:id", handler.User.GetOneBooking)
 			customerBookings.PUT("/cancel/:id", handler.User.CancelBooking)
+			customerBookings.PUT("/req-refund/:id", handler.User.RequestRefundBooking)
 			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 

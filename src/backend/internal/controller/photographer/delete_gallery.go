@@ -3,22 +3,13 @@ package photographer
 import (
 	"net/http"
 
-	"github.com/Roongkun/software-eng-ii/internal/controller/util"
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 func (r *Resolver) DeleteGallery(c *gin.Context) {
-	user, exists := c.Get("user")
-	if !exists {
-		util.Raise400Error(c, "Failed to retrieve photographer from context")
-		return
-	}
-
-	userObj, ok := user.(model.User)
+	photographer, ok := getPhotographer(c)
 	if !ok {
-		util.Raise400Error(c, "Invalid object type in context")
 		return
 	}
 
@@ -36,7 +27,7 @@ func (r *Resolver) DeleteGallery(c *gin.Context) {
 	}
 
 	// dbValidate
-	if userObj.Id != existingGallery.PhotographerId {
+	if photographer.Id != existingGallery.PhotographerId {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
 			"error":  "You have no permission to delete this gallery",
