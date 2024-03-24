@@ -29,7 +29,11 @@ const Home = ({ params }: { params: { userId: string } }) => {
       }
     };
 
-    fetchAllGalleries();
+    if (
+      session?.user.data?.verification_status === PhotographerStatus.Verified
+    ) {
+      fetchAllGalleries();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.userId]);
 
