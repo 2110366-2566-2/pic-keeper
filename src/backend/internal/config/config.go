@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-//go:embed template.yaml
+//go:embed template.yml
 var configTemplate []byte
 
 func MustReadMultipleAppConfigFiles(listOfOverrideConfigFilePath []string) *App {
