@@ -1,19 +1,23 @@
 // src/frontend/src/components/SideNavbar.tsx
 "use client";
 
+import { PhotographerStatus } from "@/types/user";
+import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 const SideNavbar = () => {
   const pathName = usePathname();
   const router = useRouter();
+  const { data: session } = useSession();
 
   const navigation = [
     { name: "Edit profile", href: "/settings/edit-profile" },
     { name: "Account management", href: "/settings/account-management" },
-    { name: "My galleries", href: "/settings/my-galleries" },
+    ...(session?.user?.data?.verification_status === PhotographerStatus.Verified
+      ? [{ name: "My galleries", href: "/settings/my-galleries" }]
+      : []),
     { name: "History", href: "/settings/history" },
-    // Add more navigation items if needed
   ];
 
   const isActive = (href: string) => pathName === href;

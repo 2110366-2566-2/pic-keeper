@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { capitalizeFirstLetter } from "@/utils/string";
 import { Gallery } from "@/types/gallery";
-import photographerGalleriesService from "@/services/photographerGalleries";
 import { PhotographerStatus } from "@/types/user";
 import { useErrorModal } from "@/hooks/useErrorModal";
+import customerGalleriesService from "@/services/customerGalleries";
 
 const Home = ({ params }: { params: { userId: string } }) => {
   const { data: session } = useSession();
@@ -20,7 +20,9 @@ const Home = ({ params }: { params: { userId: string } }) => {
   useEffect(() => {
     const fetchAllGalleries = async () => {
       try {
-        const response = await photographerGalleriesService.getAllMyGalleries();
+        const response = await customerGalleriesService.search({
+          photographer_id: params.userId,
+        });
         if (response.data) {
           setListOfGalleries(response.data);
         }
