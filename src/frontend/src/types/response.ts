@@ -66,9 +66,11 @@ export interface UploadProfilePictureResponse extends BasicSuccessResponse {
 }
 
 export interface GetUserInfoResponse extends SuccessResponse<User> {
-  profile_picture_url: string;
+  profile_picture_url?: string;
 }
 
 export interface DeleteResponse extends SuccessResponse<string> {}
 
 export type UrlsListResponse = SuccessResponse<string[]>;
+
+export type StringResponse = SuccessResponse<string>;

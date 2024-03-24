@@ -4,12 +4,17 @@ import React, { useRef, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { GrLocation } from "react-icons/gr";
 import photographerGalleriesService from "@/services/photographerGalleries";
-import useAxiosAuth from "@/hooks/useAxiosAuth";
+import useApiWithAuth from "@/hooks/useApiWithAuth";
 import { useRouter } from "next/navigation";
 import { FileWithPreview } from "@/types/gallery";
 import ImageViewerWithUploader from "./ImageViewerWithUploader";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 const CreateGallery = () => {
+  const router = useRouter();
+  const axiosAuth = useApiWithAuth();
+  const showError = useErrorModal();
+
   const [files, setFiles] = useState<FileWithPreview[]>([]);
 
   const [additionalInputs, setAdditionalInputs] = useState<number[]>([]);
@@ -20,10 +25,6 @@ const CreateGallery = () => {
   const [description, setDescription] = useState<string>("");
   const [deliveryTime, setDeliveryTime] = useState<number | string>("");
   const [included, setIncluded] = useState<string[]>([]);
-
-  const router = useRouter();
-
-  const axiosAuth = useAxiosAuth();
 
   const handleAddInput = () => {
     setAdditionalInputs((currentInputs) => [
@@ -50,11 +51,11 @@ const CreateGallery = () => {
       delivery_time: Number(deliveryTime),
       included,
     };
-    const createdGallery = await photographerGalleriesService.createGallery(
-      newGalleryData
-    );
-    if (createdGallery.data) {
-      try {
+    try {
+      const createdGallery = await photographerGalleriesService.createGallery(
+        newGalleryData
+      );
+      if (createdGallery.data) {
         await Promise.all(
           files.map((file) =>
             photographerGalleriesService.uploadPhotoToGallery(
@@ -65,9 +66,9 @@ const CreateGallery = () => {
           )
         );
         router.push("/settings/my-galleries");
-      } catch (error) {
-        console.error("Failed to upload images atomically:", error);
       }
+    } catch (error) {
+      showError(error, "An error occurred while creating the gallery.");
     }
   };
 
