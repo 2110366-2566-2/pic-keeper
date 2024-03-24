@@ -32,7 +32,7 @@ const SearchBar = (data: Props) => {
     classes.filter(Boolean).join(" ");
 
   const togglePopover = () => {
-    if (data.minPrice <= data.maxPrice) {
+    if (Number(data.minPrice) <= Number(data.maxPrice)) {
       setErrorMessage("");
       data.setIsPopoverOpen(!data.isPopoverOpen);
     } else {
