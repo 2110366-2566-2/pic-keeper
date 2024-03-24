@@ -120,7 +120,7 @@ type Booking struct {
 }
 
 type SearchFilter struct {
-	PhotographerId                  *string `form:"photographer_id"`
+	PhotographerId                  *string `binding:"uuid" form:"photographer_id"`
 	MatchedConditionPhotographerIds []uuid.UUID
 	GalleryName                     *string `form:"gallery_name"`
 	PhotographerName                *string `form:"photographer_name"`
@@ -199,7 +199,7 @@ type IssueInput struct {
 }
 
 type IssueFilter struct {
-	ReporterId *uuid.UUID `form:"reporter_id"`
+	ReporterId *string    `binding:"uuid" form:"reporter_id"`
 	Status     *string    `form:"status"`
 	DueDate    *time.Time `form:"due_date"`
 	CreatedAt  *time.Time `form:"created_at"`
