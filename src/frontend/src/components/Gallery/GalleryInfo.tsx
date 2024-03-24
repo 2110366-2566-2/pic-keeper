@@ -180,7 +180,7 @@ const GalleryInfo = ({ galleryId }: Props) => {
             ))}
           </ul>
         </div>
-        {photographer.id !== session?.user.data?.id && (
+        {session && photographer.id !== session?.user.data?.id && (
           <button
             className="self-end btn-primary px-16"
             onClick={handleChatClick}

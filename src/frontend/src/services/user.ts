@@ -1,10 +1,12 @@
 import apiClient from "@/libs/apiClient";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
+import { Issue, IssueInput } from "@/types/issue";
 import {
   LogoutResponse,
   UploadProfilePictureResponse,
   GetUserInfoResponse,
   UserResponse,
+  SuccessResponse,
 } from "@/types/response";
 import { UserUpdateInput } from "@/types/user";
 import { Axios } from "axios";
@@ -95,6 +97,17 @@ const updateUserProfile = async (userUpdateInput: UserUpdateInput) => {
   }
 };
 
+const reportIssue = async (issueInput: IssueInput) => {
+  try {
+    const { data } = await apiClientWithAuth.post<SuccessResponse<Issue>>(
+      `${userBaseUrl}/report-issue`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const userService = {
   logout,
   uploadProfile,
@@ -103,6 +116,7 @@ const userService = {
   requestVerify,
   getSelfStatus,
   updateUserProfile,
+  reportIssue,
 };
 
 export default userService;
