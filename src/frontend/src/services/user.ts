@@ -95,6 +95,17 @@ const updateUserProfile = async (userUpdateInput: UserUpdateInput) => {
   }
 };
 
+const reportIssue = async () => {
+  try {
+    const { data } = await apiClientWithAuth.post(
+      `${userBaseUrl}/report-issue`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const userService = {
   logout,
   uploadProfile,
@@ -103,6 +114,7 @@ const userService = {
   requestVerify,
   getSelfStatus,
   updateUserProfile,
+  reportIssue,
 };
 
 export default userService;
