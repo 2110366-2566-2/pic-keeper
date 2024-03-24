@@ -4,6 +4,7 @@ import {
   ConversationListResponse,
   RoomResponse,
   RoomListResponse,
+  GetRoomOfUserByGalleryIdResponse,
 } from "@/types/response";
 import { RoomMemberInput } from "@/types/room";
 
@@ -46,6 +47,18 @@ const getAllConversations = async (id: string) => {
     const { data } = await apiClientWithAuth.get<ConversationListResponse>(
       `${roomBaseUrl}/${id}`
     );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getRoomOfUserByGalleryId = async (galleryId: string) => {
+  try {
+    const { data } =
+      await apiClientWithAuth.get<GetRoomOfUserByGalleryIdResponse>(
+        `${roomBaseUrl}/gallery/${galleryId}`
+      );
     return data;
   } catch (error) {
     throw error;

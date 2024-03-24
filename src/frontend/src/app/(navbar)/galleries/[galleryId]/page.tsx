@@ -1,4 +1,4 @@
-import MyGallery from "@/components/Gallery/MyGallery";
+import MyGallery from "@/components/Gallery/GalleryInfo";
 
 const Home = ({ params }: { params: { galleryId: string } }) => {
   if (!params.galleryId) {
