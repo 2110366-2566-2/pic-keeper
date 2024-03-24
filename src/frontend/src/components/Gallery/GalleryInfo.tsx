@@ -12,15 +12,15 @@ import { IoLocationSharp } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MdModeEdit } from "react-icons/md";
-import { AxiosError } from "axios";
 import { useModal } from "@/context/ModalContext";
 import { useErrorModal } from "@/hooks/useErrorModal";
+import roomService from "@/services/room";
 
 interface Props {
   galleryId: string;
 }
 
-const MyGallery = ({ galleryId }: Props) => {
+const GalleryInfo = ({ galleryId }: Props) => {
   const [gallery, setGallery] = useState<Gallery>();
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [photographer, setPhotographer] = useState<User>();
@@ -97,6 +97,28 @@ const MyGallery = ({ galleryId }: Props) => {
   if (!gallery || !photographer) {
     return <div>No gallery or photographer specified</div>;
   }
+
+  const handleChatClick = async () => {
+    try {
+      const response = await roomService.getRoomOfUserByGalleryId(galleryId);
+      if (response.exist) {
+        router.push(`/chat/${response.data?.id}`);
+        return;
+      }
+      const createdRoom = await roomService.createRoom({
+        member_ids: [gallery.photographer_id],
+        gallery_id: galleryId,
+      });
+      if (createdRoom.data) {
+        router.push(`/chat/${createdRoom.data[0].room_id}`);
+        return;
+      }
+
+      showError(new Error("there is a problem with navigation to the chat"));
+    } catch (error) {
+      showError(error);
+    }
+  };
   return (
     <div className="mx-auto rounded-lg shadow-lg p-6 grid grid-cols-1 md:grid-cols-4 gap-8 bg-white text-gray-800">
       <ImageViewer imageUrls={imageUrls} />
@@ -159,7 +181,12 @@ const MyGallery = ({ galleryId }: Props) => {
           </ul>
         </div>
         {photographer.id !== session?.user.data?.id && (
-          <button className="self-end btn-primary px-16">Chat</button>
+          <button
+            className="self-end btn-primary px-16"
+            onClick={handleChatClick}
+          >
+            Chat
+          </button>
         )}
         {photographer.id === session?.user.data?.id && (
           <button
@@ -173,4 +200,4 @@ const MyGallery = ({ galleryId }: Props) => {
     </div>
   );
 };
-export default MyGallery;
+export default GalleryInfo;

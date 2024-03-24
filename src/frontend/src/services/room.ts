@@ -45,7 +45,7 @@ const getRoomInfo = async (id: string) => {
 const getAllConversations = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.get<ConversationListResponse>(
-      `${roomBaseUrl}/${id}`
+      `${roomBaseUrl}/conversation/${id}`
     );
     return data;
   } catch (error) {
@@ -70,6 +70,7 @@ const roomService = {
   getAllRooms,
   getRoomInfo,
   getAllConversations,
+  getRoomOfUserByGalleryId,
 };
 
 export default roomService;
