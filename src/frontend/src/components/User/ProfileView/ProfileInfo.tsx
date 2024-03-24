@@ -2,33 +2,35 @@
 import userService from "@/services/user";
 import Link from "next/link";
 import Image from "next/image";
-import customerGalleriesService from "@/services/customerGalleries";
-import GalleryComponent from "@/components/Gallery";
+import { GalleryCard } from "@/components/Gallery";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { capitalizeFirstLetter } from "@/utils/string";
-import { SearchFilter } from "@/types/gallery";
 import { Gallery } from "@/types/gallery";
+import photographerGalleriesService from "@/services/photographerGalleries";
+import { PhotographerStatus } from "@/types/user";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 const Home = ({ params }: { params: { userId: string } }) => {
   const { data: session } = useSession();
   const [profilePicture, setProfilePicture] = useState("");
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
-  const searchFilter: SearchFilter = { photographer_id: params.userId };
+  const showError = useErrorModal();
 
   useEffect(() => {
     const fetchAllGalleries = async () => {
       try {
-        const response = await customerGalleriesService.search(searchFilter);
+        const response = await photographerGalleriesService.getAllMyGalleries();
         if (response.data) {
           setListOfGalleries(response.data);
         }
       } catch (error) {
-        console.error("Error fetching galleries:", error);
+        showError(error);
       }
     };
 
     fetchAllGalleries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.userId]);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
     };
 
     fetchUserInfo();
-  }, [session]);
+  }, [params.userId, session]);
 
   return (
     <main className="m-4 sm:m-8 space-y-6">
@@ -67,7 +69,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
             </div>
             {session?.user.data?.verification_status === "VERIFIED" ? (
               <div className="p-1 bg-neutral-300 rounded-2xl text-neutral-500 text-xs h-6 mt-1">
-                Photograher
+                Photographer
               </div>
             ) : (
               ""
@@ -82,9 +84,9 @@ const Home = ({ params }: { params: { userId: string } }) => {
             </div>
           </div>
           <div className="text-sm text-gray-500">
-            {(session?.user.data &&
-              capitalizeFirstLetter(session.user.data.gender)) ||
-              "Not specified"}
+            {session?.user.data?.gender
+              ? capitalizeFirstLetter(session.user.data.gender)
+              : "Not specified"}
           </div>
         </div>
         {session?.user.data?.id === params.userId ? (
@@ -114,25 +116,26 @@ const Home = ({ params }: { params: { userId: string } }) => {
             </p>
           </article>
         </div>
-        <div className="w-full sm:w-9/12 shadow-md rounded-md">
-          <div className="text-amber-500 font-semibold text-xl p-4">
-            Galleries
+        {session?.user.data?.verification_status ===
+          PhotographerStatus.Verified && (
+          <div className="w-full sm:w-9/12 shadow-md rounded-md">
+            <div className="text-amber-500 font-semibold text-xl p-4">
+              Galleries
+            </div>
+            <div className="grid grid-cols-auto-fill-300 2xl:grid-cols-auto-fill-400 gap-4 p-4">
+              {/* GALLERY COMPONENT */}
+              {listOfGalleries &&
+                listOfGalleries.map((Gallery, index) => (
+                  <GalleryCard
+                    key={index}
+                    galleryId={Gallery.id}
+                    photographerId={Gallery.photographer_id}
+                    price={Gallery.price}
+                  />
+                ))}
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-            {/* GALLERY COMPONENT */}
-            {listOfGalleries &&
-              listOfGalleries.map((Gallery, index) => (
-                <GalleryComponent
-                  key={index}
-                  galleryId={Gallery.id}
-                  galleryName={Gallery.name}
-                  galleryLocation={Gallery.location}
-                  photographerId={Gallery.photographer_id}
-                  price={Gallery.price}
-                />
-              ))}
-          </div>
-        </div>
+        )}
       </div>
     </main>
   );

@@ -8,6 +8,7 @@ import { Gender } from "@/types/user";
 import { IoIosAddCircle } from "react-icons/io";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 const LandingPage = () => {
   const [searchGallery, setSearchGallery] = useState("Search Gallery");
@@ -23,15 +24,22 @@ const LandingPage = () => {
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
   const [searchFilter, setSearchFilter] = useState<SearchFilter>({});
 
+  const showError = useErrorModal();
+
   const { data: session } = useSession();
 
   useEffect(() => {
     const fetchAllGalleries = async () => {
-      const response = await customerGalleriesService.search(searchFilter);
-      if (response.data) setListOfGalleries(response.data);
+      try {
+        const response = await customerGalleriesService.search(searchFilter);
+        if (response.data) setListOfGalleries(response.data);
+      } catch (error) {
+        showError(error);
+      }
     };
 
     fetchAllGalleries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchFilter]);
 
   return (
