@@ -120,10 +120,13 @@ type Booking struct {
 }
 
 type SearchFilter struct {
-	PhotographerId *uuid.UUID `form:"photographer_id"`
-	Location       *string    `form:"location"`
-	MinPrice       *int       `form:"min_price"`
-	MaxPrice       *int       `form:"max_price"`
+	PhotographerId                  *string `binding:"omitempty,uuid" form:"photographer_id"`
+	MatchedConditionPhotographerIds []uuid.UUID
+	GalleryName                     *string `form:"gallery_name"`
+	PhotographerName                *string `form:"photographer_name"`
+	Location                        *string `form:"location"`
+	MinPrice                        *int    `form:"min_price"`
+	MaxPrice                        *int    `form:"max_price"`
 }
 
 type Room struct {
@@ -167,4 +170,45 @@ type Photo struct {
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
 	PhotoKey      string    `bun:"photo_key,type:varchar" json:"photo_key"`
+}
+
+const (
+	IssueOpenStatus   = "OPEN"
+	IssueClosedStatus = "CLOSED"
+)
+
+const (
+	IssueRefundSubject    = "REFUND"
+	IssueTechnicalSubject = "TECHNICAL"
+)
+
+type Issue struct {
+	bun.BaseModel `bun:"table:issues,alias:issues"`
+	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	ReporterId    uuid.UUID `bun:"reporter_id,type:uuid" json:"-"`
+	Reporter      User      `bun:"-" json:"reporter"`
+	Status        string    `bun:"status,type:varchar" json:"status"`
+	Subject       string    `bun:"subject,type:varchar" json:"subject"`
+	DueDate       time.Time `bun:"due_date,type:timestamptz,default:now()" json:"due_date"`
+	Description   string    `bun:"description,type:varchar" json:"description"`
+	CreatedAt     time.Time `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+}
+
+type IssueInput struct {
+	Description *string `json:"description"`
+}
+
+type IssueFilter struct {
+	ReporterId *string    `binding:"omitempty,uuid" form:"reporter_id"`
+	Status     *string    `form:"status"`
+	DueDate    *time.Time `form:"due_date" time_format:"2006-01-02" time_utc:"7"`
+	CreatedAt  *time.Time `form:"created_at" time_format:"2006-01-02" time_utc:"7"`
+	Subject    *string    `form:"subject"`
+}
+
+type IssueHeaderMetadata struct {
+	PendingTickets  int `json:"pending_tickets"`
+	TicketsToday    int `json:"tickets_today"`
+	TicketsDueToday int `json:"tickets_due_today"`
+	ClosedTickets   int `json:"closed_tickets"`
 }

@@ -108,6 +108,17 @@ const getQRCode = async (id: string) => {
   }
 };
 
+const requestRefund = async (id: string) => {
+  try {
+    const { data } = await apiClientWithAuth.get<BookingResponse>(
+      `${bookingBaseUrl}/req-refund/${id}`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const customerBookingService = {
   createBooking,
   getPendingCancellations,
@@ -117,6 +128,8 @@ const customerBookingService = {
   getBooking,
   cancelBooking,
   approveCancelBooking,
+  getQRCode,
+  requestRefund,
 };
 
 export default customerBookingService;

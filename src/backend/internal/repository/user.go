@@ -14,4 +14,5 @@ type User interface {
 	ListPendingPhotographers(ctx context.Context) ([]*model.User, error)
 	FindOneByUsername(ctx context.Context, username string) (*model.User, error)
 	CheckUsernameAlreadyBeenUsed(ctx context.Context, username string, proposedUserId uuid.UUID) (bool, error)
+	FindPhotographerIdsNameAlike(ctx context.Context, name string) ([]uuid.UUID, error)
 }

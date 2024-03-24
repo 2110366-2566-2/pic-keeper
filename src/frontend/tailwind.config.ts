@@ -10,6 +10,8 @@ const config: Config = {
     extend: {
       gridTemplateColumns: {
         "auto-fill-100": "repeat(auto-fill, minmax(100px, 1fr))",
+        "auto-fill-400": "repeat(auto-fill, minmax(400px, 1fr))",
+        "auto-fill-300": "repeat(auto-fill, minmax(300px, 1fr))",
         "auto-fit-100": "repeat(auto-fit, minmax(100px, 1fr))",
       },
       backgroundImage: {

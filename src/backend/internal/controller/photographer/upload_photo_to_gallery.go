@@ -27,10 +27,8 @@ func (r *Resolver) UploadPhotoToGallery(c *gin.Context) {
 		return
 	}
 
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+	photographer, ok := getPhotographer(c)
 	if !ok {
-		util.Raise400Error(c, "could not bind JSON")
 		return
 	}
 
@@ -43,13 +41,13 @@ func (r *Resolver) UploadPhotoToGallery(c *gin.Context) {
 		return
 	}
 
-	if existingGallery.PhotographerId != userObj.Id {
+	if existingGallery.PhotographerId != photographer.Id {
 		util.Raise403Error(c, "you have no permission to upload photos to this gallery")
 		return
 	}
 
 	fileUUID := uuid.New().String()
-	objectKey := fmt.Sprintf("%s-%s", userObj.Id.String(), fileUUID)
+	objectKey := fmt.Sprintf("%s-%s", photographer.Id.String(), fileUUID)
 
 	bucket, err := s3utils.GetInstance()
 	if err != nil {

@@ -1,13 +1,17 @@
 "use client";
-import NavBar from "@/components/shared/Navbar/Navbar";
+import React from "react";
+import axios from "axios";
+import Landing from "@/components/Landing";
 
 export default function Home() {
+
+  const handleOnClick = () => {
+    axios.post("/api/auth/signout");
+  };
+
   return (
     <main>
-      <div className="w-screen h-screen">
-        <NavBar />
-        <div className="">Pic-Keeper</div>
-      </div>
+      <Landing/>
     </main>
   );
 }

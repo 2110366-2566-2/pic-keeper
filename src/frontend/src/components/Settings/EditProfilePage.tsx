@@ -38,7 +38,7 @@ const EditProfilePage = () => {
         setAbout(userInfo.data?.about || "");
         setUsername(userInfo.data?.username || "");
         setAddress(userInfo.data?.address || "");
-        setPhotoPreview(userInfo.profile_picture_url);
+        setPhotoPreview(userInfo.profile_picture_url || "");
       } catch (error) {
         showError(error, "Failed to fetch user Info");
       }

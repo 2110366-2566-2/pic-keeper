@@ -26,14 +26,9 @@ interface customerProp {
   };
 }
 
-interface galleryProp {
-  location: string | undefined;
-  price: number | undefined;
-  galleryname: string | undefined;
-}
+
 export default function BookingCard(options: BookOptions) {
   const [customer, setCustomer] = useState<customerProp | null>();
-  const [gallery, setGallery] = useState<galleryProp | null>();
 
   const getCustomer = async () => {
     const result = await userService.getUserById(options.props.customer_id);

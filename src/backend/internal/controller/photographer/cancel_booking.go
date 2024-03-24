@@ -3,17 +3,14 @@ package photographer
 import (
 	"net/http"
 
-	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 func (r *Resolver) CancelBooking(c *gin.Context) {
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+	photographer, ok := getPhotographer(c)
 	if !ok {
-		util.Raise400Error(c, "Invalid user type in context")
 		return
 	}
 
@@ -49,7 +46,7 @@ func (r *Resolver) CancelBooking(c *gin.Context) {
 		return
 	}
 
-	if gallery.PhotographerId != userObj.Id {
+	if gallery.PhotographerId != photographer.Id {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
 			"error":  "this booking is not yours",
