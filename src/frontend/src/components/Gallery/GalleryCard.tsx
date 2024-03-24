@@ -31,7 +31,6 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
       setListOfImages(response.data || []);
     };
 
-
     const fetchGalleryInfo = async () => {
       const response = await photographerGalleryService.getGallery(galleryId);
       if (response.data) setGalleryInfo(response.data);
@@ -46,7 +45,11 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
       const response = await userService.getUserById(photographerId);
       if (response.data) {
         setPhotographer(response.data);
+      }
+      if (response.profile_picture_url) {
         setPhotographerProfile(response.profile_picture_url);
+      } else {
+        setPhotographerProfile("/images/nature.svg");
       }
     };
     getUserById();

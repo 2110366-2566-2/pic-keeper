@@ -16,7 +16,8 @@ const LandingPage = () => {
   const [minPrice, setMinPrice] = useState(1);
   const [maxPrice, setMaxPrice] = useState(9999);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [selectedOptionSideBar, setSelectedOptionSideBar] = useState("Recommended");
+  const [selectedOptionSideBar, setSelectedOptionSideBar] =
+    useState("Recommended");
   const [selectedGender, setSelectedGender] = useState<Gender | undefined>();
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
@@ -36,10 +37,10 @@ const LandingPage = () => {
   return (
     <main>
       <div className="flex flex-col">
-        <div className="fixed top-0 left-0 right-0 z-50">
+        <div className="z-50">
           <Navbar />
         </div>
-        <div className="fixed top-16 left-0 right-0 z-40 bg-white">
+        <div className="z-40 bg-white">
           <SearchBar
             searchGallery={searchGallery}
             setSearchGallery={setSearchGallery}
@@ -58,16 +59,14 @@ const LandingPage = () => {
           />
         </div>
       </div>
-      <div className="flex flex-row mt-36">
-        <div className="fixed w-1/5 z-30">
-          <GalleryFilter
-            selectedOption={selectedOptionSideBar}
-            setSelectedOption={setSelectedOptionSideBar}
-            selectedGender={selectedGender}
-            setSelectedGender={setSelectedGender}
-          />
-        </div>
-        <div className="grid grid-cols-auto-fill-400 gap-4 w-4/5 ml-72 p-1">
+      <div className="flex flex-row">
+        <GalleryFilter
+          selectedOption={selectedOptionSideBar}
+          setSelectedOption={setSelectedOptionSideBar}
+          selectedGender={selectedGender}
+          setSelectedGender={setSelectedGender}
+        />
+        <div className="grid grid-cols-auto-fill-300 2xl:grid-cols-auto-fill-400  justify-center items-center gap-4 w-full p-4">
           {listOfGalleries &&
             listOfGalleries.map((gallery, index) => (
               <GalleryCard
@@ -79,15 +78,14 @@ const LandingPage = () => {
             ))}
         </div>
       </div>
-      {
-        session?.user.data?.verification_status === 'VERIFIED' && (
-          <Link href="/galleries/create-gallery">
-            <IoIosAddCircle
-              className="absolute bottom-10 right-10 text-yellow-500"
-              size={65}
-            />
-          </Link>
-        )}  
+      {session?.user.data?.verification_status === "VERIFIED" && (
+        <Link href="/galleries/create-gallery">
+          <IoIosAddCircle
+            className="absolute bottom-10 right-10 text-yellow-500"
+            size={65}
+          />
+        </Link>
+      )}
     </main>
   );
 };

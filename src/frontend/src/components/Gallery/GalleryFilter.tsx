@@ -21,7 +21,7 @@ const GalleryFilter = (data: Props) => {
   };
 
   return (
-    <div className="pt-10 flex flex-col px-4 space-y-4">
+    <div className="flex flex-col p-5 space-y-4">
       <div className="font-semibold">Sort By</div>
       <Menu as="div" className="relative inline-block text-left">
         <div className="flex">
@@ -98,7 +98,7 @@ const GalleryFilter = (data: Props) => {
       <div className="font-semibold">Filter By</div>
       <div className="">
         <div className="font-semibold">Gender of Photographer</div>
-        <div className="grid grid-cols-3 gap-3 py-2">
+        <div className="grid grid-cols-3 gap-8 py-2">
           {Object.values(Gender).map((gender) => (
             <button
               key={gender}
