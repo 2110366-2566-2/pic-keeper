@@ -35,7 +35,7 @@ func (p *GalleryDB) SearchWithFilter(ctx context.Context, filter *model.SearchFi
 	query := p.db.NewSelect().Model(&galleries)
 
 	if filter.PhotographerId != nil {
-		query.Where("photographer_id = ?", *filter.PhotographerId)
+		query.Where("photographer_id = ?", uuid.MustParse(*filter.PhotographerId))
 	} else if filter.MatchedConditionPhotographerIds != nil && len(filter.MatchedConditionPhotographerIds) > 0 {
 		query.Where("photographer_id IN (?)", bun.In(filter.MatchedConditionPhotographerIds))
 	}

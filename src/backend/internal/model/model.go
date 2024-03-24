@@ -120,7 +120,7 @@ type Booking struct {
 }
 
 type SearchFilter struct {
-	PhotographerId                  *uuid.UUID `form:"photographer_id"`
+	PhotographerId                  *string `form:"photographer_id"`
 	MatchedConditionPhotographerIds []uuid.UUID
 	GalleryName                     *string `form:"gallery_name"`
 	PhotographerName                *string `form:"photographer_name"`
