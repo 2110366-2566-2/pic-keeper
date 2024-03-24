@@ -10,15 +10,21 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useErrorModal } from "@/hooks/useErrorModal";
 
+export enum searchOption {
+  PHOTOGRAPHER_NAME = "By photographer",
+  GALLERY_NAME = "By gallery",
+}
+
+export enum sortOption {
+  RECOMMENDED = "Recommended",
+  RATING = "Rating",
+  PRICE = "Price",
+}
+
 const LandingPage = () => {
-  const [searchGallery, setSearchGallery] = useState("Search Gallery");
-  const [selectedOption, setSelectedOption] = useState("By photographer");
-  const [searchPlace, setSearchPlace] = useState("Set Location");
-  const [minPrice, setMinPrice] = useState(1);
-  const [maxPrice, setMaxPrice] = useState(9999);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [selectedOptionSideBar, setSelectedOptionSideBar] =
-    useState("Recommended");
+  const [selectedOptionSideBar, setSelectedOptionSideBar] = useState(
+    sortOption.RECOMMENDED
+  );
   const [selectedGender, setSelectedGender] = useState<Gender | undefined>();
 
   const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
@@ -49,22 +55,7 @@ const LandingPage = () => {
           <Navbar />
         </div>
         <div className="z-40 bg-white">
-          <SearchBar
-            searchGallery={searchGallery}
-            setSearchGallery={setSearchGallery}
-            selectedOption={selectedOption}
-            setSelectedOption={setSelectedOption}
-            searchPlace={searchPlace}
-            setSearchPlace={setSearchPlace}
-            minPrice={minPrice}
-            setMinPrice={setMinPrice}
-            maxPrice={maxPrice}
-            setMaxPrice={setMaxPrice}
-            isPopoverOpen={isPopoverOpen}
-            setIsPopoverOpen={setIsPopoverOpen}
-            searchFilter={searchFilter}
-            setSearchFilter={setSearchFilter}
-          />
+          <SearchBar setSearchFilter={setSearchFilter} />
         </div>
       </div>
       <div className="flex flex-row">

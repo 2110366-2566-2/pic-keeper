@@ -3,6 +3,8 @@ import { Gender } from "@/types/user";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import { sortOption } from "../Landing";
+import { classNames } from "@/utils/list";
 
 interface Props {
   selectedOption: string;
@@ -12,9 +14,6 @@ interface Props {
 }
 
 const GalleryFilter = (data: Props) => {
-  const classNames = (...classes: string[]) =>
-    classes.filter(Boolean).join(" ");
-
   const handleGenderSelect = (gender: Gender) => {
     const isAlreadySelected = data.selectedGender === gender;
     data.setSelectedGender(isAlreadySelected ? undefined : gender);
@@ -45,9 +44,11 @@ const GalleryFilter = (data: Props) => {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => data.setSelectedOption("Recommended")}
+                    onClick={() =>
+                      data.setSelectedOption(sortOption.RECOMMENDED)
+                    }
                     className={classNames(
-                      data.selectedOption == "Recommended"
+                      data.selectedOption == sortOption.RECOMMENDED
                         ? "text-yellow-500 underline underline-offset-1 "
                         : "",
                       active ? "bg-gray-100" : "",
@@ -62,9 +63,9 @@ const GalleryFilter = (data: Props) => {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => data.setSelectedOption("Rating")}
+                    onClick={() => data.setSelectedOption(sortOption.RATING)}
                     className={classNames(
-                      data.selectedOption == "Rating"
+                      data.selectedOption == sortOption.RATING
                         ? "text-yellow-500 underline underline-offset-1"
                         : "",
                       active ? "bg-gray-100" : "",
@@ -78,9 +79,9 @@ const GalleryFilter = (data: Props) => {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => data.setSelectedOption("Price")}
+                    onClick={() => data.setSelectedOption(sortOption.PRICE)}
                     className={classNames(
-                      data.selectedOption == "Price"
+                      data.selectedOption == sortOption.PRICE
                         ? "text-yellow-500 underline underline-offset-1"
                         : "",
                       active ? "bg-gray-100" : "",

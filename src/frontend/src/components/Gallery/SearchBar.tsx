@@ -5,36 +5,31 @@ import { Menu, Transition } from "@headlessui/react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoSearch } from "react-icons/io5";
 import { MdOutlineLocationOn } from "react-icons/md";
-import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
 import { MdOutlinePriceCheck } from "react-icons/md";
 import { SearchFilter } from "@/types/gallery";
+import { searchOption } from "../Landing";
+import { classNames } from "@/utils/list";
 
 interface Props {
-  searchGallery: string;
-  setSearchGallery: Function;
-  selectedOption: string;
-  setSelectedOption: Function;
-  searchPlace: string;
-  setSearchPlace: Function;
-  minPrice: number;
-  setMinPrice: Function;
-  maxPrice: number;
-  setMaxPrice: Function;
-  isPopoverOpen: boolean;
-  setIsPopoverOpen: Function;
-  searchFilter: SearchFilter;
-  setSearchFilter: Function;
+  setSearchFilter: React.Dispatch<React.SetStateAction<SearchFilter>>;
 }
 
-const SearchBar = (data: Props) => {
-  const classNames = (...classes: string[]) =>
-    classes.filter(Boolean).join(" ");
+const SearchBar = ({ setSearchFilter }: Props) => {
+  const [galleryName, setGalleryName] = useState("");
+  const [photographerName, setPhotographerName] = useState("");
+  const [selectedOption, setSelectedOption] = useState(
+    searchOption.PHOTOGRAPHER_NAME
+  );
+  const [location, setLocation] = useState("");
+  const [minPrice, setMinPrice] = useState(1);
+  const [maxPrice, setMaxPrice] = useState(9999);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const togglePopover = () => {
-    if (Number(data.minPrice) <= Number(data.maxPrice)) {
+    if (Number(minPrice) <= Number(maxPrice)) {
       setErrorMessage("");
-      data.setIsPopoverOpen(!data.isPopoverOpen);
+      setIsPopoverOpen(!isPopoverOpen);
     } else {
       setErrorMessage("Invalid Input");
     }
@@ -48,7 +43,7 @@ const SearchBar = (data: Props) => {
         <Menu as="div" className="relative inline-block text-left">
           <div className="flex">
             <Menu.Button className="whitespace-nowrap inline-flex w-full justify-center rounded-md px-5 py-2 text-sm font-medium hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
-              {data.selectedOption}
+              {selectedOption}
               <RiArrowDropDownLine className="text-xl" />
             </Menu.Button>
           </div>
@@ -62,14 +57,17 @@ const SearchBar = (data: Props) => {
             leaveTo="transform opacity-0 scale-95"
           >
             <Menu.Items className="absolute mt-2 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-              <div className="px-1 py-1">
+              <div className="p-1 w-44 flex flex-col items-stretch justify-center">
                 {/* By photographer option */}
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={() => data.setSelectedOption("By photographer")}
+                      onClick={() => {
+                        setSelectedOption(searchOption.PHOTOGRAPHER_NAME);
+                        setGalleryName("");
+                      }}
                       className={classNames(
-                        data.selectedOption == "By photographer"
+                        selectedOption == searchOption.PHOTOGRAPHER_NAME
                           ? "text-yellow-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
@@ -84,9 +82,12 @@ const SearchBar = (data: Props) => {
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={() => data.setSelectedOption("By gallery name")}
+                      onClick={() => {
+                        setSelectedOption(searchOption.GALLERY_NAME);
+                        setPhotographerName("");
+                      }}
                       className={classNames(
-                        data.selectedOption == "By gallery name"
+                        selectedOption == searchOption.GALLERY_NAME
                           ? "text-yellow-500 underline underline-offset-1"
                           : "",
                         active ? "bg-gray-100" : "",
@@ -103,15 +104,24 @@ const SearchBar = (data: Props) => {
         </Menu>
       </div>
       <div className="relative col-span-3">
-        <input
-          type="text"
-          className="form-input ring-yellow-400 hover:ring-yellow-500 hover:ring-3"
-          placeholder={
-            data.selectedOption === "By photographer"
-              ? "Search photographer"
-              : "Search gallery name"
-          }
-        />
+        {selectedOption == searchOption.PHOTOGRAPHER_NAME && (
+          <input
+            type="text"
+            className="form-input ring-yellow-400 hover:ring-yellow-500 hover:ring-3"
+            placeholder="Photographer name"
+            value={photographerName}
+            onChange={(e) => setPhotographerName(e.target.value)}
+          />
+        )}
+        {selectedOption == searchOption.GALLERY_NAME && (
+          <input
+            type="text"
+            className="form-input ring-yellow-400 hover:ring-yellow-500 hover:ring-3"
+            placeholder="Gallery name"
+            value={galleryName}
+            onChange={(e) => setGalleryName(e.target.value)}
+          />
+        )}
         <IoSearch
           className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-90"
           size={20}
@@ -121,7 +131,9 @@ const SearchBar = (data: Props) => {
         <input
           type="text"
           className="form-input ring-gray-800 hover:ring-gray-900 focus:ring-gray-900 hover:ring-3"
-          placeholder={data.searchPlace}
+          placeholder="Set Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
         />
         <MdOutlineLocationOn
           className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
@@ -133,12 +145,11 @@ const SearchBar = (data: Props) => {
           type="text"
           onClick={togglePopover}
           className="form-input ring-gray-800 hover:ring-gray-900 focus:ring-gray-900 hover:ring-3"
-          placeholder={`฿${data.minPrice || "0.00"} - ฿${
-            data.maxPrice || "0.00"
-          }`}
+          placeholder="฿0 - ฿9999"
+          value={`฿${minPrice} - ฿${maxPrice}`}
           readOnly
         />
-        {data.isPopoverOpen ? (
+        {isPopoverOpen ? (
           <MdOutlinePriceCheck
             className="bg-white absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 font-semibold"
             size={20}
@@ -151,16 +162,16 @@ const SearchBar = (data: Props) => {
             onClick={togglePopover}
           />
         )}
-        {data.isPopoverOpen && (
+        {isPopoverOpen && (
           <div className="absolute z-10 p-4 mt-2 bg-white shadow-lg left-1/2 transform -translate-x-1/2 rounded-xl">
             <div className="flex flex-row space-x-4">
               <div className="">
                 Min Price
                 <input
                   type="number"
-                  value={data.minPrice}
-                  onChange={(e) => data.setMinPrice(e.target.value)}
-                  placeholder="฿ 0.00"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(Number(e.target.value))}
+                  placeholder="฿0"
                   className="px-4 py-2 border rounded focus:ring focus:border-blue-300"
                 />
                 {errorMessage && (
@@ -171,9 +182,9 @@ const SearchBar = (data: Props) => {
                 Max Price
                 <input
                   type="number"
-                  value={data.maxPrice}
-                  onChange={(e) => data.setMaxPrice(e.target.value)}
-                  placeholder="฿ 0.00"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  placeholder="฿9999"
                   className="px-4 py-2 border rounded focus:ring focus:border-blue-300"
                 />
               </div>
@@ -182,15 +193,19 @@ const SearchBar = (data: Props) => {
         )}
       </div>
       <div className="relative">
-        <button className="p-2 pl-4 bg-gray-400 rounded-md w-full text-white transition duration-300s ease-in-out hover:bg-gray-500" onClick={() => data.setSearchFilter(
-          {
-            searchGallery: data.searchGallery,
-            selectedOption: data.selectedOption,
-            searchPlace: data.searchPlace,
-            minPrice: data.minPrice,
-            maxPrice: data.maxPrice,
-          }
-        )}>
+        <button
+          className="p-2 pl-4 bg-gray-400 rounded-md w-full text-white transition duration-300s ease-in-out hover:bg-gray-500"
+          onClick={() => {
+            const filters = {
+              ...(galleryName && { gallery_name: galleryName }),
+              ...(photographerName && { photographer_name: photographerName }),
+              ...(location && { location }),
+              min_price: minPrice,
+              max_price: maxPrice,
+            };
+            setSearchFilter(filters);
+          }}
+        >
           Search
         </button>
       </div>
