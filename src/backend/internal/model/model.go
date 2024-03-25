@@ -134,6 +134,7 @@ type Room struct {
 	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	GalleryId     uuid.UUID  `bun:"gallery_id,type:uuid" json:"-"`
 	Gallery       Gallery    `bun:"-" json:"gallery"`
+	Photographer  User       `bun:"-" json:"photographer"`
 	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
 	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
 	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`

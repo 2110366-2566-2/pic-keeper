@@ -23,7 +23,7 @@ const Chat = ({ roomId }: ChatProps) => {
   const bottomOfChat = useRef<HTMLDivElement>(null);
   const showError = useErrorModal();
   const [room, setRoom] = useState<Room>();
-  const [photographer, setPhotographer] = useState<User>();
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     const fetchOldConversation = async () => {
@@ -42,12 +42,6 @@ const Chat = ({ roomId }: ChatProps) => {
         const roomResponse = await roomService.getRoomInfo(roomId);
         if (roomResponse.data) {
           setRoom(roomResponse.data);
-          const photographerResponse = await userService.getUserById(
-            roomResponse.data.gallery.photographer_id
-          );
-          if (photographerResponse) {
-            setPhotographer(photographerResponse.data.)
-          }
         }
       } catch (error) {
         showError(error);
@@ -90,6 +84,19 @@ const Chat = ({ roomId }: ChatProps) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      <div className="flex flex-col p-4">
+        <div className="flex justify-start items-center gap-4">
+          <h1 className="text-title">
+            {room?.photographer.firstname} {room?.photographer.lastname}
+          </h1>{" "}
+          <h2 className="text-standard text-xl">
+            @{room?.photographer.username}
+          </h2>{" "}
+        </div>
+        <h2 className="text-standard text-xl text-gray-600">
+          {room?.gallery.name}
+        </h2>
+      </div>
       <div className="flex-grow p-4 overflow-y-auto">
         {/* Render conversations */}
         {conversations.length > 0 &&
@@ -106,8 +113,7 @@ const Chat = ({ roomId }: ChatProps) => {
             return (
               <React.Fragment key={conversation.id}>
                 {showDateSeparator && (
-                  <div className="text-center py-2">
-                    {/* Format the date as you prefer */}
+                  <div className="text-center text-standard py-2">
                     {new Date(conversation.created_at).toLocaleDateString()}
                   </div>
                 )}

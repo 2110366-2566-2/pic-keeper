@@ -29,6 +29,13 @@ func (r *Resolver) GetRoom(c *gin.Context) {
 	}
 	roomObj.Gallery = *gallery
 
+	photographer, err := r.UserUsecase.UserRepo.FindOneById(c, roomObj.Gallery.PhotographerId)
+	if err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+	roomObj.Photographer = *photographer
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 		"data":   roomObj,

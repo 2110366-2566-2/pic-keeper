@@ -1,4 +1,5 @@
 import { Gallery } from "./gallery";
+import { User } from "./user";
 
 export interface Room {
   id: string;
@@ -6,6 +7,7 @@ export interface Room {
   updated_at: string;
   deleted_at?: string;
   gallery: Gallery;
+  photographer: User;
 }
 
 export interface UserRoomLookup {
