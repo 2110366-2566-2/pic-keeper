@@ -2,53 +2,95 @@
 
 import Chat from "./Chat/Chat";
 import { FaUserCircle } from "react-icons/fa";
-import { GalleryCard } from "./Gallery";
+import { GalleryCard, PackageInfo } from "./Gallery";
 import { useEffect, useState } from "react";
 import roomService from "@/services/room";
 import { Room } from "@/types/room";
+import { useErrorModal } from "@/hooks/useErrorModal";
+import ProfileImage from "./shared/ProfileImage";
+import { generateProfilePictureUrl } from "@/utils/s3";
+import { useRouter } from "next/navigation";
 
 interface Props {
   roomId: string;
 }
 
 const ChatSystem = ({ roomId }: Props) => {
-  const [room, setRoom] = useState<Room>();
+  const [currRoom, setCurrRoom] = useState<Room>();
+  const [rooms, setRooms] = useState<Room[]>();
+  const showError = useErrorModal();
+  const router = useRouter();
+
   useEffect(() => {
     const fetchRoomInfo = async () => {
-      const response = await roomService.getRoomInfo(roomId);
-      if (response.data) {
-        setRoom(response.data);
+      try {
+        const response = await roomService.getRoomInfo(roomId);
+        if (response.data) {
+          setCurrRoom(response.data);
+        }
+      } catch (error) {
+        showError(error);
       }
     };
     fetchRoomInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
+
+  useEffect(() => {
+    const fetchRoomsInfo = async () => {
+      try {
+        const response = await roomService.getAllRooms();
+        if (response.data) {
+          setRooms(response.data);
+        }
+      } catch (error) {
+        showError(error);
+      }
+    };
+
+    fetchRoomsInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <div className="h-screen w-screen m-auto flex justify-center bg-stone-100">
-      <div className="flex flex-row w-full mx-5 mb-20">
-        {/* chat list */}
-        <div className="w-[30%] grid place-items-center">
-          <div className="w-[95%] h-[95%] bg-white rounded-xl shadow-lg flex flex-col">
-            <div className="text-3xl font-semibold pt-8 pl-8 pb-4">
-              Messages
-            </div>
-            <form className="w-[85%]">
-              <input
-                id="email"
-                type="text"
-                placeholder="Search for chat"
-                className="form-input text-black text-lg my-2 mx-[7%]"
-              />
-            </form>
-            {/* message list */}
-            <div className="w-[85%] mx-[7%] mt-5 flex flex-col">
+    <div className="grid grid-cols-7 h-[90vh] gap-4 p-4">
+      {/* chat list */}
+      <div className="col-span-2 rounded-xl shadow-lg flex flex-col h-[90vh] bg-white overflow-y-scroll">
+        <div className="text-3xl font-semibold pt-8 pl-8 pb-4">Messages</div>
+        <form className="w-[85%]">
+          <input
+            id="email"
+            type="text"
+            placeholder="Search for chat"
+            className="form-input text-black text-lg my-2 mx-[7%]"
+          />
+        </form>
+        {/* message list */}
+        {rooms &&
+          rooms.map((room, index) => (
+            <div
+              className=" mt-5 flex flex-col cursor-pointer"
+              key={room.id}
+              onClick={() => {
+                router.push(`/chat/${room.id}`);
+              }}
+            >
               {/* msg#1 */}
-              <div className="flex flex-row my-3">
-                <div className="w-[15%] text-8xl mr-2">
-                  <FaUserCircle />
+              <div className="flex flex-row my-3 items-center o">
+                <div className="w-16 h-16">
+                  <ProfileImage
+                    src={generateProfilePictureUrl(
+                      room.other_users[0].profile_picture_key
+                    )}
+                    size={16}
+                  />
                 </div>
                 <div className="w-[65%] flex flex-col justify-left mx-12 my-2">
-                  <div className="font-semibold text-xl">Photographer A</div>
-                  <div>Gallery 1</div>
+                  <div className="font-semibold text-xl">
+                    {room.other_users[0].firstname}{" "}
+                    {room.other_users[0].lastname}
+                  </div>
+                  <div>{room.gallery.name}</div>
                   <div className="text-gray-400">Lastest Message</div>
                 </div>
                 <div className="w-[20%] flex flex-col items-center my-4">
@@ -57,91 +99,34 @@ const ChatSystem = ({ roomId }: Props) => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* chat box */}
-        <div className="w-[45%] grid place-items-center">
-          <div className="w-[95%] h-[95%] bg-white rounded-xl shadow-lg flex items-center justify-center text-lg">
-            <Chat roomId={roomId} />
-          </div>
-        </div>
-
-        {/* gallery */}
-        {room && (
-          <div className="w-[25%] grid place-items-center">
-            <div className="w-[95%] h-[95%] flex flex-col">
-              {/* gallery picture */}
-
-              <div className="h-[40%] mb-4">
-                <GalleryCard galleryId={room?.gallery.id} />
-              </div>
-
-              {/* gallery details */}
-              <div className="h-[60%] mt-4">
-                <div className="w-[100%] h-[100%] bg-white rounded-xl shadow-lg flex flex-col justify-between">
-                  <div className="flex flex-col">
-                    <div className="text-2xl font-semibold pt-8 pl-8 pb-4">
-                      Current Package
-                    </div>
-                    <div className="w-[90%] h-1 mx-[5%] bg-stone-200"></div>
-                    <div className="text-2xl font-semibold pt-4 px-8 pb-8 flex flex-row justify-between">
-                      <div>Gallery 2</div>
-                      <div className="text-amber-500">1290 THB</div>
-                    </div>
-                    <div className="flex flex-row items-center pl-10">
-                      <div className="w-3 h-3 rounded-full bg-black mr-2"></div>
-                      <div className="text-lg font-semibold px-1 py-1">
-                        Specified Date and Time
-                      </div>
-                    </div>
-                    <div className="flex flex-row items-center pl-10">
-                      <div className="w-3 h-3 rounded-full bg-black mr-2"></div>
-                      <div className="text-lg font-semibold px-1 py-1">
-                        Specified Event Length
-                      </div>
-                    </div>
-                    <div className="flex flex-row items-center pl-10">
-                      <div className="w-3 h-3 rounded-full bg-black mr-2"></div>
-                      <div className="text-lg font-semibold px-1 py-1">
-                        Specified Location
-                      </div>
-                    </div>
-                    <div className="flex flex-row items-center pl-10">
-                      <div className="w-3 h-3 rounded-full bg-black mr-2"></div>
-                      <div className="text-lg font-semibold px-1 py-1">
-                        Specified Delivery Time
-                      </div>
-                    </div>
-                    <div className="flex flex-row items-center pl-10 pt-6">
-                      <div className="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
-                      <div className="text-lg font-semibold text-gray-400 px-1 py-1">
-                        10 Printed Images
-                      </div>
-                    </div>
-                    <div className="flex flex-row items-center pl-10">
-                      <div className="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
-                      <div className="text-lg font-semibold text-gray-400 px-1 py-1">
-                        RAW File
-                      </div>
-                    </div>
-                    <div className="flex flex-row items-center pl-10">
-                      <div className="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
-                      <div className="text-lg font-semibold text-gray-400 px-1 py-1">
-                        1 Video
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-[90%] h-[10%] bg-amber-500 m-[5%] rounded-md font-semibold text-xl text-white grid place-items-center">
-                    Book
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+          ))}
       </div>
+
+      {/* chat box */}
+      <div className="col-span-3 h-full">
+        <div className=" bg-white rounded-xl shadow-lg flex items-center justify-center text-lg overflow-y-scroll h-[90vh]">
+          <Chat roomId={roomId} />
+        </div>
+      </div>
+
+      {/* gallery */}
+      {currRoom && (
+        <div className="col-span-2 flex flex-col justify-between gap-4">
+          <div className="">
+            <GalleryCard galleryId={currRoom?.gallery.id} />
+          </div>
+
+          {/* gallery details */}
+          <div className="bg-white rounded-xl shadow-lg flex flex-col justify-between gap-4 p-4">
+            <div className="text-2xl font-semibold">Current Package</div>
+            <div className="border-t-2 border-gray-300 max-h-64 overflow-y-scroll">
+              <PackageInfo gallery={currRoom.gallery} />
+            </div>
+
+            <div className="btn-primary self-center px-32 py-2">Book</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

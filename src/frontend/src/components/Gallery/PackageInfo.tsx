@@ -8,7 +8,7 @@ interface Props {
 
 const PackageInfo = ({ gallery }: Props) => {
   return (
-    <div className="space-y-4 rounded-xl ring-1 p-4 ring-gray-300 max-h-64 overflow-y-scroll">
+    <div className="space-y-4  p-4">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold text-gray-900">Package</h2>
         <p className="text-lg font-bold text-amber-600">{gallery.price} THB</p>

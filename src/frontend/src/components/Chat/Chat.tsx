@@ -82,7 +82,7 @@ const Chat = ({ roomId }: ChatProps) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col w-full h-full bg-stone-50">
       <div className="flex flex-col p-4">
         <div className="flex justify-start items-center gap-4">
           <h1 className="text-title">
