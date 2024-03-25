@@ -1,14 +1,37 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useState } from "react";
+import { PhotographerStatus } from "@/types/user";
+import photographerGalleriesService from "@/services/photographerGalleries";
+import { useErrorModal } from "@/hooks/useErrorModal";
+import { Gallery } from "@/types/gallery";
+import GalleryCard from "@/components/Gallery/GalleryCard";
 
 const AddNewGallery = () => {
   const router = useRouter();
+  const showError = useErrorModal();
+  const [listOfGalleries, setListOfGalleries] = useState<Gallery[]>([]);
 
   const handleAddClick = () => {
-    // Assuming your path to the page is '/create-gallery'
-    router.push("my-galleries/create-gallery");
+    router.push("/galleries/create-gallery");
   };
+
+  useEffect(() => {
+    const fetchAllGalleries = async () => {
+      try {
+        const response = await photographerGalleriesService.getAllMyGalleries();
+        if (response.data) {
+          setListOfGalleries(response.data);
+        }
+      } catch (error) {
+        showError(error);
+      }
+    };
+    fetchAllGalleries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -27,6 +50,19 @@ const AddNewGallery = () => {
             </div>
           </div>
         </div>
+      </div>
+      {/* GALLERIES */}
+      <div className="grid grid-cols-auto-fill-300 2xl:grid-cols-auto-fill-400 gap-4 p-4">
+        {/* GALLERY COMPONENT */}
+        {listOfGalleries &&
+          listOfGalleries.map((Gallery, index) => (
+            <GalleryCard
+              key={index}
+              galleryId={Gallery.id}
+              photographerId={Gallery.photographer_id}
+              price={Gallery.price}
+            />
+          ))}
       </div>
     </div>
   );

@@ -7,11 +7,13 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type ContextKey string
-type LoginCredentials struct {
-	Email    string `json:"email" example:"test@mail.com"`
-	Password string `json:"password" example:"abc123"`
-}
+type (
+	ContextKey       string
+	LoginCredentials struct {
+		Email    string `json:"email" example:"test@mail.com"`
+		Password string `json:"password" example:"abc123"`
+	}
+)
 
 const (
 	PhotographerNotVerifiedStatus = "NOT_VERIFIED"
@@ -38,6 +40,7 @@ type User struct {
 	Firstname          string    `bun:"firstname,type:varchar" json:"firstname"`
 	Lastname           string    `bun:"lastname,type:varchar" json:"lastname"`
 	VerificationStatus string    `bun:"verification_status,type:varchar" json:"verification_status"`
+	IsAdmin            bool      `bun:"is_admin,type:boolean" json:"is_admin"`
 	About              *string   `bun:"about,type:varchar" json:"about"`
 	Address            *string   `bun:"address,type:varchar" json:"address"`
 	PhoneNumber        *string   `bun:"phone_number,type:varchar" json:"phone_number"`
@@ -61,14 +64,6 @@ type UserUpdateInput struct {
 	About       *string `json:"about" example:"Hello"`
 	Username    *string `json:"username" example:"test"`
 	Address     *string `json:"address" example:"Bangkok"`
-}
-
-type Administrator struct {
-	bun.BaseModel `bun:"table:administrators,alias:admin"`
-	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	Email         string    `bun:"email,type:varchar" json:"email"`
-	Password      string    `bun:"password,type:varchar" json:"password"`
-	LoggedOut     bool      `bun:"logged_out,type:boolean" json:"logged_out"`
 }
 
 type Gallery struct {
@@ -95,12 +90,14 @@ type GalleryInput struct {
 }
 
 const (
+	BookingDraftStatus                 = "DRAFT"
 	BookingPaidStatus                  = "USER_PAID"
 	BookingCancelledStatus             = "CANCELLED"
 	BookingCustomerReqCancelStatus     = "C_REQ_CANCEL"
 	BookingPhotographerReqCancelStatus = "P_REQ_CANCEL"
 	BookingCompletedStatus             = "COMPLETED"
 	BookingPaidOutStatus               = "PAID_OUT"
+	BookingRefundReqStatus             = "REQ_REFUND"
 )
 
 type BookingProposal struct {
@@ -123,10 +120,13 @@ type Booking struct {
 }
 
 type SearchFilter struct {
-	PhotographerId *uuid.UUID `form:"photographer_id"`
-	Location       *string    `form:"location"`
-	MinPrice       *int       `form:"min_price"`
-	MaxPrice       *int       `form:"max_price"`
+	PhotographerId                  *string `binding:"omitempty,uuid" form:"photographer_id"`
+	MatchedConditionPhotographerIds []uuid.UUID
+	GalleryName                     *string `form:"gallery_name"`
+	PhotographerName                *string `form:"photographer_name"`
+	Location                        *string `form:"location"`
+	MinPrice                        *int    `form:"min_price"`
+	MaxPrice                        *int    `form:"max_price"`
 }
 
 type Room struct {
@@ -134,6 +134,7 @@ type Room struct {
 	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	GalleryId     uuid.UUID  `bun:"gallery_id,type:uuid" json:"-"`
 	Gallery       Gallery    `bun:"-" json:"gallery"`
+	OtherUsers    []*User    `bun:"-" json:"other_users"`
 	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
 	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
 	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`
@@ -170,4 +171,45 @@ type Photo struct {
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
 	PhotoKey      string    `bun:"photo_key,type:varchar" json:"photo_key"`
+}
+
+const (
+	IssueOpenStatus   = "OPEN"
+	IssueClosedStatus = "CLOSED"
+)
+
+const (
+	IssueRefundSubject    = "REFUND"
+	IssueTechnicalSubject = "TECHNICAL"
+)
+
+type Issue struct {
+	bun.BaseModel `bun:"table:issues,alias:issues"`
+	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	ReporterId    uuid.UUID `bun:"reporter_id,type:uuid" json:"-"`
+	Reporter      User      `bun:"-" json:"reporter"`
+	Status        string    `bun:"status,type:varchar" json:"status"`
+	Subject       string    `bun:"subject,type:varchar" json:"subject"`
+	DueDate       time.Time `bun:"due_date,type:timestamptz,default:now()" json:"due_date"`
+	Description   string    `bun:"description,type:varchar" json:"description"`
+	CreatedAt     time.Time `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+}
+
+type IssueInput struct {
+	Description *string `json:"description"`
+}
+
+type IssueFilter struct {
+	ReporterId *string    `binding:"omitempty,uuid" form:"reporter_id"`
+	Status     *string    `form:"status"`
+	DueDate    *time.Time `form:"due_date" time_format:"2006-01-02" time_utc:"7"`
+	CreatedAt  *time.Time `form:"created_at" time_format:"2006-01-02" time_utc:"7"`
+	Subject    *string    `form:"subject"`
+}
+
+type IssueHeaderMetadata struct {
+	PendingTickets  int `json:"pending_tickets"`
+	TicketsToday    int `json:"tickets_today"`
+	TicketsDueToday int `json:"tickets_due_today"`
+	ClosedTickets   int `json:"closed_tickets"`
 }

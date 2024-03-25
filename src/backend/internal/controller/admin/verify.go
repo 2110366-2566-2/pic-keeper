@@ -20,6 +20,15 @@ import (
 // @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Issues with finding the photographer in the database"
 // @Router       /admin/v1/verifications/verify/:id [get]
 func (r *Resolver) Verify(c *gin.Context) {
+	adminObj, ok := getAdmin(c)
+	if !ok {
+		return
+	}
+
+	if ok := checkIsAdmin(adminObj, c); !ok {
+		return
+	}
+
 	photographerId := c.Param("id")
 
 	toBeVrf, err := r.UserUsecase.UserRepo.FindOneById(c, uuid.MustParse(photographerId))

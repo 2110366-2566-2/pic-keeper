@@ -7,6 +7,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/controller"
 	"github.com/Roongkun/software-eng-ii/internal/controller/chat"
 	"github.com/Roongkun/software-eng-ii/internal/controller/middleware"
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/databases"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/gin-contrib/cors"
@@ -49,6 +50,7 @@ var ServeCmd = &cobra.Command{
 		db := databases.ConnectSQLDB(appCfg.Database.Postgres.DSN)
 		handler := controller.NewHandler(db)
 		redisClient := databases.ConnectRedis(appCfg.Database.Redis.DSN)
+		util.InitNgrokEndpoint(appCfg.NgrokEndpoint)
 
 		autoUpdateBookingStatus(handler)
 
@@ -67,30 +69,13 @@ var ServeCmd = &cobra.Command{
 			log.Fatalf("Failed to initialize S3: %v", err)
 		}
 
-		admin := r.Group("/admin")
-		{
-			admin := admin.Group("/v1")
-			admin.Use(retrieveAdminSecretConf(appCfg))
-			admin.POST("/login", handler.Admin.Login)
-			admin.GET("/refresh", handler.Admin.RefreshToken)
-			admin.Use(middleware.ValidateCredentials)
-			admin.Use(handler.Admin.GetAdminInstance)
-
-			verification := admin.Group("/verifications")
-			{
-				verification.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
-				verification.PUT("/verify/:id", handler.Admin.Verify)
-				verification.PUT("/reject/:id", handler.Admin.Reject)
-			}
-			admin.PUT("/logout", handler.Admin.Logout)
-		}
-
 		authen := r.Group("/authen")
 		{
 			authen := authen.Group("/v1")
 			authen.POST("/register", handler.User.Register)
 			authen.POST("/login", handler.User.Login)
 			authen.GET("/refresh", handler.User.RefreshToken)
+
 			google := authen.Group("/google")
 			{
 				google.Use(setOAuth2GoogleConf(appCfg))
@@ -101,6 +86,7 @@ var ServeCmd = &cobra.Command{
 
 		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
 		defer chatEntity.Close()
+
 		chats := r.Group("/chat")
 		{
 			chats := chats.Group("/v1")
@@ -113,6 +99,16 @@ var ServeCmd = &cobra.Command{
 			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
 		}
 
+		usersNonValidated := r.Group("/users/v1")
+		{
+			usersNonValidated.GET("/get-user/:id", handler.User.GetUserInfo)
+		}
+
+		phtgGalleriesNonValidated := r.Group("photographers/galleries/v1")
+		{
+			phtgGalleriesNonValidated.GET("/:id", handler.Photographer.GetOneGallery)
+		}
+
 		validated := r.Group("/", middleware.UserAuthorizationMiddleware)
 		validated.Use(handler.User.GetUserInstance)
 
@@ -122,10 +118,23 @@ var ServeCmd = &cobra.Command{
 			users.PUT("/logout", handler.User.Logout)
 			users.POST("/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
-			users.GET("/get-user/:id", handler.User.GetUserInfo)
 			users.PUT("/", handler.User.UpdateUserProfile)
 			users.PUT("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
+			users.POST("/report-issue", handler.User.ReportIssue)
+		}
+
+		admin := validated.Group("/admin")
+		{
+			admin := admin.Group("/v1")
+			admin.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
+			admin.PUT("/verify/:id", handler.Admin.Verify)
+			admin.PUT("/reject/:id", handler.Admin.Reject)
+			admin.GET("/pending-refund-bookings", handler.Admin.ListPendingRefundBookings)
+			admin.PUT("/bookings/reject/:id", handler.Admin.RejectRefundBooking)
+			admin.PUT("/bookings/refund/:id", handler.Admin.ApproveRefundBooking)
+			admin.GET("/issues", handler.Admin.GetIssuesWithOption)
+			admin.GET("/issue-header", handler.Admin.GetIssueHeaderMetadata)
 		}
 
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
@@ -137,7 +146,6 @@ var ServeCmd = &cobra.Command{
 			phtgGalleries.PUT("/:id", handler.Photographer.UpdateGallery)
 			phtgGalleries.DELETE("/:id/:photoId", handler.Photographer.DeletePhoto)
 			phtgGalleries.DELETE("/:id", handler.Photographer.DeleteGallery)
-			phtgGalleries.GET("/:id", handler.Photographer.GetOneGallery)
 
 			phtgBookings := photographers.Group("/bookings/v1")
 			phtgBookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
@@ -151,12 +159,14 @@ var ServeCmd = &cobra.Command{
 		customerBookings := validated.Group("/customers/bookings/v1")
 		{
 			customerBookings.POST("/", handler.User.CreateBooking)
+			customerBookings.GET("/get-qr/:id", handler.User.GetQRCode)
 			customerBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
 			customerBookings.GET("/upcoming", handler.User.ListUpcomingBookings)
 			customerBookings.GET("/past", handler.User.ListPastBookings)
 			customerBookings.GET("/my-bookings", handler.User.MyBookings)
 			customerBookings.GET("/:id", handler.User.GetOneBooking)
 			customerBookings.PUT("/cancel/:id", handler.User.CancelBooking)
+			customerBookings.PUT("/req-refund/:id", handler.User.RequestRefundBooking)
 			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
 		}
 
@@ -167,7 +177,11 @@ var ServeCmd = &cobra.Command{
 			rooms.GET("/", handler.Room.GetRooms)
 			rooms.GET("/:id", handler.Room.GetRoom)
 			rooms.GET("/conversation/:id", handler.Room.GetAllConversations)
+			rooms.GET("/gallery/:galleryId", handler.Room.GetRoomOfUserByGalleryId)
 		}
+
+		r.GET("/payment/:bookingId", handler.User.MakeBookingPayment)
+
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		r.Run()
 

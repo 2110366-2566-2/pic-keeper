@@ -1,5 +1,6 @@
 "use client";
 
+import { useErrorModal } from "@/hooks/useErrorModal";
 import userService from "@/services/user";
 import { UserUpdateInput } from "@/types/user";
 import { signOut } from "next-auth/react";
@@ -12,6 +13,8 @@ const AccountManagement = () => {
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
 
+  const showError = useErrorModal();
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -21,11 +24,12 @@ const AccountManagement = () => {
           setPhoneNumber(userInfo.data.phone_number);
         }
       } catch (error) {
-        console.error("Failed to fetch user info:", error);
+        showError(error, "Failed to fetch user info");
       }
     };
 
     fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -44,8 +48,7 @@ const AccountManagement = () => {
           await signOut({ redirect: true, callbackUrl: "/auth/login" });
         }
       } catch (error) {
-        console.error("Error updating user", error);
-        // Handle error, maybe show user feedback
+        showError(error, "An error occurred while updating user");
       }
     }
   };

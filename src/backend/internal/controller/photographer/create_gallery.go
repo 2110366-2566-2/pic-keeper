@@ -11,20 +11,13 @@ import (
 )
 
 func (r *Resolver) CreateGallery(c *gin.Context) {
-	user, exists := c.Get("user")
-	if !exists {
-		util.Raise400Error(c, "Failed to retrieve photographer from context")
-		return
-	}
-
-	userObj, ok := user.(model.User)
+	photographer, ok := getPhotographer(c)
 	if !ok {
-		util.Raise400Error(c, "Failed to retrieve photographer from context")
 		return
 	}
 
 	// double-check here
-	if userObj.VerificationStatus != model.PhotographerVerifiedStatus {
+	if photographer.VerificationStatus != model.PhotographerVerifiedStatus {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
 			"error":  "You have not yet been verified, only verified photographers can create galleries",
@@ -51,7 +44,7 @@ func (r *Resolver) CreateGallery(c *gin.Context) {
 	newGallery := model.Gallery{
 		Id:             uuid.New(),
 		Location:       *galleryInput.Location,
-		PhotographerId: userObj.Id,
+		PhotographerId: photographer.Id,
 		Name:           *galleryInput.Name,
 		Price:          *galleryInput.Price,
 		Hours:          *galleryInput.Hours,

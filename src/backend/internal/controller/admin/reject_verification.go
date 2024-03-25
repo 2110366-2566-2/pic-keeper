@@ -9,6 +9,15 @@ import (
 )
 
 func (r *Resolver) Reject(c *gin.Context) {
+	adminObj, ok := getAdmin(c)
+	if !ok {
+		return
+	}
+
+	if ok := checkIsAdmin(adminObj, c); !ok {
+		return
+	}
+
 	photographerId := c.Param("id")
 
 	toBeRejected, err := r.UserUsecase.UserRepo.FindOneById(c, uuid.MustParse(photographerId))

@@ -10,7 +10,7 @@ const ProfileImage = ({ src, size }: Props) => {
   return (
     <div className={containerClasses}>
       <Image
-        src={src}
+        src={src || "/images/no-picture.jpeg"}
         alt=""
         className="rounded-full object-cover"
         fill={true}
