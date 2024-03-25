@@ -3,8 +3,8 @@ package room
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/user"
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -17,10 +17,8 @@ func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
 		return
 	}
 
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+	userObj, ok := user.GetUser(c)
 	if !ok {
-		util.Raise400Error(c, "could not bind json")
 		return
 	}
 
