@@ -162,7 +162,7 @@ var ServeCmd = &cobra.Command{
 		customerReviews := validated.Group("/customers/reviews/v1")
 		{
 			customerReviews.POST("/", handler.User.CreateReview)
-			// customerReviews.GET("/:id", handler.User.GetOneReview)
+			customerReviews.GET("/:id", handler.User.GetOneReview)
 			// customerReviews.GET("/my-reviews", handler.User.MyReviews)
 		}
 
