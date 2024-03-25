@@ -54,12 +54,6 @@ func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
 		room.OtherUsers = otherUsers
 		room.Gallery = *gallery
 
-		photographer, err := r.UserUsecase.UserRepo.FindOneById(c, room.Gallery.PhotographerId)
-		if err != nil {
-			util.Raise500Error(c, err)
-			return
-		}
-		room.Photographer = *photographer
 	}
 
 	c.JSON(http.StatusOK, gin.H{

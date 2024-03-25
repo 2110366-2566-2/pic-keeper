@@ -48,6 +48,13 @@ const Chat = ({ roomId }: ChatProps) => {
       }
     }
 
+    async function fetchUserInfo(roomId: string) {
+      try {
+        const userLookupResponse = await roomService.
+        const userResponse = await userService
+      }
+    }
+
     fetchRoomInfo();
     fetchOldConversation();
     // eslint-disable-next-line react-hooks/exhaustive-deps

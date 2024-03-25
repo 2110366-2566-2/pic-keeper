@@ -45,13 +45,6 @@ func (r *Resolver) GetRooms(c *gin.Context) {
 		existingRoom.Gallery = *gallery
 		existingRoom.OtherUsers = otherUsers
 
-		photographer, err := r.UserUsecase.UserRepo.FindOneById(c, existingRoom.Gallery.PhotographerId)
-		if err != nil {
-			util.Raise500Error(c, err)
-			return
-		}
-		existingRoom.Photographer = *photographer
-
 		rooms = append(rooms, existingRoom)
 	}
 
