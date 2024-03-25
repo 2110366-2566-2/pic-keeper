@@ -22,6 +22,8 @@ export interface NewGallery {
 
 export interface SearchFilter {
   photographer_id?: string;
+  gallery_name?: string;
+  photographer_name?: string;
   location?: string;
   min_price?: number;
   max_price?: number;

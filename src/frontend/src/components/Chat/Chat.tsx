@@ -4,10 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { useWebSocket } from "@/context/WebSocketContext";
-
 import roomService from "@/services/room";
 import { isDifferentDay } from "@/utils/date";
-import { Conversation } from "@/types/room";
+import { Conversation, Room } from "@/types/room";
+import { useErrorModal } from "@/hooks/useErrorModal";
+import { User } from "@/types/user";
+import userService from "@/services/user";
 
 interface ChatProps {
   roomId: string;
@@ -19,20 +21,43 @@ const Chat = ({ roomId }: ChatProps) => {
   const { data: session } = useSession();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const bottomOfChat = useRef<HTMLDivElement>(null);
+  const showError = useErrorModal();
+  const [room, setRoom] = useState<Room>();
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     const fetchOldConversation = async () => {
-      const conversations = await roomService.getAllConversations(roomId);
-      if (conversations.data) {
-        setConversations(conversations.data.reverse());
+      try {
+        const conversations = await roomService.getAllConversations(roomId);
+        if (conversations.data) {
+          setConversations(conversations.data.reverse());
+        }
+      } catch (error) {
+        showError(error);
       }
     };
+
+    async function fetchRoomInfo() {
+      try {
+        const roomResponse = await roomService.getRoomInfo(roomId);
+        if (roomResponse.data) {
+          setRoom(roomResponse.data);
+        }
+      } catch (error) {
+        showError(error);
+      }
+    }
+
+    fetchRoomInfo();
     fetchOldConversation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   useEffect(() => {
     bottomOfChat.current?.scrollIntoView({ behavior: "instant" });
   }, [messages, conversations]);
+
+  useEffect(() => {});
 
   const handleSendMessage = () => {
     if (!session?.user?.data?.id) {
@@ -59,6 +84,19 @@ const Chat = ({ roomId }: ChatProps) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      <div className="flex flex-col p-4">
+        <div className="flex justify-start items-center gap-4">
+          <h1 className="text-title">
+            {room?.other_users[0].firstname} {room?.other_users[0].lastname}
+          </h1>{" "}
+          <h2 className="text-standard text-xl">
+            @{room?.other_users[0].username}
+          </h2>{" "}
+        </div>
+        <h2 className="text-standard text-xl text-gray-600">
+          {room?.gallery.name}
+        </h2>
+      </div>
       <div className="flex-grow p-4 overflow-y-auto">
         {/* Render conversations */}
         {conversations.length > 0 &&
@@ -75,8 +113,7 @@ const Chat = ({ roomId }: ChatProps) => {
             return (
               <React.Fragment key={conversation.id}>
                 {showDateSeparator && (
-                  <div className="text-center py-2">
-                    {/* Format the date as you prefer */}
+                  <div className="text-center text-standard py-2">
                     {new Date(conversation.created_at).toLocaleDateString()}
                   </div>
                 )}
@@ -109,7 +146,8 @@ const Chat = ({ roomId }: ChatProps) => {
         <div ref={bottomOfChat}></div>
         {messages.map(
           (message, index) =>
-            message.type === "message" && (
+            message.type === "message" &&
+            message.room === roomId && (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 50 }}

@@ -18,6 +18,15 @@ import (
 //
 // @Router       /admin/v1/verifications/pending-photographers [get]
 func (r *Resolver) ListPendingPhotographers(c *gin.Context) {
+	adminObj, ok := getAdmin(c)
+	if !ok {
+		return
+	}
+
+	if ok := checkIsAdmin(adminObj, c); !ok {
+		return
+	}
+
 	pendingPhotographers, err := r.UserUsecase.ListPendingPhotographers(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

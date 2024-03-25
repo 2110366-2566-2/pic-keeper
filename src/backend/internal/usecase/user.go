@@ -33,9 +33,13 @@ func (u *UserUseCase) ListPendingPhotographers(ctx context.Context) ([]*model.Us
 }
 
 func (u *UserUseCase) FindOneByUsername(ctx context.Context, username string) (*model.User, error) {
-	return u.UserRepo.FindOneByEmail(ctx, username)
+	return u.UserRepo.FindOneByUsername(ctx, username)
 }
 
 func (u *UserUseCase) CheckUsernameAlreadyBeenUsed(ctx context.Context, username string, proposedUserId uuid.UUID) (bool, error) {
 	return u.UserRepo.CheckUsernameAlreadyBeenUsed(ctx, username, proposedUserId)
+}
+
+func (u *UserUseCase) FindPhotograperIdsNameAlike(ctx context.Context, name string) ([]uuid.UUID, error) {
+	return u.UserRepo.FindPhotographerIdsNameAlike(ctx, name)
 }

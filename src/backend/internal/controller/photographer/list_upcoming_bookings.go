@@ -9,14 +9,12 @@ import (
 )
 
 func (r *Resolver) ListUpcomingBookings(c *gin.Context) {
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+	photographer, ok := getPhotographer(c)
 	if !ok {
-		util.Raise400Error(c, "Invalid user type in context")
 		return
 	}
 
-	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, userObj.Id, r.GalleryUsecase, model.BookingPaidStatus)
+	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, photographer.Id, r.GalleryUsecase, model.BookingPaidStatus)
 	if err != nil {
 		util.Raise500Error(c, err)
 		return

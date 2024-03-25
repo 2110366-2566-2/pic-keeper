@@ -10,7 +10,7 @@ secretKey: ""
 
 administrator_secretKey: ""
 
-administrator_ip: []
+ngrok_endpoint: ""
 
 oauth2_google:
   client_id: ""

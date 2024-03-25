@@ -1,6 +1,7 @@
 "use client";
 
-import useAxiosAuth from "@/hooks/useAxiosAuth";
+import useApiWithAuth from "@/hooks/useApiWithAuth";
+import { useErrorModal } from "@/hooks/useErrorModal";
 import userService from "@/services/user";
 import { UploadProfilePictureResponse } from "@/types/response";
 import { Gender, UserUpdateInput } from "@/types/user";
@@ -20,8 +21,9 @@ const EditProfilePage = () => {
   const [username, setUsername] = useState("");
   const [address, setAddress] = useState("");
 
-  const apiClientForForm = useAxiosAuth();
+  const apiClientForForm = useApiWithAuth();
   const { data: session, update } = useSession();
+  const showError = useErrorModal();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,13 +38,14 @@ const EditProfilePage = () => {
         setAbout(userInfo.data?.about || "");
         setUsername(userInfo.data?.username || "");
         setAddress(userInfo.data?.address || "");
-        setPhotoPreview(userInfo.profile_picture_url);
+        setPhotoPreview(userInfo.profile_picture_url || "");
       } catch (error) {
-        console.error("Failed to fetch user info", error);
+        showError(error, "Failed to fetch user Info");
       }
     };
 
     fetchUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleEditPhotoClick = () => {
@@ -104,11 +107,8 @@ const EditProfilePage = () => {
           await update(updatedSession);
         }
       }
-
-      // Optionally, show success message or redirect
     } catch (error) {
-      console.error("Failed to update profile", error);
-      // Optionally, show error message
+      showError(error, "Failed to update profile");
     }
   };
 

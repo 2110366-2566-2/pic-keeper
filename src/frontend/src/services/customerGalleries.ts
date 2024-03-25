@@ -1,4 +1,4 @@
-import apiClient from "@/libs/apiClientWithAuth";
+import apiClient from "@/libs/apiClient";
 import { SearchFilter } from "@/types/gallery";
 import { GalleryListResponse, UrlsListResponse } from "@/types/response";
 
@@ -13,7 +13,6 @@ const search = async (searchFilter: SearchFilter = {}) => {
       }
     });
 
-    console.log(`${customerGalleriesBaseUrl}/search?${queryParams.toString()}`);
     const { data } = await apiClient.get<GalleryListResponse>(
       `${customerGalleriesBaseUrl}/search?${queryParams.toString()}`
     );

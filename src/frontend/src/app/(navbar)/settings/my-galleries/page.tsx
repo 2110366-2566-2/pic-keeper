@@ -50,7 +50,7 @@ const MyGalleriesPage = () => {
     }
   }, [isLoading, error, user]);
 
-  return <div className="max-w-4xl m-auto mx-4">{content}</div>;
+  return <div className="m-auto mx-4">{content}</div>;
 };
 
 export default MyGalleriesPage;

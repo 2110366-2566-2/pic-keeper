@@ -38,9 +38,7 @@ const ProfileMenu = () => {
         <>
           <Menu.Button className="flex items-center gap-2 text-sm rounded-full focus:ring-2 focus:ring-offset-2 focus:outline-none">
             <ProfileImage
-              src={
-                session?.user?.profile_picture_url || "/images/no-picture.jpeg"
-              }
+              src={session?.user?.profile_picture_url || "/images/nature.svg"}
               size={8}
             />
 
@@ -73,7 +71,7 @@ const ProfileMenu = () => {
                 </Menu.Item>
               ) : (
                 <>
-                  <MenuItem href="/user/edit-profile">Your Profile</MenuItem>
+                  <MenuItem href={`/view-profile/${session.user.data?.id}`}>Your Profile</MenuItem>
                   <MenuItem href="/settings/edit-profile">Settings</MenuItem>
                   <MenuItem href="/report-issues">Report issues</MenuItem>
                   <Menu.Item>

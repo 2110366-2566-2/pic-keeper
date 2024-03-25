@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useModal } from "@/context/ModalContext";
 
 interface ReportIssueProps {
     onCancel?: () => void;
@@ -6,33 +7,45 @@ interface ReportIssueProps {
 
 const ReportIssue: React.FC<ReportIssueProps> = ({ onCancel }) => {
     const [issue, setIssue] = useState<string>('');
+    const { openModal } = useModal();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         alert(`Issue reported: ${issue}`);
         setIssue('');
+
+        openModal(
+            <div className="p-4 max-w-md mx-auto bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">Issue Reported Successfully</h5>
+                <p className="text-base text-gray-500 dark:text-gray-400">Thank you for reporting the issue. We will look into it as soon as possible.</p>
+                <div className="flex justify-end mt-4">
+                    <button className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500" onClick={() => {/* Implement closing logic if necessary */ }}>Close</button>
+                </div>
+            </div>,
+            "Your report is submitted"
+        );
     };
 
     return (
-        <div style={styles.overlay}>
-            <div style={styles.modal}>
-                <h2 style={styles.header}>Report technical issue</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-40">
+            <div className="bg-white p-5 rounded-lg w-1/2 max-w-md shadow-md">
+                <h2 className="text-left text-2xl mb-5">Report technical issue</h2>
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="issueInput" style={styles.label}>
+                    <label htmlFor="issueInput" className="block mb-2">
                         Please specify
                     </label>
                     <textarea
                         id="issueInput"
                         value={issue}
-                        onChange={(e) => setIssue(e.target.value)}
-                        style={styles.textarea}
+                        onChange={e => setIssue(e.target.value)}
+                        className="w-full h-36 mb-2 p-2 text-base rounded-md border border-gray-300"
                         placeholder="Describe your issue here"
                     />
-                    <div style={styles.buttonContainer}>
-                        <button type="button" onClick={onCancel} style={styles.cancelButton}>
+                    <div className="flex justify-center mt-5">
+                        <button type="button" onClick={onCancel} className="bg-white text-gray-600 py-2 px-5 border-none rounded-md cursor-pointer text-lg mr-15">
                             Cancel
                         </button>
-                        <button type="submit" style={styles.submitButton}>
+                        <button type="submit" className="bg-yellow-500 text-white py-2 px-5 border-none rounded-md cursor-pointer text-lg">
                             Submit
                         </button>
                     </div>
@@ -40,75 +53,6 @@ const ReportIssue: React.FC<ReportIssueProps> = ({ onCancel }) => {
             </div>
         </div>
     );
-};
-
-const styles = {
-    overlay: {
-        position: 'fixed' as 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-    },
-    modal: {
-        backgroundColor: 'white',
-        padding: '20px',
-        borderRadius: '8px',
-        width: '50%',
-        maxWidth: '500px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    },
-    header: {
-        textAlign: 'left' as const,
-        fontSize: '24px',
-        marginBottom: '20px',
-    },
-    label: {
-        display: 'block',
-        marginBottom: '10px',
-    },
-    textarea: {
-        width: '100%',
-        height: '150px',
-        marginBottom: '10px',
-        padding: '10px',
-        fontSize: '16px',
-        borderRadius: '4px',
-        border: '1px solid #ccc',
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column' as 'column',
-    },
-    buttonContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: '20px',
-    },
-    cancelButton: {
-        backgroundColor: '#ffffff',
-        color: '#6b7280',
-        padding: '10px 20px',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontSize: '16px',
-        marginRight: '60px',
-    },
-    submitButton: {
-        backgroundColor: '#f59e0b',
-        color: 'white',
-        padding: '10px 20px',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontSize: '16px',
-    },
 };
 
 export default ReportIssue;

@@ -1,22 +1,19 @@
 "use client";
-import NavBar from "@/components/shared/Navbar/Navbar";
-import userService from "@/services/user";
-import { useSession } from "next-auth/react";
+import React from "react";
+import axios from "axios";
+import Landing from "@/components/Landing";
+import ReportIssue from "@/components/Popup/ReportIssue";
 
 export default function Home() {
-  const { data: session } = useSession();
 
-  const fetchUserInfo = async () => {
-    const response = await userService.getMyUserInfo();
-    console.log(response);
+  const handleOnClick = () => {
+    axios.post("/api/auth/signout");
   };
-  fetchUserInfo();
+
   return (
     <main>
-      <div className="w-screen h-screen">
-        <NavBar />
-        <div className="">Pic-Keeper</div>
-      </div>
+      {/* <Landing/> */}
+      <ReportIssue />
     </main>
   );
 }

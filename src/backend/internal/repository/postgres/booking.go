@@ -79,3 +79,12 @@ func (b *BookingDB) UpdateStatusRoutine(ctx context.Context, currentTime time.Ti
 
 	return nil
 }
+
+func (b *BookingDB) ListPendingRefundBookings(ctx context.Context) ([]*model.Booking, error) {
+	var bookings []*model.Booking
+	if err := b.db.NewSelect().Model(&bookings).Where("status = ?", model.BookingRefundReqStatus).Scan(ctx, &bookings); err != nil {
+		return nil, err
+	}
+
+	return bookings, nil
+}

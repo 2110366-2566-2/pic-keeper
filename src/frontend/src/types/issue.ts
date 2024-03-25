@@ -1,0 +1,41 @@
+import { User } from "next-auth";
+
+export enum IssueStatus {
+  Open = "OPEN",
+  Closed = "CLOSED",
+}
+
+export enum IssueSubject {
+  Refund = "REFUND",
+  Technical = "TECHNICAL",
+}
+
+export interface Issue {
+  id: string;
+  reporterId: string;
+  reporter: User;
+  status: string;
+  subject: string;
+  dueDate: Date;
+  description: string;
+  createdAt: Date;
+}
+
+export interface IssueInput {
+  description?: string;
+}
+
+export interface IssueFilter {
+  reporterId?: string;
+  status?: string;
+  dueDate?: Date;
+  createdAt?: Date;
+  subject?: string;
+}
+
+export interface IssueHeaderMetadata {
+  pendingTickets: number;
+  ticketsToday: number;
+  ticketsDueToday: number;
+  closedTickets: number;
+}
