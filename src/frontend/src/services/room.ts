@@ -34,7 +34,7 @@ const getAllRooms = async () => {
 const getRoomInfo = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.get<RoomResponse>(
-      `roomBaseUrl/${id}`
+      `${roomBaseUrl}/${id}`
     );
     return data;
   } catch (error) {

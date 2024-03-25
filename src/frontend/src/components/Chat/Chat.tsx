@@ -6,8 +6,10 @@ import { motion } from "framer-motion";
 import { useWebSocket } from "@/context/WebSocketContext";
 import roomService from "@/services/room";
 import { isDifferentDay } from "@/utils/date";
-import { Conversation } from "@/types/room";
+import { Conversation, Room } from "@/types/room";
 import { useErrorModal } from "@/hooks/useErrorModal";
+import { User } from "@/types/user";
+import userService from "@/services/user";
 
 interface ChatProps {
   roomId: string;
@@ -20,6 +22,8 @@ const Chat = ({ roomId }: ChatProps) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const bottomOfChat = useRef<HTMLDivElement>(null);
   const showError = useErrorModal();
+  const [room, setRoom] = useState<Room>();
+  const [photographer, setPhotographer] = useState<User>();
 
   useEffect(() => {
     const fetchOldConversation = async () => {
@@ -32,6 +36,25 @@ const Chat = ({ roomId }: ChatProps) => {
         showError(error);
       }
     };
+
+    async function fetchRoomInfo() {
+      try {
+        const roomResponse = await roomService.getRoomInfo(roomId);
+        if (roomResponse.data) {
+          setRoom(roomResponse.data);
+          const photographerResponse = await userService.getUserById(
+            roomResponse.data.gallery.photographer_id
+          );
+          if (photographerResponse) {
+            setPhotographer(photographerResponse.data.)
+          }
+        }
+      } catch (error) {
+        showError(error);
+      }
+    }
+
+    fetchRoomInfo();
     fetchOldConversation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
@@ -39,6 +62,8 @@ const Chat = ({ roomId }: ChatProps) => {
   useEffect(() => {
     bottomOfChat.current?.scrollIntoView({ behavior: "instant" });
   }, [messages, conversations]);
+
+  useEffect(() => {});
 
   const handleSendMessage = () => {
     if (!session?.user?.data?.id) {
