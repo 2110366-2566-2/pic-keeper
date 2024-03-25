@@ -86,6 +86,7 @@ var ServeCmd = &cobra.Command{
 
 		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
 		defer chatEntity.Close()
+
 		chats := r.Group("/chat")
 		{
 			chats := chats.Group("/v1")
