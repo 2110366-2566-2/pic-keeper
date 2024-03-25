@@ -1,3 +1,4 @@
+import apiClient from "@/libs/apiClient";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import { NewGallery } from "@/types/gallery";
 import {
@@ -93,7 +94,7 @@ const deletePhotoFromGallery = async (id: string, photoId: string) => {
 
 const getGallery = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<GalleryResponse>(
+    const { data } = await apiClient.get<GalleryResponse>(
       `${photographerGalleryBaseUrl}/${id}`
     );
     return data;

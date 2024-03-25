@@ -75,3 +75,7 @@ func (b *BookingUseCase) UpdateStatusRoutine() error {
 	currentTime := time.Now()
 	return b.BookingRepo.UpdateStatusRoutine(context.Background(), currentTime)
 }
+
+func (b *BookingUseCase) ListPendingRefundBookings(ctx context.Context) ([]*model.Booking, error) {
+	return b.BookingRepo.ListPendingRefundBookings(ctx)
+}

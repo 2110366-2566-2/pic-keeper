@@ -4,6 +4,7 @@ import {
   ConversationListResponse,
   RoomResponse,
   RoomListResponse,
+  GetRoomOfUserByGalleryIdResponse,
 } from "@/types/response";
 import { RoomMemberInput } from "@/types/room";
 
@@ -11,7 +12,7 @@ const roomBaseUrl = "/rooms/v1";
 
 const createRoom = async (roomMembers: RoomMemberInput) => {
   try {
-    const { data } = await apiClientWithAuth.post<UserRoomLookUpListResponse>(
+    const { data } = await apiClientWithAuth.post<RoomResponse>(
       roomBaseUrl,
       roomMembers
     );
@@ -33,7 +34,7 @@ const getAllRooms = async () => {
 const getRoomInfo = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.get<RoomResponse>(
-      `roomBaseUrl/${id}`
+      `${roomBaseUrl}/${id}`
     );
     return data;
   } catch (error) {
@@ -44,8 +45,20 @@ const getRoomInfo = async (id: string) => {
 const getAllConversations = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.get<ConversationListResponse>(
-      `${roomBaseUrl}/${id}`
+      `${roomBaseUrl}/conversation/${id}`
     );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getRoomOfUserByGalleryId = async (galleryId: string) => {
+  try {
+    const { data } =
+      await apiClientWithAuth.get<GetRoomOfUserByGalleryIdResponse>(
+        `${roomBaseUrl}/gallery/${galleryId}`
+      );
     return data;
   } catch (error) {
     throw error;
@@ -57,6 +70,7 @@ const roomService = {
   getAllRooms,
   getRoomInfo,
   getAllConversations,
+  getRoomOfUserByGalleryId,
 };
 
 export default roomService;
