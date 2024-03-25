@@ -23,7 +23,6 @@ const Chat = ({ roomId }: ChatProps) => {
   const bottomOfChat = useRef<HTMLDivElement>(null);
   const showError = useErrorModal();
   const [room, setRoom] = useState<Room>();
-  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     const fetchOldConversation = async () => {

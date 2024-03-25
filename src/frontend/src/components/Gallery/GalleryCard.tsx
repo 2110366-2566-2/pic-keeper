@@ -12,11 +12,9 @@ import { useRouter } from "next/navigation";
 
 interface Props {
   galleryId: string;
-  photographerId: string;
-  price: number;
 }
 
-const GalleryCard = ({ galleryId, price }: Props) => {
+const GalleryCard = ({ galleryId }: Props) => {
   const [listOfImages, setListOfImages] = useState<string[]>([]);
   const [galleryInfo, setGalleryInfo] = useState<Gallery>();
   const [photographer, setPhotographer] = useState<User>();
@@ -151,7 +149,7 @@ const GalleryCard = ({ galleryId, price }: Props) => {
           </div>
         </div>
         <div className="text-amber-500 font-bold text-ellipsis">
-          {price} THB
+          {galleryInfo?.price} THB
         </div>
       </div>
     </div>

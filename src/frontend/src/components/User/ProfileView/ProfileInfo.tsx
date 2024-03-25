@@ -130,12 +130,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
               {/* GALLERY COMPONENT */}
               {listOfGalleries &&
                 listOfGalleries.map((Gallery, index) => (
-                  <GalleryCard
-                    key={index}
-                    galleryId={Gallery.id}
-                    photographerId={Gallery.photographer_id}
-                    price={Gallery.price}
-                  />
+                  <GalleryCard key={index} galleryId={Gallery.id} />
                 ))}
             </div>
           </div>
