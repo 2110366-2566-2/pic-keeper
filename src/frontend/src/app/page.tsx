@@ -2,7 +2,6 @@
 import React from "react";
 import axios from "axios";
 import Landing from "@/components/Landing";
-import ReportIssue from "@/components/Popup/ReportIssue";
 
 export default function Home() {
 
@@ -12,8 +11,7 @@ export default function Home() {
 
   return (
     <main>
-      {/* <Landing/> */}
-      <ReportIssue />
+      <Landing />
     </main>
   );
 }
