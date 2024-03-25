@@ -47,6 +47,13 @@ func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
 			util.Raise500Error(c, err)
 			return
 		}
+		otherUsers, err := r.RoomUsecase.FindOtherUsersInRoom(c, userObj.Id, room.Id)
+		if err != nil {
+			util.Raise500Error(c, err)
+			return
+		}
+
+		room.OtherUsers = otherUsers
 		room.Gallery = *gallery
 	}
 
