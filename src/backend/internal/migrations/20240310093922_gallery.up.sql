@@ -37,6 +37,6 @@ CREATE TABLE bookings (
 
 CREATE TABLE photos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
-  gallery_id UUID NOT NULL REFERENCES galleries (id),
+  gallery_id UUID NOT NULL REFERENCES galleries (id) ON DELETE cascade,
   photo_key varchar(2000) NOT NULL
 );
