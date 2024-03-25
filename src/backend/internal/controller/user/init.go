@@ -10,6 +10,7 @@ type Resolver struct {
 	GalleryUsecase usecase.GalleryUseCase
 	BookingUsecase usecase.BookingUseCase
 	PhotoUsecase   usecase.PhotoUseCase
+	ReviewUsecase  usecase.ReviewUseCase
 }
 
 func NewResolver(db *bun.DB) *Resolver {
@@ -18,5 +19,6 @@ func NewResolver(db *bun.DB) *Resolver {
 		GalleryUsecase: *usecase.NewGalleryUseCase(db),
 		BookingUsecase: *usecase.NewBookingUseCase(db),
 		PhotoUsecase:   *usecase.NewPhotoUseCase(db),
+		ReviewUsecase:  *usecase.NewReviewUseCase(db),
 	}
 }

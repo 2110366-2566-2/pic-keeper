@@ -95,6 +95,8 @@ var ServeCmd = &cobra.Command{
 		{
 			customerGalleries.GET("/search", handler.User.SearchGalleries)
 			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
+			// List all reviews in the gallery (not sure where to write this endpoint -> Guest can also view the reviews)
+			// customerGalleries.GET("list-review/:id", handler.User.ListGalleryReviews)
 		}
 
 		validated := r.Group("/", middleware.UserAuthorizationMiddleware)
@@ -138,6 +140,10 @@ var ServeCmd = &cobra.Command{
 			phtgBookings.GET("/my-bookings", handler.Photographer.MyBookings)
 			phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
 			phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
+
+			// phtgReviews := photographers.Group("/reviews/v1")
+			// phtgReviews.GET("/:id", handler.Photographer.GetOneReview)
+			// phtgReviews.GET("/list", handler.Photographer.ListReceivedReviews)
 		}
 
 		customerBookings := validated.Group("/customers/bookings/v1")
@@ -151,6 +157,13 @@ var ServeCmd = &cobra.Command{
 			customerBookings.GET("/:id", handler.User.GetOneBooking)
 			customerBookings.PUT("/cancel/:id", handler.User.CancelBooking)
 			customerBookings.PUT("/approve-cancel/:id", handler.User.ApproveCancelReq)
+		}
+
+		customerReviews := validated.Group("/customers/reviews/v1")
+		{
+			customerReviews.POST("/", handler.User.CreateReview)
+			// customerReviews.GET("/:id", handler.User.GetOneReview)
+			// customerReviews.GET("/my-reviews", handler.User.MyReviews)
 		}
 
 		rooms := validated.Group("/rooms")
