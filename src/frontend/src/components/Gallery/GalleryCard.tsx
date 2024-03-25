@@ -16,7 +16,7 @@ interface Props {
   price: number;
 }
 
-const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
+const GalleryCard = ({ galleryId, price }: Props) => {
   const [listOfImages, setListOfImages] = useState<string[]>([]);
   const [galleryInfo, setGalleryInfo] = useState<Gallery>();
   const [photographer, setPhotographer] = useState<User>();
@@ -31,17 +31,7 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
       setListOfImages(response.data || []);
     };
 
-    const fetchGalleryInfo = async () => {
-      const response = await photographerGalleryService.getGallery(galleryId);
-      if (response.data) setGalleryInfo(response.data);
-    };
-
-    fetchAllImages();
-    fetchGalleryInfo();
-  }, [galleryId]);
-
-  useEffect(() => {
-    const getUserById = async () => {
+    const fetchUserInfo = async (photographerId: string) => {
       const response = await userService.getUserById(photographerId);
       if (response.data) {
         setPhotographer(response.data);
@@ -52,8 +42,18 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
         setPhotographerProfile("/images/nature.svg");
       }
     };
-    getUserById();
-  }, [photographerId]);
+
+    const fetchGalleryInfo = async () => {
+      const response = await photographerGalleryService.getGallery(galleryId);
+      if (response.data) {
+        setGalleryInfo(response.data);
+        await fetchUserInfo(response.data.photographer_id);
+      }
+    };
+
+    fetchAllImages();
+    fetchGalleryInfo();
+  }, [galleryId]);
 
   const handleCardClick = () => {
     router.push(`/galleries/${galleryId}`);
