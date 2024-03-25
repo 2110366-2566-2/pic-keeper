@@ -53,7 +53,7 @@ const LandingPage = () => {
   }, [searchFilter]);
 
   return (
-    <main>
+    <main className="relative">
       <div className="flex flex-col">
         <div className="z-50">
           <Navbar />
@@ -84,7 +84,7 @@ const LandingPage = () => {
       {session?.user.data?.verification_status === "VERIFIED" && (
         <Link href="/galleries/create-gallery">
           <IoIosAddCircle
-            className="absolute bottom-10 right-10 z-50 text-yellow-500 transition-transform duration-500 ease-in-out transform hover:scale-105"
+            className="sticky ml-auto bottom-5 right-5 z-50 text-yellow-500 transition-transform duration-500 ease-in-out transform hover:scale-105"
             size={65}
           />
         </Link>
