@@ -7,7 +7,7 @@ export interface Room {
   updated_at: string;
   deleted_at?: string;
   gallery: Gallery;
-  photographer: User;
+  other_users: User[];
 }
 
 export interface UserRoomLookup {

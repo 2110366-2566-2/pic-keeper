@@ -48,13 +48,6 @@ const Chat = ({ roomId }: ChatProps) => {
       }
     }
 
-    async function fetchUserInfo(roomId: string) {
-      try {
-        const userLookupResponse = await roomService.
-        const userResponse = await userService
-      }
-    }
-
     fetchRoomInfo();
     fetchOldConversation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -94,10 +87,10 @@ const Chat = ({ roomId }: ChatProps) => {
       <div className="flex flex-col p-4">
         <div className="flex justify-start items-center gap-4">
           <h1 className="text-title">
-            {room?.photographer.firstname} {room?.photographer.lastname}
+            {room?.other_users[0].firstname} {room?.other_users[0].lastname}
           </h1>{" "}
           <h2 className="text-standard text-xl">
-            @{room?.photographer.username}
+            @{room?.other_users[0].username}
           </h2>{" "}
         </div>
         <h2 className="text-standard text-xl text-gray-600">
