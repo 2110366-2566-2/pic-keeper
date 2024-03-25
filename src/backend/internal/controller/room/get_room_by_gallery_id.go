@@ -53,6 +53,7 @@ func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
 
 		room.OtherUsers = otherUsers
 		room.Gallery = *gallery
+
 	}
 
 	c.JSON(http.StatusOK, gin.H{
