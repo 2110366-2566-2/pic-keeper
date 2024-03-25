@@ -96,8 +96,8 @@ var ServeCmd = &cobra.Command{
 		{
 			customerGalleries.GET("/search", handler.User.SearchGalleries)
 			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
-			// List all reviews in the gallery (not sure where to write this endpoint -> Guest can also view the reviews)
-			// customerGalleries.GET("list-review/:id", handler.User.ListGalleryReviews)
+			// List all reviews in the gallery (Guest can also view the reviews)
+			// customerGalleries.GET("/:galleryId/reviews", handler.User.ListReviewsByGalleryId)
 		}
 
 		usersNonValidated := r.Group("/users/v1")
@@ -156,8 +156,7 @@ var ServeCmd = &cobra.Command{
 			phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
 			phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
 
-			phtgReviews := photographers.Group("/reviews/v1")
-			phtgReviews.GET("/:id", handler.Photographer.GetOneReview)
+			// phtgReviews := photographers.Group("/reviews/v1")
 			// phtgReviews.GET("/list", handler.Photographer.ListReceivedReviews)
 		}
 
@@ -178,8 +177,9 @@ var ServeCmd = &cobra.Command{
 		customerReviews := validated.Group("/customers/reviews/v1")
 		{
 			customerReviews.POST("/", handler.User.CreateReview)
-			customerReviews.GET("/:id", handler.User.GetOneReview)
-			customerReviews.GET("/my-reviews", handler.User.MyReviews)
+			// customerReviews.GET("/my-reviews", handler.User.MyReviews)
+			// customerReviews.PUT("/:id", handler.User.UpdateReview) // specify review_id
+			// customerReviews.DELETE("/:id", handler.User.DeleteReview)
 		}
 
 		rooms := validated.Group("/rooms")

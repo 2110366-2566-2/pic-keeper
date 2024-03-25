@@ -173,15 +173,16 @@ type Photo struct {
 }
 
 type ReviewInput struct {
-	BookingId  uuid.UUID `bun:"booking_id,type:uuid" json:"booking_id"`
-	Rating     int       `bun:"rating,type:integer" json:"rating"`
-	ReviewText string    `bun:"review_text,type:varchar" json:"review_text"`
+	BookingId  *uuid.UUID `json:"booking_id"`
+	Rating     *int       `json:"rating"`
+	ReviewText *string    `json:"review_text"`
 }
 
 type Review struct {
 	bun.BaseModel `bun:"table:reviews,alias:reviews"`
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	CustomerId    uuid.UUID `bun:"customer_id,type:uuid" json:"customer_id"`
+	CustomerId    uuid.UUID `bun:"customer_id,type:uuid" json:"-"`
+	Customer      User      `bun:"-" json:"customer"`
 	BookingId     uuid.UUID `bun:"booking_id,type:uuid" json:"-"`
 	Booking       Booking   `bun:"-" json:"booking"`
 	Rating        int       `bun:"rating,type:integer" json:"rating"`
