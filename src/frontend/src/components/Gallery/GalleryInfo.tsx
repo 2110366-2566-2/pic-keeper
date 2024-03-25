@@ -110,7 +110,7 @@ const GalleryInfo = ({ galleryId }: Props) => {
         gallery_id: galleryId,
       });
       if (createdRoom.data) {
-        router.push(`/chat/${createdRoom.data[0].room_id}`);
+        router.push(`/chat/${createdRoom.data.id}`);
         return;
       }
 

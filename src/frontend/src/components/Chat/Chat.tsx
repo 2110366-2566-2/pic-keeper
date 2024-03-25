@@ -146,7 +146,8 @@ const Chat = ({ roomId }: ChatProps) => {
         <div ref={bottomOfChat}></div>
         {messages.map(
           (message, index) =>
-            message.type === "message" && (
+            message.type === "message" &&
+            message.room === roomId && (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 50 }}

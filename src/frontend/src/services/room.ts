@@ -12,7 +12,7 @@ const roomBaseUrl = "/rooms/v1";
 
 const createRoom = async (roomMembers: RoomMemberInput) => {
   try {
-    const { data } = await apiClientWithAuth.post<UserRoomLookUpListResponse>(
+    const { data } = await apiClientWithAuth.post<RoomResponse>(
       roomBaseUrl,
       roomMembers
     );
