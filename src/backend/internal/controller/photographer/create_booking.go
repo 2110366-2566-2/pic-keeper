@@ -38,12 +38,19 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		UpdatedAt:  time.Now(),
 	}
 
-	if err := r.BookingUsecase.BookingRepo.AddOne(c, newBooking); err != nil {
+	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, newBooking); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, newBooking); err != nil {
+	resultedPrice := newBooking.Room.Gallery.Price
+	if bookingProposal.NegotiatedPrice != nil {
+		resultedPrice = *bookingProposal.NegotiatedPrice
+	}
+
+	newBooking.ResultedPrice = resultedPrice
+
+	if err := r.BookingUsecase.BookingRepo.AddOne(c, newBooking); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
