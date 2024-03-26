@@ -20,6 +20,33 @@ func NewReviewUseCase(db *bun.DB) *ReviewUseCase {
 	}
 }
 
-func (p *ReviewUseCase) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Review, error) {
-	return p.ReviewRepo.FindByUserId(ctx, userId)
+func populateCustomersAndBookings(ctx context.Context, reviews []*model.Review, userUsecase UserUseCase, bookingUsecase BookingUseCase) error {
+	for _, review := range reviews {
+		customer, err := userUsecase.UserRepo.FindOneById(ctx, review.CustomerId)
+		if err != nil {
+			return err
+		}
+		review.Customer = *customer
+
+		booking, err := bookingUsecase.BookingRepo.FindOneById(ctx, review.BookingId)
+		if err != nil {
+			return err
+		}
+		review.Booking = *booking
+	}
+
+	return nil
+}
+
+func (p *ReviewUseCase) FindByUserId(ctx context.Context, userId uuid.UUID, userUsecase UserUseCase, bookingUsecase BookingUseCase) ([]*model.Review, error) {
+	reviews, err := p.ReviewRepo.FindByUserId(ctx, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := populateCustomersAndBookings(ctx, reviews, userUsecase, bookingUsecase); err != nil {
+		return nil, err
+	}
+
+	return reviews, nil
 }

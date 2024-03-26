@@ -16,8 +16,7 @@ func (r *Resolver) MyReviews(c *gin.Context) {
 		return
 	}
 
-	// need to populate in FindByUserId -> NOT DONE
-	reviews, err := r.ReviewUsecase.FindByUserId(c, userObj.Id)
+	reviews, err := r.ReviewUsecase.FindByUserId(c, userObj.Id, r.UserUsecase, r.BookingUsecase)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
