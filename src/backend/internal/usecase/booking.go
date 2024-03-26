@@ -21,41 +21,13 @@ func NewBookingUseCase(db *bun.DB) *BookingUseCase {
 	}
 }
 
-func PopulateRoomsInBookings(ctx context.Context, roomUsecase RoomUseCase, galleryUsecase GalleryUseCase, bookings ...*model.Booking) error {
-	roomIds := []uuid.UUID{}
-
-	for _, booking := range bookings {
-		roomIds = append(roomIds, booking.RoomId)
-	}
-
-	rooms, err := roomUsecase.RoomRepo.FindByIds(ctx, roomIds...)
-	if err != nil {
-		return err
-	}
-
-	roomIdMapping := make(map[uuid.UUID]*model.Room)
-	for _, room := range rooms {
-		roomIdMapping[room.Id] = room
-	}
-
-	if err := galleryUsecase.PopulateGalleryInRooms(ctx, rooms...); err != nil {
-		return err
-	}
-
-	for _, booking := range bookings {
-		booking.Room = *roomIdMapping[booking.RoomId]
-	}
-
-	return nil
-}
-
 func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase, bkStatus ...string) ([]*model.Booking, error) {
 	bookings, err := b.BookingRepo.FindByUserIdWithStatus(ctx, userId, bkStatus...)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := PopulateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 
@@ -68,7 +40,7 @@ func (b *BookingUseCase) FindByPhotographerIdWithStatus(ctx context.Context, pht
 		return nil, err
 	}
 
-	if err := PopulateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 
@@ -86,9 +58,22 @@ func (b *BookingUseCase) ListPendingRefundBookings(ctx context.Context, galleryU
 		return nil, err
 	}
 
-	if err := PopulateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 
 	return bookings, nil
+}
+
+func (b *BookingUseCase) FindByRoomId(ctx context.Context, roomUsecase RoomUseCase, galleryUsecase GalleryUseCase, roomId uuid.UUID) (*model.Booking, error) {
+	booking, err := b.BookingRepo.FindByRoomId(ctx, roomId)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, booking); err != nil {
+		return nil, err
+	}
+
+	return booking, nil
 }

@@ -6,7 +6,6 @@ import (
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
-	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -44,7 +43,7 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		return
 	}
 
-	if err := usecase.PopulateRoomsInBookings(c, r.RoomUsecase, r.GalleryUsecase, newBooking); err != nil {
+	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, newBooking); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
