@@ -24,16 +24,16 @@ export default function BookingCard(options: BookOptions) {
   const getCustomer = async () => {
     const result = await userService.getUserById(options.props.customer_id);
     if(!result.profile_picture_url){
-      result.profile_picture_url="/images/image2.jpg";
+      result.profile_picture_url="/images/nature.svg";
     }
 
     return result;
   };
 
   const getPhotographer = async () => {
-    const result = await userService.getUserById(options.props.gallery.photographer_id);
+    const result = await userService.getUserById(options.props.room.gallery.photographer_id);
     if(!result.profile_picture_url){
-      result.profile_picture_url="/images/image2.jpg";
+      result.profile_picture_url="/images/nature.svg";
     }
     return result;
   };
@@ -67,7 +67,7 @@ export default function BookingCard(options: BookOptions) {
         </div>
         <div className="col-span-2 pl-4">
           <p className="text-base font-semibold">
-            {options.props.gallery.name}
+            {options.props.room.gallery.name}
           </p>
           <div className="flex gap-x-2">
             <div>
@@ -88,7 +88,7 @@ export default function BookingCard(options: BookOptions) {
             </div>
 
             <p className="font-semibold text-stone-400">
-              {options.props.gallery.location}
+              {options.props.room.gallery.location}
             </p>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function BookingCard(options: BookOptions) {
             <Image
               className="object-cover rounded-full"
               fill={true}
-              src={customer?.profile_picture_url ? customer.profile_picture_url:"/images/image2.jpg"}
+              src={customer?.profile_picture_url ? customer.profile_picture_url:"/images/nature.svg"}
               alt=""
             />
           </div>
@@ -146,7 +146,7 @@ export default function BookingCard(options: BookOptions) {
           </p>
         </div>
         <div className="text-base font-bold pl-4">
-          <span>{options.props.gallery.price} THB</span>
+          <span>{options.props.room.gallery.price} THB</span>
         </div>
         <div className="col-span-2 pl-4">
           <div className="text-base font-bold">

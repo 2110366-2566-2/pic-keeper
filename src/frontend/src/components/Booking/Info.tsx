@@ -44,7 +44,7 @@ export default function Info(props: {
               15 days from now
             </p>
             <p className="text-2xl font-bold py-2">
-              {props.content.bookingOptions.gallery.name}
+              {props.content.bookingOptions.room.gallery.name}
             </p>
             <div className="flex flex-wrap gap-x-2 items-baseline mb-2">
               <RenderStatus
@@ -150,7 +150,7 @@ export default function Info(props: {
                     fill="black"
                   />
                 </svg>
-                {props.content.bookingOptions.gallery.location}
+                {props.content.bookingOptions.room.gallery.location}
               </div>
               <div className="flex gap-x-2 mb-4 text-stone-400">
                 <svg
@@ -253,7 +253,7 @@ export default function Info(props: {
             <div className="text-lg flex font-bold justify-between">
               <div>Total</div>{" "}
               <div>
-                {props.content.bookingOptions.gallery.price}
+                {props.content.bookingOptions.room.gallery.price}
                 {" THB"}
               </div>
             </div>

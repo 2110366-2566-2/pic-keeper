@@ -24,7 +24,6 @@ export interface Booking {
   id: string;
   customer_id: string;
   gallery_id: string;
-  gallery: Gallery;
   roomId: string;
   room: Room;
   resulted_price: number;

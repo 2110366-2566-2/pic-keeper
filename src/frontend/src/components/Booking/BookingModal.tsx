@@ -32,7 +32,7 @@ export default function BookingModal(props: {
   const session = useSession();
   const isPackageOwner = () => {
     return (
-      props.content.bookingOptions.gallery.photographer_id === session.data?.user.data?.id
+      props.content.bookingOptions.room.gallery.photographer_id === session.data?.user.data?.id
     );
   };
 
