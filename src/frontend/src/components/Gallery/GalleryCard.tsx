@@ -12,11 +12,9 @@ import { useRouter } from "next/navigation";
 
 interface Props {
   galleryId: string;
-  photographerId: string;
-  price: number;
 }
 
-const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
+const GalleryCard = ({ galleryId }: Props) => {
   const [listOfImages, setListOfImages] = useState<string[]>([]);
   const [galleryInfo, setGalleryInfo] = useState<Gallery>();
   const [photographer, setPhotographer] = useState<User>();
@@ -31,17 +29,7 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
       setListOfImages(response.data || []);
     };
 
-    const fetchGalleryInfo = async () => {
-      const response = await photographerGalleryService.getGallery(galleryId);
-      if (response.data) setGalleryInfo(response.data);
-    };
-
-    fetchAllImages();
-    fetchGalleryInfo();
-  }, [galleryId]);
-
-  useEffect(() => {
-    const getUserById = async () => {
+    const fetchUserInfo = async (photographerId: string) => {
       const response = await userService.getUserById(photographerId);
       if (response.data) {
         setPhotographer(response.data);
@@ -52,8 +40,18 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
         setPhotographerProfile("/images/nature.svg");
       }
     };
-    getUserById();
-  }, [photographerId]);
+
+    const fetchGalleryInfo = async () => {
+      const response = await photographerGalleryService.getGallery(galleryId);
+      if (response.data) {
+        setGalleryInfo(response.data);
+        await fetchUserInfo(response.data.photographer_id);
+      }
+    };
+
+    fetchAllImages();
+    fetchGalleryInfo();
+  }, [galleryId]);
 
   const handleCardClick = () => {
     router.push(`/galleries/${galleryId}`);
@@ -105,7 +103,7 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
         );
       default:
         return (
-          <div className="flex gap-2 px-2 pt-2">
+          <div className="flex gap-2 px-2 pt-2 ">
             <div className="relative w-3/5 h-64 transition-transform duration-500 ease-in-out transform hover:scale-105">
               <Image
                 src={listOfImages[0] || ""}
@@ -151,7 +149,7 @@ const GalleryCard = ({ galleryId, photographerId, price }: Props) => {
           </div>
         </div>
         <div className="text-amber-500 font-bold text-ellipsis">
-          {price} THB
+          {galleryInfo?.price} THB
         </div>
       </div>
     </div>
