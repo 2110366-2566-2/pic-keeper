@@ -61,6 +61,15 @@ func (r *Resolver) CreateReview(c *gin.Context) {
 
 	newReview.Booking = *booking
 
+	// get gallery entity of this booking
+	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, booking.GalleryId)
+	if err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
+	newReview.Booking.Gallery = *gallery
+
 	// get this user (customer) entity of this review
 	newReview.Customer = userObj
 
