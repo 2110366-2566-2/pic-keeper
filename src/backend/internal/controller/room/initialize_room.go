@@ -4,21 +4,17 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/user"
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 func (r *Resolver) InitializeRoom(c *gin.Context) {
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+	userObj, ok := user.GetUser(c)
 	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "failed",
-			"error":  "could not bind json",
-		})
-		c.Abort()
 		return
 	}
 
@@ -73,13 +69,10 @@ func (r *Resolver) InitializeRoom(c *gin.Context) {
 		return
 	}
 
-	// population
-	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, input.GalleryId)
-	if err != nil {
+	if err := usecase.PopulateGalleryInRooms(c, r.GalleryUsecase, newRoom); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
-	newRoom.Gallery = *gallery
 
 	otherUsers, err := r.UserUsecase.UserRepo.FindByIds(c, otherUserIds...)
 	if err != nil {

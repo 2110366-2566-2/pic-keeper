@@ -38,7 +38,7 @@ func PopulateRoomsInBookings(ctx context.Context, roomUsecase RoomUseCase, galle
 		roomIdMapping[room.Id] = room
 	}
 
-	if err := PopulateGalleryInRooms(ctx, galleryUsecase, rooms...); err != nil {
+	if err := galleryUsecase.PopulateGalleryInRooms(ctx, rooms...); err != nil {
 		return err
 	}
 
