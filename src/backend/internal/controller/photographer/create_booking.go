@@ -29,7 +29,7 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 
 	newBooking := &model.Booking{
 		Id:         uuid.New(),
-		CustomerId: photographer.Id,
+		CustomerId: bookingProposal.CustomerId,
 		RoomId:     bookingProposal.RoomId,
 		StartTime:  bookingProposal.StartTime,
 		EndTime:    bookingProposal.EndTime,
@@ -40,6 +40,11 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 
 	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, newBooking); err != nil {
 		util.Raise500Error(c, err)
+		return
+	}
+
+	if newBooking.Room.Gallery.PhotographerId != photographer.Id {
+		util.Raise401Error(c, "the gallery specified is not your gallery")
 		return
 	}
 
