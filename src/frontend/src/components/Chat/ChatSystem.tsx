@@ -118,10 +118,12 @@ const ChatSystem = ({ roomId }: Props) => {
                 <GalleryCard galleryId={currRoom?.gallery.id} />
               </div>
               {/* gallery details */}
-              <div className="bg-white rounded-xl shadow-lg flex flex-col justify-between gap-4 p-4">
-                <div className="text-2xl font-semibold">Current Package</div>
-                <div className="border-t-2 border-gray-300 max-h-64 overflow-y-scroll">
-                  <PackageInfo gallery={currRoom.gallery} />
+              <div className="bg-white rounded-xl shadow-lg flex-1 flex flex-col justify-between gap-4 p-4">
+                <div className="space-y-4">
+                  <div className="text-2xl font-semibold">Current Package</div>
+                  <div className="border-t-2 border-gray-300 max-h-64 overflow-y-scroll">
+                    <PackageInfo gallery={currRoom.gallery} />
+                  </div>
                 </div>
                 <div className="btn-primary self-center px-32 py-2">Book</div>
               </div>
