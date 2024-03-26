@@ -5,6 +5,7 @@ import {
   RoomResponse,
   RoomListResponse,
   GetRoomOfUserByGalleryIdResponse,
+  BookingResponse,
 } from "@/types/response";
 import { RoomMemberInput } from "@/types/room";
 
@@ -53,6 +54,17 @@ const getAllConversations = async (id: string) => {
   }
 };
 
+const GetBookingFromRoom = async (roomId: string) => {
+  try {
+    const { data } = await apiClientWithAuth.get<BookingResponse>(
+      `${roomBaseUrl}/booking/${roomId}`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const getRoomOfUserByGalleryId = async (galleryId: string) => {
   try {
     const { data } =
@@ -70,6 +82,7 @@ const roomService = {
   getAllRooms,
   getRoomInfo,
   getAllConversations,
+  GetBookingFromRoom,
   getRoomOfUserByGalleryId,
 };
 
