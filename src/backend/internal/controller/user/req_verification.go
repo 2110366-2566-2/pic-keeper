@@ -74,14 +74,22 @@ func (r *Resolver) RequestVerification(c *gin.Context) {
 		AdditionalDescription: verificationInfoInput.AdditionalDescription,
 	}
 
+	if err := r.VerificationUsecase.VerificationInfoRepo.AddOne(c, newVerificationInfo); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
 	user.VerificationStatus = model.PhotographerPendingStatus
 	if err := r.UserUsecase.UserRepo.UpdateOne(c, user); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
+	newVerificationInfo.User = *user
+	newVerificationInfo.IdCardPictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", s3utils.IdCardBucket, objectKey)
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   user,
+		"data":   newVerificationInfo,
 	})
 }

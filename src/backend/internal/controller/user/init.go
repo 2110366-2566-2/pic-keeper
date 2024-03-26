@@ -6,19 +6,21 @@ import (
 )
 
 type Resolver struct {
-	UserUsecase    usecase.UserUseCase
-	GalleryUsecase usecase.GalleryUseCase
-	BookingUsecase usecase.BookingUseCase
-	PhotoUsecase   usecase.PhotoUseCase
-	IssueUsecase   usecase.IssueUseCase
+	UserUsecase         usecase.UserUseCase
+	GalleryUsecase      usecase.GalleryUseCase
+	BookingUsecase      usecase.BookingUseCase
+	PhotoUsecase        usecase.PhotoUseCase
+	IssueUsecase        usecase.IssueUseCase
+	VerificationUsecase usecase.VerificationInfoUseCase
 }
 
 func NewResolver(db *bun.DB) *Resolver {
 	return &Resolver{
-		UserUsecase:    *usecase.NewUserUseCase(db),
-		GalleryUsecase: *usecase.NewGalleryUseCase(db),
-		BookingUsecase: *usecase.NewBookingUseCase(db),
-		PhotoUsecase:   *usecase.NewPhotoUseCase(db),
-		IssueUsecase:   *usecase.NewIssueUseCase(db),
+		UserUsecase:         *usecase.NewUserUseCase(db),
+		GalleryUsecase:      *usecase.NewGalleryUseCase(db),
+		BookingUsecase:      *usecase.NewBookingUseCase(db),
+		PhotoUsecase:        *usecase.NewPhotoUseCase(db),
+		IssueUsecase:        *usecase.NewIssueUseCase(db),
+		VerificationUsecase: *usecase.NewVerificationUseCase(db),
 	}
 }
