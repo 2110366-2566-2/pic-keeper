@@ -176,7 +176,8 @@ var ServeCmd = &cobra.Command{
 			rooms.POST("/", handler.Room.InitializeRoom)
 			rooms.GET("/", handler.Room.GetRooms)
 			rooms.GET("/:id", handler.Room.GetRoom)
-			rooms.GET("/conversation/:id", handler.Room.GetAllConversations)
+			rooms.GET("/:id/booking", handler.Room.GetBookingAssociatedWithRoom)
+			rooms.GET("/:id/conversation", handler.Room.GetAllConversations)
 			rooms.GET("/gallery/:galleryId", handler.Room.GetRoomOfUserByGalleryId)
 		}
 

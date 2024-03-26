@@ -101,3 +101,16 @@ func (b *BookingUseCase) ListPendingRefundBookings(ctx context.Context, galleryU
 
 	return bookings, nil
 }
+
+func (b *BookingUseCase) FindByRoomId(ctx context.Context, roomId uuid.UUID, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase) (*model.Booking, error) {
+	booking, err := b.BookingRepo.FindByRoomId(ctx, roomId)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := PopulateBookingFields(ctx, []*model.Booking{booking}, galleryUsecase, roomUsecase); err != nil {
+		return nil, err
+	}
+
+	return booking, nil
+}

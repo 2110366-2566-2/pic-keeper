@@ -88,3 +88,12 @@ func (b *BookingDB) ListPendingRefundBookings(ctx context.Context) ([]*model.Boo
 
 	return bookings, nil
 }
+
+func (b *BookingDB) FindByRoomId(ctx context.Context, roomId uuid.UUID) (*model.Booking, error) {
+	var booking model.Booking
+	if err := b.db.NewSelect().Model(&booking).Where("room_id = ?", roomId).Scan(ctx, &booking); err != nil {
+		return nil, err
+	}
+
+	return &booking, nil
+}
