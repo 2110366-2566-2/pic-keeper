@@ -3,17 +3,16 @@ package user
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 func (r *Resolver) CancelBooking(c *gin.Context) {
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+	userObj, ok := GetUser(c)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Invalid user type in context"})
-		c.Abort()
 		return
 	}
 
@@ -55,6 +54,11 @@ func (r *Resolver) CancelBooking(c *gin.Context) {
 			"error":  err.Error(),
 		})
 		c.Abort()
+		return
+	}
+
+	if err := usecase.PopulateRoomsInBookings(c, r.RoomUsecase, r.GalleryUsecase, booking); err != nil {
+		util.Raise500Error(c, err)
 		return
 	}
 
