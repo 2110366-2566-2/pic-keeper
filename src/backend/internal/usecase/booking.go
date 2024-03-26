@@ -21,7 +21,7 @@ func NewBookingUseCase(db *bun.DB) *BookingUseCase {
 	}
 }
 
-func populateRoomsInBookings(ctx context.Context, roomUsecase RoomUseCase, bookings ...*model.Booking) error {
+func populateRoomsInBookings(ctx context.Context, roomUsecase RoomUseCase, galleryUsecase GalleryUseCase, bookings ...*model.Booking) error {
 	roomIds := []uuid.UUID{}
 
 	for _, booking := range bookings {
@@ -36,6 +36,10 @@ func populateRoomsInBookings(ctx context.Context, roomUsecase RoomUseCase, booki
 	roomIdMapping := make(map[uuid.UUID]*model.Room)
 	for _, room := range rooms {
 		roomIdMapping[room.Id] = room
+	}
+
+	if err := populateGalleryInRooms(ctx, galleryUsecase, rooms...); err != nil {
+		return err
 	}
 
 	for _, booking := range bookings {
