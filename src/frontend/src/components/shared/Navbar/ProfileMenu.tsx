@@ -3,7 +3,6 @@
 import { classNames } from "@/utils/list";
 import { Menu, Transition } from "@headlessui/react";
 import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import { Fragment, ReactNode } from "react";
 import { MdArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
@@ -62,7 +61,7 @@ const ProfileMenu = () => {
                       href="/auth/login"
                       className={classNames(
                         active ? "bg-gray-100" : "",
-                        "block px-4 py-2 text-sm"
+                        "block px-4 py-2 text-sm z-50"
                       )}
                     >
                       Login / Register
@@ -71,12 +70,15 @@ const ProfileMenu = () => {
                 </Menu.Item>
               ) : (
                 <>
-                  <MenuItem href={`/view-profile/${session.user.data?.id}`}>Your Profile</MenuItem>
+                  <MenuItem href={`/view-profile/${session.user.data?.id}`}>
+                    Your Profile
+                  </MenuItem>
                   <MenuItem href="/settings/edit-profile">Settings</MenuItem>
                   <MenuItem href="/report-issues">Report issues</MenuItem>
                   <Menu.Item>
                     {({ active }) => (
-                      <button
+                      <Link
+                        href="/auth/login"
                         onClick={() => signOut()}
                         className={classNames(
                           active ? "bg-gray-100" : "",
@@ -84,7 +86,7 @@ const ProfileMenu = () => {
                         )}
                       >
                         Logout
-                      </button>
+                      </Link>
                     )}
                   </Menu.Item>
                 </>
