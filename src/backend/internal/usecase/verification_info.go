@@ -10,16 +10,16 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type VerificationInfoUseCase struct {
-	VerificationInfoRepo repository.VerificationInfo
+type VerificationTicketUseCase struct {
+	VerificationInfoRepo repository.VerificationTicket
 }
 
-func NewVerificationUseCase(db *bun.DB) *VerificationInfoUseCase {
-	return &VerificationInfoUseCase{
+func NewVerificationTicketUseCase(db *bun.DB) *VerificationTicketUseCase {
+	return &VerificationTicketUseCase{
 		VerificationInfoRepo: postgres.NewVerificationInfoDB(db),
 	}
 }
 
-func (v *VerificationInfoUseCase) FindByUserIds(ctx context.Context, phtgIds []uuid.UUID) ([]*model.VerificationInformation, error) {
+func (v *VerificationTicketUseCase) FindByUserIds(ctx context.Context, phtgIds []uuid.UUID) ([]*model.VerificationTicket, error) {
 	return v.VerificationInfoRepo.FindByUserIds(ctx, phtgIds)
 }

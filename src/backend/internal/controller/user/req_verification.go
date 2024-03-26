@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
@@ -33,13 +34,13 @@ func (r *Resolver) RequestVerification(c *gin.Context) {
 		return
 	}
 
-	verificationInfoInput := model.VerificationInformationInput{}
-	if err := c.Bind(&verificationInfoInput); err != nil {
+	verificationTicketInput := model.VerificationTicketInput{}
+	if err := c.Bind(&verificationTicketInput); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	idCardPictureFile, err := verificationInfoInput.IdCardPicture.Open()
+	idCardPictureFile, err := verificationTicketInput.IdCardPicture.Open()
 	if err != nil {
 		util.Raise500Error(c, err)
 		return
@@ -53,7 +54,7 @@ func (r *Resolver) RequestVerification(c *gin.Context) {
 		return
 	}
 
-	objectKey := fmt.Sprintf("%s-%s", hashIdCardNumber(verificationInfoInput.IdCardNumber), uuid.New().String())
+	objectKey := fmt.Sprintf("%s-%s", hashIdCardNumber(verificationTicketInput.IdCardNumber), uuid.New().String())
 
 	bucket, err := s3utils.GetInstance()
 	if err != nil {
@@ -66,15 +67,17 @@ func (r *Resolver) RequestVerification(c *gin.Context) {
 		return
 	}
 
-	newVerificationInfo := &model.VerificationInformation{
+	newVerificationInfo := &model.VerificationTicket{
 		Id:                    uuid.New(),
 		UserId:                user.Id,
-		IdCardNumber:          verificationInfoInput.IdCardNumber,
+		IdCardNumber:          verificationTicketInput.IdCardNumber,
 		IdCardPictureKey:      objectKey,
-		AdditionalDescription: verificationInfoInput.AdditionalDescription,
+		AdditionalDescription: verificationTicketInput.AdditionalDescription,
+		CreatedAt:             time.Now(),
+		DueDate:               time.Now().Add(3 * 24 * time.Hour),
 	}
 
-	if err := r.VerificationUsecase.VerificationInfoRepo.AddOne(c, newVerificationInfo); err != nil {
+	if err := r.VerificationTicketUsecase.VerificationInfoRepo.AddOne(c, newVerificationInfo); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}

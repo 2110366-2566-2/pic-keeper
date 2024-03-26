@@ -6,17 +6,17 @@ import (
 )
 
 type Resolver struct {
-	UserUsecase             usecase.UserUseCase
-	BookingUsecase          usecase.BookingUseCase
-	IssueUsecase            usecase.IssueUseCase
-	VerificationInfoUsecase usecase.VerificationInfoUseCase
+	UserUsecase               usecase.UserUseCase
+	BookingUsecase            usecase.BookingUseCase
+	IssueUsecase              usecase.IssueUseCase
+	VerificationTicketUsecase usecase.VerificationTicketUseCase
 }
 
 func NewResolver(db *bun.DB) *Resolver {
 	return &Resolver{
-		UserUsecase:             *usecase.NewUserUseCase(db),
-		BookingUsecase:          *usecase.NewBookingUseCase(db),
-		IssueUsecase:            *usecase.NewIssueUseCase(db),
-		VerificationInfoUsecase: *usecase.NewVerificationUseCase(db),
+		UserUsecase:               *usecase.NewUserUseCase(db),
+		BookingUsecase:            *usecase.NewBookingUseCase(db),
+		IssueUsecase:              *usecase.NewIssueUseCase(db),
+		VerificationTicketUsecase: *usecase.NewVerificationTicketUseCase(db),
 	}
 }

@@ -8,24 +8,24 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type VerificationInfoDB struct {
-	*BaseDB[model.VerificationInformation]
+type VerificationTicketDB struct {
+	*BaseDB[model.VerificationTicket]
 }
 
-func NewVerificationInfoDB(db *bun.DB) *VerificationInfoDB {
-	type T = model.VerificationInformation
+func NewVerificationInfoDB(db *bun.DB) *VerificationTicketDB {
+	type T = model.VerificationTicket
 
-	return &VerificationInfoDB{
+	return &VerificationTicketDB{
 		BaseDB: NewBaseDB[T](db),
 	}
 }
 
-func (v *VerificationInfoDB) FindByUserIds(ctx context.Context, phtgIds []uuid.UUID) ([]*model.VerificationInformation, error) {
-	var verificationInfo []*model.VerificationInformation
+func (v *VerificationTicketDB) FindByUserIds(ctx context.Context, phtgIds []uuid.UUID) ([]*model.VerificationTicket, error) {
+	var verificationTicket []*model.VerificationTicket
 
-	if err := v.db.NewSelect().Model(&verificationInfo).Where("user_id IN (?)", bun.In(phtgIds)).Scan(ctx, &verificationInfo); err != nil {
+	if err := v.db.NewSelect().Model(&verificationTicket).Where("user_id IN (?)", bun.In(phtgIds)).Scan(ctx, &verificationTicket); err != nil {
 		return nil, err
 	}
 
-	return verificationInfo, nil
+	return verificationTicket, nil
 }

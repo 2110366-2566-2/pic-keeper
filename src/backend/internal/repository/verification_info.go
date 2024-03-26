@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type VerificationInfo interface {
-	BaseRepo[model.VerificationInformation]
-	FindByUserIds(ctx context.Context, phtgIds []uuid.UUID) ([]*model.VerificationInformation, error)
+type VerificationTicket interface {
+	BaseRepo[model.VerificationTicket]
+	FindByUserIds(ctx context.Context, phtgIds []uuid.UUID) ([]*model.VerificationTicket, error)
 }

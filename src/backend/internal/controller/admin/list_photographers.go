@@ -50,19 +50,19 @@ func (r *Resolver) ListPendingPhotographers(c *gin.Context) {
 		phtgIdsToPhtgEntities[pendingPhtg.Id] = pendingPhtg
 	}
 
-	verificationInfos, err := r.VerificationInfoUsecase.FindByUserIds(c, pendingPhtgIds)
+	verificationTickets, err := r.VerificationTicketUsecase.FindByUserIds(c, pendingPhtgIds)
 	if err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	for _, info := range verificationInfos {
-		info.User = *phtgIdsToPhtgEntities[info.UserId]
-		info.IdCardPictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", s3utils.IdCardBucket, info.IdCardPictureKey)
+	for _, vrfTicket := range verificationTickets {
+		vrfTicket.User = *phtgIdsToPhtgEntities[vrfTicket.UserId]
+		vrfTicket.IdCardPictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", s3utils.IdCardBucket, vrfTicket.IdCardPictureKey)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   verificationInfos,
+		"data":   verificationTickets,
 	})
 }
