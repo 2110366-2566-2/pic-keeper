@@ -1,4 +1,4 @@
-package user
+package photographer
 
 import (
 	"net/http"
@@ -11,23 +11,8 @@ import (
 )
 
 func (r *Resolver) CreateBooking(c *gin.Context) {
-	user, exists := c.Get("user")
-	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  "Failed to retrieve photographer from context",
-		})
-		c.Abort()
-		return
-	}
-
-	userObj, ok := user.(model.User)
+	photographer, ok := getPhotographer(c)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  "Invalid object type in context",
-		})
-		c.Abort()
 		return
 	}
 
@@ -44,7 +29,7 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 
 	newBooking := model.Booking{
 		Id:         uuid.New(),
-		CustomerId: userObj.Id,
+		CustomerId: photographer.Id,
 		GalleryId:  bookingProposal.GalleryId,
 		StartTime:  bookingProposal.StartTime,
 		EndTime:    bookingProposal.EndTime,
