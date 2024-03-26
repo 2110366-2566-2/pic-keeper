@@ -156,8 +156,8 @@ var ServeCmd = &cobra.Command{
 			phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
 			phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
 
-			// phtgReviews := photographers.Group("/reviews/v1")
-			// phtgReviews.GET("/list", handler.Photographer.ListReceivedReviews)
+			phtgReviews := photographers.Group("/reviews/v1")
+			phtgReviews.GET("/list", handler.Photographer.ListReceivedReviews)
 		}
 
 		customerBookings := validated.Group("/customers/bookings/v1")

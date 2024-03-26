@@ -33,8 +33,29 @@ func (p *ReviewDB) FindByGalleryId(ctx context.Context, galleryId uuid.UUID) ([]
 	var booking model.Booking
 	var reviews []*model.Review
 
+	// not sure
 	// get all bookings that belong to this galleryId
 	allBookingId := p.db.NewSelect().Model(&booking).Where("gallery_id = ?", galleryId).Column("id")
+
+	// get the review that belongs to each of allBookingId
+	if err := p.db.NewSelect().Model(&reviews).Where("booking_id IN (?)", allBookingId).Scan(ctx, &reviews); err != nil {
+		return nil, err
+	}
+
+	return reviews, nil
+}
+
+func (p *ReviewDB) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Review, error) {
+	var gallery model.Gallery
+	var booking model.Booking
+	var reviews []*model.Review
+
+	// not sure
+	// get all galleries that belong to this photographerId
+	allGalleryId := p.db.NewSelect().Model(&gallery).Where("photographer_id = ?", photographerId).Column("id")
+
+	// get all bookings that belong to each of allGalleryId
+	allBookingId := p.db.NewSelect().Model(&booking).Where("gallery_id IN (?)", allGalleryId).Column("id")
 
 	// get the review that belongs to each of allBookingId
 	if err := p.db.NewSelect().Model(&reviews).Where("booking_id IN (?)", allBookingId).Scan(ctx, &reviews); err != nil {
