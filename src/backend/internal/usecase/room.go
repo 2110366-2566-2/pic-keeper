@@ -20,7 +20,7 @@ func NewRoomUseCase(db *bun.DB) *RoomUseCase {
 	}
 }
 
-func populateGalleryInRooms(ctx context.Context, galleryUsecase GalleryUseCase, rooms ...*model.Room) error {
+func PopulateGalleryInRooms(ctx context.Context, galleryUsecase GalleryUseCase, rooms ...*model.Room) error {
 	galleryIds := []uuid.UUID{}
 	for _, room := range rooms {
 		galleryIds = append(galleryIds, room.GalleryId)

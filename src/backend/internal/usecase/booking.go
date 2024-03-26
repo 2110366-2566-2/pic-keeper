@@ -21,7 +21,7 @@ func NewBookingUseCase(db *bun.DB) *BookingUseCase {
 	}
 }
 
-func populateRoomsInBookings(ctx context.Context, roomUsecase RoomUseCase, galleryUsecase GalleryUseCase, bookings ...*model.Booking) error {
+func PopulateRoomsInBookings(ctx context.Context, roomUsecase RoomUseCase, galleryUsecase GalleryUseCase, bookings ...*model.Booking) error {
 	roomIds := []uuid.UUID{}
 
 	for _, booking := range bookings {
@@ -38,7 +38,7 @@ func populateRoomsInBookings(ctx context.Context, roomUsecase RoomUseCase, galle
 		roomIdMapping[room.Id] = room
 	}
 
-	if err := populateGalleryInRooms(ctx, galleryUsecase, rooms...); err != nil {
+	if err := PopulateGalleryInRooms(ctx, galleryUsecase, rooms...); err != nil {
 		return err
 	}
 
@@ -55,7 +55,7 @@ func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid
 		return nil, err
 	}
 
-	if err := populateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
+	if err := PopulateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 
@@ -68,7 +68,7 @@ func (b *BookingUseCase) FindByPhotographerIdWithStatus(ctx context.Context, pht
 		return nil, err
 	}
 
-	if err := populateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
+	if err := PopulateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (b *BookingUseCase) ListPendingRefundBookings(ctx context.Context, galleryU
 		return nil, err
 	}
 
-	if err := populateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
+	if err := PopulateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 

@@ -6,6 +6,7 @@ import (
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -27,10 +28,10 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		return
 	}
 
-	newBooking := model.Booking{
+	newBooking := &model.Booking{
 		Id:         uuid.New(),
 		CustomerId: photographer.Id,
-		GalleryId:  bookingProposal.GalleryId,
+		RoomId:     bookingProposal.RoomId,
 		StartTime:  bookingProposal.StartTime,
 		EndTime:    bookingProposal.EndTime,
 		Status:     model.BookingDraftStatus,
@@ -38,22 +39,15 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		UpdatedAt:  time.Now(),
 	}
 
-	if err := r.BookingUsecase.BookingRepo.AddOne(c, &newBooking); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
-		return
-	}
-
-	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, bookingProposal.GalleryId)
-	if err != nil {
+	if err := r.BookingUsecase.BookingRepo.AddOne(c, newBooking); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	newBooking.Gallery = *gallery
+	if err := usecase.PopulateRoomsInBookings(c, r.RoomUsecase, r.GalleryUsecase, newBooking); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
