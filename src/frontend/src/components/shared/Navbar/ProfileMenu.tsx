@@ -72,6 +72,11 @@ const ProfileMenu = () => {
               ) : (
                 <>
                   <MenuItem href={`/view-profile/${session.user.data?.id}`}>Your Profile</MenuItem>
+                  {
+                    session.user.data?.is_admin === true && (
+                      <MenuItem href="/admin/dashboard/verification-tickets">Admin dashboard</MenuItem>
+                    )
+                  }
                   <MenuItem href="/settings/edit-profile">Settings</MenuItem>
                   <MenuItem href="/report-issues">Report issues</MenuItem>
                   <Menu.Item>
