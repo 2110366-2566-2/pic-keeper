@@ -26,7 +26,8 @@ CREATE TYPE booking_status AS enum(
 CREATE TABLE bookings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
   customer_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-  gallery_id UUID NOT NULL REFERENCES galleries (id),
+  room_id UUID NOT NULL REFERENCES rooms (id) ON DELETE CASCADE,
+  resulted_price integer NOT NULL,
   start_time timestamptz NOT NULL,
   end_time timestamptz NOT NULL,
   status booking_status NOT NULL DEFAULT 'USER_PAID',
@@ -37,6 +38,6 @@ CREATE TABLE bookings (
 
 CREATE TABLE photos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
-  gallery_id UUID NOT NULL REFERENCES galleries (id),
+  gallery_id UUID NOT NULL REFERENCES galleries (id) ON DELETE CASCADE,
   photo_key varchar(2000) NOT NULL
 );

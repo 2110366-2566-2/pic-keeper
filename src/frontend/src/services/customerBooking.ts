@@ -8,18 +8,6 @@ import {
 
 const bookingBaseUrl = "/customers/bookings/v1";
 
-const createBooking = async (bookingProposal: BookingProposal) => {
-  try {
-    const { data } = await apiClientWithAuth.post<BookingResponse>(
-      `${bookingBaseUrl}`,
-      bookingProposal
-    );
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 const getPendingCancellations = async () => {
   try {
     const { data } = await apiClientWithAuth.get<BookingListResponse>(
@@ -120,7 +108,6 @@ const requestRefund = async (id: string) => {
 };
 
 const customerBookingService = {
-  createBooking,
   getPendingCancellations,
   getUpcomingBookings,
   getPastBookings,

@@ -53,7 +53,7 @@ const LandingPage = () => {
   }, [searchFilter]);
 
   return (
-    <main>
+    <main className="relative">
       <div className="flex flex-col">
         <div className="z-50">
           <Navbar />
@@ -72,19 +72,14 @@ const LandingPage = () => {
         <div className="grid grid-cols-auto-fill-300 2xl:grid-cols-auto-fill-400  justify-center items-center gap-4 w-full p-4">
           {listOfGalleries &&
             listOfGalleries.map((gallery, index) => (
-              <GalleryCard
-                key={index}
-                galleryId={gallery.id}
-                photographerId={gallery.photographer_id}
-                price={gallery.price}
-              />
+              <GalleryCard key={index} galleryId={gallery.id} />
             ))}
         </div>
       </div>
       {session?.user.data?.verification_status === "VERIFIED" && (
         <Link href="/galleries/create-gallery">
           <IoIosAddCircle
-            className="absolute bottom-10 right-10 z-50 text-yellow-500 transition-transform duration-500 ease-in-out transform hover:scale-105"
+            className="sticky ml-auto bottom-5 right-5 z-50 bg-white rounded-full text-yellow-500 transition-transform duration-500 ease-in-out transform hover:scale-105"
             size={65}
           />
         </Link>

@@ -19,6 +19,7 @@ type BucketBasics struct {
 
 const (
 	ProfilePicBucket   = "profile-picture"
+	IdCardBucket       = "id-card"
 	QRPaymentBucket    = "qr-payment"
 	GalleryPhotoBucket = "gallery-photos"
 )
@@ -27,6 +28,7 @@ const awsRegion = "us-east-1"
 
 var requiredBuckets = []string{
 	ProfilePicBucket,
+	IdCardBucket,
 	GalleryPhotoBucket,
 	QRPaymentBucket,
 }

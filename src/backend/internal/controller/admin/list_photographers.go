@@ -1,9 +1,14 @@
 package admin
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
+	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // @Summary      List all unverified photographers
@@ -37,8 +42,27 @@ func (r *Resolver) ListPendingPhotographers(c *gin.Context) {
 		return
 	}
 
+	pendingPhtgIds := []uuid.UUID{}
+	phtgIdsToPhtgEntities := map[uuid.UUID]*model.User{}
+
+	for _, pendingPhtg := range pendingPhotographers {
+		pendingPhtgIds = append(pendingPhtgIds, pendingPhtg.Id)
+		phtgIdsToPhtgEntities[pendingPhtg.Id] = pendingPhtg
+	}
+
+	verificationTickets, err := r.VerificationTicketUsecase.FindByUserIds(c, pendingPhtgIds)
+	if err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
+	for _, vrfTicket := range verificationTickets {
+		vrfTicket.User = *phtgIdsToPhtgEntities[vrfTicket.UserId]
+		vrfTicket.IdCardPictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", s3utils.IdCardBucket, vrfTicket.IdCardPictureKey)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   pendingPhotographers,
+		"data":   verificationTickets,
 	})
 }

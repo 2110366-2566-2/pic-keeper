@@ -11,7 +11,7 @@ import (
 )
 
 func (r *Resolver) ReportIssue(c *gin.Context) {
-	user, ok := getUser(c)
+	user, ok := GetUser(c)
 	if !ok {
 		return
 	}

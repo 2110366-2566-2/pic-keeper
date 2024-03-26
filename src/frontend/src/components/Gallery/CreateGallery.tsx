@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { GrLocation } from "react-icons/gr";
 import photographerGalleriesService from "@/services/photographerGalleries";

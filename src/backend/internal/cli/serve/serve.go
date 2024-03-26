@@ -86,6 +86,7 @@ var ServeCmd = &cobra.Command{
 
 		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
 		defer chatEntity.Close()
+
 		chats := r.Group("/chat")
 		{
 			chats := chats.Group("/v1")
@@ -118,7 +119,7 @@ var ServeCmd = &cobra.Command{
 			users.POST("/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
 			users.PUT("/", handler.User.UpdateUserProfile)
-			users.PUT("/req-verify", handler.User.RequestVerification)
+			users.POST("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
 			users.POST("/report-issue", handler.User.ReportIssue)
 		}
@@ -147,9 +148,11 @@ var ServeCmd = &cobra.Command{
 			phtgGalleries.DELETE("/:id", handler.Photographer.DeleteGallery)
 
 			phtgBookings := photographers.Group("/bookings/v1")
+			phtgBookings.POST("/", handler.Photographer.CreateBooking)
 			phtgBookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
 			phtgBookings.GET("/upcoming", handler.Photographer.ListUpcomingBookings)
 			phtgBookings.GET("/past", handler.Photographer.ListPastBookings)
+			phtgBookings.GET("/:id", handler.Photographer.GetOneBooking)
 			phtgBookings.GET("/my-bookings", handler.Photographer.MyBookings)
 			phtgBookings.PUT("/cancel/:id", handler.Photographer.CancelBooking)
 			phtgBookings.PUT("/approve-cancel/:id", handler.Photographer.ApproveCancelReq)
@@ -157,7 +160,6 @@ var ServeCmd = &cobra.Command{
 
 		customerBookings := validated.Group("/customers/bookings/v1")
 		{
-			customerBookings.POST("/", handler.User.CreateBooking)
 			customerBookings.GET("/get-qr/:id", handler.User.GetQRCode)
 			customerBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
 			customerBookings.GET("/upcoming", handler.User.ListUpcomingBookings)
@@ -176,6 +178,7 @@ var ServeCmd = &cobra.Command{
 			rooms.GET("/", handler.Room.GetRooms)
 			rooms.GET("/:id", handler.Room.GetRoom)
 			rooms.GET("/conversation/:id", handler.Room.GetAllConversations)
+			rooms.GET("/booking/:id", handler.Room.GetBookingFromRoom)
 			rooms.GET("/gallery/:galleryId", handler.Room.GetRoomOfUserByGalleryId)
 		}
 

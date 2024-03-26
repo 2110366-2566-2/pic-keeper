@@ -3,8 +3,8 @@ package room
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/user"
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
-	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -17,10 +17,8 @@ func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
 		return
 	}
 
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+	userObj, ok := user.GetUser(c)
 	if !ok {
-		util.Raise400Error(c, "could not bind json")
 		return
 	}
 
@@ -42,12 +40,18 @@ func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
 	}
 
 	if exist {
-		gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, room.GalleryId)
+		otherUsers, err := r.RoomUsecase.FindOtherUsersInRoom(c, userObj.Id, room.Id)
 		if err != nil {
 			util.Raise500Error(c, err)
 			return
 		}
-		room.Gallery = *gallery
+
+		if err := r.GalleryUsecase.PopulateGalleryInRooms(c, room); err != nil {
+			util.Raise500Error(c, err)
+			return
+		}
+
+		room.OtherUsers = otherUsers
 	}
 
 	c.JSON(http.StatusOK, gin.H{
