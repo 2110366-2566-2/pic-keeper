@@ -103,7 +103,7 @@ const GalleryCard = ({ galleryId }: Props) => {
         );
       default:
         return (
-          <div className="flex gap-2 px-2 pt-2">
+          <div className="flex gap-2 px-2 pt-2 ">
             <div className="relative w-3/5 h-64 transition-transform duration-500 ease-in-out transform hover:scale-105">
               <Image
                 src={listOfImages[0] || ""}
