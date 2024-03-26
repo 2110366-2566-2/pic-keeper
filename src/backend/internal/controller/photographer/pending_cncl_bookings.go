@@ -13,7 +13,7 @@ func (r *Resolver) ListPendingCancellationBookings(c *gin.Context) {
 	if !ok {
 		return
 	}
-	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, photographer.Id, r.GalleryUsecase, model.BookingCustomerReqCancelStatus)
+	bookings, err := r.BookingUsecase.FindByPhotographerIdWithStatus(c, photographer.Id, r.GalleryUsecase, r.RoomUsecase, model.BookingCustomerReqCancelStatus)
 	if err != nil {
 		util.Raise500Error(c, err)
 		return

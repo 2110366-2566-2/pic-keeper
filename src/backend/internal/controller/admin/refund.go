@@ -39,6 +39,11 @@ func (r *Resolver) RejectRefundBooking(c *gin.Context) {
 		return
 	}
 
+	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, booking); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 		"data":   booking,
@@ -71,6 +76,11 @@ func (r *Resolver) ApproveRefundBooking(c *gin.Context) {
 
 	booking.Status = model.BookingCancelledStatus
 	if err := r.BookingUsecase.BookingRepo.UpdateOne(c, booking); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
+	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, booking); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}

@@ -8,15 +8,12 @@ import (
 )
 
 func (r *Resolver) ListUpcomingBookings(c *gin.Context) {
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+	userObj, ok := GetUser(c)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Invalid user type in context"})
-		c.Abort()
 		return
 	}
 
-	bookings, err := r.BookingUsecase.FindByUserIdWithStatus(c, userObj.Id, r.GalleryUsecase, model.BookingPaidStatus)
+	bookings, err := r.BookingUsecase.FindByUserIdWithStatus(c, userObj.Id, r.GalleryUsecase, r.RoomUsecase, model.BookingPaidStatus)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",
