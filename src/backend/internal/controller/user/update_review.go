@@ -62,6 +62,8 @@ func (r *Resolver) UpdateReview(c *gin.Context) {
 		return
 	}
 
+	// do I need to populate customer and booking and gallery ??
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 		"data":   existingReview,

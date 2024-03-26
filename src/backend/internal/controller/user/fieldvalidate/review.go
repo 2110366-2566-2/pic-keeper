@@ -9,6 +9,8 @@ import (
 func CreateReview(input model.ReviewInput) []error {
 	fieldErrs := []error{}
 
+	// not sure if customer has to give both rating and feedback
+	// and if blank ReviewText is allowed -> not sure if it means (input.ReviewText can be nil) OR ((input.ReviewText cannot be nil) and (*input.ReviewText is ""))
 	if input.BookingId == nil {
 		fieldErrs = append(fieldErrs, errors.New(
 			"the bookingId of the new review must be provided",
