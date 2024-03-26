@@ -148,6 +148,7 @@ var ServeCmd = &cobra.Command{
 			phtgGalleries.DELETE("/:id", handler.Photographer.DeleteGallery)
 
 			phtgBookings := photographers.Group("/bookings/v1")
+			phtgBookings.POST("/", handler.Photographer.CreateBooking)
 			phtgBookings.GET("/pending-cancellations", handler.Photographer.ListPendingCancellationBookings)
 			phtgBookings.GET("/upcoming", handler.Photographer.ListUpcomingBookings)
 			phtgBookings.GET("/past", handler.Photographer.ListPastBookings)
@@ -158,7 +159,6 @@ var ServeCmd = &cobra.Command{
 
 		customerBookings := validated.Group("/customers/bookings/v1")
 		{
-			customerBookings.POST("/", handler.User.CreateBooking)
 			customerBookings.GET("/get-qr/:id", handler.User.GetQRCode)
 			customerBookings.GET("/pending-cancellations", handler.User.ListPendingCancellationBookings)
 			customerBookings.GET("/upcoming", handler.User.ListUpcomingBookings)

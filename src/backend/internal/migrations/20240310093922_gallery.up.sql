@@ -27,6 +27,7 @@ CREATE TABLE bookings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
   customer_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
   gallery_id UUID NOT NULL REFERENCES galleries (id) ON DELETE CASCADE,
+  room_id UUID NOT NULL REFERENCES rooms (id) ON DELETE cascade,
   start_time timestamptz NOT NULL,
   end_time timestamptz NOT NULL,
   status booking_status NOT NULL DEFAULT 'USER_PAID',

@@ -6,6 +6,7 @@ import (
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -55,13 +56,10 @@ func (r *Resolver) RequestRefundBooking(c *gin.Context) {
 		return
 	}
 
-	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, booking.GalleryId)
-	if err != nil {
+	if err := usecase.PopulateBookingFields(c, []*model.Booking{booking}, r.GalleryUsecase, r.RoomUsecase); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
-
-	booking.Gallery = *gallery
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",

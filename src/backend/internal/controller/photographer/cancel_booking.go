@@ -3,7 +3,9 @@ package photographer
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
+	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -19,49 +21,28 @@ func (r *Resolver) CancelBooking(c *gin.Context) {
 
 	booking, err := r.BookingUsecase.BookingRepo.FindOneById(c, bookingId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
 	if booking.Status != model.BookingPaidStatus {
-		c.JSON(http.StatusForbidden, gin.H{
-			"status": "failed",
-			"error":  "this booking cannot be cancelled anymore",
-		})
-		c.Abort()
+		util.Raise403Error(c, "this booking cannot be cancelled anymore")
 		return
 	}
 
 	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, booking.GalleryId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
 	if gallery.PhotographerId != photographer.Id {
-		c.JSON(http.StatusForbidden, gin.H{
-			"status": "failed",
-			"error":  "this booking is not yours",
-		})
-		c.Abort()
+		util.Raise403Error(c, "this booking is not yours")
 		return
 	}
 
-	booking.Status = model.BookingPhotographerReqCancelStatus
-	if err := r.BookingUsecase.BookingRepo.UpdateOne(c, booking); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+	if err := usecase.PopulateBookingFields(c, []*model.Booking{booking}, r.GalleryUsecase, r.RoomUsecase); err != nil {
+		util.Raise500Error(c, err)
 		return
 	}
 

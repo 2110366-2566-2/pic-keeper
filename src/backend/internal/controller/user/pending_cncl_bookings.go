@@ -16,7 +16,7 @@ func (r *Resolver) ListPendingCancellationBookings(c *gin.Context) {
 		return
 	}
 
-	bookings, err := r.BookingUsecase.FindByUserIdWithStatus(c, userObj.Id, r.GalleryUsecase, model.BookingPhotographerReqCancelStatus)
+	bookings, err := r.BookingUsecase.FindByUserIdWithStatus(c, userObj.Id, r.GalleryUsecase, r.RoomUsecase, model.BookingPhotographerReqCancelStatus)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

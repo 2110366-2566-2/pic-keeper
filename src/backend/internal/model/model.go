@@ -102,6 +102,7 @@ const (
 
 type BookingProposal struct {
 	GalleryId uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
+	RoomId    uuid.UUID `bun:"room_id,type:uuid" json:"room_id"`
 	StartTime time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
 	EndTime   time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 }
@@ -112,6 +113,8 @@ type Booking struct {
 	CustomerId    uuid.UUID `bun:"customer_id,type:uuid" json:"customer_id"`
 	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"-"`
 	Gallery       Gallery   `bun:"-" json:"gallery"`
+	RoomId        uuid.UUID `bun:"room_id,type:uuid" json:"-"`
+	Room          Room      `bun:"-" json:"room"`
 	StartTime     time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
 	EndTime       time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 	Status        string    `bun:"status,type:varchar" json:"status"`

@@ -6,6 +6,7 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/Roongkun/software-eng-ii/internal/third-party/s3utils"
+	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -22,6 +23,11 @@ func (r *Resolver) MakeBookingPayment(c *gin.Context) {
 
 	booking.Status = model.BookingPaidStatus
 	if err := r.BookingUsecase.BookingRepo.UpdateOne(c, booking); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
+	if err := usecase.PopulateBookingFields(c, []*model.Booking{booking}, r.GalleryUsecase, r.RoomUsecase); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}

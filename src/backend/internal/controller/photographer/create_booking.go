@@ -1,9 +1,10 @@
-package user
+package photographer
 
 import (
 	"net/http"
 	"time"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/user"
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
@@ -11,40 +12,21 @@ import (
 )
 
 func (r *Resolver) CreateBooking(c *gin.Context) {
-	user, exists := c.Get("user")
-	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  "Failed to retrieve photographer from context",
-		})
-		c.Abort()
-		return
-	}
-
-	userObj, ok := user.(model.User)
+	userObj, ok := user.GetUser(c)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  "Invalid object type in context",
-		})
-		c.Abort()
 		return
 	}
 
 	bookingProposal := model.BookingProposal{}
 	if err := c.BindJSON(&bookingProposal); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  "failed",
-			"error":   err.Error(),
-			"message": "unable to bind request body with json model, please recheck",
-		})
-		c.Abort()
+		util.Raise500Error(c, err)
 		return
 	}
 
 	newBooking := model.Booking{
 		Id:         uuid.New(),
 		CustomerId: userObj.Id,
+		RoomId:     bookingProposal.RoomId,
 		GalleryId:  bookingProposal.GalleryId,
 		StartTime:  bookingProposal.StartTime,
 		EndTime:    bookingProposal.EndTime,
@@ -67,8 +49,14 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		util.Raise500Error(c, err)
 		return
 	}
+	room, err := r.RoomUsecase.RoomRepo.FindOneById(c, bookingProposal.RoomId)
+	if err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
 
 	newBooking.Gallery = *gallery
+	newBooking.Room = *room
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
