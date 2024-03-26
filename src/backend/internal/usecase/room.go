@@ -20,6 +20,29 @@ func NewRoomUseCase(db *bun.DB) *RoomUseCase {
 	}
 }
 
+func populateGalleryInRooms(ctx context.Context, galleryUsecase GalleryUseCase, rooms ...*model.Room) error {
+	galleryIds := []uuid.UUID{}
+	for _, room := range rooms {
+		galleryIds = append(galleryIds, room.GalleryId)
+	}
+
+	galleries, err := galleryUsecase.GalleryRepo.FindByIds(ctx, galleryIds...)
+	if err != nil {
+		return err
+	}
+
+	galleryIdMapping := make(map[uuid.UUID]*model.Gallery)
+	for _, gallery := range galleries {
+		galleryIdMapping[gallery.Id] = gallery
+	}
+
+	for _, room := range rooms {
+		room.Gallery = *galleryIdMapping[room.GalleryId]
+	}
+
+	return nil
+}
+
 func (r *RoomUseCase) FindRoomOfUserByGalleryId(ctx context.Context, availableRoomIds []uuid.UUID, galleryId uuid.UUID) (bool, *model.Room, error) {
 	exist, err := r.RoomRepo.CheckRoomExistenceOfUserByGalleryId(ctx, availableRoomIds, galleryId)
 	if err != nil {
