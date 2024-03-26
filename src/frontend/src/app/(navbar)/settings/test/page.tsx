@@ -5,6 +5,7 @@ import PhoneNumberModal from "@/components/Miscellaneouos/PhoneNumberModal";
 import ShareLinkModal from "@/components/Miscellaneouos/ShareLinkModal";
 import ChangesSavedModal from "@/components/Miscellaneouos/ChangesSavedModal";
 import React, { useState } from "react";
+import PhotographerVerificationModal from "@/components/Admin/Verification/PhotographerVerificationModal";
 
 const Home = () => {
   // States for each modal's visibility
@@ -13,9 +14,13 @@ const Home = () => {
   const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
     useState(false);
   const [isChangesSavedModalOpen, setIsChangesSavedModalOpen] = useState(false);
+  const [
+    isPhotographerVerificationModalOpen,
+    setIsPhotographerVerificationModalOpen,
+  ] = useState(false);
 
   // Example data that could be loaded from an API or other sources
-  const phoneNumber = "08209XXXXX";
+  const phoneNumber = "0818295425";
   const shareLink = "https://pickeeper.com/username/galleryname";
 
   // Functions to open the modals
@@ -34,6 +39,14 @@ const Home = () => {
   const closeShareLinkModal = () => setIsShareLinkModalOpen(false);
   const closeDeleteConfirmationModal = () =>
     setIsDeleteConfirmationModalOpen(false);
+
+  // Function to open the PhotographerVerificationModal
+  const openPhotographerVerificationModal = () =>
+    setIsPhotographerVerificationModalOpen(true);
+
+  // Function to close the PhotographerVerificationModal
+  const closePhotographerVerificationModal = () =>
+    setIsPhotographerVerificationModalOpen(false);
 
   // Function to handle delete confirmation action
   const handleDeleteConfirm = () => {
@@ -74,6 +87,13 @@ const Home = () => {
         Save Changes
       </button>
 
+      <button
+        className="bg-teal-500 text-white p-2 rounded hover:bg-teal-600"
+        onClick={openPhotographerVerificationModal}
+      >
+        Verify Photographer
+      </button>
+
       {/* Modals */}
       <PhoneNumberModal
         isOpen={isPhoneNumberModalOpen}
@@ -96,6 +116,20 @@ const Home = () => {
       <ChangesSavedModal
         isOpen={isChangesSavedModalOpen}
         closeChangesSavedModal={() => setIsChangesSavedModalOpen(false)}
+      />
+
+      <PhotographerVerificationModal
+        isOpen={isPhotographerVerificationModalOpen}
+        closeModal={closePhotographerVerificationModal}
+        // You would pass the actual photographer data here
+        photographer={{
+          name: "Punnawich Yiamsombat",
+          username: "09893",
+          createdDate: "17/02/2024",
+          idNumber: "1103949863397",
+          additionalInfo: "Additional Information about the Photographer Lorem",
+          idCardImage: "/images/image1.JPG",
+        }}
       />
     </div>
   );
