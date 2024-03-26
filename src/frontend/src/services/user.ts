@@ -100,7 +100,8 @@ const updateUserProfile = async (userUpdateInput: UserUpdateInput) => {
 const reportIssue = async (issueInput: IssueInput) => {
   try {
     const { data } = await apiClientWithAuth.post<SuccessResponse<Issue>>(
-      `${userBaseUrl}/report-issue`
+      `${userBaseUrl}/report-issue`,
+      issueInput
     );
     return data;
   } catch (error) {

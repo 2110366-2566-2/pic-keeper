@@ -8,8 +8,6 @@ import roomService from "@/services/room";
 import { isDifferentDay } from "@/utils/date";
 import { Conversation, Room } from "@/types/room";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import { User } from "@/types/user";
-import userService from "@/services/user";
 
 interface ChatProps {
   roomId: string;
@@ -23,7 +21,6 @@ const Chat = ({ roomId }: ChatProps) => {
   const bottomOfChat = useRef<HTMLDivElement>(null);
   const showError = useErrorModal();
   const [room, setRoom] = useState<Room>();
-  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     const fetchOldConversation = async () => {
@@ -55,13 +52,11 @@ const Chat = ({ roomId }: ChatProps) => {
 
   useEffect(() => {
     bottomOfChat.current?.scrollIntoView({ behavior: "instant" });
-  }, [messages, conversations]);
-
-  useEffect(() => {});
+  }, [conversations]);
 
   const handleSendMessage = () => {
     if (!session?.user?.data?.id) {
-      console.error("No session user");
+      showError(new Error("no session user"));
       return;
     }
 
@@ -83,7 +78,7 @@ const Chat = ({ roomId }: ChatProps) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col w-full h-full">
       <div className="flex flex-col p-4">
         <div className="flex justify-start items-center gap-4">
           <h1 className="text-title">
