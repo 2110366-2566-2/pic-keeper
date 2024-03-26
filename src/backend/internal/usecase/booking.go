@@ -49,26 +49,26 @@ func populateRoomsInBookings(ctx context.Context, roomUsecase RoomUseCase, galle
 	return nil
 }
 
-func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, galleryUsecase GalleryUseCase, bkStatus ...string) ([]*model.Booking, error) {
+func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase, bkStatus ...string) ([]*model.Booking, error) {
 	bookings, err := b.BookingRepo.FindByUserIdWithStatus(ctx, userId, bkStatus...)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := populateRoomsInBookings(ctx, bookings, galleryUsecase); err != nil {
+	if err := populateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 
 	return bookings, nil
 }
 
-func (b *BookingUseCase) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, galleryUsecase GalleryUseCase, status ...string) ([]*model.Booking, error) {
+func (b *BookingUseCase) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase, status ...string) ([]*model.Booking, error) {
 	bookings, err := b.BookingRepo.FindByPhotographerIdWithStatus(ctx, phtgId, status...)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := populateRoomsInBookings(ctx, bookings, galleryUsecase); err != nil {
+	if err := populateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 
@@ -80,6 +80,15 @@ func (b *BookingUseCase) UpdateStatusRoutine() error {
 	return b.BookingRepo.UpdateStatusRoutine(context.Background(), currentTime)
 }
 
-func (b *BookingUseCase) ListPendingRefundBookings(ctx context.Context) ([]*model.Booking, error) {
-	return b.BookingRepo.ListPendingRefundBookings(ctx)
+func (b *BookingUseCase) ListPendingRefundBookings(ctx context.Context, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase) ([]*model.Booking, error) {
+	bookings, err := b.BookingRepo.ListPendingRefundBookings(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := populateRoomsInBookings(ctx, roomUsecase, galleryUsecase, bookings...); err != nil {
+		return nil, err
+	}
+
+	return bookings, nil
 }
