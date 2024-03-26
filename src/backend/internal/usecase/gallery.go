@@ -20,10 +20,33 @@ func NewGalleryUseCase(db *bun.DB) *GalleryUseCase {
 	}
 }
 
-func (p *GalleryUseCase) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Gallery, error) {
-	return p.GalleryRepo.FindByPhotographerId(ctx, photographerId)
+func (g *GalleryUseCase) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Gallery, error) {
+	return g.GalleryRepo.FindByPhotographerId(ctx, photographerId)
 }
 
-func (p *GalleryUseCase) SearchWithFilter(ctx context.Context, filter *model.SearchFilter) ([]*model.Gallery, error) {
-	return p.GalleryRepo.SearchWithFilter(ctx, filter)
+func (g *GalleryUseCase) SearchWithFilter(ctx context.Context, filter *model.SearchFilter) ([]*model.Gallery, error) {
+	return g.GalleryRepo.SearchWithFilter(ctx, filter)
+}
+
+func (g *GalleryUseCase) PopulateGalleryInRooms(ctx context.Context, rooms ...*model.Room) error {
+	galleryIds := []uuid.UUID{}
+	for _, room := range rooms {
+		galleryIds = append(galleryIds, room.GalleryId)
+	}
+
+	galleries, err := g.GalleryRepo.FindByIds(ctx, galleryIds...)
+	if err != nil {
+		return err
+	}
+
+	galleryIdMapping := make(map[uuid.UUID]*model.Gallery)
+	for _, gallery := range galleries {
+		galleryIdMapping[gallery.Id] = gallery
+	}
+
+	for _, room := range rooms {
+		room.Gallery = *galleryIdMapping[room.GalleryId]
+	}
+
+	return nil
 }

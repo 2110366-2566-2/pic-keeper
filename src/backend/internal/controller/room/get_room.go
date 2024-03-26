@@ -28,18 +28,17 @@ func (r *Resolver) GetRoom(c *gin.Context) {
 		return
 	}
 
-	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, roomObj.GalleryId)
-	if err != nil {
-		util.Raise500Error(c, err)
-		return
-	}
 	otherUsers, err := r.RoomUsecase.FindOtherUsersInRoom(c, user.Id, roomObj.Id)
 	if err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	roomObj.Gallery = *gallery
+	if err := r.GalleryUsecase.PopulateGalleryInRooms(c, roomObj); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
 	roomObj.OtherUsers = otherUsers
 
 	c.JSON(http.StatusOK, gin.H{
