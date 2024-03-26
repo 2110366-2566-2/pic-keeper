@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import React from "react";
 import Image from "next/image";
 
-// Accept setStatus as a prop
 const PhotographerVerification = () => {
   const [idNumber, setIdNumber] = useState("");
   const [file, setFile] = useState<File | null>(null);

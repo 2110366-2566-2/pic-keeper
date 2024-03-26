@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getUser(c *gin.Context) (*model.User, bool) {
+func GetUser(c *gin.Context) (*model.User, bool) {
 	user := c.MustGet("user")
 	userObj, ok := user.(model.User)
 	if !ok {

@@ -37,3 +37,7 @@ func (r *RoomUseCase) FindRoomOfUserByGalleryId(ctx context.Context, availableRo
 
 	return true, room, nil
 }
+
+func (r *RoomUseCase) FindOtherUsersInRoom(ctx context.Context, selfUserId, roomId uuid.UUID) ([]*model.User, error) {
+	return r.RoomRepo.FindOtherUsersInRoom(ctx, selfUserId, roomId)
+}

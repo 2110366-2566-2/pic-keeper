@@ -32,7 +32,6 @@ func hashEmail(email string) string {
 // @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
 // @Router /users/v1/upload-profile [post]
 func (r *Resolver) UploadProfilePicture(c *gin.Context) {
-
 	fmt.Println(c.Request)
 	file, _, err := c.Request.FormFile("profilePicture")
 

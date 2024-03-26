@@ -33,3 +33,16 @@ func (r *RoomDB) FindRoomOfUserByGalleryId(ctx context.Context, availableRoomIds
 
 	return &room, nil
 }
+
+func (r *RoomDB) FindOtherUsersInRoom(ctx context.Context, selfUserId, roomId uuid.UUID) ([]*model.User, error) {
+	var lookup model.UserRoomLookup
+	var otherUsers []*model.User
+
+	subq := r.db.NewSelect().Model(&lookup).Where("user_id != ? AND room_id = ?", selfUserId, roomId).Column("user_id")
+
+	if err := r.db.NewSelect().Model(&otherUsers).Where("id IN (?)", subq).Scan(ctx, &otherUsers); err != nil {
+		return nil, err
+	}
+
+	return otherUsers, nil
+}

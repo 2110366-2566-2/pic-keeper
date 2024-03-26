@@ -3,14 +3,7 @@
 import { useRef, useState } from "react";
 import React from "react";
 import Image from "next/image";
-import { IoIosArrowBack, IoIosArrowForward, IoIosAdd } from "react-icons/io";
-import { HiOutlinePlusSm } from "react-icons/hi";
-import { GrLocation } from "react-icons/gr";
-import { PhotographerStatus } from "@/types/user";
 
-// Define Status enum inside the component if it's not imported
-
-// Accept setStatus as a prop
 const VerificationFailed = () => {
   const [idNumber, setIdNumber] = useState("");
   const [file, setFile] = useState<File | null>(null);

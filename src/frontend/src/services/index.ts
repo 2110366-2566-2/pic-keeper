@@ -1,0 +1,9 @@
+export { default as adminService } from "./admin";
+export { default as authService } from "./auth";
+export { default as customerBookingService } from "./customerBooking";
+export { default as customerGalleriesService } from "./customerGalleries";
+export { default as paymentService } from "./payment";
+export { default as photographerBookingService } from "./photographerBooking";
+export { default as photographerGalleriesService } from "./photographerGalleries";
+export { default as roomService } from "./room";
+export { default as userService } from "./user";
