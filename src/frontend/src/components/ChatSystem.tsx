@@ -10,9 +10,10 @@ import { useErrorModal } from "@/hooks/useErrorModal";
 import ProfileImage from "./shared/ProfileImage";
 import { generateProfilePictureUrl } from "@/utils/s3";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Props {
-  roomId: string;
+  roomId?: string;
 }
 
 const ChatSystem = ({ roomId }: Props) => {
@@ -23,13 +24,15 @@ const ChatSystem = ({ roomId }: Props) => {
 
   useEffect(() => {
     const fetchRoomInfo = async () => {
-      try {
-        const response = await roomService.getRoomInfo(roomId);
-        if (response.data) {
-          setCurrRoom(response.data);
+      if (roomId) {
+        try {
+          const response = await roomService.getRoomInfo(roomId);
+          if (response.data) {
+            setCurrRoom(response.data);
+          }
+        } catch (error) {
+          showError(error);
         }
-      } catch (error) {
-        showError(error);
       }
     };
     fetchRoomInfo();
@@ -105,10 +108,23 @@ const ChatSystem = ({ roomId }: Props) => {
       {/* chat box */}
       <div className="col-span-3 h-full">
         <div className=" bg-white rounded-xl shadow-lg flex items-center justify-center text-lg overflow-y-scroll h-[90vh]">
-          <Chat roomId={roomId} />
+          {roomId ? (
+            <Chat roomId={roomId} />
+          ) : (
+            <div className="flex flex-col gap-5 items-center justify-center">
+              <Image
+                src={"/images/chat.svg"}
+                alt="Chat"
+                width={400}
+                height={400}
+              />
+              <h4 className="text-standard text-xl text-gray-900">
+                No chat specify
+              </h4>
+            </div>
+          )}
         </div>
       </div>
-
       {/* gallery */}
       {currRoom && (
         <div className="col-span-2 flex flex-col justify-between gap-4">
