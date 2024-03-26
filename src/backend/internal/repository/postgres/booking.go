@@ -42,9 +42,12 @@ func (b *BookingDB) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID
 
 func (b *BookingDB) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, status ...string) ([]*model.Booking, error) {
 	var bookings []*model.Booking
+	var rooms []*model.Room
 	var pkg model.Gallery
 
 	subq := b.db.NewSelect().Model(&pkg).Where("photographer_id = ?", phtgId).Column("id")
+
+	medq := b.db.NewSelect().Model(&rooms).Where("gallery_id IN (?)", subq).Column("id")
 
 	query := b.db.NewSelect().Model(&bookings)
 
@@ -53,7 +56,7 @@ func (b *BookingDB) FindByPhotographerIdWithStatus(ctx context.Context, phtgId u
 	}
 
 	query = query.WhereGroup(" AND ", func(q *bun.SelectQuery) *bun.SelectQuery {
-		return q.Where("gallery_id IN (?)", subq)
+		return q.Where("room_id IN (?)", medq)
 	})
 
 	if err := query.Scan(ctx, &bookings); err != nil {
