@@ -179,7 +179,7 @@ var ServeCmd = &cobra.Command{
 			customerReviews.POST("/", handler.User.CreateReview)
 			customerReviews.PUT("/:id", handler.User.UpdateReview) // specify review_id
 			customerReviews.DELETE("/:id", handler.User.DeleteReview)
-			// customerReviews.GET("/my-reviews", handler.User.MyReviews)
+			customerReviews.GET("/my-reviews", handler.User.MyReviews)
 
 		}
 
