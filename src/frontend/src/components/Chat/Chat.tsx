@@ -8,9 +8,6 @@ import roomService from "@/services/room";
 import { isDifferentDay } from "@/utils/date";
 import { Conversation, Room } from "@/types/room";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import { User } from "@/types/user";
-import userService from "@/services/user";
-import { useModal } from "@/context/ModalContext";
 
 interface ChatProps {
   roomId: string;

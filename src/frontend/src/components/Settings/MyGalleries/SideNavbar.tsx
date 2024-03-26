@@ -1,4 +1,3 @@
-// src/frontend/src/components/SideNavbar.tsx
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";

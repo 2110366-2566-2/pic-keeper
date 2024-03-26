@@ -1,4 +1,4 @@
-import ChatSystem from "@/components/ChatSystem";
+import ChatSystem from "@/components/Chat/ChatSystem";
 
 const Home = ({ params }: { params: { roomId: string } }) => {
   return <ChatSystem roomId={params.roomId} />;

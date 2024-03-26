@@ -3,7 +3,6 @@
 import { classNames } from "@/utils/list";
 import { Menu, Transition } from "@headlessui/react";
 import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 import Link from "next/link";
 import { Fragment, ReactNode } from "react";
 import { MdArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
@@ -78,7 +77,8 @@ const ProfileMenu = () => {
                   <MenuItem href="/report-issues">Report issues</MenuItem>
                   <Menu.Item>
                     {({ active }) => (
-                      <button
+                      <Link
+                        href="/auth/login"
                         onClick={() => signOut()}
                         className={classNames(
                           active ? "bg-gray-100" : "",
@@ -86,7 +86,7 @@ const ProfileMenu = () => {
                         )}
                       >
                         Logout
-                      </button>
+                      </Link>
                     )}
                   </Menu.Item>
                 </>

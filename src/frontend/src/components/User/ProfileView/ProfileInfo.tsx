@@ -1,5 +1,4 @@
 "use client";
-import userService from "@/services/user";
 import Link from "next/link";
 import Image from "next/image";
 import { GalleryCard } from "@/components/Gallery";
@@ -7,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { capitalizeFirstLetter } from "@/utils/string";
 import { Gallery } from "@/types/gallery";
-import photographerGalleriesService from "@/services/photographerGalleries";
+import { userService, photographerGalleriesService } from "@/services";
 import { PhotographerStatus } from "@/types/user";
 import { useErrorModal } from "@/hooks/useErrorModal";
 

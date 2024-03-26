@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import customerGalleriesService from "@/services/customerGalleries";
-import photographerGalleryService from "@/services/photographerGalleries";
+import {
+  customerGalleriesService,
+  photographerGalleriesService,
+  userService,
+} from "@/services";
 import { User } from "@/types/user";
 import { Gallery } from "@/types/gallery";
-import userService from "@/services/user";
 import ProfileImage from "../shared/ProfileImage";
 import { useRouter } from "next/navigation";
 
@@ -42,7 +44,7 @@ const GalleryCard = ({ galleryId }: Props) => {
     };
 
     const fetchGalleryInfo = async () => {
-      const response = await photographerGalleryService.getGallery(galleryId);
+      const response = await photographerGalleriesService.getGallery(galleryId);
       if (response.data) {
         setGalleryInfo(response.data);
         await fetchUserInfo(response.data.photographer_id);

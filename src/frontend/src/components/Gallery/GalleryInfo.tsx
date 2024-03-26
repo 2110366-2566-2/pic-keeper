@@ -1,20 +1,20 @@
 "use client";
-import customerGalleriesService from "@/services/customerGalleries";
-import photographerGalleriesService from "@/services/photographerGalleries";
 import { Gallery } from "@/types/gallery";
 import { useEffect, useState } from "react";
 import ImageViewer from "./ImageViewer";
 import ProfileImage from "../shared/ProfileImage";
 import { User } from "@/types/user";
-import userService from "@/services/user";
-import { IoIosCamera, IoIosTime } from "react-icons/io";
-import { IoLocationSharp } from "react-icons/io5";
+import {
+  userService,
+  roomService,
+  customerGalleriesService,
+  photographerGalleriesService,
+} from "@/services";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { MdModeEdit } from "react-icons/md";
 import { useModal } from "@/context/ModalContext";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import roomService from "@/services/room";
 import PackageInfo from "./PackageInfo";
 
 interface Props {

@@ -1,12 +1,12 @@
 "use client";
 
-import Chat from "./Chat/Chat";
-import { GalleryCard, PackageInfo } from "./Gallery";
+import Chat from "./Chat";
+import { GalleryCard, PackageInfo } from "../Gallery";
 import { useEffect, useState } from "react";
 import roomService from "@/services/room";
 import { Room } from "@/types/room";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import ProfileImage from "./shared/ProfileImage";
+import ProfileImage from "../shared/ProfileImage";
 import { generateProfilePictureUrl } from "@/utils/s3";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
