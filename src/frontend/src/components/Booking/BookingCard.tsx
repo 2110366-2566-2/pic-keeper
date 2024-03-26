@@ -1,13 +1,11 @@
 "use client";
-import photographerGalleriesService from "@/services/photographerGalleries";
 import userService from "@/services/user";
-import { Booking, BookingStatus } from "@/types/booking";
+import { Booking } from "@/types/booking";
+import { transformDate } from "@/utils/date";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { User } from "@/types/user";
-import { UserResponse } from "@/types/response";
-import { GalleryResponse } from "@/types/response";
-import { isDifferentDay, transformDate } from "@/utils/date";
+import { RenderStatus } from "./RenderBySatus";
+import { GetUserInfoResponse } from "@/types/response"; 
 
 
 
@@ -17,37 +15,38 @@ interface BookOptions {
   setModalProps: Function;
 }
 
-interface customerProp {
-  profile_picture_url: string | undefined;
-  data: {
-    firstname: string | undefined;
-    lastname: string | undefined;
-    username: string | undefined;
-  };
-}
-
 
 export default function BookingCard(options: BookOptions) {
-  const [customer, setCustomer] = useState<customerProp | null>();
+  const [customer, setCustomer] = useState<GetUserInfoResponse | null>();
+  const [photoGrapher, setPhotoGrapher] = useState<GetUserInfoResponse | null>();
+ 
 
   const getCustomer = async () => {
     const result = await userService.getUserById(options.props.customer_id);
-    console.log("Fetch complete Customer: ", result);
-    return {
-      profile_picture_url: result.profile_picture_url,
-      data: {
-        firstname: result.data?.firstname,
-        lastname: result.data?.lastname,
-        username: result.data?.username,
-      },
-    };
+    if(!result.profile_picture_url){
+      result.profile_picture_url="/images/image2.jpg";
+    }
+
+    return result;
   };
+
+  const getPhotographer = async () => {
+    const result = await userService.getUserById(options.props.gallery.photographer_id);
+    if(!result.profile_picture_url){
+      result.profile_picture_url="/images/image2.jpg";
+    }
+    return result;
+  };
+
 
   useEffect(() => {
     //Runs only on the first render
     const initialFetch = async () => {
-      const cus = await getCustomer();
-      setCustomer(cus);
+      const customerFetch = await getCustomer();
+      setCustomer(customerFetch );
+
+      const photoGrapherFetch = await getPhotographer();
+      setPhotoGrapher(photoGrapherFetch);
     };
 
     initialFetch();
@@ -59,8 +58,7 @@ export default function BookingCard(options: BookOptions) {
         className="bg-white my-4 py-8 grid sm:grid-cols-5  lg:grid-cols-10 gap-x-3 gap-y-3 py-3 rounded-lg shadow-md hover:shadow-stone-400"
         onClick={() => {
           options.openModal();
-          const mergedObj = { ...options.props, ...customer };
-          console.log(mergedObj);
+          const mergedObj = {bookingOptions:options.props , customer:customer ,photographer:photoGrapher};
           options.setModalProps(mergedObj);
         }}
       >
@@ -99,21 +97,17 @@ export default function BookingCard(options: BookOptions) {
             <Image
               className="object-cover rounded-full"
               fill={true}
-              src={
-                customer?.profile_picture_url
-                  ? customer.profile_picture_url
-                  : "/images/no-picture.jpeg"
-              }
+              src={customer?.profile_picture_url ? customer.profile_picture_url:"/images/image2.jpg"}
               alt=""
             />
           </div>
           <div className="">
             <p className="text-sm font-semibold">
-              {customer ? customer.data.firstname : ""}{" "}
-              {customer ? customer.data.lastname : ""}
+              {customer ? customer.data?.firstname : ""}{" "}
+              {customer ? customer.data?.lastname : ""}
             </p>
             <p className="text-sm font-semibold text-stone-400">
-              @{customer ? customer.data.firstname : ""}
+              @{customer ? customer.data?.firstname : ""}
             </p>
           </div>
         </div>
@@ -156,50 +150,7 @@ export default function BookingCard(options: BookOptions) {
         </div>
         <div className="col-span-2 pl-4">
           <div className="text-base font-bold">
-            {options.props.status == BookingStatus.BookingCancelledStatus ? (
-              <p className="text-base font-bold text-red-600">
-                &bull; Cancelled{" "}
-              </p>
-            ) : (
-              <></>
-            )}
-            {options.props.status == BookingStatus.BookingCompletedStatus ? (
-              <p className="text-base font-bold text-amber-500">
-                &bull; Completed{" "}
-              </p>
-            ) : (
-              <></>
-            )}
-            {options.props.status ==
-            BookingStatus.BookingCustomerReqCancelStatus ? (
-              <p className="text-base font-bold text-orange-500">
-                &bull; Cancellation requested{" "}
-              </p>
-            ) : (
-              <></>
-            )}
-            {options.props.status == BookingStatus.BookingPaidOutStatus ? (
-              <p className="text-base font-bold text-blue-500">
-                &bull; Paid out{" "}
-              </p>
-            ) : (
-              <></>
-            )}
-            {options.props.status == BookingStatus.BookingPaidStatus ? (
-              <p className="text-base font-bold text-emerald-500">
-                &bull; User paid{" "}
-              </p>
-            ) : (
-              <></>
-            )}
-            {options.props.status ==
-            BookingStatus.BookingPhotographerReqCancelStatus ? (
-              <p className="text-base font-bold text-orange-500">
-                &bull; ancellation requested{" "}
-              </p>
-            ) : (
-              <></>
-            )}
+              <RenderStatus status={options.props.status} />
           </div>
           <p className="text-sm font-semibold text-stone-400">
             Action taken on 12/01

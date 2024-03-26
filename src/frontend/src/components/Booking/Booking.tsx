@@ -1,168 +1,162 @@
 "use client";
+import { useErrorModal } from "@/hooks/useErrorModal";
 import customerBookingService from "@/services/customerBooking";
 import photographerBookingService from "@/services/photographerBooking";
-import { Booking, BookingStatus } from "@/types/booking";
+import { Booking } from "@/types/booking";
 import { useEffect, useState } from "react";
 import BookingCard from "./BookingCard";
 import BookingModal from "./BookingModal";
-import { list } from "postcss";
+import Loading from "./Loading";
+import { GetUserInfoResponse } from "@/types/response"; 
 
+interface Content {
+  bookingOptions:Booking;
+  customer:GetUserInfoResponse;
+  photographer:GetUserInfoResponse;
+}
 
 export default function BookingPage() {
- 
-
-  const [bookingLists, setBookingLists] = useState<Booking[]|null>([]);
+  const showError = useErrorModal();
+  const [bookingLists, setBookingLists] = useState<Booking[] | null>([]);
   const [allAppointment, setAllAppointment] = useState<Boolean>(true);
   const [upComing, setUpComing] = useState<Boolean>(false);
   const [past, setPast] = useState<Boolean>(false);
   const [cancel, setCancel] = useState<Boolean>(false);
+  const [showContent, setShowContent] = useState(true);
+  
+
+  const refreshContent = (func: Function) => {
+    setShowContent(false); // Set content to false
+    setTimeout(async () => {
+      let result = await func();
+      setBookingLists(result);
+      setShowContent(true); // Set content back to true after 2000 milliseconds
+    }, 2000);
+  };
 
   //-------Fetch Object will be replaced later--------------------------------------
   const getAllBookings = async () => {
-    let resultCustomer:Array<Booking>;
-    let resultPhotographer:Array<Booking>;
-  
-    try{
-      const res= await customerBookingService.getAllBookings();
-      if(res.data){
-        resultCustomer=res.data;
+    let resultCustomer: Array<Booking>;
+    let resultPhotographer: Array<Booking>;
+
+    try {
+      const res = await customerBookingService.getAllBookings();
+      if (res.data) {
+        resultCustomer = res.data;
+      } else {
+        resultCustomer = [];
       }
-      else{
-        resultCustomer=[]
-      }
-    }
-    catch(err){
-      resultCustomer=[];
+    } catch (error) {
+      showError(error, "Failed to fetch bookings");
+      resultCustomer = [];
     }
 
-    try{
-      const res= await photographerBookingService.getMyBookings();
-      if(res.data){
-        resultPhotographer=res.data;
+    try {
+      const res = await photographerBookingService.getMyBookings();
+      if (res.data) {
+        resultPhotographer = res.data;
+      } else {
+        resultPhotographer = [];
       }
-      else{
-        resultPhotographer=[]
-      }
+    } catch (error) {
+      resultPhotographer = [];
     }
-    catch(err){
-      resultPhotographer=[];
-    }
-    console.log("Fetch Customer: ",resultCustomer);
-    console.log("Fetch Photographer ",resultPhotographer);
     return [...resultCustomer, ...resultPhotographer];
   };
 
   const getPendingCancellations = async () => {
+    let resultCustomer: Array<Booking>;
+    let resultPhotographer: Array<Booking>;
 
-    let resultCustomer:Array<Booking>;
-    let resultPhotographer:Array<Booking>;
-  
-    try{
-      const res= await customerBookingService.getPendingCancellations();
-      if(res.data){
-        resultCustomer=res.data;
+    try {
+      const res = await customerBookingService.getPendingCancellations();
+      if (res.data) {
+        resultCustomer = res.data;
+      } else {
+        resultCustomer = [];
       }
-      else{
-        resultCustomer=[]
-      }
-    }
-    catch(err){
-      resultCustomer=[];
+    } catch (error) {
+      showError(error, "Failed to fetch bookings");
+      resultCustomer = [];
     }
 
-    try{
-      const res= await photographerBookingService.getPendingCancellations();
-      if(res.data){
-        resultPhotographer=res.data;
+    try {
+      const res = await photographerBookingService.getPendingCancellations();
+      if (res.data) {
+        resultPhotographer = res.data;
+      } else {
+        resultPhotographer = [];
       }
-      else{
-        resultPhotographer=[]
-      }
-    }
-    catch(err){
-      resultPhotographer=[];
+    } catch (error) {
+      resultPhotographer = [];
     }
     return [...resultCustomer, ...resultPhotographer];
-   
-
   };
 
   const getUpcomingBookings = async () => {
-    let resultCustomer:Array<Booking>;
-    let resultPhotographer:Array<Booking>;
-  
-    try{
-      const res= await customerBookingService.getUpcomingBookings();
-      if(res.data){
-        resultCustomer=res.data;
+    let resultCustomer: Array<Booking>;
+    let resultPhotographer: Array<Booking>;
+
+    try {
+      const res = await customerBookingService.getUpcomingBookings();
+      if (res.data) {
+        resultCustomer = res.data;
+      } else {
+        resultCustomer = [];
       }
-      else{
-        resultCustomer=[]
-      }
-    }
-    catch(err){
-      resultCustomer=[];
+    } catch (error) {
+      showError(error, "Failed to fetch bookings");
+      resultCustomer = [];
     }
 
-    try{
-      const res= await photographerBookingService.getUpcomingBookings();
-      if(res.data){
-        resultPhotographer=res.data;
+    try {
+      const res = await photographerBookingService.getUpcomingBookings();
+      if (res.data) {
+        resultPhotographer = res.data;
+      } else {
+        resultPhotographer = [];
       }
-      else{
-        resultPhotographer=[]
-      }
-    }
-    catch(err){
-      resultPhotographer=[];
+    } catch (error) {
+      resultPhotographer = [];
     }
     return [...resultCustomer, ...resultPhotographer];
-   
-    //return [mockData[1], mockData[2]];
   };
+
   const getPastBookings = async () => {
-    let resultCustomer:Array<Booking>;
-    let resultPhotographer:Array<Booking>;
-  
-    try{
-      const res= await customerBookingService.getPastBookings();
-      if(res.data){
-        resultCustomer=res.data;
+    let resultCustomer: Array<Booking>;
+    let resultPhotographer: Array<Booking>;
+
+    try {
+      const res = await customerBookingService.getPastBookings();
+      if (res.data) {
+        resultCustomer = res.data;
+      } else {
+        resultCustomer = [];
       }
-      else{
-        resultCustomer=[]
-      }
-    }
-    catch(err){
-      resultCustomer=[];
+    } catch (error) {
+      showError(error, "Failed to fetch bookings");
+      resultCustomer = [];
     }
 
-    try{
-      const res= await photographerBookingService.getPastBookings();
-      if(res.data){
-        resultPhotographer=res.data;
+    try {
+      const res = await photographerBookingService.getPastBookings();
+      if (res.data) {
+        resultPhotographer = res.data;
+      } else {
+        resultPhotographer = [];
       }
-      else{
-        resultPhotographer=[]
-      }
-    }
-    catch(err){
-      resultPhotographer=[];
+    } catch (error) {
+      resultPhotographer = [];
     }
     return [...resultCustomer, ...resultPhotographer];
-   
   };
 
   //---Use Effect--------
   useEffect(() => {
     //Runs only on the first render
-    const initialFetch = async () => {
-      const result = await getAllBookings();
-      setBookingLists(result);
-    };
-    
-    initialFetch();
-  }, []);
+    setShowContent(false);
+    refreshContent(getAllBookings);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     //Runs only on the dependency
@@ -170,7 +164,7 @@ export default function BookingPage() {
 
   //-----------End--Fetch--------------------------------
 
-  const [modalProps, setModalProps] = useState<Object>({});
+  const [modalProps, setModalProps] = useState<Content|null>(null);
 
   //----------Modal--------------
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
@@ -184,22 +178,20 @@ export default function BookingPage() {
   };
 
   //renderBooking Cards
-  const renderedBookings = bookingLists?.map((booking,index) => {
-    
+  const renderedBookings = bookingLists?.map((booking, index) => {
     return (
-        <BookingCard
-          key={index}
-          props={booking}
-          openModal={openModal}
-          setModalProps={setModalProps}
-        />
-      
+      <BookingCard
+        key={index}
+        props={booking}
+        openModal={openModal}
+        setModalProps={setModalProps}
+      />
     );
   });
 
   return (
     <div className="w-full h-screen px-16">
-      <div className="flex flex-col ">
+      <div className="flex flex-col h-full ">
         <div>
           <h2 className="text-3xl mt-8 pb-4 font-semibold">My Bookings</h2>
         </div>
@@ -212,8 +204,8 @@ export default function BookingPage() {
                   setUpComing(false);
                   setPast(false);
                   setCancel(false);
-                  let result = await getAllBookings();
-                  setBookingLists(result);
+                  setShowContent(false);
+                  refreshContent(getAllBookings);
                 }}
                 className="lg:me-16 ml-1"
               >
@@ -233,8 +225,7 @@ export default function BookingPage() {
                   setUpComing(true);
                   setPast(false);
                   setCancel(false);
-                  let result = await getUpcomingBookings();
-                  setBookingLists(result);
+                  refreshContent(getUpcomingBookings);
                 }}
                 className="lg:me-16 ml-1"
               >
@@ -252,8 +243,7 @@ export default function BookingPage() {
                   setUpComing(false);
                   setPast(true);
                   setCancel(false);
-                  let result = await getPastBookings();
-                  setBookingLists(result);
+                  refreshContent(getPastBookings);
                 }}
                 className="lg:me-16 ml-1"
               >
@@ -271,8 +261,7 @@ export default function BookingPage() {
                   setUpComing(false);
                   setPast(false);
                   setCancel(true);
-                  let result = await getPendingCancellations();
-                  setBookingLists(result);
+                  refreshContent(getPendingCancellations);
                 }}
                 className="lg:me-16 ml-1"
               >
@@ -313,14 +302,23 @@ export default function BookingPage() {
           </div>
         </div>
 
-        <div>{renderedBookings}</div>
+        <div
+          className={`transition-opacity flex flex-col h-full overflow-y-auto py-4 ${
+            showContent ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {renderedBookings}
+          <div className="mt-16"></div>
+        </div>
+
+        <Loading isOpen={!showContent}/>
+
         <BookingModal
           isOpen={modalIsOpen}
           closeModal={closeModal}
-          content={modalProps}
+          content={modalProps as Content}
         />
       </div>
     </div>
   );
 }
-
