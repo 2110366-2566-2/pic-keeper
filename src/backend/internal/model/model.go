@@ -121,7 +121,7 @@ const (
 )
 
 type BookingProposal struct {
-	GalleryId uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
+	RoomId    uuid.UUID `bun:"room_id,type:uuid" json:"room_id"`
 	StartTime time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
 	EndTime   time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 }
