@@ -9,6 +9,10 @@ import {
   SuccessResponse,
 } from "@/types/response";
 import { UserUpdateInput } from "@/types/user";
+import {
+  VerificationTicket,
+  VerificationTicketInput,
+} from "@/types/verification";
 import { Axios } from "axios";
 
 import { signOut } from "next-auth/react";
@@ -63,11 +67,13 @@ const getUserById = async (id: string) => {
   }
 };
 
-const requestVerify = async () => {
+const requestVerify = async (
+  verificationTicketInput: VerificationTicketInput
+) => {
   try {
-    const { data } = await apiClientWithAuth.get<UserResponse>(
-      `${userBaseUrl}/req-verify`
-    );
+    const { data } = await apiClientWithAuth.post<
+      SuccessResponse<VerificationTicket>
+    >(`${userBaseUrl}/req-verify`, verificationTicketInput);
     return data;
   } catch (error) {
     throw error;
