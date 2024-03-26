@@ -1,4 +1,3 @@
-import Chat from "@/components/Chat/Chat";
 import ChatSystem from "@/components/ChatSystem";
 
 const Home = ({ params }: { params: { roomId: string } }) => {
