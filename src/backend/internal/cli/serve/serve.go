@@ -98,7 +98,7 @@ var ServeCmd = &cobra.Command{
 			customerGalleries.GET("/search", handler.User.SearchGalleries)
 			customerGalleries.GET("/:id", handler.User.GetPhotoUrlsInGallery)
 			// List all reviews in the gallery (Guest can also view the reviews)
-			customerGalleries.GET("/:galleryId/reviews", handler.User.ListReviewsByGalleryId)
+			customerGalleries.GET("/:id/reviews", handler.User.ListReviewsByGalleryId)
 		}
 
 		usersNonValidated := r.Group("/users/v1")

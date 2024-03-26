@@ -8,7 +8,7 @@ import (
 )
 
 func (r *Resolver) ListReviewsByGalleryId(c *gin.Context) {
-	paramId := c.Param("galleryId")
+	paramId := c.Param("id")
 	galleryId := uuid.MustParse(paramId)
 
 	reviews, err := r.ReviewUsecase.FindByGalleryId(c, galleryId, r.UserUsecase, r.BookingUsecase)
