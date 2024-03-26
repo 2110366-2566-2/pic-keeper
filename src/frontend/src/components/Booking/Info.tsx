@@ -21,6 +21,33 @@ export default function Info(props: {
   togglePage: Function;
   isOpen: boolean;
 }) {
+  const renderDetail = props.content.bookingOptions.room.gallery.included?.map(
+    (detail, index) => {
+      return (
+        <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="#000000"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+            </g>
+          </svg>
+          {detail}
+        </div>
+      );
+    }
+  );
+
   return (
     <>
       <Transition show={props.isOpen} as={Fragment}>
@@ -133,7 +160,7 @@ export default function Info(props: {
                     fill="black"
                   />
                 </svg>{" "}
-                4 hours photography event
+                {props.content.bookingOptions.room.gallery.hours} hours photography event
               </div>
               <div className="flex gap-x-2 ">
                 <svg
@@ -165,89 +192,11 @@ export default function Info(props: {
                     fill="#969696"
                   />
                 </svg>
-                10 days delivery
+                {props.content.bookingOptions.room.gallery.delivery_time} days delivery
               </div>
 
-              <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#000000"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                  </g>
-                </svg>
-                10 printed image
-              </div>
-              <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#000000"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                  </g>
-                </svg>
-                RAW file
-              </div>
-              <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#000000"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                  </g>
-                </svg>
-                1 VDO
-              </div>
-              <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#000000"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-                  </g>
-                </svg>
-                Minimum 800 images
-              </div>
+                {renderDetail}
+
             </div>
 
             <div className="text-lg flex font-bold justify-between">

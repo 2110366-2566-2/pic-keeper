@@ -45,14 +45,14 @@ export function RenderButtonByStatus(props: {
   switch (props.status) {
     case BookingStatus.BookingPaidStatus:
       return (
-        props.isOwner && (
+        
           <div
             className="text-center mt-4 font-semibold text-red-500"
             onClick={() => {}}
           >
             Request for cancellation
           </div>
-        )
+        
       );
     case BookingStatus.BookingPhotographerReqCancelStatus:
       return props.isOwner ? (
