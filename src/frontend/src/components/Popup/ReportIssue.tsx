@@ -11,6 +11,7 @@ const ReportIssue: React.FC<ReportIssueProps> = ({ onCancel }) => {
     const [issue, setIssue] = useState<string>('');
     const { openModal, closeModal } = useModal();
     const showError = useErrorModal();
+
     const handleCancel = () => {
         if (onCancel) {
             onCancel();
@@ -26,7 +27,7 @@ const ReportIssue: React.FC<ReportIssueProps> = ({ onCancel }) => {
             setIssue('');
 
             openModal(
-                <div className="p-4 max-w-md mx-auto bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                <div className="modal-content">
                     <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">Issue Reported Successfully</h5>
                     <p className="text-base text-gray-500 dark:text-gray-400">Thank you for reporting the issue. We will look into it as soon as possible.</p>
                     <div className="flex justify-end mt-4">
@@ -43,7 +44,7 @@ const ReportIssue: React.FC<ReportIssueProps> = ({ onCancel }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-40">
-            <div className="bg-white p-5 rounded-lg w-1/2 max-w-md shadow-md">
+            <div className="bg-white p-5 rounded-lg max-w-md shadow-md m-auto">
                 <h2 className="text-left text-2xl mb-5">Report technical issue</h2>
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="issueInput" className="block mb-2">
