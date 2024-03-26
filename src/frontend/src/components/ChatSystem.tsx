@@ -1,7 +1,6 @@
 "use client";
 
 import Chat from "./Chat/Chat";
-import { FaUserCircle } from "react-icons/fa";
 import { GalleryCard, PackageInfo } from "./Gallery";
 import { useEffect, useState } from "react";
 import roomService from "@/services/room";
@@ -106,41 +105,35 @@ const ChatSystem = ({ roomId }: Props) => {
       </div>
 
       {/* chat box */}
-      <div className="col-span-3 h-full">
-        <div className=" bg-white rounded-xl shadow-lg flex items-center justify-center text-lg overflow-y-scroll h-[90vh]">
-          {roomId ? (
-            <Chat roomId={roomId} />
-          ) : (
-            <div className="flex flex-col gap-5 items-center justify-center">
-              <Image
-                src={"/images/chat.svg"}
-                alt="Chat"
-                width={400}
-                height={400}
-              />
-              <h4 className="text-standard text-xl text-gray-900">
-                No chat specify
-              </h4>
+      {roomId ? (
+        <>
+          <div className="col-span-3 h-full">
+            <div className=" bg-white rounded-xl shadow-lg flex items-center justify-center text-lg overflow-y-scroll h-[90vh]">
+              <Chat roomId={roomId} />
+            </div>
+          </div>
+          {currRoom && (
+            <div className="col-span-2 flex flex-col justify-between gap-4">
+              <div className="">
+                <GalleryCard galleryId={currRoom?.gallery.id} />
+              </div>
+              {/* gallery details */}
+              <div className="bg-white rounded-xl shadow-lg flex flex-col justify-between gap-4 p-4">
+                <div className="text-2xl font-semibold">Current Package</div>
+                <div className="border-t-2 border-gray-300 max-h-64 overflow-y-scroll">
+                  <PackageInfo gallery={currRoom.gallery} />
+                </div>
+                <div className="btn-primary self-center px-32 py-2">Book</div>
+              </div>
             </div>
           )}
-        </div>
-      </div>
-      {/* gallery */}
-      {currRoom && (
-        <div className="col-span-2 flex flex-col justify-between gap-4">
-          <div className="">
-            <GalleryCard galleryId={currRoom?.gallery.id} />
-          </div>
-
-          {/* gallery details */}
-          <div className="bg-white rounded-xl shadow-lg flex flex-col justify-between gap-4 p-4">
-            <div className="text-2xl font-semibold">Current Package</div>
-            <div className="border-t-2 border-gray-300 max-h-64 overflow-y-scroll">
-              <PackageInfo gallery={currRoom.gallery} />
-            </div>
-
-            <div className="btn-primary self-center px-32 py-2">Book</div>
-          </div>
+        </>
+      ) : (
+        <div className="col-span-5 flex flex-col gap-5 items-center justify-center">
+          <Image src={"/images/chat.svg"} alt="Chat" width={400} height={400} />
+          <h4 className="text-standard text-xl text-gray-900">
+            No chat specify
+          </h4>
         </div>
       )}
     </div>
