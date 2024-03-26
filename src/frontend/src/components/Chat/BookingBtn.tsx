@@ -42,31 +42,31 @@ const BookingBtn = ({ room, booking }: Props) => {
 
   if (room.gallery.photographer_id === session?.user.data?.id) {
     return (
-      <div
+      <button
         className="btn-primary self-center px-32 py-2"
         onClick={handlePhotographerEditBooking}
       >
         Edit
-      </div>
+      </button>
     );
   }
 
   if (!booking) {
     return (
-      <div className="btn-primary bg-gray-300 cursor-default self-center px-32 py-2">
+      <button className="btn-primary bg-gray-300 cursor-default self-center px-32 py-2">
         Book
-      </div>
+      </button>
     );
   }
 
   if (booking.status === BookingStatus.BookingDraftStatus) {
     return (
-      <div
+      <button
         className="btn-primary self-center px-32 py-2"
         onClick={handleCustomerBooking}
       >
         Book
-      </div>
+      </button>
     );
   }
 };
