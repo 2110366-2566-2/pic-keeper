@@ -68,10 +68,11 @@ const getUserById = async (id: string) => {
 };
 
 const requestVerify = async (
+  apiClientForForm: Axios,
   verificationTicketInput: VerificationTicketInput
 ) => {
   try {
-    const { data } = await apiClientWithAuth.post<
+    const { data } = await apiClientForForm.post<
       SuccessResponse<VerificationTicket>
     >(`${userBaseUrl}/req-verify`, verificationTicketInput);
     return data;

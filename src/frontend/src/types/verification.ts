@@ -1,4 +1,4 @@
-import { User } from "next-auth";
+import { User } from "./user";
 
 export interface VerificationTicket {
   id: string;
