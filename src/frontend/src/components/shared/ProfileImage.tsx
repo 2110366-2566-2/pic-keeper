@@ -6,7 +6,7 @@ interface Props {
 }
 
 const ProfileImage = ({ src, size }: Props) => {
-  const containerClasses = `w-8 h-8 w-${size} h-${size} relative rounded-full`;
+  const containerClasses = `w-${size} h-${size} relative rounded-full`;
   return (
     <div className={containerClasses}>
       <Image

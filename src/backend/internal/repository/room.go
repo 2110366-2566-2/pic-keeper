@@ -11,4 +11,5 @@ type Room interface {
 	BaseRepo[model.Room]
 	CheckRoomExistenceOfUserByGalleryId(ctx context.Context, availableRoom []uuid.UUID, galleryId uuid.UUID) (bool, error)
 	FindRoomOfUserByGalleryId(ctx context.Context, availableRoom []uuid.UUID, galleryId uuid.UUID) (*model.Room, error)
+	FindOtherUsersInRoom(ctx context.Context, selfUserId, roomId uuid.UUID) ([]*model.User, error)
 }

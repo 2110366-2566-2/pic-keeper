@@ -86,6 +86,7 @@ var ServeCmd = &cobra.Command{
 
 		chatEntity := chat.NewChat(db, redisClient, &handler.Chat)
 		defer chatEntity.Close()
+
 		chats := r.Group("/chat")
 		{
 			chats := chats.Group("/v1")
@@ -120,7 +121,7 @@ var ServeCmd = &cobra.Command{
 			users.POST("/upload-profile", handler.User.UploadProfilePicture)
 			users.GET("/get-my-user-info", handler.User.GetMyUserInfo)
 			users.PUT("/", handler.User.UpdateUserProfile)
-			users.PUT("/req-verify", handler.User.RequestVerification)
+			users.POST("/req-verify", handler.User.RequestVerification)
 			users.GET("/self-status", handler.User.GetSelfStatus)
 			users.POST("/report-issue", handler.User.ReportIssue)
 		}

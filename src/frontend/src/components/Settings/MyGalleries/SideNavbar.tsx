@@ -1,4 +1,3 @@
-// src/frontend/src/components/SideNavbar.tsx
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -12,7 +11,6 @@ const SideNavbar = () => {
     { name: "Edit profile", href: "/settings/edit-profile" },
     { name: "Account management", href: "/settings/account-management" },
     { name: "My galleries", href: "/settings/my-galleries" },
-    { name: "History", href: "/settings/history" },
     // Add more navigation items if needed
   ];
 

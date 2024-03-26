@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -31,6 +32,7 @@ func (r *Resolver) InitializeRoom(c *gin.Context) {
 		return
 	}
 
+	otherUserIds := input.MemberIds
 	input.MemberIds = append(input.MemberIds, userObj.Id)
 	roomId := uuid.New()
 	newRoom := &model.Room{
@@ -71,8 +73,23 @@ func (r *Resolver) InitializeRoom(c *gin.Context) {
 		return
 	}
 
+	// population
+	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, input.GalleryId)
+	if err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+	newRoom.Gallery = *gallery
+
+	otherUsers, err := r.UserUsecase.UserRepo.FindByIds(c, otherUserIds...)
+	if err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+	newRoom.OtherUsers = otherUsers
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"data":   lookups,
+		"data":   newRoom,
 	})
 }
