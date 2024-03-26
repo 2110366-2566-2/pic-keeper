@@ -14,3 +14,12 @@ CREATE TABLE users (
   verification_status photographer_status NOT NULL DEFAULT 'NOT_VERIFIED',
   is_admin boolean NOT NULL DEFAULT FALSE
 );
+
+
+CREATE TABLE verification_info (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+  user_id NOT NULL REFERENCES users (id) ON DELETE cascade,
+  id_card_number NOT NULL varchar(15),
+  id_card_picture_key NOT NULL varchar(2000),
+  additional_desc varchar(2000)
+);
