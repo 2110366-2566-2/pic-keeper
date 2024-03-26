@@ -1,6 +1,7 @@
 package model
 
 import (
+	"mime/multipart"
 	"time"
 
 	"github.com/google/uuid"
@@ -64,6 +65,25 @@ type UserUpdateInput struct {
 	About       *string `json:"about" example:"Hello"`
 	Username    *string `json:"username" example:"test"`
 	Address     *string `json:"address" example:"Bangkok"`
+}
+
+type VerificationTicket struct {
+	bun.BaseModel         `bun:"table:verification_ticket,alias:vrf_ticket"`
+	Id                    uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	UserId                uuid.UUID `bun:"user_id,type:uuid" json:"-"`
+	User                  User      `bun:"-" json:"user"`
+	IdCardNumber          string    `bun:"id_card_number,type:varchar" json:"id_card_number"`
+	IdCardPictureKey      string    `bun:"id_card_picture_key,type:varchar" json:"-"`
+	IdCardPictureURL      string    `bun:"-" json:"id_card_picture_url"`
+	AdditionalDescription *string   `bun:"additional_desc,type:varchar" json:"additional_desc"`
+	CreatedAt             time.Time `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+	DueDate               time.Time `bun:"due_date,type:timestamptz,default:now()" json:"due_date"`
+}
+
+type VerificationTicketInput struct {
+	IdCardNumber          string                `form:"id_card_number" binding:"required"`
+	IdCardPicture         *multipart.FileHeader `form:"id_card_picture" binding:"required"`
+	AdditionalDescription *string               `form:"addition_desc"`
 }
 
 type Gallery struct {
