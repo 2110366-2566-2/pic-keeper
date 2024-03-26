@@ -7,7 +7,6 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/controller/user"
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
-	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -69,7 +68,7 @@ func (r *Resolver) InitializeRoom(c *gin.Context) {
 		return
 	}
 
-	if err := usecase.PopulateGalleryInRooms(c, r.GalleryUsecase, newRoom); err != nil {
+	if err := r.GalleryUsecase.PopulateGalleryInRooms(c, newRoom); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}

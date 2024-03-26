@@ -23,13 +23,12 @@ func (r *Resolver) GetOneBooking(c *gin.Context) {
 		return
 	}
 
-	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, booking.GalleryId)
-	if err != nil {
+	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, booking); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	if gallery.PhotographerId != photographer.Id {
+	if booking.Room.Gallery.PhotographerId != photographer.Id {
 		util.Raise403Error(c, "this booking is not yours")
 		return
 	}

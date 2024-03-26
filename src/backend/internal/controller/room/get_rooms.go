@@ -6,7 +6,6 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/controller/user"
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
-	"github.com/Roongkun/software-eng-ii/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,7 +40,7 @@ func (r *Resolver) GetRooms(c *gin.Context) {
 		rooms = append(rooms, existingRoom)
 	}
 
-	if err := usecase.PopulateGalleryInRooms(c, r.GalleryUsecase, rooms...); err != nil {
+	if err := r.GalleryUsecase.PopulateGalleryInRooms(c, rooms...); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
