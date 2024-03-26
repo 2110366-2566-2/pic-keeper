@@ -18,8 +18,8 @@ CREATE TABLE users (
 
 CREATE TABLE verification_info (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
-  user_id NOT NULL REFERENCES users (id) ON DELETE cascade,
-  id_card_number NOT NULL varchar(15),
-  id_card_picture_key NOT NULL varchar(2000),
+  user_id UUID NOT NULL REFERENCES users (id) ON DELETE cascade,
+  id_card_number varchar(15) NOT NULL,
+  id_card_picture_key varchar(2000) NOT NULL,
   additional_desc varchar(2000)
 );

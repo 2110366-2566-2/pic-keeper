@@ -72,7 +72,7 @@ type VerificationInformation struct {
 	Id                    uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	UserId                uuid.UUID `bun:"user_id,type:uuid" json:"-"`
 	User                  User      `bun:"-" json:"user"`
-	IdCardNumber          string    `bun:"id_card_number,type:varchar", json:"id_card_number"`
+	IdCardNumber          string    `bun:"id_card_number,type:varchar" json:"id_card_number"`
 	IdCardPictureKey      string    `bun:"id_card_picture_key,type:varchar" json:"-"`
 	IdCardPictureURL      string    `bun:"-" json:"id_card_picture_url"`
 	AdditionalDescription *string   `bun:"additional_desc,type:varchar" json:"additional_desc"`
