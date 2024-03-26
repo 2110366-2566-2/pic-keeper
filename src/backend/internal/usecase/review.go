@@ -50,3 +50,16 @@ func (p *ReviewUseCase) FindByUserId(ctx context.Context, userId uuid.UUID, user
 
 	return reviews, nil
 }
+
+func (p *ReviewUseCase) FindByGalleryId(ctx context.Context, galleryId uuid.UUID, userUsecase UserUseCase, bookingUsecase BookingUseCase) ([]*model.Review, error) {
+	reviews, err := p.ReviewRepo.FindByGalleryId(ctx, galleryId)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := populateCustomersAndBookings(ctx, reviews, userUsecase, bookingUsecase); err != nil {
+		return nil, err
+	}
+
+	return reviews, nil
+}
