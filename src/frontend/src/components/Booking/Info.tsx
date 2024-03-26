@@ -8,6 +8,7 @@ import { RenderStatus, RenderButtonByStatus } from "./RenderBySatus";
 import { useState, useEffect } from "react";
 import { GetUserInfoResponse } from "@/types/response";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface Content {
   bookingOptions: Booking;
@@ -21,6 +22,13 @@ export default function Info(props: {
   togglePage: Function;
   isOpen: boolean;
 }) {
+  const router = useRouter();
+
+  const handleClickChat = () => {
+    // Navigate to the specified URL
+    router.push(`/chat/${props.content.bookingOptions.room.id}`)
+  };
+
   const renderDetail = props.content.bookingOptions.room.gallery.included?.map(
     (detail, index) => {
       return (
@@ -160,7 +168,8 @@ export default function Info(props: {
                     fill="black"
                   />
                 </svg>{" "}
-                {props.content.bookingOptions.room.gallery.hours} hours photography event
+                {props.content.bookingOptions.room.gallery.hours} hours
+                photography event
               </div>
               <div className="flex gap-x-2 ">
                 <svg
@@ -192,11 +201,11 @@ export default function Info(props: {
                     fill="#969696"
                   />
                 </svg>
-                {props.content.bookingOptions.room.gallery.delivery_time} days delivery
+                {props.content.bookingOptions.room.gallery.delivery_time} days
+                delivery
               </div>
 
-                {renderDetail}
-
+              {renderDetail}
             </div>
 
             <div className="text-lg flex font-bold justify-between">
@@ -257,7 +266,7 @@ export default function Info(props: {
           <div className="flex flex-col">
             <button
               className="mt-4 px-4 py-2 bg-orange-400 text-white rounded font-semibold text-lg"
-              onClick={() => {}}
+              onClick={handleClickChat}
             >
               Chat
             </button>
