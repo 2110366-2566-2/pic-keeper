@@ -29,36 +29,35 @@ func (p *ReviewDB) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model
 	return reviews, nil
 }
 
-func (p *ReviewDB) FindByGalleryId(ctx context.Context, galleryId uuid.UUID) ([]*model.Review, error) {
-	var booking model.Booking
+func (r *ReviewDB) FindByGalleryId(ctx context.Context, galleryId uuid.UUID) ([]*model.Review, error) {
 	var reviews []*model.Review
 
-	// not sure
-	// get all bookings that belong to this galleryId
-	allBookingId := p.db.NewSelect().Model(&booking).Where("gallery_id = ?", galleryId).Column("id")
+	var room model.Room
+	allRoomIds := r.db.NewSelect().Model(&room).Where("gallery_id = ?", galleryId).Column("id")
 
-	// get the review that belongs to each of allBookingId
-	if err := p.db.NewSelect().Model(&reviews).Where("booking_id IN (?)", allBookingId).Scan(ctx, &reviews); err != nil {
+	var booking model.Booking
+	allBookingIds := r.db.NewSelect().Model(&booking).Where("room_id IN (?)", allRoomIds).Column("id")
+
+	if err := r.db.NewSelect().Model(&reviews).Where("booking_id IN (?)", allBookingIds).Scan(ctx, &reviews); err != nil {
 		return nil, err
 	}
 
 	return reviews, nil
 }
 
-func (p *ReviewDB) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Review, error) {
+func (r *ReviewDB) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Review, error) {
 	var gallery model.Gallery
-	var booking model.Booking
 	var reviews []*model.Review
 
-	// not sure
-	// get all galleries that belong to this photographerId
-	allGalleryId := p.db.NewSelect().Model(&gallery).Where("photographer_id = ?", photographerId).Column("id")
+	allGalleryIds := r.db.NewSelect().Model(&gallery).Where("photographer_id = ?", photographerId).Column("id")
 
-	// get all bookings that belong to each of allGalleryId
-	allBookingId := p.db.NewSelect().Model(&booking).Where("gallery_id IN (?)", allGalleryId).Column("id")
+	var room model.Room
+	allRoomIds := r.db.NewSelect().Model(&room).Where("gallery_id IN (?)", allGalleryIds).Column("id")
 
-	// get the review that belongs to each of allBookingId
-	if err := p.db.NewSelect().Model(&reviews).Where("booking_id IN (?)", allBookingId).Scan(ctx, &reviews); err != nil {
+	var booking model.Booking
+	allBookingIds := r.db.NewSelect().Model(&booking).Where("room_id IN (?)", allRoomIds).Column("id")
+
+	if err := r.db.NewSelect().Model(&reviews).Where("booking_id IN (?)", allBookingIds).Scan(ctx, &reviews); err != nil {
 		return nil, err
 	}
 
@@ -66,8 +65,14 @@ func (p *ReviewDB) FindByPhotographerId(ctx context.Context, photographerId uuid
 }
 
 func (r *ReviewDB) CheckExistenceByGalleryId(ctx context.Context, galleryId uuid.UUID) (bool, error) {
+	var room model.Room
+	allRoomIds := r.db.NewSelect().Model(&room).Where("gallery_id = ?", galleryId).Column("id")
+
+	var booking model.Booking
+	allBookingIds := r.db.NewSelect().Model(&booking).Where("room_id IN (?)", allRoomIds).Column("id")
+
 	var review model.Review
-	exist, err := r.db.NewSelect().Model(&review).Where("gallery_id = ?", galleryId).Exists(ctx)
+	exist, err := r.db.NewSelect().Model(&review).Where("booking_id IN (?)", allBookingIds).Exists(ctx)
 	if err != nil {
 		return false, err
 	}
@@ -76,9 +81,15 @@ func (r *ReviewDB) CheckExistenceByGalleryId(ctx context.Context, galleryId uuid
 }
 
 func (r *ReviewDB) SumAndCountRatingByGalleryId(ctx context.Context, galleryId uuid.UUID) (int, int, error) {
+	var room model.Room
+	allRoomIds := r.db.NewSelect().Model(&room).Where("gallery_id = ?", galleryId).Column("id")
+
+	var booking model.Booking
+	allBookingIds := r.db.NewSelect().Model(&booking).Where("room_id IN (?)", allRoomIds).Column("id")
+
 	var review model.Review
 	var sum int
-	count, err := r.db.NewSelect().Model(&review).Where("gallery_id = ?", galleryId).ColumnExpr("SUM(rating)").ScanAndCount(ctx, &sum)
+	count, err := r.db.NewSelect().Model(&review).Where("booking_id IN (?)", allBookingIds).ColumnExpr("SUM(rating)").ScanAndCount(ctx, &sum)
 	if err != nil {
 		return 0, 0, err
 	}

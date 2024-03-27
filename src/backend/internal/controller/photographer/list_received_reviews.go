@@ -3,6 +3,7 @@ package photographer
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +20,16 @@ func (r *Resolver) ListReceivedReviews(c *gin.Context) {
 			"error":  err.Error(),
 		})
 		c.Abort()
+		return
+	}
+
+	if err := r.BookingUsecase.PopulateBookingInReviews(c, r.GalleryUsecase, r.RoomUsecase, reviews...); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
+	if err := r.UserUsecase.PopulateCustomerInReviews(c, reviews...); err != nil {
+		util.Raise500Error(c, err)
 		return
 	}
 

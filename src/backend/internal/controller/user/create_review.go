@@ -47,12 +47,17 @@ func (r *Resolver) CreateReview(c *gin.Context) {
 		ReviewText: reviewInput.ReviewText,
 	}
 
-	if err := r.ReviewUsecase.ReviewRepo.AddOne(c, newReview); err != nil {
+	if err := r.BookingUsecase.PopulateBookingInReviews(c, r.GalleryUsecase, r.RoomUsecase, newReview); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	if err := r.BookingUsecase.PopulateBookingInReviews(c, r.GalleryUsecase, r.RoomUsecase, newReview); err != nil {
+	if newReview.Booking.CustomerId != userObj.Id {
+		util.Raise403Error(c, "you cannot rate this booking")
+		return
+	}
+
+	if err := r.ReviewUsecase.ReviewRepo.AddOne(c, newReview); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
