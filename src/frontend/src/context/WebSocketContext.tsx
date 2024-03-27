@@ -9,7 +9,7 @@ import React, {
   ReactNode,
   useCallback,
 } from "react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 import authService from "@/services/auth";
 import { Message, SendMessage } from "@/types/room";
@@ -39,7 +39,7 @@ let singletonWebSocket: WebSocket | null = null;
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   children,
 }) => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [attemptedReconnect, setAttemptedReconnect] = useState(false);
 
@@ -73,6 +73,14 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             console.log(
               "Token refreshed, trying to reconnect with new token..."
             );
+            const updatedSession = {
+              ...session,
+              user: {
+                ...session.user,
+                session_token: refreshedToken,
+              },
+            };
+            await update(updatedSession);
             setAttemptedReconnect(true); // Mark that a reconnect attempt is being made
             connectWebSocket(refreshedToken);
           } catch (error) {
