@@ -6,15 +6,16 @@ import {
   UserResponse,
 } from "@/types/response";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
-import { IssueFilter, IssueHeaderMetadata } from "@/types/issue";
+import { Issue, IssueFilter, IssueHeaderMetadata } from "@/types/issue";
+import { VerificationTicket } from "@/types/verification";
 
 const adminBaseUrl = "/admin/v1";
 
 const listPendingPhotographer = async () => {
   try {
-    const { data } = await apiClientWithAuth.get<UserListResponse>(
-      `${adminBaseUrl}/pending-photographers`
-    );
+    const { data } = await apiClientWithAuth.get<
+      SuccessResponse<VerificationTicket>
+    >(`${adminBaseUrl}/pending-photographers`);
     return data;
   } catch (error) {
     throw error;
@@ -84,7 +85,7 @@ const GetIssuesWithOption = async (issueFilter: IssueFilter) => {
         queryParams.append(key, value.toString());
       }
     });
-    const { data } = await apiClientWithAuth.get<BookingListResponse>(
+    const { data } = await apiClientWithAuth.get<SuccessResponse<Issue[]>>(
       `${adminBaseUrl}/issues?${queryParams.toString()}`
     );
     return data;

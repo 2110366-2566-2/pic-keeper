@@ -16,6 +16,8 @@ const getPendingCancellations = async () => {
 };
 
 const createBooking = async (BookingProposal: BookingProposal) => {
+  console.log("here");
+  console.log(photographerBookingBaseUrl);
   try {
     const { data } = await apiClientWithAuth.post<BookingResponse>(
       `${photographerBookingBaseUrl}`,

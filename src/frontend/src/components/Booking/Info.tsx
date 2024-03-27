@@ -21,20 +21,23 @@ export default function Info(props: {
   isPackageOwner: boolean;
   togglePage: Function;
   isOpen: boolean;
-  refreshTrigger:Function;
-  closeModal:Function;
+  refreshTrigger: Function;
+  closeModal: Function;
 }) {
   const router = useRouter();
 
   const handleClickChat = () => {
     // Navigate to the specified URL
-    router.push(`/chat/${props.content.bookingOptions.room.id}`)
+    router.push(`/chat/${props.content.bookingOptions.room.id}`);
   };
 
   const renderDetail = props.content.bookingOptions.room.gallery.included?.map(
     (detail, index) => {
       return (
-        <div className="flex gap-x-2 text-sm font-semibold text-stone-500" key={index}>
+        <div
+          className="flex gap-x-2 text-sm font-semibold text-stone-500"
+          key={index}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="#000000"
@@ -70,7 +73,7 @@ export default function Info(props: {
           leaveTo="opacity-0"
           className=" py-6 px-8 flex flex-col w-full h-full"
         >
-          <div className="overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar scrollbar-thumb-slate-500 scrollbar-track-slate-300">
+          <div className="overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full  scrollbar scrollbar-thumb-slate-500 scrollbar-track-slate-300">
             <div>
               <p className="text-base font-semibold text-nowrap truncate ">
                 Appointment ID {props.content.bookingOptions.id}
@@ -243,7 +246,7 @@ export default function Info(props: {
               </div>
             </div>
 
-            <div className="text-lg flex flex-col font-bold mt-2 font-semibold gap-y-4 ">
+            <div className="text-lg flex flex-col  mt-2 font-semibold gap-y-4 ">
               <div className="text-lg font-bold"> Customer</div>
               <div className="flex gap-x-4">
                 <div className="relative w-12 h-12">

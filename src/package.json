@@ -10,6 +10,7 @@
   "author": "Maekin <maekin.nawmong@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "date-fns": "^3.6.0"
   }
 }
