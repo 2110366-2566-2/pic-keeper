@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState } from "react";
 import { Booking } from "@/types/booking";
 import { useEffect } from "react";
@@ -6,6 +6,7 @@ import { adminService } from "@/services";
 
 const IssueReported = () => {
   const [reportList, setReportList] = useState<Booking[]>([]);
+
   const fetchData = async () => {
     try {
       const data = await adminService.listPendingRefundBookings();
@@ -59,13 +60,15 @@ const IssueReported = () => {
                     #{booking.id.slice(0, 5)}
                   </a>
                 </td>
-                <td className="px-6 py-4 text-gray-900">{}</td>
-                <td className="px-6 py-4 text-gray-900">{booking.customer_id}</td>
-                <td className="px-6 py-4 text-green-500">
-                  {user.verification_status}
+                <td className="px-6 py-4 text-gray-900">
+                  {booking.customer_id}
                 </td>
-                <td className="px-6 py-4 text-gray-900">17/2/24</td>
-                <td className="px-6 py-4 text-gray-900">17/3/24</td>
+                <td className="px-6 py-4 text-gray-900">Refund Request</td>
+                <td className="px-6 py-4 text-green-500">{booking.status}</td>
+                <td className="px-6 py-4 text-gray-900">
+                  {booking.created_at}
+                </td>
+                <td className="px-6 py-4 text-gray-900">{booking.end_time}</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button>...</button>
                 </td>

@@ -3,11 +3,12 @@ import { useEffect } from "react";
 import adminService from "../../services/admin";
 import { User } from "@/types/user";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
-import { start } from "repl";
+import { useModal } from "@/context/ModalContext";
 
 function Verification() {
   const [pendingList, setPendingList] = useState<User[]>([]);
+  const { openModal, closeModal } = useModal();
+
   const fetchData = async () => {
     try {
       const data = await adminService.listPendingPhotographer();
@@ -23,6 +24,25 @@ function Verification() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleActionClick = async () => {
+    openModal(
+      <div className="flex flex-col">
+        <p className="text-standard text-gray-500">
+          This will delete your gallery from PicKeeper.
+        </p>
+        <div className="self-end flex gap-4">
+          <button onClick={closeModal} className="btn mt-4 px-4">
+            Cancel
+          </button>
+          <button className="btn-danger mt-4 px-4 ">
+            Delete
+          </button>
+        </div>
+      </div>,
+      "Are you sure?"
+    );
+  };
 
   return (
     <div className="flex flex-col">
@@ -54,7 +74,7 @@ function Verification() {
                 <td className="px-6 py-4 text-gray-900">17/2/24</td>
                 <td className="px-6 py-4 text-gray-900">17/3/24</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <button>...</button>
+                  <button onClick={handleActionClick}>...</button>
                 </td>
               </tr>
             ))}
