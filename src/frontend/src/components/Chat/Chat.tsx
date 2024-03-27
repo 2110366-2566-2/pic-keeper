@@ -52,7 +52,7 @@ const Chat = ({ roomId }: ChatProps) => {
 
   useEffect(() => {
     bottomOfChat.current?.scrollIntoView({ behavior: "instant" });
-  }, [conversations]);
+  }, [conversations, messages]);
 
   const handleSendMessage = () => {
     if (!session?.user?.data?.id) {
@@ -66,6 +66,8 @@ const Chat = ({ roomId }: ChatProps) => {
       sender: session.user.data.id,
       room: roomId,
     };
+
+    console.log(messageData);
 
     sendMessage(messageData);
     setSendingMessage("");
