@@ -47,7 +47,7 @@ function Verification() {
             {/* DATA */}
             {pendingList.map((user) => (
               <tr key={user.id}>
-                {/* <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
+                <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
                   <a href={`/view-profile/${user.id}`}>#{user.id.slice(0, 5)}</a>
                 </td>
                 <td className="px-6 py-4 text-gray-900">{user.username}</td>
@@ -59,7 +59,7 @@ function Verification() {
                 <td className="px-6 py-4 text-gray-900">17/3/24</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button>...</button>
-                </td> */}
+                </td>
               </tr>
             ))}
 
