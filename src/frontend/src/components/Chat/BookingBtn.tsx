@@ -8,6 +8,7 @@ import { useState } from "react";
 import BookingForm from "./BookingForm";
 import { Dialog } from "@headlessui/react";
 import { parseISO, formatISO } from "date-fns";
+import Link from "next/link";
 
 interface Props {
   room: Room;
@@ -57,9 +58,7 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
         if (response.data) {
           setBooking(response.data);
           closeModal();
-          console.log("1");
         } else {
-          console.log("2");
           throw new Error("No response data returned");
         }
       } catch (error) {
@@ -75,15 +74,23 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
   const handleCustomerBooking = () => {};
 
   if (room.gallery.photographer_id === session?.user.data?.id) {
+    if (booking?.status === BookingStatus.BookingDraftStatus) {
+      return (
+        <Link
+          href="/my-booking"
+          className="btn-primary text-center self-center px-8"
+        >
+          View in my booking
+        </Link>
+      );
+    }
     return (
       <>
         <button
           onClick={openModal}
           className="btn-primary self-center px-32 py-2"
         >
-          {room.gallery.photographer_id === session?.user.data?.id
-            ? "Edit"
-            : "Book"}
+          Draft
         </button>
 
         <Dialog open={isOpen} onClose={closeModal} className="relative z-50">

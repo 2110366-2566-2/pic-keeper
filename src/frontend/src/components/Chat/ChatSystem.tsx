@@ -12,8 +12,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Booking } from "@/types/booking";
 import { useSession } from "next-auth/react";
-import BookingBtn from "./BookingBtn";
 import { capitalizeFirstLetter } from "@/utils/string";
+import BookingBtn from "./BookingBtn";
 
 interface Props {
   roomId?: string;
@@ -154,7 +154,11 @@ const ChatSystem = ({ roomId }: Props) => {
                     <PackageInfo gallery={currRoom.gallery} booking={booking} />
                   </div>
                 </div>
-                <BookingBtn room={currRoom} booking={booking} />
+                <BookingBtn
+                  room={currRoom}
+                  booking={booking}
+                  setBooking={setBooking}
+                />
               </div>
             </div>
           )}
