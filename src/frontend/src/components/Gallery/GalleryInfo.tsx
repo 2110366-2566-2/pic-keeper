@@ -86,6 +86,7 @@ const GalleryInfo = ({ galleryId }: Props) => {
     try {
       await photographerGalleriesService.deleteGallery(galleryId);
       router.push("/");
+      closeModal();
     } catch (error) {
       showError(error, "An error occurred while deleting gallery");
     }
