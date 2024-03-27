@@ -5,9 +5,7 @@ import { transformDate } from "@/utils/date";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { RenderStatus } from "./RenderBySatus";
-import { GetUserInfoResponse } from "@/types/response"; 
-
-
+import { GetUserInfoResponse } from "@/types/response";
 
 interface BookOptions {
   props: Booking;
@@ -15,35 +13,35 @@ interface BookOptions {
   setModalProps: Function;
 }
 
-
 export default function BookingCard(options: BookOptions) {
   const [customer, setCustomer] = useState<GetUserInfoResponse | null>();
-  const [photoGrapher, setPhotoGrapher] = useState<GetUserInfoResponse | null>();
- 
+  const [photoGrapher, setPhotoGrapher] =
+    useState<GetUserInfoResponse | null>();
 
   const getCustomer = async () => {
     const result = await userService.getUserById(options.props.customer_id);
-    if(!result.profile_picture_url){
-      result.profile_picture_url="/images/nature.svg";
+    if (!result.profile_picture_url) {
+      result.profile_picture_url = "/images/nature.svg";
     }
 
     return result;
   };
 
   const getPhotographer = async () => {
-    const result = await userService.getUserById(options.props.room.gallery.photographer_id);
-    if(!result.profile_picture_url){
-      result.profile_picture_url="/images/nature.svg";
+    const result = await userService.getUserById(
+      options.props.room.gallery.photographer_id
+    );
+    if (!result.profile_picture_url) {
+      result.profile_picture_url = "/images/nature.svg";
     }
     return result;
   };
-
 
   useEffect(() => {
     //Runs only on the first render
     const initialFetch = async () => {
       const customerFetch = await getCustomer();
-      setCustomer(customerFetch );
+      setCustomer(customerFetch);
 
       const photoGrapherFetch = await getPhotographer();
       setPhotoGrapher(photoGrapherFetch);
@@ -55,10 +53,14 @@ export default function BookingCard(options: BookOptions) {
   return (
     <>
       <div
-        className="bg-white my-4 py-8 grid sm:grid-cols-5  lg:grid-cols-10 gap-x-3 gap-y-3 py-3 rounded-lg shadow-md hover:shadow-stone-400"
+        className="bg-white my-4 grid sm:grid-cols-5  lg:grid-cols-10 gap-x-3 gap-y-3 py-3 rounded-lg shadow-md hover:shadow-stone-400"
         onClick={() => {
           options.openModal();
-          const mergedObj = {bookingOptions:options.props , customer:customer ,photographer:photoGrapher};
+          const mergedObj = {
+            bookingOptions: options.props,
+            customer: customer,
+            photographer: photoGrapher,
+          };
           options.setModalProps(mergedObj);
         }}
       >
@@ -97,7 +99,11 @@ export default function BookingCard(options: BookOptions) {
             <Image
               className="object-cover rounded-full"
               fill={true}
-              src={customer?.profile_picture_url ? customer.profile_picture_url:"/images/nature.svg"}
+              src={
+                customer?.profile_picture_url
+                  ? customer.profile_picture_url
+                  : "/images/nature.svg"
+              }
               alt=""
             />
           </div>
@@ -150,7 +156,7 @@ export default function BookingCard(options: BookOptions) {
         </div>
         <div className="col-span-2 pl-4">
           <div className="text-base font-bold">
-              <RenderStatus status={options.props.status} />
+            <RenderStatus status={options.props.status} />
           </div>
           <p className="text-sm font-semibold text-stone-400">
             Action taken on 12/01

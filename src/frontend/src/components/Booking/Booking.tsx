@@ -222,7 +222,7 @@ export default function BookingPage() {
           <h2 className="text-3xl mt-8 pb-4 font-semibold">My Bookings</h2>
         </div>
         <div>
-          <ul className="lg:flex text-gray-900 dark:text-white font-bold text-stone-500">
+          <ul className="lg:flex  dark:text-white font-bold text-stone-500">
             <li>
               <div
                 onClick={async () => {
