@@ -32,7 +32,7 @@ const MenuItem = ({ href, children }: Props) => (
 const ProfileMenu = () => {
   const { data: session } = useSession();
   return (
-    <Menu as="div" className="relative ml-3">
+    <Menu as="div" className="relative ml-3 z-99">
       {({ open }) => (
         <>
           <Menu.Button className="flex items-center gap-2 text-sm rounded-full focus:ring-2 focus:ring-offset-2 focus:outline-none">
