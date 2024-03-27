@@ -13,13 +13,13 @@ enum BookingCategory {
   All = "ALL",
   Up = "UP",
   Past = "PAST",
-  Cancel = "CANCEL"
+  Cancel = "CANCEL",
 }
 
 interface Content {
-  bookingOptions:Booking;
-  customer:GetUserInfoResponse;
-  photographer:GetUserInfoResponse;
+  bookingOptions: Booking;
+  customer: GetUserInfoResponse;
+  photographer: GetUserInfoResponse;
 }
 
 type MyFunctionType = () => Promise<Booking[]>;
@@ -27,13 +27,15 @@ type MyFunctionType = () => Promise<Booking[]>;
 export default function BookingPage() {
   const showError = useErrorModal();
   const [bookingLists, setBookingLists] = useState<Booking[] | null>([]);
-  const [bookingCategory,setBookingCategory]=useState<BookingCategory>(BookingCategory.All)
+  const [bookingCategory, setBookingCategory] = useState<BookingCategory>(
+    BookingCategory.All
+  );
   const [allAppointment, setAllAppointment] = useState<Boolean>(true);
   const [upComing, setUpComing] = useState<Boolean>(false);
   const [past, setPast] = useState<Boolean>(false);
   const [cancel, setCancel] = useState<Boolean>(false);
   const [showContent, setShowContent] = useState<Boolean>(true);
-  const [refreshTrigger,setRefreshTrigger]=useState<Boolean>(false);
+  const [refreshTrigger, setRefreshTrigger] = useState<Boolean>(false);
 
   const refreshContent = (func: MyFunctionType) => {
     setShowContent(false); // Set content to false
@@ -161,8 +163,6 @@ export default function BookingPage() {
     return [...resultCustomer, ...resultPhotographer];
   };
 
-  
-  //---Use Effect--------
   useEffect(() => {
     //Runs only on the first render
     setShowContent(false);
@@ -171,12 +171,12 @@ export default function BookingPage() {
 
   useEffect(() => {
     //Runs only on the dependency
-    if(refreshTrigger){
+    if (refreshTrigger) {
       switch (bookingCategory) {
         case BookingCategory.All:
           refreshContent(getAllBookings);
           break;
-        case BookingCategory.Past:  
+        case BookingCategory.Past:
           refreshContent(getPastBookings);
           break;
         case BookingCategory.Up:
@@ -190,16 +190,10 @@ export default function BookingPage() {
       }
     }
     setRefreshTrigger(false);
-  }, [refreshTrigger]);
+  }, [refreshTrigger]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  //-----------End--Fetch--------------------------------
-
-  const [modalProps, setModalProps] = useState<Content|null>(null);
-
-  //----------Modal--------------
+  const [modalProps, setModalProps] = useState<Content | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-
-
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -237,7 +231,7 @@ export default function BookingPage() {
                 }}
                 className="lg:me-16 ml-1"
               >
-                {(bookingCategory==BookingCategory.All) ? (
+                {bookingCategory == BookingCategory.All ? (
                   <span className="underline text-amber-500">
                     All Appointments
                   </span>
@@ -254,7 +248,7 @@ export default function BookingPage() {
                 }}
                 className="lg:me-16 ml-1"
               >
-                {(bookingCategory==BookingCategory.Up) ? (
+                {bookingCategory == BookingCategory.Up ? (
                   <span className="underline text-amber-500">Upcoming</span>
                 ) : (
                   <>Upcoming</>
@@ -269,7 +263,7 @@ export default function BookingPage() {
                 }}
                 className="lg:me-16 ml-1"
               >
-                {(bookingCategory==BookingCategory.Past) ? (
+                {bookingCategory == BookingCategory.Past ? (
                   <span className="underline text-amber-500">Past</span>
                 ) : (
                   <>Past</>
@@ -284,7 +278,7 @@ export default function BookingPage() {
                 }}
                 className="lg:me-16 ml-1"
               >
-                {(bookingCategory==BookingCategory.Cancel) ? (
+                {bookingCategory == BookingCategory.Cancel ? (
                   <span className="underline text-amber-500">
                     Cancellation Requested
                   </span>
@@ -330,7 +324,7 @@ export default function BookingPage() {
           <div className="mt-16"></div>
         </div>
 
-        <Loading isOpen={!showContent} content="Loading..."/>
+        <Loading isOpen={!showContent} content="Loading..." />
 
         <BookingModal
           isOpen={modalIsOpen}
