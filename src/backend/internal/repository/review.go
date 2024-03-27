@@ -12,4 +12,6 @@ type Review interface {
 	FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Review, error)
 	FindByGalleryId(ctx context.Context, galleryId uuid.UUID) ([]*model.Review, error)
 	FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Review, error)
+	CheckExistenceByGalleryId(ctx context.Context, galleryId uuid.UUID) (bool, error)
+	SumAndCountRatingByGalleryId(ctx context.Context, galleryId uuid.UUID) (int, int, error)
 }

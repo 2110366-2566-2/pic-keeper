@@ -20,14 +20,27 @@ func NewReviewUseCase(db *bun.DB) *ReviewUseCase {
 	}
 }
 
-func (p *ReviewUseCase) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Review, error) {
-	return p.ReviewRepo.FindByUserId(ctx, userId)
+func (r *ReviewUseCase) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Review, error) {
+	return r.ReviewRepo.FindByUserId(ctx, userId)
 }
 
-func (p *ReviewUseCase) FindByGalleryId(ctx context.Context, galleryId uuid.UUID) ([]*model.Review, error) {
-	return p.ReviewRepo.FindByGalleryId(ctx, galleryId)
+func (r *ReviewUseCase) FindByGalleryId(ctx context.Context, galleryId uuid.UUID) ([]*model.Review, error) {
+	return r.ReviewRepo.FindByGalleryId(ctx, galleryId)
 }
 
-func (p *ReviewUseCase) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Review, error) {
-	return p.ReviewRepo.FindByPhotographerId(ctx, photographerId)
+func (r *ReviewUseCase) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Review, error) {
+	return r.ReviewRepo.FindByPhotographerId(ctx, photographerId)
+}
+
+func (r *ReviewUseCase) SumAndCountRatingByGalleryId(ctx context.Context, galleryId uuid.UUID) (int, int, error) {
+	exist, err := r.ReviewRepo.CheckExistenceByGalleryId(ctx, galleryId)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	if !exist {
+		return 0, 0, nil
+	}
+
+	return r.ReviewRepo.SumAndCountRatingByGalleryId(ctx, galleryId)
 }

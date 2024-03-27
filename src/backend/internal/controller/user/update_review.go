@@ -69,6 +69,11 @@ func (r *Resolver) UpdateReview(c *gin.Context) {
 		return
 	}
 
+	if err := UpdateGalleryRating(c, r.GalleryUsecase, r.ReviewUsecase, &existingReview.Booking.Room.Gallery); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 		"data":   existingReview,

@@ -64,3 +64,24 @@ func (p *ReviewDB) FindByPhotographerId(ctx context.Context, photographerId uuid
 
 	return reviews, nil
 }
+
+func (r *ReviewDB) CheckExistenceByGalleryId(ctx context.Context, galleryId uuid.UUID) (bool, error) {
+	var review model.Review
+	exist, err := r.db.NewSelect().Model(&review).Where("gallery_id = ?", galleryId).Exists(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	return exist, nil
+}
+
+func (r *ReviewDB) SumAndCountRatingByGalleryId(ctx context.Context, galleryId uuid.UUID) (int, int, error) {
+	var review model.Review
+	var sum int
+	count, err := r.db.NewSelect().Model(&review).Where("gallery_id = ?", galleryId).ColumnExpr("SUM(rating)").ScanAndCount(ctx, &sum)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return sum, count, nil
+}
