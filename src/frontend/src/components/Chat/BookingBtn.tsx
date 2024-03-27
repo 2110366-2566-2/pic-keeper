@@ -1,6 +1,6 @@
 import { useModal } from "@/context/ModalContext";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import { photographerBookingService } from "@/services";
+import { customerBookingService, photographerBookingService } from "@/services";
 import { Booking, BookingProposal, BookingStatus } from "@/types/booking";
 import { Room } from "@/types/room";
 import { useSession } from "next-auth/react";
@@ -9,6 +9,7 @@ import BookingForm from "./BookingForm";
 import { Dialog } from "@headlessui/react";
 import { parseISO, formatISO } from "date-fns";
 import Link from "next/link";
+import { PackageInfo } from "../Gallery";
 
 interface Props {
   room: Room;
@@ -26,11 +27,13 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
     room.gallery.price
   );
 
-  const closeModal = () => {
+  const { openModal, closeModal } = useModal();
+
+  const closeDraftModal = () => {
     setIsOpen(false);
   };
 
-  const openModal = () => {
+  const openDraftModal = () => {
     setIsOpen(true);
   };
 
@@ -57,12 +60,12 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
         );
         if (response.data) {
           setBooking(response.data);
-          closeModal();
+          closeDraftModal();
         } else {
           throw new Error("No response data returned");
         }
       } catch (error) {
-        closeModal();
+        closeDraftModal();
         showError(error);
       }
     } else {
@@ -70,8 +73,28 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
     }
   };
 
-  // TODO: Here
-  const handleCustomerBooking = () => {};
+  const handlePayment = () => {};
+
+  const handleCancelBooking = () => {
+    closeModal();
+  };
+
+  const handleCustomerBooking = () => {
+    openModal(
+      <div>
+        <PackageInfo gallery={room.gallery} booking={booking} />
+        <div className="flex justify-end gap-2">
+          <button className="btn-cancel px-2" onClick={handleCancelBooking}>
+            Cancel
+          </button>
+          <button className="btn-primary px-6" onClick={handlePayment}>
+            Pay
+          </button>
+        </div>
+      </div>,
+      "Confirm Your Package"
+    );
+  };
 
   if (room.gallery.photographer_id === session?.user.data?.id) {
     if (booking?.status === BookingStatus.BookingDraftStatus) {
@@ -87,13 +110,17 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
     return (
       <>
         <button
-          onClick={openModal}
+          onClick={openDraftModal}
           className="btn-primary self-center px-32 py-2"
         >
           Draft
         </button>
 
-        <Dialog open={isOpen} onClose={closeModal} className="relative z-50">
+        <Dialog
+          open={isOpen}
+          onClose={closeDraftModal}
+          className="relative z-50"
+        >
           <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
           <div className="fixed inset-0 flex items-center justify-center p-4">
