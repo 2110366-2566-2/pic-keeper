@@ -10,6 +10,10 @@ import ProfileImage from "../shared/ProfileImage";
 import { generateProfilePictureUrl } from "@/utils/s3";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Booking } from "@/types/booking";
+import { useSession } from "next-auth/react";
+import { capitalizeFirstLetter } from "@/utils/string";
+import BookingBtn from "./BookingBtn";
 
 interface Props {
   roomId?: string;
@@ -18,6 +22,7 @@ interface Props {
 const ChatSystem = ({ roomId }: Props) => {
   const [currRoom, setCurrRoom] = useState<Room>();
   const [rooms, setRooms] = useState<Room[]>();
+  const [booking, setBooking] = useState<Booking>();
   const showError = useErrorModal();
   const router = useRouter();
 
@@ -34,7 +39,22 @@ const ChatSystem = ({ roomId }: Props) => {
         }
       }
     };
+
+    const fetchBookingInfo = async () => {
+      if (roomId) {
+        try {
+          const response = await roomService.GetBookingFromRoom(roomId);
+          if (response.data) {
+            setBooking(response.data);
+          }
+        } catch (error) {
+          // Don't need to show error
+          console.log(error);
+        }
+      }
+    };
     fetchRoomInfo();
+    fetchBookingInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
@@ -120,12 +140,25 @@ const ChatSystem = ({ roomId }: Props) => {
               {/* gallery details */}
               <div className="bg-white rounded-xl shadow-lg flex-1 flex flex-col justify-between gap-4 p-4">
                 <div className="space-y-4">
-                  <div className="text-2xl font-semibold">Current Package</div>
+                  <div className="text-2xl font-semibold">
+                    Current Package{" "}
+                    {booking ? (
+                      <span className="text-lg font-normal text-standard">
+                        ({capitalizeFirstLetter(booking.status)})
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   <div className="border-t-2 border-gray-300 max-h-64 overflow-y-scroll">
-                    <PackageInfo gallery={currRoom.gallery} />
+                    <PackageInfo gallery={currRoom.gallery} booking={booking} />
                   </div>
                 </div>
-                <div className="btn-primary self-center px-32 py-2">Book</div>
+                <BookingBtn
+                  room={currRoom}
+                  booking={booking}
+                  setBooking={setBooking}
+                />
               </div>
             </div>
           )}
