@@ -109,6 +109,8 @@ export default function BookingModal(props: {
                   togglePage={togglePage}
                   isOpen={page == ModalPage.Refund}
                   bookingId={props.content.bookingOptions.id}
+                  refreshTrigger={props.refreshTrigger}
+                  closeModal={handleAutoClose}
                 />
               }
 
