@@ -5,8 +5,10 @@ import React from "react";
 import Image from "next/image";
 import { PhotographerStatus, User } from "@/types/user";
 import userService from "@/services/user";
-import apiClientWithAuth from "@/libs/apiClientWithAuth";
 import { VerificationTicketInput } from "@/types/verification";
+import useApiWithAuth from "@/hooks/useApiWithAuth";
+import { useErrorModal } from "@/hooks/useErrorModal";
+import { useSession } from "next-auth/react";
 
 // Accept setStatus as a prop
 const PhotographerVerification = () => {
@@ -16,7 +18,9 @@ const PhotographerVerification = () => {
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [submitError, setSubmitError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const apiWithAuth = useApiWithAuth();
+  const showError = useErrorModal();
+  const { data: session, update } = useSession();
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -74,20 +78,25 @@ const PhotographerVerification = () => {
     try {
       // Call requestVerify with the apiClientForForm and verificationTicketInput
       const response = await userService.requestVerify(
-        apiClientWithAuth,
+        apiWithAuth,
         verificationTicketInput
       );
-      if (response.data) {
-        setIsSubmitted(true);
-        // Handle success scenario (e.g., showing a success message)
-      } else {
-        // Handle failure scenario
-        setSubmitError(true);
+      if (response.data && session) {
+        const updatedSession = {
+          ...session,
+          user: {
+            ...session.user,
+            data: {
+              ...session.user.data,
+              verification_status: response.data.user.verification_status,
+            },
+          },
+        };
+        await update(updatedSession);
       }
     } catch (error) {
       // Handle error scenario
-      console.error("Error during verification request:", error);
-      setSubmitError(true);
+      showError(error);
     }
   };
 
