@@ -16,6 +16,7 @@ import { MdModeEdit } from "react-icons/md";
 import { useModal } from "@/context/ModalContext";
 import { useErrorModal } from "@/hooks/useErrorModal";
 import PackageInfo from "./PackageInfo";
+import DeleteConfirmationModal from "../Miscellaneouos/DeleteConfirmationModal";
 
 interface Props {
   galleryId: string;
@@ -26,6 +27,7 @@ const GalleryInfo = ({ galleryId }: Props) => {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [photographer, setPhotographer] = useState<User>();
   const [profilePicture, setProfilePicture] = useState<string>("");
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const { data: session } = useSession();
   const router = useRouter();
@@ -63,23 +65,16 @@ const GalleryInfo = ({ galleryId }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [galleryId]);
 
-  const handleDeleteClick = async () => {
-    openModal(
-      <div className="flex flex-col">
-        <p className="text-standard text-gray-500">
-          This will delete your gallery from PicKeeper.
-        </p>
-        <div className="self-end flex gap-4">
-          <button onClick={closeModal} className="btn mt-4 px-4">
-            Cancel
-          </button>
-          <button onClick={deleteGallery} className="btn-danger mt-4 px-4 ">
-            Delete
-          </button>
-        </div>
-      </div>,
-      "Are you sure?"
-    );
+  const handleDeleteClick = () => {
+    // Instead of using the `openModal` function, we're now setting the state to open the DeleteConfirmationModal
+    setDeleteModalOpen(true);
+  };
+
+  // Handler that will be passed to DeleteConfirmationModal
+  // to close the modal and potentially handle other logic after deletion
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    // Any additional logic after closing the modal
   };
 
   const deleteGallery = async () => {
@@ -121,64 +116,76 @@ const GalleryInfo = ({ galleryId }: Props) => {
     }
   };
   return (
-    <div className="mx-auto rounded-lg shadow-lg p-6 grid grid-cols-1 md:grid-cols-4 gap-8 bg-white text-gray-800">
-      <ImageViewer imageUrls={imageUrls} />
+    <>
+      <div className="mx-auto rounded-lg shadow-lg p-6 grid grid-cols-1 md:grid-cols-4 gap-8 bg-white text-gray-800">
+        <ImageViewer imageUrls={imageUrls} />
 
-      <div className="md:col-span-2 space-y-6 flex flex-col justify-between">
-        <div className="space-y-6 flex flex-col">
-          <div className="flex justify-between">
-            <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-              {gallery.name}
-            </h1>
+        <div className="md:col-span-2 space-y-6 flex flex-col justify-between">
+          <div className="space-y-6 flex flex-col">
+            <div className="flex justify-between">
+              <h1 className="text-3xl font-bold text-gray-900 leading-tight">
+                {gallery.name}
+              </h1>
+              {photographer.id === session?.user.data?.id && (
+                <button
+                  className="self-end btn-primary px-6 flex items-center gap-2"
+                  onClick={handleEditClick}
+                >
+                  <MdModeEdit className="inline" />
+                  Edit
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              <ProfileImage src={profilePicture} size={16} />
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {photographer.firstname} {photographer.lastname}
+                </h2>
+                <h3 className="text-md text-gray-600">{photographer.gender}</h3>
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Description
+              </h2>
+              <p className="text-base text-gray-700 leading-relaxed">
+                {gallery.description}
+              </p>
+            </div>
+            <div className="rounded-xl ring-1 ring-gray-300 max-h-64 overflow-y-scroll">
+              <PackageInfo gallery={gallery} />
+            </div>
+          </div>
+          <div className="flex justify-end">
+            {session && photographer.id !== session?.user.data?.id && (
+              <button
+                className="self-end btn-primary px-16"
+                onClick={handleChatClick}
+              >
+                Chat
+              </button>
+            )}
             {photographer.id === session?.user.data?.id && (
               <button
-                className="self-end btn-primary px-6 flex items-center gap-2"
-                onClick={handleEditClick}
+                className="self-end btn-danger px-16 "
+                onClick={handleDeleteClick}
               >
-                <MdModeEdit className="inline" />
-                Edit
+                Delete
               </button>
             )}
           </div>
-          <div className="flex items-center gap-4">
-            <ProfileImage src={profilePicture} size={16} />
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800">
-                {photographer.firstname} {photographer.lastname}
-              </h2>
-              <h3 className="text-md text-gray-600">{photographer.gender}</h3>
-            </div>
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Description</h2>
-            <p className="text-base text-gray-700 leading-relaxed">
-              {gallery.description}
-            </p>
-          </div>
-          <div className="rounded-xl ring-1 ring-gray-300 max-h-64 overflow-y-scroll">
-            <PackageInfo gallery={gallery} />
-          </div>
-        </div>
-        <div className="flex justify-end">
-          {session && photographer.id !== session?.user.data?.id && (
-            <button
-              className="self-end btn-primary px-16"
-              onClick={handleChatClick}
-            >
-              Chat
-            </button>
-          )}
-          {photographer.id === session?.user.data?.id && (
-            <button
-              className="self-end btn-danger px-16 "
-              onClick={handleDeleteClick}
-            >
-              Delete
-            </button>
-          )}
         </div>
       </div>
-    </div>
+      {isDeleteModalOpen && (
+        <DeleteConfirmationModal
+          isOpen={isDeleteModalOpen}
+          closeModal={closeDeleteModal}
+          galleryId={galleryId}
+          // Optionally, pass the onDeleteConfirm if you want to handle additional logic after confirmation
+        />
+      )}
+    </>
   );
 };
 export default GalleryInfo;

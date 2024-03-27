@@ -3,7 +3,12 @@
 import { useRef, useState } from "react";
 import React from "react";
 import Image from "next/image";
+import { PhotographerStatus, User } from "@/types/user";
+import userService from "@/services/user";
+import apiClientWithAuth from "@/libs/apiClientWithAuth";
+import { VerificationTicketInput } from "@/types/verification";
 
+// Accept setStatus as a prop
 const PhotographerVerification = () => {
   const [idNumber, setIdNumber] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -49,27 +54,43 @@ const PhotographerVerification = () => {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // If a file is selected, check for size and type
     if (
-      file &&
-      (file.size > 20 * 1024 * 1024 ||
-        (file.type !== "image/png" && file.type !== "image/jpeg"))
+      !file ||
+      file.size > 20 * 1024 * 1024 ||
+      (file.type !== "image/png" && file.type !== "image/jpeg") ||
+      !idNumber
     ) {
       setSubmitError(true);
       return;
     }
 
-    if (!idNumber || !file) {
+    // Creating the VerificationTicketInput object
+    const verificationTicketInput: VerificationTicketInput = {
+      idCardNumber: idNumber,
+      idCardPicture: file,
+      additionalDescription: additionalInfo,
+    };
+
+    try {
+      // Call requestVerify with the apiClientForForm and verificationTicketInput
+      const response = await userService.requestVerify(
+        apiClientWithAuth,
+        verificationTicketInput
+      );
+      if (response.data) {
+        setIsSubmitted(true);
+        // Handle success scenario (e.g., showing a success message)
+      } else {
+        // Handle failure scenario
+        setSubmitError(true);
+      }
+    } catch (error) {
+      // Handle error scenario
+      console.error("Error during verification request:", error);
       setSubmitError(true);
-      return;
     }
-
-    // Handle ID card verification submission logic here if idNumber and file are present
-    setSubmitError(false);
-
-    // Set the submission to true to display the message
-    setIsSubmitted(true);
   };
+
   return (
     <form className="h-full w-full m-auto" onSubmit={onSubmit}>
       <div className="space-y-4">

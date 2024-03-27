@@ -1,16 +1,37 @@
-import React from "react";
-
+import React, { useState } from "react";
+import { photographerGalleriesService } from "@/services";
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  onDeleteConfirm: () => void; // Function to call when delete is confirmed
+  galleryId: string; // Assuming you have a galleryId to delete
 }
 
 const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   isOpen,
   closeModal,
-  onDeleteConfirm,
+  galleryId,
 }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showChangesSaved, setShowChangesSaved] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    closeModal();
+    try {
+      await photographerGalleriesService.deleteGallery(galleryId);
+      // If successful, show the changes saved message
+      setShowChangesSaved(true);
+      setTimeout(() => {
+        setShowChangesSaved(false);
+        closeModal(); // Close the modal after showing the changes saved message
+      }, 1000); // Adjust time as necessary
+    } catch (error) {
+      console.error("Failed to delete gallery:", error);
+      // Handle error (e.g., show error message to the user)
+    }
+    setIsDeleting(false);
+  };
+
   if (!isOpen) {
     return null;
   }
@@ -49,7 +70,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
           </button>
           <button
             className="px-4 py-2 rounded-md bg-red-500 text-white hover:bg-red-600"
-            onClick={onDeleteConfirm}
+            onClick={handleDelete}
           >
             Delete
           </button>
