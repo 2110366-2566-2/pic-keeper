@@ -113,7 +113,8 @@ const ProfileMenu = () => {
           </>
         )}
       </Menu>
-      {isReportIssueOpen && <ReportIssue onCancel={() => setReportIssueOpen(false)} />}
+      {/* {isReportIssueOpen && <ReportIssue onCancel={() => setReportIssueOpen(false)} />} */}
+      {isReportIssueOpen && <ReportIssue onCancel={() => setReportIssueOpen(false)} onSuccess={() => setReportIssueOpen(false)} />}
     </>
   );
 };

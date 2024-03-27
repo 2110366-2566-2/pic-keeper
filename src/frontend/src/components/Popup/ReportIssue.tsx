@@ -5,9 +5,10 @@ import { useErrorModal } from '@/hooks/useErrorModal';
 
 interface ReportIssueProps {
     onCancel?: () => void;
+    onSuccess?: () => void;
 }
 
-const ReportIssue: React.FC<ReportIssueProps> = ({ onCancel }) => {
+const ReportIssue: React.FC<ReportIssueProps> = ({ onCancel, onSuccess }) => {
     const [issue, setIssue] = useState<string>('');
     const { openModal, closeModal } = useModal();
     const showError = useErrorModal();
@@ -36,6 +37,9 @@ const ReportIssue: React.FC<ReportIssueProps> = ({ onCancel }) => {
                 </div>,
                 "Your report is submitted"
             );
+            if (onSuccess) {
+                onSuccess(); // Call onSuccess callback here
+            }
         } catch (error) {
             showError(error);
         }
