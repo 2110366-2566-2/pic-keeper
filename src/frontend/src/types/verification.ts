@@ -13,7 +13,7 @@ export interface VerificationTicket {
 }
 
 export interface VerificationTicketInput {
-  idCardNumber: string;
-  idCardPicture: File;
-  additionalDescription?: string;
+  id_card_number: string;
+  id_card_picture: File;
+  additional_desc?: string;
 }

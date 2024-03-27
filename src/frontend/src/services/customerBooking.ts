@@ -65,7 +65,7 @@ const getBooking = async (id: string) => {
 
 const cancelBooking = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${bookingBaseUrl}/cancel/${id}`
     );
     return data;
@@ -76,7 +76,7 @@ const cancelBooking = async (id: string) => {
 
 const approveCancelBooking = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${bookingBaseUrl}/approve-cancel/${id}`
     );
     return data;
@@ -98,7 +98,7 @@ const getQRCode = async (id: string) => {
 
 const requestRefund = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${bookingBaseUrl}/req-refund/${id}`
     );
     return data;
