@@ -80,6 +80,7 @@ const GalleryInfo = ({ galleryId }: Props) => {
   const deleteGallery = async () => {
     try {
       await photographerGalleriesService.deleteGallery(galleryId);
+      closeModal();
       router.push("/");
       closeModal();
     } catch (error) {

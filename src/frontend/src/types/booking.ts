@@ -15,7 +15,7 @@ export enum BookingStatus {
 export interface BookingProposal {
   customer_id: string;
   room_id: string;
-  negotiated_price: string;
+  negotiated_price: number;
   start_time: string;
   end_time: string;
 }
