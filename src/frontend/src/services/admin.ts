@@ -6,7 +6,7 @@ import {
   UserResponse,
 } from "@/types/response";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
-import { IssueFilter, IssueHeaderMetadata } from "@/types/issue";
+import { Issue, IssueFilter, IssueHeaderMetadata } from "@/types/issue";
 
 const adminBaseUrl = "/admin/v1";
 
@@ -85,7 +85,7 @@ const GetIssuesWithOption = async (issueFilter: IssueFilter) => {
       }
     });
     const { data } = await apiClientWithAuth.get<
-      SuccessResponse<IssueHeaderMetadata>
+      SuccessResponse<Issue[]>
     >(`${adminBaseUrl}/issues?${queryParams.toString()}`);
     return data;
   } catch (error) {

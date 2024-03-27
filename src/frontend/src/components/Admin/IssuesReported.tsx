@@ -5,9 +5,10 @@ import { useEffect } from "react";
 import { adminService } from "@/services";
 import { useModal } from "@/context/ModalContext";
 import { IssueFilter } from "@/types/issue";
+import { Issue } from "@/types/issue";
 
 const IssueReported = () => {
-  const [reportList, setReportList] = useState<Booking[]>([]);
+  const [reportList, setReportList] = useState<Issue[]>();
   const { openModal, closeModal } = useModal();
   const [filter, setFilter] = useState<IssueFilter>({});
 
@@ -27,7 +28,7 @@ const IssueReported = () => {
     fetchData();
   }, []);
 
-  const handleActionClick = (issue : Booking) => {
+  const handleActionClick = (issue : Issue) => {
     openModal(
       <div className="flex flex-col">
         <p className="text-standard text-gray-500">
@@ -76,22 +77,22 @@ const IssueReported = () => {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {/* DATA */}
-            {reportList.map((issue) => (
+            {reportList?.map((issue) => (
               <tr key={issue.id}>
                 <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
                   #{issue.id.slice(0, 5)}
                 </td>
                 <td className="px-6 py-4 text-gray-900">
-                  {issue.roomId}
+                  {issue.reporter?.name}
                 </td>
-                <td className="px-6 py-4 text-gray-900">Refund Request</td>
+                <td className="px-6 py-4 text-gray-900">{issue.subject}</td>
                 <td className="px-6 py-4 text-green-500">{issue.status}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  {issue.created_at}
+                  {issue.createdAt.toString()}
                 </td>
-                <td className="px-6 py-4 text-gray-900">{issue.end_time}</td>
+                <td className="px-6 py-4 text-gray-900">{issue.dueDate.toString()}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <button onClick={handleActionClick(issue)}>...</button>
+                  <button onClick={() => handleActionClick(issue)}>...</button>
                 </td>
               </tr>
             ))}
