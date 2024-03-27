@@ -3,7 +3,14 @@
 import { useRef, useState } from "react";
 import React from "react";
 import Image from "next/image";
+import { PhotographerStatus, User } from "@/types/user";
+import userService from "@/services/user";
+import { VerificationTicketInput } from "@/types/verification";
+import useApiWithAuth from "@/hooks/useApiWithAuth";
+import { useErrorModal } from "@/hooks/useErrorModal";
+import { useSession } from "next-auth/react";
 
+// Accept setStatus as a prop
 const PhotographerVerification = () => {
   const [idNumber, setIdNumber] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -11,7 +18,9 @@ const PhotographerVerification = () => {
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [submitError, setSubmitError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const apiWithAuth = useApiWithAuth();
+  const showError = useErrorModal();
+  const { data: session, update } = useSession();
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -49,27 +58,48 @@ const PhotographerVerification = () => {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // If a file is selected, check for size and type
     if (
-      file &&
-      (file.size > 20 * 1024 * 1024 ||
-        (file.type !== "image/png" && file.type !== "image/jpeg"))
+      !file ||
+      file.size > 20 * 1024 * 1024 ||
+      (file.type !== "image/png" && file.type !== "image/jpeg") ||
+      !idNumber
     ) {
       setSubmitError(true);
       return;
     }
 
-    if (!idNumber || !file) {
-      setSubmitError(true);
-      return;
+    // Creating the VerificationTicketInput object
+    const verificationTicketInput: VerificationTicketInput = {
+      idCardNumber: idNumber,
+      idCardPicture: file,
+      additionalDescription: additionalInfo,
+    };
+
+    try {
+      // Call requestVerify with the apiClientForForm and verificationTicketInput
+      const response = await userService.requestVerify(
+        apiWithAuth,
+        verificationTicketInput
+      );
+      if (response.data && session) {
+        const updatedSession = {
+          ...session,
+          user: {
+            ...session.user,
+            data: {
+              ...session.user.data,
+              verification_status: response.data.user.verification_status,
+            },
+          },
+        };
+        await update(updatedSession);
+      }
+    } catch (error) {
+      // Handle error scenario
+      showError(error);
     }
-
-    // Handle ID card verification submission logic here if idNumber and file are present
-    setSubmitError(false);
-
-    // Set the submission to true to display the message
-    setIsSubmitted(true);
   };
+
   return (
     <form className="h-full w-full m-auto" onSubmit={onSubmit}>
       <div className="space-y-4">
@@ -125,6 +155,7 @@ const PhotographerVerification = () => {
                     id="fileInput"
                     className="hidden"
                     onChange={onFileChange}
+                    aria-label="Upload your ID card"
                   />
                   <button
                     type="button" // This should be a button, not a submit button

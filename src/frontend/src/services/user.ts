@@ -71,10 +71,20 @@ const requestVerify = async (
   apiClientForForm: Axios,
   verificationTicketInput: VerificationTicketInput
 ) => {
+  const formData = new FormData();
+  formData.append("id_card_picture", verificationTicketInput.idCardPicture);
+  formData.append("id_card_number", verificationTicketInput.idCardNumber);
+  if (verificationTicketInput.additionalDescription) {
+    formData.append(
+      "addition_desc",
+      verificationTicketInput.additionalDescription
+    );
+  }
+
   try {
     const { data } = await apiClientForForm.post<
       SuccessResponse<VerificationTicket>
-    >(`${userBaseUrl}/req-verify`, verificationTicketInput);
+    >(`${userBaseUrl}/req-verify`, formData);
     return data;
   } catch (error) {
     throw error;

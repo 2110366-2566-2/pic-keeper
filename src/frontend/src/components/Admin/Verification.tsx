@@ -4,6 +4,7 @@ import adminService from "../../services/admin";
 import { User } from "@/types/user";
 import { useState } from "react";
 import { useModal } from "@/context/ModalContext";
+import PhotographerVerificationModal from "./Verification/PhotographerVerificationModal";
 
 function Verification() {
   const [pendingList, setPendingList] = useState<User[]>([]);
@@ -25,20 +26,22 @@ function Verification() {
     fetchData();
   }, []);
 
-  const handleActionClick = (user : User) => {
+  const handleActionClick = (photographer: User) => {
     openModal(
-      <div className="flex flex-col">
-        <p className="text-standard text-gray-500">
-          This will delete your gallery from PicKeeper.
-        </p>
-        <div className="self-end flex gap-4">
-          <button onClick={closeModal} className="btn mt-4 px-4">
-            Cancel
-          </button>
-          <button className="btn-danger mt-4 px-4 ">Delete</button>
-        </div>
-      </div>,
-      "Are you sure?"
+      <PhotographerVerificationModal
+        photographer={{
+          // Assuming User and VerificationTicket have similar fields
+          username: photographer.username,
+          name: photographer.name || "N/A", // Adjust based on actual field
+          createdDate: photographer.createdDate || "N/A", // Adjust based on actual field
+          idNumber: photographer.id || "N/A",
+          additionalInfo: photographer.about || "N/A",
+          idCardImage: photographer.idCardImage || "DefaultImagePath", // Adjust based on actual field
+        }}
+        isOpen={true}
+        closeModal={closeModal}
+      />,
+      "Photographer Verification"
     );
   };
 
