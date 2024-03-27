@@ -1,20 +1,23 @@
 "use client";
-import { useEffect } from "react";
-import adminService from "../../services/admin";
-import { User } from "@/types/user";
 import { useState } from "react";
+import { Booking } from "@/types/booking";
+import { useEffect } from "react";
+import { adminService } from "@/services";
 import { useModal } from "@/context/ModalContext";
+import { IssueFilter } from "@/types/issue";
+import { Issue } from "@/types/issue";
 
-function Verification() {
-  const [pendingList, setPendingList] = useState<User[]>([]);
+const IssueReported = () => {
+  const [reportList, setReportList] = useState<Issue[]>();
   const { openModal, closeModal } = useModal();
+  const [filter, setFilter] = useState<IssueFilter>({});
 
   const fetchData = async () => {
     try {
-      const data = await adminService.listPendingPhotographer();
-      console.log(data);
+      const data = await adminService.GetIssuesWithOption(filter);
+      console.log(data.data);
       if (data.data) {
-        setPendingList(data.data);
+        setReportList(data.data);
       }
     } catch (error) {
       console.error(error);
@@ -25,7 +28,7 @@ function Verification() {
     fetchData();
   }, []);
 
-  const handleActionClick = (user : User) => {
+  const handleActionClick = (issue : Issue) => {
     openModal(
       <div className="flex flex-col">
         <p className="text-standard text-gray-500">
@@ -56,7 +59,7 @@ function Verification() {
                 Requested by
               </th>
               <th className="px-6 py-3 font-normal text-left text-gray-500">
-                Additional info
+                Subject
               </th>
               <th className="px-6 py-3 font-normal text-left text-gray-500">
                 Status
@@ -65,28 +68,31 @@ function Verification() {
                 Created date
               </th>
               <th className="px-6 py-3 font-normal text-left text-gray-500">
+                Due date
+              </th>
+              <th className="px-6 py-3 font-normal text-left text-gray-500">
                 Action
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {/* DATA */}
-            {pendingList.map((user) => (
-              <tr key={user.id}>
+            {reportList?.map((issue) => (
+              <tr key={issue.id}>
                 <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
-                  <a href={`/view-profile/${user.id}`}>
-                    #{user.id.slice(0, 5)}
-                  </a>
+                  #{issue.id.slice(0, 5)}
                 </td>
-                <td className="px-6 py-4 text-gray-900">{user.username}</td>
-                <td className="px-6 py-4 text-gray-900">{user.about}</td>
-                <td className="px-6 py-4 text-green-500">
-                  {user.verification_status}
-                </td>
-                <td className="px-6 py-4 text-gray-900">17/2/24</td>
-                <td className="px-6 py-4 text-gray-900">17/3/24</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <button onClick={() => handleActionClick(user)}>...</button>
+                  {issue.reporter?.name}
+                </td>
+                <td className="px-6 py-4 text-gray-900">{issue.subject}</td>
+                <td className="px-6 py-4 text-green-500">{issue.status}</td>
+                <td className="px-6 py-4 text-gray-900">
+                  {issue.createdAt.toString()}
+                </td>
+                <td className="px-6 py-4 text-gray-900">{issue.dueDate.toString()}</td>
+                <td className="px-6 py-4 text-gray-900">
+                  <button onClick={() => handleActionClick(issue)}>...</button>
                 </td>
               </tr>
             ))}
@@ -95,6 +101,6 @@ function Verification() {
       </div>
     </div>
   );
-}
+};
 
-export default Verification;
+export default IssueReported;

@@ -2,9 +2,12 @@
 
 import adminService from "@/services/admin";
 import React, { useState } from "react";
+import Image from "next/image";
+
+import { VerificationTicket } from "@/types/verification";
 
 interface PhotographerVerificationModalProps {
-  photographer: PhotographerInfo;
+  photographer: VerificationTicket;
   isOpen: boolean;
   closeModal: () => void;
 }
@@ -13,7 +16,7 @@ const PhotographerVerificationModal = ({
   photographer,
   isOpen,
   closeModal,
-}: PhotographerVerificationModalProps) => {
+}) => {
   const [status, setStatus] = useState("Open");
   const [isImagePreviewOpen, setImagePreviewOpen] = useState(false);
 

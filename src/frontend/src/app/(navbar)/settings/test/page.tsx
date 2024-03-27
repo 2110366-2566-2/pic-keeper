@@ -128,7 +128,7 @@ const Home = () => {
           createdDate: "17/02/2024",
           idNumber: "1103949863397",
           additionalInfo: "Additional Information about the Photographer Lorem",
-          idCardImage: "/images/image1.JPG",
+          idCardImage: "/images/signup.png",
         }}
       />
     </div>

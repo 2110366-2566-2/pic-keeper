@@ -36,6 +36,14 @@ export function RenderStatus(props: { status: BookingStatus }) {
           &bull; Cancellation requested{" "}
         </p>
       );
+
+    case BookingStatus.BookingRefundReqStatus:
+      return (
+        <p className="text-base font-bold text-orange-300">
+          &bull; Refund requested{" "}
+        </p>
+      );
+
     default:
       return null; // Handle default case if needed
   }
@@ -46,8 +54,8 @@ export function RenderButtonByStatus(props: {
   isOwner: boolean;
   togglePage: Function;
   bookingId: string;
-  refreshTrigger:Function;
-  closeModal:Function;
+  refreshTrigger: Function;
+  closeModal: Function;
 }) {
   const showError = useErrorModal();
   switch (props.status) {
@@ -68,8 +76,7 @@ export function RenderButtonByStatus(props: {
               props.togglePage("INFO");
               showError(error, "Cannot request cancel booking.");
             }
-          }
-        }
+          }}
         >
           Request for cancellation
         </div>
@@ -79,7 +86,7 @@ export function RenderButtonByStatus(props: {
           onClick={async () => {
             try {
               props.togglePage("LOADING");
-              await  customerBookingService.cancelBooking(props.bookingId);
+              await customerBookingService.cancelBooking(props.bookingId);
               props.togglePage("COMPLETE");
               props.refreshTrigger(true);
               setTimeout(() => {
@@ -89,7 +96,6 @@ export function RenderButtonByStatus(props: {
               props.togglePage("INFO");
               showError(error, "Cannot request cancel booking.");
             }
-           
           }}
         >
           Request for cancellation
@@ -107,7 +113,9 @@ export function RenderButtonByStatus(props: {
           onClick={async () => {
             try {
               props.togglePage("LOADING");
-              await customerBookingService.approveCancelBooking(props.bookingId);
+              await customerBookingService.approveCancelBooking(
+                props.bookingId
+              );
               props.togglePage("COMPLETE");
               props.refreshTrigger(true);
               setTimeout(() => {
@@ -165,7 +173,7 @@ export function RenderButtonByStatus(props: {
               props.togglePage("COMPLETE");
               props.refreshTrigger(true);
               setTimeout(() => {
-                props.closeModal();   
+                props.closeModal();
               }, 1000);
             } catch (error) {
               props.togglePage("INFO");

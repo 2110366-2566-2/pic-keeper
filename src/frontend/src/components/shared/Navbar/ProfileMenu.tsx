@@ -4,42 +4,60 @@ import { classNames } from "@/utils/list";
 import { Menu, Transition } from "@headlessui/react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useState } from "react";
 import { MdArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
 import ProfileImage from "../ProfileImage";
+import ReportIssue from "@/components/Popup/ReportIssue";
 
 interface Props {
-  href: string;
+  href?: string;
+  onClick?: () => void;
   children: ReactNode;
 }
-
-const MenuItem = ({ href, children }: Props) => (
+const MenuItem = ({ href, onClick, children }: Props) => (
   <Menu.Item>
-    {({ active }) => (
-      <Link
-        href={href}
-        className={classNames(
-          active ? "bg-gray-100" : "",
-          "block px-4 py-2 text-sm z-50"
-        )}
-      >
-        {children}
-      </Link>
-    )}
+    {({ active }) =>
+      href ? (
+        <Link
+          href={href}
+          className={classNames(
+            active ? "bg-gray-100" : "",
+            "block px-4 py-2 text-sm z-50"
+          )}
+        >
+          {children}
+        </Link>
+      ) : (
+        <button
+          onClick={onClick}
+          className={classNames(
+            active ? "bg-gray-100" : "",
+            "block px-4 py-2 text-sm w-full text-left z-50"
+          )}
+        >
+          {children}
+        </button>
+      )
+    }
   </Menu.Item>
 );
 
 const ProfileMenu = () => {
   const { data: session } = useSession();
+  const [isIssueOpen, setIsIssueOpen] = useState(false);
+
+  const handleOpenIssueModal = () => setIsIssueOpen(true);
+  const handleCloseIssueModal = () => setIsIssueOpen(false);
+
   return (
-    <Menu as="div" className="relative ml-3 z-99">
-      {({ open }) => (
-        <>
-          <Menu.Button className="flex items-center gap-2 text-sm rounded-full focus:ring-2 focus:ring-offset-2 focus:outline-none">
-            <ProfileImage
-              src={session?.user?.profile_picture_url || "/images/nature.svg"}
-              size={8}
-            />
+      <Menu as="div" className="relative ml-3">
+        {({ open }) => (
+          <>
+            <Menu.Button className="flex items-center gap-2 text-sm rounded-full focus:ring-2 focus:ring-offset-2 focus:outline-none">
+              <ProfileImage
+                src={session?.user?.profile_picture_url || "/images/nature.svg"}
+                size={8}
+              />
 
             <span>{session?.user.data?.firstname || "Guest"}</span>
             {open ? <MdArrowDropUp /> : <MdOutlineArrowDropDown />}
@@ -73,6 +91,11 @@ const ProfileMenu = () => {
                   <MenuItem href={`/view-profile/${session.user.data?.id}`}>
                     Your Profile
                   </MenuItem>
+                  {
+                    session.user.data?.is_admin === true && (
+                      <MenuItem href="/admin/dashboard/verification-tickets">Admin dashboard</MenuItem>
+                    )
+                  }
                   <MenuItem href="/settings/edit-profile">Settings</MenuItem>
                   <MenuItem href="/report-issues">Report issues</MenuItem>
                   <Menu.Item>
