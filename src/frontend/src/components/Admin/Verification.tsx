@@ -12,7 +12,7 @@ function Verification() {
   const fetchData = async () => {
     try {
       const data = await adminService.listPendingPhotographer();
-      console.log(data)
+      console.log(data);
       if (data.data) {
         setPendingList(data.data);
       }
@@ -25,7 +25,7 @@ function Verification() {
     fetchData();
   }, []);
 
-  const handleActionClick = async () => {
+  const handleActionClick = (user : User) => {
     openModal(
       <div className="flex flex-col">
         <p className="text-standard text-gray-500">
@@ -35,9 +35,7 @@ function Verification() {
           <button onClick={closeModal} className="btn mt-4 px-4">
             Cancel
           </button>
-          <button className="btn-danger mt-4 px-4 ">
-            Delete
-          </button>
+          <button className="btn-danger mt-4 px-4 ">Delete</button>
         </div>
       </div>,
       "Are you sure?"
@@ -51,12 +49,24 @@ function Verification() {
         <table className="min-w-full text-sm divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 font-normal text-left text-gray-500">ID</th>
-              <th className="px-6 py-3 font-normal text-left text-gray-500">Requested by</th>
-              <th className="px-6 py-3 font-normal text-left text-gray-500">Additional info</th>
-              <th className="px-6 py-3 font-normal text-left text-gray-500">Status</th>
-              <th className="px-6 py-3 font-normal text-left text-gray-500">Created date</th>
-              <th className="px-6 py-3 font-normal text-left text-gray-500">Action</th>
+              <th className="px-6 py-3 font-normal text-left text-gray-500">
+                ID
+              </th>
+              <th className="px-6 py-3 font-normal text-left text-gray-500">
+                Requested by
+              </th>
+              <th className="px-6 py-3 font-normal text-left text-gray-500">
+                Additional info
+              </th>
+              <th className="px-6 py-3 font-normal text-left text-gray-500">
+                Status
+              </th>
+              <th className="px-6 py-3 font-normal text-left text-gray-500">
+                Created date
+              </th>
+              <th className="px-6 py-3 font-normal text-left text-gray-500">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -64,7 +74,9 @@ function Verification() {
             {pendingList.map((user) => (
               <tr key={user.id}>
                 <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
-                  <a href={`/view-profile/${user.id}`}>#{user.id.slice(0, 5)}</a>
+                  <a href={`/view-profile/${user.id}`}>
+                    #{user.id.slice(0, 5)}
+                  </a>
                 </td>
                 <td className="px-6 py-4 text-gray-900">{user.username}</td>
                 <td className="px-6 py-4 text-gray-900">{user.about}</td>
@@ -74,11 +86,10 @@ function Verification() {
                 <td className="px-6 py-4 text-gray-900">17/2/24</td>
                 <td className="px-6 py-4 text-gray-900">17/3/24</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <button onClick={handleActionClick}>...</button>
+                  <button onClick={() => handleActionClick(user)}>...</button>
                 </td>
               </tr>
             ))}
-
           </tbody>
         </table>
       </div>
