@@ -9,10 +9,6 @@ import { MdArrowDropUp, MdOutlineArrowDropDown } from "react-icons/md";
 import ProfileImage from "../ProfileImage";
 import ReportIssue from "@/components/Popup/ReportIssue";
 
-interface ReportIssueProps {
-  onClose?: () => void;
-}
-
 interface Props {
   href?: string;
   onClick?: () => void;
@@ -20,7 +16,7 @@ interface Props {
 }
 const MenuItem = ({ href, onClick, children }: Props) => (
   <Menu.Item>
-    {({ active }) => (
+    {({ active }) =>
       href ? (
         <Link
           href={href}
@@ -42,13 +38,16 @@ const MenuItem = ({ href, onClick, children }: Props) => (
           {children}
         </button>
       )
-    )}
+    }
   </Menu.Item>
 );
 
 const ProfileMenu = () => {
   const { data: session } = useSession();
-  const [isReportIssueOpen, setReportIssueOpen] = useState(false);
+  const [isIssueOpen, setIsIssueOpen] = useState(false);
+
+  const handleOpenIssueModal = () => setIsIssueOpen(true);
+  const handleCloseIssueModal = () => setIsIssueOpen(false);
 
   return (
     <>
@@ -90,9 +89,13 @@ const ProfileMenu = () => {
                   </Menu.Item>
                 ) : (
                   <>
-                    <MenuItem href={`/view-profile/${session.user.data?.id}`}>Your Profile</MenuItem>
+                    <MenuItem href={`/view-profile/${session.user.data?.id}`}>
+                      Your Profile
+                    </MenuItem>
                     <MenuItem href="/settings/edit-profile">Settings</MenuItem>
-                    <MenuItem onClick={() => setReportIssueOpen(true)}>Report issues</MenuItem>
+                    <MenuItem onClick={handleOpenIssueModal}>
+                      Report issues
+                    </MenuItem>
                     <Menu.Item>
                       {({ active }) => (
                         <button
@@ -113,8 +116,7 @@ const ProfileMenu = () => {
           </>
         )}
       </Menu>
-      {/* {isReportIssueOpen && <ReportIssue onCancel={() => setReportIssueOpen(false)} />} */}
-      {isReportIssueOpen && <ReportIssue onCancel={() => setReportIssueOpen(false)} onSuccess={() => setReportIssueOpen(false)} />}
+      <ReportIssue isOpen={isIssueOpen} onClose={handleCloseIssueModal} />
     </>
   );
 };
