@@ -4,6 +4,9 @@ import { photographerBookingService } from "@/services";
 import { Booking, BookingStatus } from "@/types/booking";
 import { Room } from "@/types/room";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
+import BookingForm from "./BookingForm";
+import { Dialog } from "@headlessui/react";
 
 interface Props {
   room: Room;
@@ -12,8 +15,21 @@ interface Props {
 
 const BookingBtn = ({ room, booking }: Props) => {
   const { data: session } = useSession();
-  const { openModal, closeModal } = useModal();
+  const [isOpen, setIsOpen] = useState(false);
   const showError = useErrorModal();
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [negotiatedPrice, setNegotiatedPrice] = useState<number>(
+    room.gallery.price
+  );
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
 
   const handlePhotographerSaveBooking = async () => {
     try {
@@ -24,30 +40,41 @@ const BookingBtn = ({ room, booking }: Props) => {
       showError(error);
     }
   };
-  const handlePhotographerEditBooking = () => {
-    openModal(
-      // TODO: Here
-      <form onSubmit={handlePhotographerSaveBooking}>
-        Please implement this kub
-        <button className="btn-primary px-6 py-2" type="submit">
-          Save
-        </button>
-      </form>,
-      "Edit package"
-    );
-  };
 
   // TODO: Here
   const handleCustomerBooking = () => {};
 
   if (room.gallery.photographer_id === session?.user.data?.id) {
     return (
-      <button
-        className="btn-primary self-center px-32 py-2"
-        onClick={handlePhotographerEditBooking}
-      >
-        Edit
-      </button>
+      <>
+        <button
+          onClick={openModal}
+          className="btn-primary self-center px-32 py-2"
+        >
+          {room.gallery.photographer_id === session?.user.data?.id
+            ? "Edit"
+            : "Book"}
+        </button>
+
+        <Dialog open={isOpen} onClose={closeModal} className="relative z-50">
+          <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <Dialog.Panel className="mx-auto max-w-sm rounded bg-white p-6">
+              <Dialog.Title>Edit package</Dialog.Title>
+              <BookingForm
+                negotiatedPrice={negotiatedPrice}
+                setNegotiatedPrice={setNegotiatedPrice}
+                startTime={startTime}
+                setStartTime={setStartTime}
+                endTime={endTime}
+                setEndTime={setEndTime}
+                onSave={handlePhotographerSaveBooking}
+              />
+            </Dialog.Panel>
+          </div>
+        </Dialog>
+      </>
     );
   }
 
