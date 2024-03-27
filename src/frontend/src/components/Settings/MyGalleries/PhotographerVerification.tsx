@@ -146,6 +146,7 @@ const PhotographerVerification = () => {
                     id="fileInput"
                     className="hidden"
                     onChange={onFileChange}
+                    aria-label="Upload your ID card"
                   />
                   <button
                     type="button" // This should be a button, not a submit button

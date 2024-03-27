@@ -1,5 +1,6 @@
 "use client";
 
+import adminService from "@/services/admin";
 import React, { useState } from "react";
 
 interface PhotographerInfo {
@@ -33,14 +34,28 @@ const PhotographerVerificationModal = ({
     setImagePreviewOpen(false);
   };
 
-  const handleApprove = () => {
-    setStatus("Closed");
-    closeModal();
+  const handleApprove = async () => {
+    try {
+      await adminService.verify(photographer.username); // Use username or another unique identifier
+      setStatus("Approved");
+      closeModal();
+      // Add any other actions or notifications you'd like to perform post-approval
+    } catch (error) {
+      console.error("Error approving photographer:", error);
+      // Handle errors, perhaps show a notification
+    }
   };
 
-  const handleDecline = () => {
-    setStatus("Closed");
-    closeModal();
+  const handleDecline = async () => {
+    try {
+      await adminService.reject(photographer.username); // Use username or another unique identifier
+      setStatus("Rejected");
+      closeModal();
+      // Add any other actions or notifications you'd like to perform post-rejection
+    } catch (error) {
+      console.error("Error rejecting photographer:", error);
+      // Handle errors, perhaps show a notification
+    }
   };
 
   if (!isOpen) return null;
