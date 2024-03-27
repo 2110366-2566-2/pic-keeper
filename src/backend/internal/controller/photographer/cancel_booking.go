@@ -3,6 +3,7 @@ package photographer
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -36,17 +37,12 @@ func (r *Resolver) CancelBooking(c *gin.Context) {
 		return
 	}
 
-	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, booking.GalleryId)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
+	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, booking); err != nil {
+		util.Raise500Error(c, err)
 		return
 	}
 
-	if gallery.PhotographerId != photographer.Id {
+	if booking.Room.Gallery.PhotographerId != photographer.Id {
 		c.JSON(http.StatusForbidden, gin.H{
 			"status": "failed",
 			"error":  "this booking is not yours",

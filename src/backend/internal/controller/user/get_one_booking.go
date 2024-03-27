@@ -3,6 +3,7 @@ package user
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -36,6 +37,11 @@ func (r *Resolver) GetOneBooking(c *gin.Context) {
 			"error":  "this booking is not yours",
 		})
 		c.Abort()
+		return
+	}
+
+	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, booking); err != nil {
+		util.Raise500Error(c, err)
 		return
 	}
 
