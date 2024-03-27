@@ -1,7 +1,7 @@
 import { useModal } from "@/context/ModalContext";
 import { useErrorModal } from "@/hooks/useErrorModal";
 import { photographerBookingService } from "@/services";
-import { Booking, BookingStatus } from "@/types/booking";
+import { Booking, BookingProposal, BookingStatus } from "@/types/booking";
 import { Room } from "@/types/room";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -31,13 +31,25 @@ const BookingBtn = ({ room, booking }: Props) => {
     setIsOpen(true);
   };
 
-  const handlePhotographerSaveBooking = async () => {
-    try {
-      // TODO: Implement this kub
-      // const response = await photographerBookingService.createBooking({Your booking proposal});
-      closeModal();
-    } catch (error) {
-      showError(error);
+  const handlePhotographerSaveBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (session?.user.data) {
+      try {
+        const newBooking: BookingProposal = {
+          customer_id: session?.user.data?.id,
+          room_id: room.id,
+          negotiated_price: negotiatedPrice,
+          start_time: startTime,
+          end_time: endTime,
+        };
+        await photographerBookingService.createBooking(newBooking);
+        closeModal();
+      } catch (error) {
+        closeModal();
+        showError(error);
+      }
+    } else {
+      showError(new Error("No user session"), "Error");
     }
   };
 
