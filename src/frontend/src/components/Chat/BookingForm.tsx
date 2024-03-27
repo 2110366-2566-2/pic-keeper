@@ -1,6 +1,3 @@
-// BookingForm.tsx
-import React from "react";
-
 interface BookingFormProps {
   negotiatedPrice: number;
   setNegotiatedPrice: (value: number) => void;

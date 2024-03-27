@@ -7,13 +7,15 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import BookingForm from "./BookingForm";
 import { Dialog } from "@headlessui/react";
+import { parseISO, formatISO } from "date-fns";
 
 interface Props {
   room: Room;
   booking: Booking | undefined;
+  setBooking: React.Dispatch<React.SetStateAction<Booking | undefined>>;
 }
 
-const BookingBtn = ({ room, booking }: Props) => {
+const BookingBtn = ({ room, booking, setBooking }: Props) => {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const showError = useErrorModal();
@@ -35,15 +37,31 @@ const BookingBtn = ({ room, booking }: Props) => {
     e.preventDefault();
     if (session?.user.data) {
       try {
+        // Parse startTime and endTime to Date objects
+        const parsedStartTime = parseISO(startTime);
+        const parsedEndTime = parseISO(endTime);
+
+        // Convert Date objects to strings in ISO format
+        const isoStartTime = formatISO(parsedStartTime);
+        const isoEndTime = formatISO(parsedEndTime);
         const newBooking: BookingProposal = {
           customer_id: session?.user.data?.id,
           room_id: room.id,
           negotiated_price: negotiatedPrice,
-          start_time: startTime,
-          end_time: endTime,
+          start_time: isoStartTime,
+          end_time: isoEndTime,
         };
-        await photographerBookingService.createBooking(newBooking);
-        closeModal();
+        const response = await photographerBookingService.createBooking(
+          newBooking
+        );
+        if (response.data) {
+          setBooking(response.data);
+          closeModal();
+          console.log("1");
+        } else {
+          console.log("2");
+          throw new Error("No response data returned");
+        }
       } catch (error) {
         closeModal();
         showError(error);

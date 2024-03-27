@@ -13,6 +13,7 @@ import Image from "next/image";
 import { Booking } from "@/types/booking";
 import { useSession } from "next-auth/react";
 import BookingBtn from "./BookingBtn";
+import { capitalizeFirstLetter } from "@/utils/string";
 
 interface Props {
   roomId?: string;
@@ -139,9 +140,18 @@ const ChatSystem = ({ roomId }: Props) => {
               {/* gallery details */}
               <div className="bg-white rounded-xl shadow-lg flex-1 flex flex-col justify-between gap-4 p-4">
                 <div className="space-y-4">
-                  <div className="text-2xl font-semibold">Current Package</div>
+                  <div className="text-2xl font-semibold">
+                    Current Package{" "}
+                    {booking ? (
+                      <span className="text-lg font-normal text-standard">
+                        ({capitalizeFirstLetter(booking.status)})
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   <div className="border-t-2 border-gray-300 max-h-64 overflow-y-scroll">
-                    <PackageInfo gallery={currRoom.gallery} />
+                    <PackageInfo gallery={currRoom.gallery} booking={booking} />
                   </div>
                 </div>
                 <BookingBtn room={currRoom} booking={booking} />
