@@ -92,6 +92,7 @@ type Gallery struct {
 	PhotographerId uuid.UUID `bun:"photographer_id,type:uuid" json:"photographer_id"`
 	Location       string    `bun:"location,type:varchar" json:"location"`
 	Name           string    `bun:"name,type:varchar" json:"name"`
+	AvgRating      *float32  `bun:"avg_rating,type:real" json:"avg_rating"`
 	Price          int       `bun:"price,type:integer" json:"price"`
 	Hours          int       `bun:"hours,type:integer" json:"hours"`
 	Description    *string   `bun:"description,type:varchar" json:"description"`
@@ -207,7 +208,7 @@ type Review struct {
 	BookingId     uuid.UUID `bun:"booking_id,type:uuid" json:"-"`
 	Booking       Booking   `bun:"-" json:"booking"`
 	Rating        int       `bun:"rating,type:integer" json:"rating"`
-	ReviewText    string    `bun:"review_text,type:varchar" json:"review_text"`
+	ReviewText    *string   `bun:"review_text,type:varchar" json:"review_text"`
 }
 
 const (

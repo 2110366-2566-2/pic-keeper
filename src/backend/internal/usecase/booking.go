@@ -45,6 +45,30 @@ func populateGalleries(ctx context.Context, bookings []*model.Booking, galleryUs
 	return nil
 }
 
+func (b *BookingUseCase) PopulateBookingInReviews(ctx context.Context, reviews ...*model.Review) error {
+	bookingIds := []uuid.UUID{}
+
+	for _, review := range reviews {
+		bookingIds = append(bookingIds, review.BookingId)
+	}
+
+	bookings, err := b.BookingRepo.FindByIds(ctx, bookingIds...)
+	if err != nil {
+		return err
+	}
+
+	bookingIdMapping := make(map[uuid.UUID]*model.Booking)
+	for _, booking := range bookings {
+		bookingIdMapping[booking.Id] = booking
+	}
+
+	for _, review := range reviews {
+		review.Booking = *bookingIdMapping[review.BookingId]
+	}
+
+	return nil
+}
+
 func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, galleryUsecase GalleryUseCase, bkStatus ...string) ([]*model.Booking, error) {
 	bookings, err := b.BookingRepo.FindByUserIdWithStatus(ctx, userId, bkStatus...)
 	if err != nil {

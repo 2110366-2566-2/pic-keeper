@@ -44,7 +44,7 @@ func (r *Resolver) CreateReview(c *gin.Context) {
 		CustomerId: userObj.Id,
 		BookingId:  *reviewInput.BookingId,
 		Rating:     *reviewInput.Rating,
-		ReviewText: *reviewInput.ReviewText,
+		ReviewText: reviewInput.ReviewText,
 	}
 
 	if err := r.ReviewUsecase.ReviewRepo.AddOne(c, &newReview); err != nil {

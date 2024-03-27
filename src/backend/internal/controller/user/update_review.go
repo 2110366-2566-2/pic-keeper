@@ -11,11 +11,8 @@ import (
 )
 
 func (r *Resolver) UpdateReview(c *gin.Context) {
-	user := c.MustGet("user")
-	userObj, ok := user.(model.User)
+	userObj, ok := GetUser(c)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "message": "Invalid user type in context"})
-		c.Abort()
 		return
 	}
 
@@ -75,6 +72,6 @@ func updateReview(gallery *model.Review, input model.ReviewInput) {
 		gallery.Rating = *input.Rating
 	}
 	if input.ReviewText != nil {
-		gallery.ReviewText = *input.ReviewText
+		gallery.ReviewText = input.ReviewText
 	}
 }
