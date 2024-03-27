@@ -10,7 +10,7 @@ export default function UserLayout({
 }) {
   return (
     <div className="w-screen h-screen">
-      <div className="">
+      <div className="relative z-50">
         <NavBar />
       </div>
       <main className="">{children}</main>
