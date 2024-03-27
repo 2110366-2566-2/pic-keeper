@@ -1,4 +1,8 @@
 import { BookingStatus } from "@/types/booking";
+import customerBookingService from "@/services/customerBooking";
+import photographerBookingService from "@/services/photographerBooking";
+import { useRouter } from "next/navigation";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 export function RenderStatus(props: { status: BookingStatus }) {
   switch (props.status) {
@@ -41,27 +45,68 @@ export function RenderButtonByStatus(props: {
   status: BookingStatus;
   isOwner: boolean;
   togglePage: Function;
+  bookingId: string;
+  refreshTrigger:Function;
+  closeModal:Function;
 }) {
+  const showError = useErrorModal();
   switch (props.status) {
     case BookingStatus.BookingPaidStatus:
-      return (
-        
-          <div
-            className="text-center mt-4 font-semibold text-red-500"
-            onClick={() => {}}
-          >
-            Request for cancellation
-          </div>
-        
+      return props.isOwner ? (
+        <div
+          className="text-center mt-4 font-semibold text-red-500"
+          onClick={async () => {
+            try {
+              await photographerBookingService.cancelBooking(props.bookingId);
+              props.refreshTrigger(true);
+              props.closeModal();
+            } catch (error) {
+              showError(error, "Cannot request cancel booking.");
+            }
+          }
+        }
+        >
+          Request for cancellation
+        </div>
+      ) : (
+        <div
+          className="text-center mt-4 font-semibold text-red-500"
+          onClick={async () => {
+            try {
+              await  customerBookingService.cancelBooking(props.bookingId);
+              props.refreshTrigger(true);
+              props.closeModal();
+            } catch (error) {
+              showError(error, "Cannot request cancel booking.");
+            }
+           
+          }}
+        >
+          Request for cancellation
+        </div>
       );
+
     case BookingStatus.BookingPhotographerReqCancelStatus:
       return props.isOwner ? (
         <div className="text-center mt-4 font-semibold text-stone-400">
           Cancellation pending
         </div>
       ) : (
-        <div className="text-center mt-4 font-semibold text-green-600" onClick={() => {}}>
-          Accept cancellation 
+        <div
+          className="text-center mt-4 font-semibold text-green-600"
+          onClick={async () => {
+            try {
+              await customerBookingService.approveCancelBooking(
+                props.bookingId
+              );
+              props.refreshTrigger(true);
+              props.closeModal();
+            } catch (error) {
+              showError(error, "Cannot cancel booking.");
+            }
+          }}
+        >
+          Accept cancellation
         </div>
       );
 
@@ -88,7 +133,9 @@ export function RenderButtonByStatus(props: {
       ) : (
         <button
           className="mt-4 px-4 py-2 bg-sky-950 text-white rounded font-semibold text-lg"
-          onClick={() => {props.togglePage("FEED_BACK");}}
+          onClick={() => {
+            props.togglePage("FEED_BACK");
+          }}
         >
           View feedback
         </button>
@@ -96,7 +143,18 @@ export function RenderButtonByStatus(props: {
 
     case BookingStatus.BookingCustomerReqCancelStatus:
       return props.isOwner ? (
-        <div className="text-center mt-4 font-semibold text-green-600" onClick={() => {}}>
+        <div
+          className="text-center mt-4 font-semibold text-green-600"
+          onClick={async () => {
+            try {
+              await photographerBookingService.approveCancel(props.bookingId);
+              props.refreshTrigger(true);
+              props.closeModal();
+            } catch (error) {
+              showError(error, "Cannot cancel booking.");
+            }
+          }}
+        >
           Accept cancellation
         </div>
       ) : (
@@ -108,7 +166,9 @@ export function RenderButtonByStatus(props: {
       return props.isOwner ? (
         <button
           className="mt-4 px-4 py-2 bg-sky-950 text-white rounded font-semibold text-lg"
-          onClick={() => {props.togglePage("FEED_BACK");}}
+          onClick={() => {
+            props.togglePage("FEED_BACK");
+          }}
         >
           View feedback
         </button>

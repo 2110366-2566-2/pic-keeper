@@ -1,10 +1,14 @@
 import { Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import customerBookingService from "@/services/customerBooking";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 export default function Refund(props: {
   togglePage: Function;
   isOpen: boolean;
+  bookingId: string;
 }) {
+  const showError = useErrorModal();
   return (
     <Transition show={props.isOpen} as={Fragment}>
       <Transition.Child
@@ -38,7 +42,13 @@ export default function Refund(props: {
             </button>
             <button
               className="mt-4 px-4 py-2 bg-orange-400 text-white rounded font-semibold text-lg"
-              onClick={() => {}}
+              onClick={async () => {
+                try {
+                  await customerBookingService.requestRefund(props.bookingId);
+                } catch (error) {
+                  showError(error, "Cannot request refund.");
+                }
+              }}
             >
               Submit
             </button>

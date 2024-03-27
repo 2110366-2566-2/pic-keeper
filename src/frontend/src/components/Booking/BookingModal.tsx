@@ -1,6 +1,6 @@
 "use client";
-import { BookingStatus ,Booking} from "@/types/booking";
-import { GetUserInfoResponse } from "@/types/response"; 
+import { BookingStatus, Booking } from "@/types/booking";
+import { GetUserInfoResponse } from "@/types/response";
 import { transformDate } from "@/utils/date";
 import { Transition } from "@headlessui/react";
 import { useSession } from "next-auth/react";
@@ -18,21 +18,23 @@ enum ModalPage {
 }
 
 interface Content {
-  bookingOptions:Booking;
-  customer:GetUserInfoResponse;
-  photographer:GetUserInfoResponse;
+  bookingOptions: Booking;
+  customer: GetUserInfoResponse;
+  photographer: GetUserInfoResponse;
 }
 
 export default function BookingModal(props: {
   isOpen: boolean;
   closeModal: Function;
   content: Content;
+  refreshTrigger: Function;
 }) {
   const [page, togglePage] = useState<ModalPage>(ModalPage.Info);
   const session = useSession();
   const isPackageOwner = () => {
     return (
-      props.content.bookingOptions.room.gallery.photographer_id === session.data?.user.data?.id
+      props.content.bookingOptions.room.gallery.photographer_id ===
+      session.data?.user.data?.id
     );
   };
 
@@ -71,15 +73,31 @@ export default function BookingModal(props: {
               className={`modal max-w-md w-full max-h-full h-[500px] px-4 bg-white shadow-lg rounded-2xl overflow-hidden`}
             >
               {
-                <Info content={props.content} isPackageOwner={isPackageOwner()} togglePage={togglePage} isOpen={page == ModalPage.Info}/>
+                <Info
+                  content={props.content}
+                  isPackageOwner={isPackageOwner()}
+                  togglePage={togglePage}
+                  isOpen={page == ModalPage.Info}
+                  refreshTrigger={props.refreshTrigger}
+                  closeModal={props.closeModal}
+                />
               }
 
-            
-              { <FeedBack togglePage={togglePage} isOwner={isPackageOwner()} isOpen={page == ModalPage.FeedBack} feedBackContent={null} />}
-              
+              {
+                <FeedBack
+                  togglePage={togglePage}
+                  isOwner={isPackageOwner()}
+                  isOpen={page == ModalPage.FeedBack}
+                  feedBackContent={null}
+                />
+              }
 
               {
-                <Refund togglePage={togglePage} isOpen={page == ModalPage.Refund}/>
+                <Refund
+                  togglePage={togglePage}
+                  isOpen={page == ModalPage.Refund}
+                  bookingId={props.content.bookingOptions.id}
+                />
               }
             </div>
           </div>

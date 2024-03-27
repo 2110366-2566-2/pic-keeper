@@ -21,6 +21,8 @@ export default function Info(props: {
   isPackageOwner: boolean;
   togglePage: Function;
   isOpen: boolean;
+  refreshTrigger:Function;
+  closeModal:Function;
 }) {
   const router = useRouter();
 
@@ -274,6 +276,9 @@ export default function Info(props: {
               status={props.content.bookingOptions.status as BookingStatus}
               isOwner={props.isPackageOwner}
               togglePage={props.togglePage}
+              bookingId={props.content.bookingOptions.id}
+              refreshTrigger={props.refreshTrigger}
+              closeModal={props.closeModal}
             />
           </div>
         </Transition.Child>

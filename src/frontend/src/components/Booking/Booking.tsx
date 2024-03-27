@@ -3,11 +3,18 @@ import { useErrorModal } from "@/hooks/useErrorModal";
 import customerBookingService from "@/services/customerBooking";
 import photographerBookingService from "@/services/photographerBooking";
 import { Booking } from "@/types/booking";
+import { GetUserInfoResponse } from "@/types/response";
 import { useEffect, useState } from "react";
 import BookingCard from "./BookingCard";
 import BookingModal from "./BookingModal";
 import Loading from "./Loading";
-import { GetUserInfoResponse } from "@/types/response"; 
+
+enum BookingCategory {
+  All = "ALL",
+  Up = "UP",
+  Past = "PAST",
+  Cancel = "CANCEL"
+}
 
 interface Content {
   bookingOptions:Booking;
@@ -15,17 +22,20 @@ interface Content {
   photographer:GetUserInfoResponse;
 }
 
+type MyFunctionType = () => Promise<Booking[]>;
+
 export default function BookingPage() {
   const showError = useErrorModal();
   const [bookingLists, setBookingLists] = useState<Booking[] | null>([]);
+  const [bookingCategory,setBookingCategory]=useState<BookingCategory>(BookingCategory.All)
   const [allAppointment, setAllAppointment] = useState<Boolean>(true);
   const [upComing, setUpComing] = useState<Boolean>(false);
   const [past, setPast] = useState<Boolean>(false);
   const [cancel, setCancel] = useState<Boolean>(false);
-  const [showContent, setShowContent] = useState(true);
-  
+  const [showContent, setShowContent] = useState<Boolean>(true);
+  const [refreshTrigger,setRefreshTrigger]=useState<Boolean>(false);
 
-  const refreshContent = (func: Function) => {
+  const refreshContent = (func: MyFunctionType) => {
     setShowContent(false); // Set content to false
     setTimeout(async () => {
       let result = await func();
@@ -151,6 +161,7 @@ export default function BookingPage() {
     return [...resultCustomer, ...resultPhotographer];
   };
 
+  
   //---Use Effect--------
   useEffect(() => {
     //Runs only on the first render
@@ -160,7 +171,26 @@ export default function BookingPage() {
 
   useEffect(() => {
     //Runs only on the dependency
-  }, [bookingLists]);
+    if(refreshTrigger){
+      switch (bookingCategory) {
+        case BookingCategory.All:
+          refreshContent(getAllBookings);
+          break;
+        case BookingCategory.Past:  
+          refreshContent(getPastBookings);
+          break;
+        case BookingCategory.Up:
+          refreshContent(getUpcomingBookings);
+          break;
+        case BookingCategory.Cancel:
+          refreshContent(getPendingCancellations);
+          break;
+        default:
+          break;
+      }
+    }
+    setRefreshTrigger(false);
+  }, [refreshTrigger]);
 
   //-----------End--Fetch--------------------------------
 
@@ -200,16 +230,12 @@ export default function BookingPage() {
             <li>
               <div
                 onClick={async () => {
-                  setAllAppointment(true);
-                  setUpComing(false);
-                  setPast(false);
-                  setCancel(false);
-                  setShowContent(false);
+                  setBookingCategory(BookingCategory.All);
                   refreshContent(getAllBookings);
                 }}
                 className="lg:me-16 ml-1"
               >
-                {allAppointment ? (
+                {(bookingCategory==BookingCategory.All) ? (
                   <span className="underline text-amber-500">
                     All Appointments
                   </span>
@@ -221,15 +247,12 @@ export default function BookingPage() {
             <li>
               <div
                 onClick={async () => {
-                  setAllAppointment(false);
-                  setUpComing(true);
-                  setPast(false);
-                  setCancel(false);
+                  setBookingCategory(BookingCategory.Up);
                   refreshContent(getUpcomingBookings);
                 }}
                 className="lg:me-16 ml-1"
               >
-                {upComing ? (
+                {(bookingCategory==BookingCategory.Up) ? (
                   <span className="underline text-amber-500">Upcoming</span>
                 ) : (
                   <>Upcoming</>
@@ -239,15 +262,12 @@ export default function BookingPage() {
             <li>
               <div
                 onClick={async () => {
-                  setAllAppointment(false);
-                  setUpComing(false);
-                  setPast(true);
-                  setCancel(false);
+                  setBookingCategory(BookingCategory.Past);
                   refreshContent(getPastBookings);
                 }}
                 className="lg:me-16 ml-1"
               >
-                {past ? (
+                {(bookingCategory==BookingCategory.Past) ? (
                   <span className="underline text-amber-500">Past</span>
                 ) : (
                   <>Past</>
@@ -257,15 +277,12 @@ export default function BookingPage() {
             <li>
               <div
                 onClick={async () => {
-                  setAllAppointment(false);
-                  setUpComing(false);
-                  setPast(false);
-                  setCancel(true);
+                  setBookingCategory(BookingCategory.Cancel);
                   refreshContent(getPendingCancellations);
                 }}
                 className="lg:me-16 ml-1"
               >
-                {cancel ? (
+                {(bookingCategory==BookingCategory.Cancel) ? (
                   <span className="underline text-amber-500">
                     Cancellation Requested
                   </span>
@@ -317,6 +334,7 @@ export default function BookingPage() {
           isOpen={modalIsOpen}
           closeModal={closeModal}
           content={modalProps as Content}
+          refreshTrigger={setRefreshTrigger}
         />
       </div>
     </div>

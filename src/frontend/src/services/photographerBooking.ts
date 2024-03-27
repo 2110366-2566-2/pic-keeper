@@ -73,7 +73,7 @@ const getMyBookings = async () => {
 
 const cancelBooking = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${photographerBookingBaseUrl}/cancel/${id}`
     );
     return data;
@@ -84,7 +84,7 @@ const cancelBooking = async (id: string) => {
 
 const approveCancel = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${photographerBookingBaseUrl}/approve-cancel/${id}`
     );
     return data;
