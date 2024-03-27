@@ -1,12 +1,25 @@
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
+import { BookingProposal } from "@/types/booking";
 import { BookingListResponse, BookingResponse } from "@/types/response";
 
-const photographerBookingBaseUrl = "/photographers/v1/bookings";
+const photographerBookingBaseUrl = "/photographers/bookings/v1";
 
 const getPendingCancellations = async () => {
   try {
     const { data } = await apiClientWithAuth.get<BookingListResponse>(
       `${photographerBookingBaseUrl}/pending-cancellations`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const createBooking = async (BookingProposal: BookingProposal) => {
+  try {
+    const { data } = await apiClientWithAuth.post<BookingResponse>(
+      `${photographerBookingBaseUrl}`,
+      BookingProposal
     );
     return data;
   } catch (error) {
@@ -36,6 +49,17 @@ const getPastBookings = async () => {
   }
 };
 
+const getOneBooking = async (id: string) => {
+  try {
+    const { data } = await apiClientWithAuth.get<BookingResponse>(
+      `${photographerBookingBaseUrl}/${id}`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const getMyBookings = async () => {
   try {
     const { data } = await apiClientWithAuth.get<BookingListResponse>(
@@ -49,7 +73,7 @@ const getMyBookings = async () => {
 
 const cancelBooking = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${photographerBookingBaseUrl}/cancel/${id}`
     );
     return data;
@@ -60,7 +84,7 @@ const cancelBooking = async (id: string) => {
 
 const approveCancel = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${photographerBookingBaseUrl}/approve-cancel/${id}`
     );
     return data;
@@ -71,8 +95,10 @@ const approveCancel = async (id: string) => {
 
 const photographerBookingService = {
   getPendingCancellations,
+  createBooking,
   getUpcomingBookings,
   getPastBookings,
+  getOneBooking,
   getMyBookings,
   cancelBooking,
   approveCancel,

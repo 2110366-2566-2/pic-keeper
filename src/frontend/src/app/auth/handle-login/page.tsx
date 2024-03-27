@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import Loading from "@/components/shared/Loading";
 
 const HandleLogin = () => {
   const router = useRouter();
@@ -33,7 +34,9 @@ const HandleLogin = () => {
   }, [router, session]);
 
   return (
-    <div>Loading...</div> // Show a loading message or spinner while processing
+    <div className="h-screen">
+      <Loading />
+    </div>
   );
 };
 

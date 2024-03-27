@@ -55,13 +55,10 @@ func (r *Resolver) RequestRefundBooking(c *gin.Context) {
 		return
 	}
 
-	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, booking.GalleryId)
-	if err != nil {
+	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, booking); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
-
-	booking.Gallery = *gallery
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",

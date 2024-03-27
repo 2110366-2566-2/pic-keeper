@@ -40,20 +40,18 @@ func (r *Resolver) GetRoomOfUserByGalleryId(c *gin.Context) {
 	}
 
 	if exist {
-		gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, room.GalleryId)
-		if err != nil {
-			util.Raise500Error(c, err)
-			return
-		}
 		otherUsers, err := r.RoomUsecase.FindOtherUsersInRoom(c, userObj.Id, room.Id)
 		if err != nil {
 			util.Raise500Error(c, err)
 			return
 		}
 
-		room.OtherUsers = otherUsers
-		room.Gallery = *gallery
+		if err := r.GalleryUsecase.PopulateGalleryInRooms(c, room); err != nil {
+			util.Raise500Error(c, err)
+			return
+		}
 
+		room.OtherUsers = otherUsers
 	}
 
 	c.JSON(http.StatusOK, gin.H{

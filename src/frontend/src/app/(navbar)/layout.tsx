@@ -10,8 +10,10 @@ export default function UserLayout({
 }) {
   return (
     <div className="w-screen h-screen">
-      <NavBar />
-      <main>{children}</main>
+      <div className="">
+        <NavBar />
+      </div>
+      <main className="">{children}</main>
     </div>
   );
 }

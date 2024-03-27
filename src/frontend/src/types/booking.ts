@@ -1,3 +1,6 @@
+import { Gallery } from "./gallery";
+import { Room } from "./room";
+
 export enum BookingStatus {
   BookingDraftStatus = "DRAFT",
   BookingPaidStatus = "USER_PAID",
@@ -10,7 +13,9 @@ export enum BookingStatus {
 }
 
 export interface BookingProposal {
-  gallery_id: string;
+  customer_id: string;
+  room_id: string;
+  negotiated_price: string;
   start_time: string;
   end_time: string;
 }
@@ -19,6 +24,9 @@ export interface Booking {
   id: string;
   customer_id: string;
   gallery_id: string;
+  roomId: string;
+  room: Room;
+  resulted_price: number;
   start_time: string;
   end_time: string;
   status: BookingStatus;

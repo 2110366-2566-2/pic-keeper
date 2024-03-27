@@ -8,18 +8,6 @@ import {
 
 const bookingBaseUrl = "/customers/bookings/v1";
 
-const createBooking = async (bookingProposal: BookingProposal) => {
-  try {
-    const { data } = await apiClientWithAuth.post<BookingResponse>(
-      `${bookingBaseUrl}`,
-      bookingProposal
-    );
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
 const getPendingCancellations = async () => {
   try {
     const { data } = await apiClientWithAuth.get<BookingListResponse>(
@@ -77,7 +65,7 @@ const getBooking = async (id: string) => {
 
 const cancelBooking = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${bookingBaseUrl}/cancel/${id}`
     );
     return data;
@@ -88,7 +76,7 @@ const cancelBooking = async (id: string) => {
 
 const approveCancelBooking = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${bookingBaseUrl}/approve-cancel/${id}`
     );
     return data;
@@ -110,7 +98,7 @@ const getQRCode = async (id: string) => {
 
 const requestRefund = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${bookingBaseUrl}/req-refund/${id}`
     );
     return data;
@@ -120,7 +108,6 @@ const requestRefund = async (id: string) => {
 };
 
 const customerBookingService = {
-  createBooking,
   getPendingCancellations,
   getUpcomingBookings,
   getPastBookings,

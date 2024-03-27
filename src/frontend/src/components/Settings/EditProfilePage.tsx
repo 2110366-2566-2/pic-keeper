@@ -3,9 +3,7 @@
 import useApiWithAuth from "@/hooks/useApiWithAuth";
 import { useErrorModal } from "@/hooks/useErrorModal";
 import userService from "@/services/user";
-import { UploadProfilePictureResponse } from "@/types/response";
 import { Gender, UserUpdateInput } from "@/types/user";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";

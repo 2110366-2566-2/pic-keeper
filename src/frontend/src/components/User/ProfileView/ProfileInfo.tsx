@@ -1,5 +1,4 @@
 "use client";
-import userService from "@/services/user";
 import Link from "next/link";
 import Image from "next/image";
 import { GalleryCard } from "@/components/Gallery";
@@ -7,9 +6,11 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { capitalizeFirstLetter } from "@/utils/string";
 import { Gallery } from "@/types/gallery";
-import photographerGalleriesService from "@/services/photographerGalleries";
+import { userService, photographerGalleriesService } from "@/services";
 import { PhotographerStatus } from "@/types/user";
 import { useErrorModal } from "@/hooks/useErrorModal";
+import ProfileImage from "@/components/shared/ProfileImage";
+import { profile } from "console";
 
 const Home = ({ params }: { params: { userId: string } }) => {
   const { data: session } = useSession();
@@ -43,6 +44,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
         const response = await userService.getUserById(params.userId);
         if (response.data) {
           setProfilePicture(response.profile_picture_url ?? "");
+          console.log(response.data.profile_picture_key)
         }
       } catch (error) {
         console.log("error");
@@ -61,8 +63,8 @@ const Home = ({ params }: { params: { userId: string } }) => {
             <Image
               className="object-cover rounded-full"
               fill={true}
-              src={session ? profilePicture : "/images/no-picture.jpeg"}
-              alt={`session?.user.data?.username`}
+              src={session ? profilePicture === '' ? "/images/no-picture.jpeg" : profilePicture : "/images/no-picture.jpeg"}
+              alt={`Profile picture of ${session?.user?.data?.username}`}
             />
           </div>
         </div>
@@ -110,13 +112,13 @@ const Home = ({ params }: { params: { userId: string } }) => {
           </article>
           <div className="text-xl font-semibold text-amber-500">Location</div>
           <article className="text-wrap text-md text-gray-600">
-            <p>{session?.user.data?.address || "No description provided"}</p>
+            <p>{session?.user.data?.address || "No Location provided"}</p>
           </article>
           <div className="text-xl font-semibold text-amber-500">Contact</div>
           <article className="text-wrap sm:truncate text-md text-gray-600">
-            <p>{session?.user.data?.email || ""}</p>
+            <p>{session?.user.data?.email || "No contact provided"}</p>
             <p>
-              {session?.user.data?.phone_number || "No description provided"}
+              {session?.user.data?.phone_number || ""}
             </p>
           </article>
         </div>
@@ -130,12 +132,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
               {/* GALLERY COMPONENT */}
               {listOfGalleries &&
                 listOfGalleries.map((Gallery, index) => (
-                  <GalleryCard
-                    key={index}
-                    galleryId={Gallery.id}
-                    photographerId={Gallery.photographer_id}
-                    price={Gallery.price}
-                  />
+                  <GalleryCard key={index} galleryId={Gallery.id} />
                 ))}
             </div>
           </div>

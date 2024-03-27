@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useState } from "react";
-import { PhotographerStatus } from "@/types/user";
 import photographerGalleriesService from "@/services/photographerGalleries";
 import { useErrorModal } from "@/hooks/useErrorModal";
 import { Gallery } from "@/types/gallery";
@@ -56,12 +55,7 @@ const AddNewGallery = () => {
         {/* GALLERY COMPONENT */}
         {listOfGalleries &&
           listOfGalleries.map((Gallery, index) => (
-            <GalleryCard
-              key={index}
-              galleryId={Gallery.id}
-              photographerId={Gallery.photographer_id}
-              price={Gallery.price}
-            />
+            <GalleryCard key={index} galleryId={Gallery.id} />
           ))}
       </div>
     </div>

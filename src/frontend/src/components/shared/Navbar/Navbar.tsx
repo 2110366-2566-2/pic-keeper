@@ -19,6 +19,11 @@ const NavBar = () => {
       href: "/my-booking",
       current: pathName === "/my-booking",
     },
+    {
+      name: "Chat",
+      href: "/chat",
+      current: pathName === "/chat",
+    },
   ];
 
   return (
