@@ -8,7 +8,7 @@ import { start } from "repl";
 
 function Verification() {
   const [pendingList, setPendingList] = useState<User[]>([]);
-
+  const { data: session, status } = useSession();
   const fetchData = async () => {
     try {
       const data = await adminService.listPendingPhotographer();
@@ -18,6 +18,7 @@ function Verification() {
     } catch (error) {
       console.error(error);
     }
+    console.log("He is admin = " , session?.user.data?.is_admin)
   };
 
   useEffect(() => {

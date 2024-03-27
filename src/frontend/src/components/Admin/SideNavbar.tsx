@@ -1,37 +1,35 @@
 import { IoTimerOutline } from "react-icons/io5";
 import { BsTicket } from "react-icons/bs";
-
+import { RiAdminFill } from "react-icons/ri";
 
 const SideNavbar = () => {
 
 
   return (
-    <aside className="h-screen bg-gray-900 text-white">
+    <aside className="h-screen bg-gray-100 text-gray-800">
       <div className="flex flex-col justify-between h-full">
-        <div>
+        <div className="mt-10">
           {/* LOGO */}
-          <div className=" font-semibold text-2xl p-6 text-amber-500 bg-gray-900">
-            PicKeeper
-          </div>
-          <div className="px-6 text-4xl font-bold">Admin</div>
+          <article className="hidden px-6 text-4xl font-bold truncate sm:flex">Admin<RiAdminFill /></article>
+          <article className="hidden px-6 text-4xl font-bold truncate sm:flex">Dashboard</article>
 
           {/* NAVIGATION */}
           {/* VERIFICATION TICKETS */}
           <nav className="mt-10">
             <a
               href="/admin/dashboard/verification-tickets"
-              className="flex items-center py-2 px-8 hover:bg-gray-700"
+              className="flex items-center py-3 px-10 hover:bg-gray-200"
             >
-              <BsTicket />
-              <span className="ml-3">Verification tickets</span>
+              <BsTicket size={25}/>
+              <span className="hidden ml-3 sm:flex">Verification tickets</span>
             </a>
             {/* ISSUE REPORTED */}
             <a
               href="/admin/dashboard/issues-reported"
-              className="flex items-center py-2 px-8 hover:bg-gray-700"
+              className="flex items-center py-3 px-10 hover:bg-gray-200"
             >
-              <IoTimerOutline />
-              <span className="ml-3">Issues reported</span>
+              <IoTimerOutline size={25} />
+              <span className="hidden ml-3 sm:flex">Issues reported</span>
             </a>
           </nav>
         </div>

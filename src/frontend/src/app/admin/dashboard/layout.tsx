@@ -32,14 +32,14 @@ export default function AdminLayout({
   }, []);
 
   return (
-    <div className="flex flex-col">
+    <div className="">
       <NavBar />
-      <div className="flex flex-row ">
-        <SideNavbar />
+      <div className="flex flex-row">
+        <div className="sm:w-2/12"><SideNavbar /></div>
         {/* TICKET COUNT */}
         <div className="flex flex-col w-full">
           <div className="p-4">
-            <div className="grid grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4">
+            <div className="grid sm:grid-cols-auto-fill-100 md:grid-cols-auto-fill-400 lg:grid-cols-4 gap-4">
               <TicketStatCard
                 title="Pending Tickets"
                 count={issueCardHeader?.pendingTickets || 0}
