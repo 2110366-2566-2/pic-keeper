@@ -38,7 +38,7 @@ const ReportIssue: React.FC<ReportIssueProps> = ({ onCancel, onSuccess }) => {
                 "Your report is submitted"
             );
             if (onSuccess) {
-                onSuccess(); // Call onSuccess callback here
+                onSuccess();
             }
         } catch (error) {
             showError(error);
