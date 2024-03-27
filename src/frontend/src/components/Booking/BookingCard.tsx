@@ -152,7 +152,7 @@ export default function BookingCard(options: BookOptions) {
           </p>
         </div>
         <div className="text-base font-bold pl-4">
-          <span>{options.props.room.gallery.price} THB</span>
+          <span>{options.props.resulted_price} THB</span>
         </div>
         <div className="col-span-2 pl-4">
           <div className="text-base font-bold">
