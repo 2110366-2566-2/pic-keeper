@@ -12,7 +12,7 @@ func (r *Resolver) ListReceivedReviews(c *gin.Context) {
 		return
 	}
 
-	reviews, err := r.ReviewUsecase.FindByPhotographerId(c, photographer.Id, r.UserUsecase, r.BookingUsecase, r.GalleryUsecase)
+	reviews, err := r.ReviewUsecase.FindByPhotographerId(c, photographer.Id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": "failed",

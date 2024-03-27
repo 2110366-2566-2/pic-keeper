@@ -20,14 +20,14 @@ func NewReviewUseCase(db *bun.DB) *ReviewUseCase {
 	}
 }
 
-func (p *ReviewUseCase) FindByUserId(ctx context.Context, userId uuid.UUID, userUsecase UserUseCase, bookingUsecase BookingUseCase, galleryUsecase GalleryUseCase) ([]*model.Review, error) {
+func (p *ReviewUseCase) FindByUserId(ctx context.Context, userId uuid.UUID) ([]*model.Review, error) {
 	return p.ReviewRepo.FindByUserId(ctx, userId)
 }
 
-func (p *ReviewUseCase) FindByGalleryId(ctx context.Context, galleryId uuid.UUID, userUsecase UserUseCase, bookingUsecase BookingUseCase, galleryUsecase GalleryUseCase) ([]*model.Review, error) {
+func (p *ReviewUseCase) FindByGalleryId(ctx context.Context, galleryId uuid.UUID) ([]*model.Review, error) {
 	return p.ReviewRepo.FindByGalleryId(ctx, galleryId)
 }
 
-func (p *ReviewUseCase) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID, userUsecase UserUseCase, bookingUsecase BookingUseCase, galleryUsecase GalleryUseCase) ([]*model.Review, error) {
+func (p *ReviewUseCase) FindByPhotographerId(ctx context.Context, photographerId uuid.UUID) ([]*model.Review, error) {
 	return p.ReviewRepo.FindByPhotographerId(ctx, photographerId)
 }
