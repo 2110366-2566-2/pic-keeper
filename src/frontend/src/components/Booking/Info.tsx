@@ -32,7 +32,7 @@ export default function Info(props: {
   const renderDetail = props.content.bookingOptions.room.gallery.included?.map(
     (detail, index) => {
       return (
-        <div className="flex gap-x-2 text-sm font-semibold text-stone-500">
+        <div className="flex gap-x-2 text-sm font-semibold text-stone-500" key={index}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="#000000"
