@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { FaBell } from "react-icons/fa6";
 import { IoIosMail } from "react-icons/io";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 const Header = () => {
   return (
@@ -9,7 +11,7 @@ const Header = () => {
         {/* Left side - Title */}
         <div>
           <h1 className="text-xl font-semibold text-gray-800">
-            Verification Tickets
+            {/* {selectedPage} */}
           </h1>
         </div>
 

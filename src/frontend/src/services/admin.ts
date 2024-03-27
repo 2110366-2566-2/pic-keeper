@@ -6,7 +6,7 @@ import {
   UserResponse,
 } from "@/types/response";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
-import { IssueFilter, IssueHeaderMetadata } from "@/types/issue";
+import { Issue, IssueFilter, IssueHeaderMetadata } from "@/types/issue";
 import { VerificationTicket } from "@/types/verification";
 
 const adminBaseUrl = "/admin/v1";
@@ -85,9 +85,9 @@ const GetIssuesWithOption = async (issueFilter: IssueFilter) => {
         queryParams.append(key, value.toString());
       }
     });
-    const { data } = await apiClientWithAuth.get<
-      SuccessResponse<IssueHeaderMetadata>
-    >(`${adminBaseUrl}/issues?${queryParams.toString()}`);
+    const { data } = await apiClientWithAuth.get<SuccessResponse<Issue[]>>(
+      `${adminBaseUrl}/issues?${queryParams.toString()}`
+    );
     return data;
   } catch (error) {
     throw error;

@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 interface Props {
-  src: string;
+  src?: string;
   size: number;
 }
 
@@ -10,7 +10,7 @@ const ProfileImage = ({ src, size }: Props) => {
   return (
     <div className={containerClasses}>
       <Image
-        src={src || "/images/no-picture.jpeg"}
+        src={src || "/images/user-circle.svg"}
         alt=""
         className="rounded-full object-cover"
         fill={true}
