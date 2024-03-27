@@ -1,7 +1,12 @@
-const IssueReported = () => {
-    return (
-        <div className="">Issue Reported</div>
-    )
-}
+import IssueReport from "@/components/Admin/IssuesReported";
 
-export default IssueReported;
+const IssuesReported = () => {
+  return (
+    <div className="space-y-4">
+      <div className="text-2xl font-bold text-gray-800">Issues Reported</div>
+      <IssueReport />
+    </div>
+  );
+};
+
+export default IssuesReported;
