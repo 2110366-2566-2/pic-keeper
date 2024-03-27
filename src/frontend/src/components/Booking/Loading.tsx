@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
-export default function Loading(props: { isOpen: boolean }) {
+export default function Loading(props: { isOpen: boolean, content:string}) {
   return (
     <Transition show={props.isOpen} as={Fragment}>
       <Transition.Child
@@ -31,7 +31,7 @@ export default function Loading(props: { isOpen: boolean }) {
                   fill="currentFill"
                 />
               </svg>
-              <span className="font-bold">Loading...</span>
+              <span className="font-bold">{props.content}</span>
             </div>
           </div>
         </div>

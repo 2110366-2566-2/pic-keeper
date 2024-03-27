@@ -57,10 +57,15 @@ export function RenderButtonByStatus(props: {
           className="text-center mt-4 font-semibold text-red-500"
           onClick={async () => {
             try {
+              props.togglePage("LOADING");
               await photographerBookingService.cancelBooking(props.bookingId);
+              props.togglePage("COMPLETE");
               props.refreshTrigger(true);
-              props.closeModal();
+              setTimeout(() => {
+                props.closeModal();
+              }, 1000);
             } catch (error) {
+              props.togglePage("INFO");
               showError(error, "Cannot request cancel booking.");
             }
           }
@@ -73,10 +78,15 @@ export function RenderButtonByStatus(props: {
           className="text-center mt-4 font-semibold text-red-500"
           onClick={async () => {
             try {
+              props.togglePage("LOADING");
               await  customerBookingService.cancelBooking(props.bookingId);
+              props.togglePage("COMPLETE");
               props.refreshTrigger(true);
-              props.closeModal();
+              setTimeout(() => {
+                props.closeModal();
+              }, 1000);
             } catch (error) {
+              props.togglePage("INFO");
               showError(error, "Cannot request cancel booking.");
             }
            
@@ -96,12 +106,15 @@ export function RenderButtonByStatus(props: {
           className="text-center mt-4 font-semibold text-green-600"
           onClick={async () => {
             try {
-              await customerBookingService.approveCancelBooking(
-                props.bookingId
-              );
+              props.togglePage("LOADING");
+              await customerBookingService.approveCancelBooking(props.bookingId);
+              props.togglePage("COMPLETE");
               props.refreshTrigger(true);
-              props.closeModal();
+              setTimeout(() => {
+                props.closeModal();
+              }, 1000);
             } catch (error) {
+              props.togglePage("INFO");
               showError(error, "Cannot cancel booking.");
             }
           }}
@@ -147,10 +160,15 @@ export function RenderButtonByStatus(props: {
           className="text-center mt-4 font-semibold text-green-600"
           onClick={async () => {
             try {
+              props.togglePage("LOADING");
               await photographerBookingService.approveCancel(props.bookingId);
+              props.togglePage("COMPLETE");
               props.refreshTrigger(true);
-              props.closeModal();
+              setTimeout(() => {
+                props.closeModal();   
+              }, 1000);
             } catch (error) {
+              props.togglePage("INFO");
               showError(error, "Cannot cancel booking.");
             }
           }}

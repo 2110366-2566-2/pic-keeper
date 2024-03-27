@@ -10,11 +10,15 @@ import { useState, useEffect } from "react";
 import FeedBack from "./FeedBack";
 import Refund from "./Refund";
 import Info from "./Info";
+import Loading from "./Loading";
+import Complete from "./Complete";
 
 enum ModalPage {
   Info = "INFO",
   FeedBack = "FEED_BACK",
   Refund = "REFUND",
+  Loading = "LOADING",
+  Complete= "COMPLETE"
 }
 
 interface Content {
@@ -49,6 +53,14 @@ export default function BookingModal(props: {
     }
   };
 
+  const handleAutoClose = () => {
+    document.removeEventListener("click", handleOutsideClick);
+    props.closeModal();
+    setTimeout(() => {
+      togglePage(ModalPage.Info);
+    }, 200);
+  };
+
   useEffect(() => {
     document.addEventListener("click", handleOutsideClick); //This listener will call the handleOutsideClick function whenever a click event occurs anywhere on the document.
   }, [props.isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -79,7 +91,7 @@ export default function BookingModal(props: {
                   togglePage={togglePage}
                   isOpen={page == ModalPage.Info}
                   refreshTrigger={props.refreshTrigger}
-                  closeModal={props.closeModal}
+                  closeModal={handleAutoClose}
                 />
               }
 
@@ -98,6 +110,17 @@ export default function BookingModal(props: {
                   isOpen={page == ModalPage.Refund}
                   bookingId={props.content.bookingOptions.id}
                 />
+              }
+
+              {
+                <Loading
+                  isOpen={page == ModalPage.Loading}
+                  content="In proccess..."
+                />
+              }
+
+              {
+                <Complete isOpen={page== ModalPage.Complete} content="Completed!"/>
               }
             </div>
           </div>

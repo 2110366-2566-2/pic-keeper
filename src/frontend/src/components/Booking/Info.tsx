@@ -142,13 +142,13 @@ export default function Info(props: {
                   {" - "}
                   {
                     transformDate(
-                      props.content.bookingOptions.start_time as string
+                      props.content.bookingOptions.end_time as string
                     ).hour
                   }
                   {"."}
                   {
                     transformDate(
-                      props.content.bookingOptions.start_time as string
+                      props.content.bookingOptions.end_time as string
                     ).minute
                   }
                 </div>

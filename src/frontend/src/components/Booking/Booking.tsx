@@ -199,6 +199,8 @@ export default function BookingPage() {
   //----------Modal--------------
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
+
+
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -328,7 +330,7 @@ export default function BookingPage() {
           <div className="mt-16"></div>
         </div>
 
-        <Loading isOpen={!showContent}/>
+        <Loading isOpen={!showContent} content="Loading..."/>
 
         <BookingModal
           isOpen={modalIsOpen}
