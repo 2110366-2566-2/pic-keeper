@@ -43,3 +43,27 @@ func (u *UserUseCase) CheckUsernameAlreadyBeenUsed(ctx context.Context, username
 func (u *UserUseCase) FindPhotograperIdsNameAlike(ctx context.Context, name string) ([]uuid.UUID, error) {
 	return u.UserRepo.FindPhotographerIdsNameAlike(ctx, name)
 }
+
+func (u *UserUseCase) PopulateCustomerInReviews(ctx context.Context, reviews ...*model.Review) error {
+	customerIds := []uuid.UUID{}
+
+	for _, review := range reviews {
+		customerIds = append(customerIds, review.CustomerId)
+	}
+
+	customers, err := u.UserRepo.FindByIds(ctx, customerIds...)
+	if err != nil {
+		return err
+	}
+
+	customerIdMapping := make(map[uuid.UUID]*model.User)
+	for _, customer := range customers {
+		customerIdMapping[customer.Id] = customer
+	}
+
+	for _, review := range reviews {
+		review.Customer = *customerIdMapping[review.CustomerId]
+	}
+
+	return nil
+}

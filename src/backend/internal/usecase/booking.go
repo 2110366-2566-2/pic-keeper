@@ -21,6 +21,34 @@ func NewBookingUseCase(db *bun.DB) *BookingUseCase {
 	}
 }
 
+func (b *BookingUseCase) PopulateBookingInReviews(ctx context.Context, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase, reviews ...*model.Review) error {
+	bookingIds := []uuid.UUID{}
+
+	for _, review := range reviews {
+		bookingIds = append(bookingIds, review.BookingId)
+	}
+
+	bookings, err := b.BookingRepo.FindByIds(ctx, bookingIds...)
+	if err != nil {
+		return err
+	}
+
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, bookings...); err != nil {
+		return nil
+	}
+
+	bookingIdMapping := make(map[uuid.UUID]*model.Booking)
+	for _, booking := range bookings {
+		bookingIdMapping[booking.Id] = booking
+	}
+
+	for _, review := range reviews {
+		review.Booking = *bookingIdMapping[review.BookingId]
+	}
+
+	return nil
+}
+
 func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase, bkStatus ...string) ([]*model.Booking, error) {
 	bookings, err := b.BookingRepo.FindByUserIdWithStatus(ctx, userId, bkStatus...)
 	if err != nil {
