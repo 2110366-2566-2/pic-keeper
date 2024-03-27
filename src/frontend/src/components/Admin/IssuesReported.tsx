@@ -34,7 +34,7 @@ const IssueReported = () => {
                 Requested by
               </th>
               <th className="px-6 py-3 font-normal text-left text-gray-500">
-                Additional info
+                Subject
               </th>
               <th className="px-6 py-3 font-normal text-left text-gray-500">
                 Status
@@ -43,21 +43,24 @@ const IssueReported = () => {
                 Created date
               </th>
               <th className="px-6 py-3 font-normal text-left text-gray-500">
+                Due date
+              </th>
+              <th className="px-6 py-3 font-normal text-left text-gray-500">
                 Action
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {/* DATA */}
-            {reportList.map((user) => (
-              <tr key={user.id}>
+            {reportList.map((booking) => (
+              <tr key={booking.id}>
                 <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
-                  <a href={`/view-profile/${user.id}`}>
-                    #{user.id.slice(0, 5)}
+                  <a href={`/view-profile/${booking.id}`}>
+                    #{booking.id.slice(0, 5)}
                   </a>
                 </td>
-                <td className="px-6 py-4 text-gray-900">{user.username}</td>
-                <td className="px-6 py-4 text-gray-900">{user.about}</td>
+                <td className="px-6 py-4 text-gray-900">{}</td>
+                <td className="px-6 py-4 text-gray-900">{booking.customer_id}</td>
                 <td className="px-6 py-4 text-green-500">
                   {user.verification_status}
                 </td>
