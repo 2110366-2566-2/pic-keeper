@@ -62,7 +62,10 @@ export default function BookingModal(props: {
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleOutsideClick); //This listener will call the handleOutsideClick function whenever a click event occurs anywhere on the document.
+    if(props.isOpen){
+        document.addEventListener("click", handleOutsideClick);
+       //This listener will call the handleOutsideClick function whenever a click event occurs anywhere on the document.
+    }
   }, [props.isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!props.content) {
@@ -114,7 +117,7 @@ export default function BookingModal(props: {
                 />
               }
 
-              {
+              { page== ModalPage.Loading &&   //prevent overlap transition
                 <Loading
                   isOpen={page == ModalPage.Loading}
                   content="In proccess..."

@@ -73,7 +73,7 @@ export default function Info(props: {
           leaveTo="opacity-0"
           className=" py-6 px-8 flex flex-col w-full h-full"
         >
-          <div className="overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full  scrollbar scrollbar-thumb-slate-500 scrollbar-track-slate-300">
+          <div className="overflow-y-auto scrollbar-thumb-rounded-full scrollbar-track-rounded-full  scrollbar-thin scrollbar-thumb-slate-500 scrollbar-track-slate-300">
             <div>
               <p className="text-base font-semibold text-nowrap truncate ">
                 Appointment ID {props.content.bookingOptions.id}

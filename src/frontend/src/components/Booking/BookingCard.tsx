@@ -53,7 +53,7 @@ export default function BookingCard(options: BookOptions) {
   return (
     <>
       <div
-        className="bg-white my-4 grid sm:grid-cols-5  lg:grid-cols-10 gap-x-3 gap-y-3 py-3 rounded-lg shadow-md hover:shadow-stone-400"
+        className="modal bg-white my-4 grid sm:grid-cols-5  lg:grid-cols-10 gap-x-3 gap-y-3 py-3 rounded-lg shadow-md hover:shadow-stone-400"
         onClick={() => {
           options.openModal();
           const mergedObj = {
