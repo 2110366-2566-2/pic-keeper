@@ -23,16 +23,13 @@ const ReportIssue = ({ isOpen, onClose }: ReportIssueProps) => {
 
       openModal(
         <div className="modal-content">
-          <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
-            Issue Reported Successfully
-          </h5>
           <p className="text-base text-gray-500 dark:text-gray-400">
             Thank you for reporting the issue. We will look into it as soon as
             possible.
           </p>
           <div className="flex justify-end mt-4">
             <button
-              className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+              className="btn-cancel px-5"
               onClick={() => {
                 closeModal();
               }}
