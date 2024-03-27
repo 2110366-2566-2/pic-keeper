@@ -3,13 +3,18 @@ import { useState } from "react";
 import { Booking } from "@/types/booking";
 import { useEffect } from "react";
 import { adminService } from "@/services";
+import { useModal } from "@/context/ModalContext";
+import { IssueFilter } from "@/types/issue";
 
 const IssueReported = () => {
   const [reportList, setReportList] = useState<Booking[]>([]);
+  const { openModal, closeModal } = useModal();
+  const [filter, setFilter] = useState<IssueFilter>({});
 
   const fetchData = async () => {
     try {
-      const data = await adminService.listPendingRefundBookings();
+      const data = await adminService.GetIssuesWithOption(filter);
+      console.log(data.data);
       if (data.data) {
         setReportList(data.data);
       }
@@ -21,6 +26,24 @@ const IssueReported = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleActionClick = (issue : Booking) => {
+    openModal(
+      <div className="flex flex-col">
+        <p className="text-standard text-gray-500">
+          This will delete your gallery from PicKeeper.
+        </p>
+        <div className="self-end flex gap-4">
+          <button onClick={closeModal} className="btn mt-4 px-4">
+            Cancel
+          </button>
+          <button className="btn-danger mt-4 px-4 ">Delete</button>
+        </div>
+      </div>,
+      "Are you sure?"
+    );
+  };
+
   return (
     <div className="flex flex-col">
       {/* Table */}
@@ -53,24 +76,22 @@ const IssueReported = () => {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {/* DATA */}
-            {reportList.map((booking) => (
-              <tr key={booking.id}>
+            {reportList.map((issue) => (
+              <tr key={issue.id}>
                 <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
-                  <a href={`/view-profile/${booking.id}`}>
-                    #{booking.id.slice(0, 5)}
-                  </a>
+                  #{issue.id.slice(0, 5)}
                 </td>
                 <td className="px-6 py-4 text-gray-900">
-                  {booking.customer_id}
+                  {issue.roomId}
                 </td>
                 <td className="px-6 py-4 text-gray-900">Refund Request</td>
-                <td className="px-6 py-4 text-green-500">{booking.status}</td>
+                <td className="px-6 py-4 text-green-500">{issue.status}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  {booking.created_at}
+                  {issue.created_at}
                 </td>
-                <td className="px-6 py-4 text-gray-900">{booking.end_time}</td>
+                <td className="px-6 py-4 text-gray-900">{issue.end_time}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <button>...</button>
+                  <button onClick={handleActionClick(issue)}>...</button>
                 </td>
               </tr>
             ))}
