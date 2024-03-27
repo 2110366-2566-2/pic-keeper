@@ -12,13 +12,15 @@ function Verification() {
   const fetchData = async () => {
     try {
       const data = await adminService.listPendingPhotographer();
+      console.log(data)
       if (data.data) {
         setPendingList(data.data);
       }
     } catch (error) {
       console.error(error);
     }
-    console.log("He is admin = " , session?.user.data?.is_admin)
+    console.log(session?.user.data?.email , "is admin = " , session?.user.data?.is_admin)
+    console.log("but" , session?.user.data?.verification_status)
   };
 
   useEffect(() => {
@@ -30,7 +32,7 @@ function Verification() {
       {/* Table */}
       <div className="overflow-x-auto bg-white shadow rounded-lg">
         <table className="min-w-full text-sm divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-gray-50 flex">
             <tr>
               <th className="px-6 py-3 font-normal text-left text-gray-500">ID</th>
               <th className="px-6 py-3 font-normal text-left text-gray-500">Requested by</th>
@@ -45,7 +47,7 @@ function Verification() {
             {/* DATA */}
             {pendingList.map((user) => (
               <tr key={user.id}>
-                <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
+                {/* <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
                   <a href={`/view-profile/${user.id}`}>#{user.id.slice(0, 5)}</a>
                 </td>
                 <td className="px-6 py-4 text-gray-900">{user.username}</td>
@@ -57,7 +59,7 @@ function Verification() {
                 <td className="px-6 py-4 text-gray-900">17/3/24</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button>...</button>
-                </td>
+                </td> */}
               </tr>
             ))}
 

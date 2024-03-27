@@ -10,6 +10,8 @@ import adminService from "@/services/admin";
 import { User } from "@/types/user";
 import { IssueHeaderMetadata } from "@/types/issue";
 import { NavBar } from "@/components/shared";
+import { Router, useRouter } from "next/router";
+
 
 export default function AdminLayout({
   children,
@@ -17,7 +19,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [issueCardHeader, setIssueCardHeader] = useState<IssueHeaderMetadata>();
-  // const [selectedPage , setSelectedPage] = useState<string>("Verification Tickets");
+  const [selected, setSelected] = useState<string>("verification-tickets");
 
   const fetchIssueCardHeader = async () => {
     try {
@@ -33,9 +35,13 @@ export default function AdminLayout({
 
   return (
     <div className="">
-      <NavBar />
+      <div className="w-full">
+        <NavBar />
+      </div>
       <div className="flex flex-row">
-        <div className="sm:w-2/12"><SideNavbar /></div>
+        <div className="sm:w-64">
+          <SideNavbar/>
+        </div>
         {/* TICKET COUNT */}
         <div className="flex flex-col w-full">
           <div className="p-4">
