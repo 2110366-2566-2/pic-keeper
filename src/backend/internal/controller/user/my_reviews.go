@@ -3,6 +3,7 @@ package user
 import (
 	"net/http"
 
+	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +24,16 @@ func (r *Resolver) MyReviews(c *gin.Context) {
 			"error":  err.Error(),
 		})
 		c.Abort()
+		return
+	}
+
+	if err := r.BookingUsecase.PopulateBookingInReviews(c, r.GalleryUsecase, r.RoomUsecase, reviews...); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
+	if err := r.UserUsecase.PopulateCustomerInReviews(c, reviews...); err != nil {
+		util.Raise500Error(c, err)
 		return
 	}
 

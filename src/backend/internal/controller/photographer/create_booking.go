@@ -1,4 +1,4 @@
-package user
+package photographer
 
 import (
 	"net/http"
@@ -11,23 +11,8 @@ import (
 )
 
 func (r *Resolver) CreateBooking(c *gin.Context) {
-	user, exists := c.Get("user")
-	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  "Failed to retrieve photographer from context",
-		})
-		c.Abort()
-		return
-	}
-
-	userObj, ok := user.(model.User)
+	photographer, ok := getPhotographer(c)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  "Invalid object type in context",
-		})
-		c.Abort()
 		return
 	}
 
@@ -42,10 +27,10 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		return
 	}
 
-	newBooking := model.Booking{
+	newBooking := &model.Booking{
 		Id:         uuid.New(),
-		CustomerId: userObj.Id,
-		GalleryId:  bookingProposal.GalleryId,
+		CustomerId: bookingProposal.CustomerId,
+		RoomId:     bookingProposal.RoomId,
 		StartTime:  bookingProposal.StartTime,
 		EndTime:    bookingProposal.EndTime,
 		Status:     model.BookingDraftStatus,
@@ -53,22 +38,27 @@ func (r *Resolver) CreateBooking(c *gin.Context) {
 		UpdatedAt:  time.Now(),
 	}
 
-	if err := r.BookingUsecase.BookingRepo.AddOne(c, &newBooking); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status": "failed",
-			"error":  err.Error(),
-		})
-		c.Abort()
-		return
-	}
-
-	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, bookingProposal.GalleryId)
-	if err != nil {
+	if err := r.RoomUsecase.PopulateRoomsInBookings(c, r.GalleryUsecase, newBooking); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	newBooking.Gallery = *gallery
+	if newBooking.Room.Gallery.PhotographerId != photographer.Id {
+		util.Raise401Error(c, "the gallery specified is not your gallery")
+		return
+	}
+
+	resultedPrice := newBooking.Room.Gallery.Price
+	if bookingProposal.NegotiatedPrice != nil {
+		resultedPrice = *bookingProposal.NegotiatedPrice
+	}
+
+	newBooking.ResultedPrice = resultedPrice
+
+	if err := r.BookingUsecase.BookingRepo.AddOne(c, newBooking); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",

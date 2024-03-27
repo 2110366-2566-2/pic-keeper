@@ -17,7 +17,7 @@ func (r *Resolver) ListPendingRefundBookings(c *gin.Context) {
 		return
 	}
 
-	pendingRefundBookings, err := r.BookingUsecase.ListPendingRefundBookings(c)
+	pendingRefundBookings, err := r.BookingUsecase.ListPendingRefundBookings(c, r.GalleryUsecase, r.RoomUsecase)
 	if err != nil {
 		util.Raise500Error(c, err)
 		return

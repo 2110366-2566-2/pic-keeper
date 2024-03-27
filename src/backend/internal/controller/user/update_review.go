@@ -45,6 +45,16 @@ func (r *Resolver) UpdateReview(c *gin.Context) {
 		return
 	}
 
+	if err := r.BookingUsecase.PopulateBookingInReviews(c, r.GalleryUsecase, r.RoomUsecase, existingReview); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
+	if err := r.UserUsecase.PopulateCustomerInReviews(c, existingReview); err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+
 	// dbValidate
 	if userObj.Id != existingReview.CustomerId {
 		util.Raise403Error(c, "You have no permission to edit this review")
@@ -58,8 +68,6 @@ func (r *Resolver) UpdateReview(c *gin.Context) {
 		util.Raise500Error(c, err)
 		return
 	}
-
-	// do I need to populate customer and booking and gallery ??
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",

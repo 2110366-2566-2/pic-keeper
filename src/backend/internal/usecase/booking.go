@@ -21,31 +21,7 @@ func NewBookingUseCase(db *bun.DB) *BookingUseCase {
 	}
 }
 
-func populateGalleries(ctx context.Context, bookings []*model.Booking, galleryUsecase GalleryUseCase) error {
-	galleryIds := []uuid.UUID{}
-
-	for _, booking := range bookings {
-		galleryIds = append(galleryIds, booking.GalleryId)
-	}
-
-	galleries, err := galleryUsecase.GalleryRepo.FindByIds(ctx, galleryIds...)
-	if err != nil {
-		return err
-	}
-
-	galleryIdMapping := make(map[uuid.UUID]*model.Gallery)
-	for _, gallery := range galleries {
-		galleryIdMapping[gallery.Id] = gallery
-	}
-
-	for _, booking := range bookings {
-		booking.Gallery = *galleryIdMapping[booking.GalleryId]
-	}
-
-	return nil
-}
-
-func (b *BookingUseCase) PopulateBookingInReviews(ctx context.Context, reviews ...*model.Review) error {
+func (b *BookingUseCase) PopulateBookingInReviews(ctx context.Context, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase, reviews ...*model.Review) error {
 	bookingIds := []uuid.UUID{}
 
 	for _, review := range reviews {
@@ -55,6 +31,10 @@ func (b *BookingUseCase) PopulateBookingInReviews(ctx context.Context, reviews .
 	bookings, err := b.BookingRepo.FindByIds(ctx, bookingIds...)
 	if err != nil {
 		return err
+	}
+
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, bookings...); err != nil {
+		return nil
 	}
 
 	bookingIdMapping := make(map[uuid.UUID]*model.Booking)
@@ -69,26 +49,26 @@ func (b *BookingUseCase) PopulateBookingInReviews(ctx context.Context, reviews .
 	return nil
 }
 
-func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, galleryUsecase GalleryUseCase, bkStatus ...string) ([]*model.Booking, error) {
+func (b *BookingUseCase) FindByUserIdWithStatus(ctx context.Context, userId uuid.UUID, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase, bkStatus ...string) ([]*model.Booking, error) {
 	bookings, err := b.BookingRepo.FindByUserIdWithStatus(ctx, userId, bkStatus...)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := populateGalleries(ctx, bookings, galleryUsecase); err != nil {
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 
 	return bookings, nil
 }
 
-func (b *BookingUseCase) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, galleryUsecase GalleryUseCase, status ...string) ([]*model.Booking, error) {
+func (b *BookingUseCase) FindByPhotographerIdWithStatus(ctx context.Context, phtgId uuid.UUID, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase, status ...string) ([]*model.Booking, error) {
 	bookings, err := b.BookingRepo.FindByPhotographerIdWithStatus(ctx, phtgId, status...)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := populateGalleries(ctx, bookings, galleryUsecase); err != nil {
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, bookings...); err != nil {
 		return nil, err
 	}
 
@@ -100,6 +80,28 @@ func (b *BookingUseCase) UpdateStatusRoutine() error {
 	return b.BookingRepo.UpdateStatusRoutine(context.Background(), currentTime)
 }
 
-func (b *BookingUseCase) ListPendingRefundBookings(ctx context.Context) ([]*model.Booking, error) {
-	return b.BookingRepo.ListPendingRefundBookings(ctx)
+func (b *BookingUseCase) ListPendingRefundBookings(ctx context.Context, galleryUsecase GalleryUseCase, roomUsecase RoomUseCase) ([]*model.Booking, error) {
+	bookings, err := b.BookingRepo.ListPendingRefundBookings(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, bookings...); err != nil {
+		return nil, err
+	}
+
+	return bookings, nil
+}
+
+func (b *BookingUseCase) FindByRoomId(ctx context.Context, roomUsecase RoomUseCase, galleryUsecase GalleryUseCase, roomId uuid.UUID) (*model.Booking, error) {
+	booking, err := b.BookingRepo.FindByRoomId(ctx, roomId)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := roomUsecase.PopulateRoomsInBookings(ctx, galleryUsecase, booking); err != nil {
+		return nil, err
+	}
+
+	return booking, nil
 }

@@ -122,17 +122,20 @@ const (
 )
 
 type BookingProposal struct {
-	GalleryId uuid.UUID `bun:"gallery_id,type:uuid" json:"gallery_id"`
-	StartTime time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
-	EndTime   time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
+	CustomerId      uuid.UUID `json:"customer_id"`
+	RoomId          uuid.UUID `bun:"room_id,type:uuid" json:"room_id"`
+	NegotiatedPrice *int      `json:"negotiated_price"`
+	StartTime       time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
+	EndTime         time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 }
 
 type Booking struct {
 	bun.BaseModel `bun:"table:bookings,alias:bookings"`
 	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	CustomerId    uuid.UUID `bun:"customer_id,type:uuid" json:"customer_id"`
-	GalleryId     uuid.UUID `bun:"gallery_id,type:uuid" json:"-"`
-	Gallery       Gallery   `bun:"-" json:"gallery"`
+	RoomId        uuid.UUID `bun:"room_id,type:uuid" json:"-"`
+	Room          Room      `bun:"-" json:"room"`
+	ResultedPrice int       `bun:"resulted_price,type:integer" json:"resulted_price"`
 	StartTime     time.Time `bun:"start_time,type:timestamptz" json:"start_time"`
 	EndTime       time.Time `bun:"end_time,type:timestamptz" json:"end_time"`
 	Status        string    `bun:"status,type:varchar" json:"status"`
@@ -155,7 +158,7 @@ type Room struct {
 	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
 	GalleryId     uuid.UUID  `bun:"gallery_id,type:uuid" json:"-"`
 	Gallery       Gallery    `bun:"-" json:"gallery"`
-	OtherUsers    []*User    `bun:"-" json:"other_users"`
+	OtherUsers    []*User    `bun:"-" json:"other_users,omitempty"`
 	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
 	UpdatedAt     time.Time  `bun:"updated_at,type:timestamptz,default:now()" json:"updated_at"`
 	DeletedAt     *time.Time `bun:"deleted_at,soft_delete,nullzero,type:timestamptz" json:"deleted_at"`

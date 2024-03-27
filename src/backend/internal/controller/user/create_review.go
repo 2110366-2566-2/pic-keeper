@@ -39,7 +39,7 @@ func (r *Resolver) CreateReview(c *gin.Context) {
 		return
 	}
 
-	newReview := model.Review{
+	newReview := &model.Review{
 		Id:         uuid.New(),
 		CustomerId: userObj.Id,
 		BookingId:  *reviewInput.BookingId,
@@ -47,31 +47,20 @@ func (r *Resolver) CreateReview(c *gin.Context) {
 		ReviewText: reviewInput.ReviewText,
 	}
 
-	if err := r.ReviewUsecase.ReviewRepo.AddOne(c, &newReview); err != nil {
+	if err := r.ReviewUsecase.ReviewRepo.AddOne(c, newReview); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	// get booking entity of this review by input bookingId
-	booking, err := r.BookingUsecase.BookingRepo.FindOneById(c, *reviewInput.BookingId)
-	if err != nil {
+	if err := r.BookingUsecase.PopulateBookingInReviews(c, r.GalleryUsecase, r.RoomUsecase, newReview); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
 
-	newReview.Booking = *booking
-
-	// get gallery entity of this booking
-	gallery, err := r.GalleryUsecase.GalleryRepo.FindOneById(c, booking.GalleryId)
-	if err != nil {
+	if err := r.UserUsecase.PopulateCustomerInReviews(c, newReview); err != nil {
 		util.Raise500Error(c, err)
 		return
 	}
-
-	newReview.Booking.Gallery = *gallery
-
-	// get this user (customer) entity of this review
-	newReview.Customer = userObj
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
