@@ -50,7 +50,6 @@ const ProfileMenu = () => {
   const handleCloseIssueModal = () => setIsIssueOpen(false);
 
   return (
-    <>
       <Menu as="div" className="relative ml-3">
         {({ open }) => (
           <>
