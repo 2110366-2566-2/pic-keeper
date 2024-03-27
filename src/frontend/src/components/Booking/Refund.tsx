@@ -7,6 +7,8 @@ export default function Refund(props: {
   togglePage: Function;
   isOpen: boolean;
   bookingId: string;
+  closeModal: Function;
+  refreshTrigger: Function;
 }) {
   const showError = useErrorModal();
   return (
@@ -44,8 +46,15 @@ export default function Refund(props: {
               className="mt-4 px-4 py-2 bg-orange-400 text-white rounded font-semibold text-lg"
               onClick={async () => {
                 try {
+                  props.togglePage("LOADING");
                   await customerBookingService.requestRefund(props.bookingId);
+                  props.togglePage("COMPLETE");
+                  props.refreshTrigger(true);
+                  setTimeout(() => {
+                    props.closeModal();
+                  }, 1000);
                 } catch (error) {
+                  props.togglePage("INFO");
                   showError(error, "Cannot request refund.");
                 }
               }}

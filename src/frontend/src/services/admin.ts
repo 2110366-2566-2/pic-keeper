@@ -84,9 +84,9 @@ const GetIssuesWithOption = async (issueFilter: IssueFilter) => {
         queryParams.append(key, value.toString());
       }
     });
-    const { data } = await apiClientWithAuth.get<BookingListResponse>(
-      `${adminBaseUrl}/issues?${queryParams.toString()}`
-    );
+    const { data } = await apiClientWithAuth.get<
+      SuccessResponse<IssueHeaderMetadata>
+    >(`${adminBaseUrl}/issues?${queryParams.toString()}`);
     return data;
   } catch (error) {
     throw error;
