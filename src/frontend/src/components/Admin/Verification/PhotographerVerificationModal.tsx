@@ -3,15 +3,6 @@
 import adminService from "@/services/admin";
 import React, { useState } from "react";
 
-interface PhotographerInfo {
-  name: string;
-  username: string;
-  createdDate: string;
-  idNumber: string;
-  additionalInfo: string;
-  idCardImage: string;
-}
-
 interface PhotographerVerificationModalProps {
   photographer: PhotographerInfo;
   isOpen: boolean;
@@ -22,7 +13,7 @@ const PhotographerVerificationModal = ({
   photographer,
   isOpen,
   closeModal,
-}) => {
+}: PhotographerVerificationModalProps) => {
   const [status, setStatus] = useState("Open");
   const [isImagePreviewOpen, setImagePreviewOpen] = useState(false);
 
