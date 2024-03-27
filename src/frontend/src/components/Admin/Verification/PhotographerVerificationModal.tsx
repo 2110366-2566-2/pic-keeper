@@ -145,7 +145,7 @@ const PhotographerVerificationModal = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-gray-100 flex justify-start space-x-5">
+        <div className="px-6 py-4 flex justify-start space-x-5">
           {status === "Open" && (
             <>
               <button
