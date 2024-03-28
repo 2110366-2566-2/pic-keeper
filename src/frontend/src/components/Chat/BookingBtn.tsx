@@ -1,6 +1,6 @@
 import { useModal } from "@/context/ModalContext";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import { customerBookingService, photographerBookingService } from "@/services";
+import { customerBookingService, paymentService, photographerBookingService } from "@/services";
 import { Booking, BookingProposal, BookingStatus } from "@/types/booking";
 import { Room } from "@/types/room";
 import { useSession } from "next-auth/react";
@@ -10,6 +10,8 @@ import { Dialog } from "@headlessui/react";
 import { parseISO, formatISO } from "date-fns";
 import Link from "next/link";
 import { PackageInfo } from "../Gallery";
+import PackageSummary from "../Gallery/PackageSummary";
+import Image from "next/image";
 
 interface Props {
   room: Room;
@@ -73,7 +75,44 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
     }
   };
 
-  const handlePayment = () => {};
+  const handleCancelPayment = () => {
+    closeModal();
+  };
+
+  const handleCompletePayment = () => {
+    
+    closeModal();
+  };
+
+  const handlePayment = () => {
+    openModal(
+      <div className="flex flex-col gap-4">
+        <PackageSummary gallery={room.gallery} booking={booking} />
+        <div className=" h-[1px] bg-black/30"></div>
+        <div className="text-center text-gray-500 mt-6">
+          Please scan QR code using<br />
+          Mobile Banking Application
+        </div>
+        <Image
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/640px-QR_code_for_mobile_English_Wikipedia.svg.png"
+          alt="QR Code"
+          width={400}
+          height={400}
+          className="w-[75%] h-auto mx-auto block"
+        />
+
+        <div className="flex justify-center gap-2">
+          <button className="btn-cancel px-2" onClick={handleCancelPayment}>
+            Cancel
+          </button>
+          <button className="btn-primary px-6" onClick={handleCompletePayment}>
+            Complete
+          </button>
+        </div>
+      </div>,
+      "Your package summary"
+    );
+  };
 
   const handleCancelBooking = () => {
     closeModal();
