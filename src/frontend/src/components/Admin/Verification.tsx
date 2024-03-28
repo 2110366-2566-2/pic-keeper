@@ -68,20 +68,20 @@ function Verification() {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {/* DATA */}
-            {pendingList.map((user) => (
-              <tr key={user.id}>
+            {pendingList.map((ticket) => (
+              <tr key={ticket.id}>
                 <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
-                  <a href={`/view-profile/${user.id}`}>
-                    #{user.id.slice(0, 5)}
+                  <a href={`/view-profile/${ticket.userId}`}>
+                    #{ticket.id.slice(0, 5)}
                   </a>
                 </td>
-                <td className="px-6 py-4 text-gray-900">{user.userId}</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.userId}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  {user.additionalDescription}
+                  {ticket.additionalDescription}
                 </td>
                 <td className="px-6 py-4 text-green-500">open</td>
-                <td className="px-6 py-4 text-gray-900">{user.createdAt}</td>
-                <td className="px-6 py-4 text-gray-900">{user.dueDate}</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.createdAt}</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.dueDate}</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button onClick={openPhotographerVerificationModal}>
                     ...
@@ -91,12 +91,12 @@ function Verification() {
                     closeModal={closePhotographerVerificationModal}
                     // You would pass the actual photographer data here
                     photographer={{
-                      name: user.user.firstname,
-                      username: user.userId,
-                      createdDate: user.createdAt,
-                      idNumber: user.idCardNumber,
-                      additionalInfo: user.additionalDescription,
-                      idCardImage: user.idCardPictureURL,
+                      name: ticket.user.firstname,
+                      username: ticket.userId,
+                      createdDate: ticket.createdAt,
+                      idNumber: ticket.idCardNumber,
+                      additionalInfo: ticket.additionalDescription,
+                      idCardImage: ticket.idCardPictureURL,
                     }}
                   />
                 </td>
