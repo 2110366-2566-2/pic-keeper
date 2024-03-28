@@ -5,17 +5,18 @@ import { User } from "@/types/user";
 import { useState } from "react";
 import { useModal } from "@/context/ModalContext";
 import PhotographerVerificationModal from "./Verification/PhotographerVerificationModal";
+import { VerificationTicket } from "@/types/verification";
 
 function Verification() {
-  const [pendingList, setPendingList] = useState<User[]>([]);
+  const [pendingList, setPendingList] = useState<VerificationTicket[]>([]);
   const { openModal, closeModal } = useModal();
 
   const fetchData = async () => {
     try {
       const data = await adminService.listPendingPhotographer();
       console.log(data);
-      if (data.data) {
-        setPendingList(data.data);
+      if (data) {
+        setPendingList(data);
       }
     } catch (error) {
       console.error(error);
@@ -26,17 +27,17 @@ function Verification() {
     fetchData();
   }, []);
 
-  const handleActionClick = (photographer: User) => {
+  const handleActionClick = (ticket : VerificationTicket) => {
     openModal(
       <PhotographerVerificationModal
         photographer={{
           // Assuming User and VerificationTicket have similar fields
-          username: photographer.username,
-          name: photographer.name || "N/A", // Adjust based on actual field
-          createdDate: photographer.createdDate || "N/A", // Adjust based on actual field
-          idNumber: photographer.id || "N/A",
-          additionalInfo: photographer.about || "N/A",
-          idCardImage: photographer.idCardImage || "DefaultImagePath", // Adjust based on actual field
+          username: ticket.user.username,
+          name: ticket.user.firstname || "N/A", // Adjust based on actual field
+          createdDate: ticket.createdAt || "N/A", // Adjust based on actual field
+          idNumber: ticket.user.id || "N/A",
+          additionalInfo: ticket.additionalDescription || "N/A",
+          idCardImage: ticket.idCardPictureURL || "DefaultImagePath", // Adjust based on actual field
         }}
         isOpen={true}
         closeModal={closeModal}
@@ -74,22 +75,22 @@ function Verification() {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {/* DATA */}
-            {pendingList.map((user) => (
-              <tr key={user.id}>
+            {pendingList.map((ticket) => (
+              <tr key={ticket.id}>
                 <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
-                  <a href={`/view-profile/${user.id}`}>
-                    #{user.id.slice(0, 5)}
+                  <a href={`/view-profile/${ticket.userId}`}>
+                    #{ticket.id.slice(0, 5)}
                   </a>
                 </td>
-                <td className="px-6 py-4 text-gray-900">{user.username}</td>
-                <td className="px-6 py-4 text-gray-900">{user.about}</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.user.username}</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.additionalDescription}</td>
                 <td className="px-6 py-4 text-green-500">
-                  {user.verification_status}
+                  {ticket.user.verification_status}
                 </td>
-                <td className="px-6 py-4 text-gray-900">17/2/24</td>
-                <td className="px-6 py-4 text-gray-900">17/3/24</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.createdAt}</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.dueDate}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <button onClick={() => handleActionClick(user)}>...</button>
+                  <button onClick={() => handleActionClick(ticket)}>...</button>
                 </td>
               </tr>
             ))}
