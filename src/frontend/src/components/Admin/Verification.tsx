@@ -1,15 +1,14 @@
 "use client";
 import { useEffect } from "react";
 import adminService from "../../services/admin";
-import { User } from "@/types/user";
 import { useState } from "react";
-import { useModal } from "@/context/ModalContext";
 import PhotographerVerificationModal from "./Verification/PhotographerVerificationModal";
 import { VerificationTicket } from "@/types/verification";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 function Verification() {
   const [pendingList, setPendingList] = useState<VerificationTicket[]>([]);
-  const { openModal, closeModal } = useModal();
+  const showError = useErrorModal();
   const [
     isPhotographerVerificationModalOpen,
     setIsPhotographerVerificationModalOpen,
@@ -18,12 +17,12 @@ function Verification() {
   const fetchData = async () => {
     try {
       const data = await adminService.listPendingPhotographer();
-      console.log(data);
-      if (data) {
-        setPendingList(data);
+      console.log(data.data);
+      if (data.data) {
+        setPendingList(data.data);
       }
     } catch (error) {
-      console.error(error);
+      showError(error);
     }
   };
 
@@ -71,17 +70,16 @@ function Verification() {
             {pendingList.map((ticket) => (
               <tr key={ticket.id}>
                 <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
-                  <a href={`/view-profile/${ticket.userId}`}>
+                  <a href={`/view-profile/${ticket.user.email}`}>
                     #{ticket.id.slice(0, 5)}
                   </a>
                 </td>
-                <td className="px-6 py-4 text-gray-900">{user.userId}</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.user.email}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  {user.additionalDescription}
+                  {ticket.additional_desc}
                 </td>
                 <td className="px-6 py-4 text-green-500">open</td>
-                <td className="px-6 py-4 text-gray-900">{user.createdAt}</td>
-                <td className="px-6 py-4 text-gray-900">{user.dueDate}</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.created_at}</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button onClick={openPhotographerVerificationModal}>
                     ...
@@ -91,12 +89,12 @@ function Verification() {
                     closeModal={closePhotographerVerificationModal}
                     // You would pass the actual photographer data here
                     photographer={{
-                      name: user.user.firstname,
-                      username: user.userId,
-                      createdDate: user.createdAt,
-                      idNumber: user.idCardNumber,
-                      additionalInfo: user.additionalDescription,
-                      idCardImage: user.idCardPictureURL,
+                      name: ticket.user.firstname,
+                      username: ticket.user.id,
+                      createdDate: ticket.created_at,
+                      idNumber: ticket.id_card_number,
+                      additionalInfo: ticket.additional_desc,
+                      idCardImage: ticket.id_card_picture_url,
                     }}
                   />
                 </td>
