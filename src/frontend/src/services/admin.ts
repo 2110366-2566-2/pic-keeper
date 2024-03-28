@@ -13,9 +13,9 @@ const adminBaseUrl = "/admin/v1";
 
 const listPendingPhotographer = async () => {
   try {
-    const { data } = await apiClientWithAuth.get<VerificationTicket[] | null>(
-      `${adminBaseUrl}/pending-photographers`
-    );
+    const { data } = await apiClientWithAuth.get<
+      SuccessResponse<VerificationTicket[]>
+    >(`${adminBaseUrl}/pending-photographers`);
     return data;
   } catch (error) {
     throw error;

@@ -10,6 +10,10 @@ import { VerificationTicket } from "@/types/verification";
 function Verification() {
   const [pendingList, setPendingList] = useState<VerificationTicket[]>([]);
   const { openModal, closeModal } = useModal();
+  const [
+    isPhotographerVerificationModalOpen,
+    setIsPhotographerVerificationModalOpen,
+  ] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -23,28 +27,17 @@ function Verification() {
     }
   };
 
+  // Function to open the PhotographerVerificationModal
+  const openPhotographerVerificationModal = () =>
+    setIsPhotographerVerificationModalOpen(true);
+
+  // Function to close the PhotographerVerificationModal
+  const closePhotographerVerificationModal = () =>
+    setIsPhotographerVerificationModalOpen(false);
+
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleActionClick = (ticket : VerificationTicket) => {
-    openModal(
-      <PhotographerVerificationModal
-        photographer={{
-          // Assuming User and VerificationTicket have similar fields
-          username: ticket.user.username,
-          name: ticket.user.firstname || "N/A", // Adjust based on actual field
-          createdDate: ticket.createdAt || "N/A", // Adjust based on actual field
-          idNumber: ticket.user.id || "N/A",
-          additionalInfo: ticket.additionalDescription || "N/A",
-          idCardImage: ticket.idCardPictureURL || "DefaultImagePath", // Adjust based on actual field
-        }}
-        isOpen={true}
-        closeModal={closeModal}
-      />,
-      "Photographer Verification"
-    );
-  };
 
   return (
     <div className="flex flex-col">
@@ -82,15 +75,30 @@ function Verification() {
                     #{ticket.id.slice(0, 5)}
                   </a>
                 </td>
-                <td className="px-6 py-4 text-gray-900">{ticket.user.username}</td>
-                <td className="px-6 py-4 text-gray-900">{ticket.additionalDescription}</td>
-                <td className="px-6 py-4 text-green-500">
-                  {ticket.user.verification_status}
-                </td>
-                <td className="px-6 py-4 text-gray-900">{ticket.createdAt}</td>
-                <td className="px-6 py-4 text-gray-900">{ticket.dueDate}</td>
+                <td className="px-6 py-4 text-gray-900">{user.userId}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <button onClick={() => handleActionClick(ticket)}>...</button>
+                  {user.additionalDescription}
+                </td>
+                <td className="px-6 py-4 text-green-500">open</td>
+                <td className="px-6 py-4 text-gray-900">{user.createdAt}</td>
+                <td className="px-6 py-4 text-gray-900">{user.dueDate}</td>
+                <td className="px-6 py-4 text-gray-900">
+                  <button onClick={openPhotographerVerificationModal}>
+                    ...
+                  </button>
+                  <PhotographerVerificationModal
+                    isOpen={isPhotographerVerificationModalOpen}
+                    closeModal={closePhotographerVerificationModal}
+                    // You would pass the actual photographer data here
+                    photographer={{
+                      name: user.user.firstname,
+                      username: user.userId,
+                      createdDate: user.createdAt,
+                      idNumber: user.idCardNumber,
+                      additionalInfo: user.additionalDescription,
+                      idCardImage: user.idCardPictureURL,
+                    }}
+                  />
                 </td>
               </tr>
             ))}
