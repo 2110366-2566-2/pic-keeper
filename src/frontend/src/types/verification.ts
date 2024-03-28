@@ -4,10 +4,10 @@ export interface VerificationTicket {
   id: string;
   userId: string;
   user: User;
-  idCardNumber: string;
-  idCardPictureKey: string;
-  idCardPictureURL: string;
-  additionalDescription?: string;
+  id_card_number: string;
+  id_card_pictureKey: string;
+  id_card_picture_url: string;
+  additional_desc?: string;
   createdAt: string;
   dueDate: string;
 }

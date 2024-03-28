@@ -5,6 +5,7 @@ interface Props {
 }
 
 const TicketStat = (data : Props) => {
+    console.log(data)
     return (
         <div className="rounded-md shadow-md ">
             <div className="flex items-center p-4">

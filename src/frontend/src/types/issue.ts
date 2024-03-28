@@ -34,8 +34,8 @@ export interface IssueFilter {
 }
 
 export interface IssueHeaderMetadata {
-  pendingTickets: number;
-  ticketsToday: number;
-  ticketsDueToday: number;
-  closedTickets: number;
+  pending_tickets: number;
+  tickets_today: number;
+  tickets_dueToday: number;
+  closed_tickets: number;
 }

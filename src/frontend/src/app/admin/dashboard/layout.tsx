@@ -24,7 +24,7 @@ export default function AdminLayout({
   const fetchIssueCardHeader = async () => {
     try {
       const response = await adminService.GetIssueHeaderMetadata();
-      if (response.data) setIssueCardHeader(response.data);
+      if (response.data) {setIssueCardHeader(response.data)};
     } catch (error) {
       console.error(error);
     }
@@ -48,22 +48,22 @@ export default function AdminLayout({
             <div className="grid sm:grid-cols-auto-fill-100 md:grid-cols-auto-fill-400 lg:grid-cols-4 gap-4">
               <TicketStatCard
                 title="Pending Tickets"
-                count={issueCardHeader?.pendingTickets || 0}
+                count={issueCardHeader?.pending_tickets || 0}
                 color="green"
               />
               <TicketStatCard
                 title="Tickets Today"
-                count={issueCardHeader?.ticketsToday || 0}
+                count={issueCardHeader?.tickets_today || 0}
                 color="green"
               />
               <TicketStatCard
                 title="Tickets Due Today"
-                count={issueCardHeader?.ticketsDueToday || 0}
+                count={issueCardHeader?.tickets_dueToday || 0}
                 color="green"
               />
               <TicketStatCard
                 title="Closed Tickets"
-                count={issueCardHeader?.closedTickets || 0}
+                count={issueCardHeader?.closed_tickets || 0}
                 color="green"
               />
             </div>
