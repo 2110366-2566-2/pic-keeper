@@ -83,14 +83,14 @@ const IssueReported = () => {
                   #{issue.id.slice(0, 5)}
                 </td>
                 <td className="px-6 py-4 text-gray-900">
-                  {issue.reporter?.name}
+                  {issue.reporter.email || "N/A"}
                 </td>
                 <td className="px-6 py-4 text-gray-900">{issue.subject}</td>
                 <td className="px-6 py-4 text-green-500">{issue.status}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  {issue.createdAt.toDateString() || "N/A"}
+                  {issue.createdAt?.getTime.toString() || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-gray-900">{issue.dueDate.toDateString() || "N/A"}</td>
+                <td className="px-6 py-4 text-gray-900">{issue.dueDate?.getTime.toString() || "N/A"}</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button onClick={() => handleActionClick(issue)}>...</button>
                 </td>

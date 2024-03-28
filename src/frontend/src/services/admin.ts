@@ -13,15 +13,15 @@ const adminBaseUrl = "/admin/v1";
 
 const listPendingPhotographer = async () => {
   try {
-    const { data } = await apiClientWithAuth.get<
-      SuccessResponse<VerificationTicket>
-    >(`${adminBaseUrl}/pending-photographers`);
+    const { data } = await apiClientWithAuth.get<VerificationTicket[] | null>(
+      `${adminBaseUrl}/pending-photographers`
+    );
     return data;
   } catch (error) {
     throw error;
   }
 };
-
+1
 const verify = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.put<UserResponse>(
@@ -85,9 +85,9 @@ const GetIssuesWithOption = async (issueFilter: IssueFilter) => {
         queryParams.append(key, value.toString());
       }
     });
-    const { data } = await apiClientWithAuth.get<SuccessResponse<Issue[]>>(
-      `${adminBaseUrl}/issues?${queryParams.toString()}`
-    );
+    const { data } = await apiClientWithAuth.get<
+      SuccessResponse<Issue[]>
+    >(`${adminBaseUrl}/issues?${queryParams.toString()}`);
     return data;
   } catch (error) {
     throw error;
