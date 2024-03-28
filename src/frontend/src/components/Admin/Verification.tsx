@@ -79,7 +79,7 @@ function Verification() {
                   {ticket.additional_desc}
                 </td>
                 <td className="px-6 py-4 text-green-500">open</td>
-                <td className="px-6 py-4 text-gray-900">{ticket.createdAt}</td>
+                <td className="px-6 py-4 text-gray-900">{ticket.created_at}</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button onClick={openPhotographerVerificationModal}>
                     ...
@@ -90,8 +90,8 @@ function Verification() {
                     // You would pass the actual photographer data here
                     photographer={{
                       name: ticket.user.firstname,
-                      username: ticket.userId,
-                      createdDate: ticket.createdAt,
+                      username: ticket.user.id,
+                      createdDate: ticket.created_at,
                       idNumber: ticket.id_card_number,
                       additionalInfo: ticket.additional_desc,
                       idCardImage: ticket.id_card_picture_url,
