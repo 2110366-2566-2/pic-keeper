@@ -1,11 +1,9 @@
 interface Props {
     title: string;
     count: number;
-    color: string;
 }
 
 const TicketStat = (data : Props) => {
-    console.log(data)
     return (
         <div className="rounded-md shadow-md ">
             <div className="flex items-center p-4">
