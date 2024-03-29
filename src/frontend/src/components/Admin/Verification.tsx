@@ -29,7 +29,7 @@ function Verification() {
   // Function to open the PhotographerVerificationModal
   const openPhotographerVerificationModal = () =>
     setIsPhotographerVerificationModalOpen(true);
-
+    
   // Function to close the PhotographerVerificationModal
   const closePhotographerVerificationModal = () =>
     setIsPhotographerVerificationModalOpen(false);

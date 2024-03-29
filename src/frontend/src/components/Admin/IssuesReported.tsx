@@ -89,9 +89,9 @@ const IssueReported = () => {
                 <td className="px-6 py-4 text-gray-900">{issue.subject}</td>
                 <td className="px-6 py-4 text-green-500">{issue.status}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  {issue.createdAt?.getTime.toString() || "N/A"}
+                  {issue.created_at || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-gray-900">{issue.dueDate?.getTime.toString() || "N/A"}</td>
+                <td className="px-6 py-4 text-gray-900">{issue.due_date || "N/A"}</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button onClick={() => handleActionClick(issue)}>...</button>
                 </td>
