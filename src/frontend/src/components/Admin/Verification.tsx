@@ -5,6 +5,7 @@ import { useState } from "react";
 import PhotographerVerificationModal from "./Verification/PhotographerVerificationModal";
 import { VerificationTicket } from "@/types/verification";
 import { useErrorModal } from "@/hooks/useErrorModal";
+import { format } from "date-fns";
 
 function Verification() {
   const [pendingList, setPendingList] = useState<VerificationTicket[]>([]);
@@ -76,10 +77,10 @@ function Verification() {
                 </td>
                 <td className="px-6 py-4 text-gray-900">{ticket.user.email}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  {ticket.additional_desc}
+                  {format(ticket.created_at, "MMMM do, yyyy H:mma") || "N/A"}
                 </td>
                 <td className="px-6 py-4 text-green-500">open</td>
-                <td className="px-6 py-4 text-gray-900">{ticket.created_at}</td>
+                <td className="px-6 py-4 text-gray-900">{format(ticket.due_date, "MMMM do, yyyy H:mma") || "N/A"}</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button onClick={openPhotographerVerificationModal}>
                     ...

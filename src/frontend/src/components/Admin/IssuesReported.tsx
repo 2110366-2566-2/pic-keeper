@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Booking } from "@/types/booking";
+import { format } from "date-fns";
 import { useEffect } from "react";
 import { adminService } from "@/services";
 import { useModal } from "@/context/ModalContext";
@@ -88,10 +88,8 @@ const IssueReported = () => {
                 </td>
                 <td className="px-6 py-4 text-gray-900">{issue.subject}</td>
                 <td className="px-6 py-4 text-green-500">{issue.status}</td>
-                <td className="px-6 py-4 text-gray-900">
-                  {issue.created_at || "N/A"}
-                </td>
-                <td className="px-6 py-4 text-gray-900">{issue.due_date || "N/A"}</td>
+                <td className="px-6 py-4 text-gray-900">{format(issue.created_at, "MMMM do, yyyy H:mma") || "N/A"}</td>
+                <td className="px-6 py-4 text-gray-900">{format(issue.due_date, "MMMM do, yyyy H:mma") || "N/A"}</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button onClick={() => handleActionClick(issue)}>...</button>
                 </td>
