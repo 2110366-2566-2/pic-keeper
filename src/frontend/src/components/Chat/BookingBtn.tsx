@@ -1,6 +1,6 @@
 import { useModal } from "@/context/ModalContext";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import { customerBookingService, photographerBookingService } from "@/services";
+import { photographerBookingService } from "@/services";
 import { Booking, BookingProposal, BookingStatus } from "@/types/booking";
 import { Room } from "@/types/room";
 import { useSession } from "next-auth/react";

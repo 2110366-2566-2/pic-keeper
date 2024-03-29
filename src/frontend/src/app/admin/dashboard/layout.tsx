@@ -7,10 +7,9 @@ import {
 } from "@/components/Admin";
 import { useState, useEffect } from "react";
 import adminService from "@/services/admin";
-import { User } from "@/types/user";
 import { IssueHeaderMetadata } from "@/types/issue";
 import { NavBar } from "@/components/shared";
-import { Router, useRouter } from "next/router";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 
 export default function AdminLayout({
@@ -20,13 +19,14 @@ export default function AdminLayout({
 }) {
   const [issueCardHeader, setIssueCardHeader] = useState<IssueHeaderMetadata>();
   const [selected, setSelected] = useState<string>("verification-tickets");
-
+  const showError = useErrorModal();
+  
   const fetchIssueCardHeader = async () => {
     try {
       const response = await adminService.GetIssueHeaderMetadata();
       if (response.data) {setIssueCardHeader(response.data)};
     } catch (error) {
-      console.error(error);
+      showError(error);
     }
   };
   useEffect(() => {

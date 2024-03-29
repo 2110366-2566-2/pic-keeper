@@ -6,21 +6,22 @@ import { adminService } from "@/services";
 import { useModal } from "@/context/ModalContext";
 import { IssueFilter } from "@/types/issue";
 import { Issue } from "@/types/issue";
+import { useErrorModal } from "@/hooks/useErrorModal";
 
 const IssueReported = () => {
   const [reportList, setReportList] = useState<Issue[]>();
   const { openModal, closeModal } = useModal();
   const [filter, setFilter] = useState<IssueFilter>({});
+  const showError = useErrorModal();
 
   const fetchData = async () => {
     try {
       const data = await adminService.GetIssuesWithOption(filter);
-      console.log(data.data);
       if (data.data) {
         setReportList(data.data);
       }
     } catch (error) {
-      console.error(error);
+      showError(error);
     }
   };
 
