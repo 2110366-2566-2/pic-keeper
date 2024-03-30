@@ -75,7 +75,7 @@ const IssueReported = () => {
                 <td className="px-6 py-4 text-gray-900">{format(issue.created_at, "MMMM do, yyyy H:mma") || "N/A"}</td>
                 <td className="px-6 py-4 text-gray-900">{format(issue.due_date, "MMMM do, yyyy H:mma") || "N/A"}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <IssueReportedCard />
+                  <IssueReportedCard issue={issue}/>
                 </td>
               </tr>
             ))}
