@@ -15,6 +15,28 @@ const IssueReported = () => {
   const [filter, setFilter] = useState<IssueFilter>({});
   const showError = useErrorModal();
 
+  const handleRefundAction = async (id: string) => {
+    try {
+      const data = await adminService.rejectRefundBookings(id);
+      if (data.data) {
+        closeModal();
+      }
+    } catch (error) {
+      showError(error);
+    }
+  };
+
+  const handleRejectAction = async (id: string) => {
+    try {
+      const data = await adminService.rejectRefundBookings(id);
+      if (data.data) {
+        closeModal();
+      }
+    } catch (error) {
+      showError(error);
+    }
+  };
+
   const fetchData = async () => {
     try {
       const data = await adminService.GetIssuesWithOption(filter);
@@ -72,10 +94,14 @@ const IssueReported = () => {
                 </td>
                 <td className="px-6 py-4 text-gray-900">{issue.subject}</td>
                 <td className="px-6 py-4 text-green-500">{issue.status}</td>
-                <td className="px-6 py-4 text-gray-900">{format(issue.created_at, "MMMM do, yyyy H:mma") || "N/A"}</td>
-                <td className="px-6 py-4 text-gray-900">{format(issue.due_date, "MMMM do, yyyy H:mma") || "N/A"}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <IssueReportedCard issue={issue}/>
+                  {format(issue.created_at, "MMMM do, yyyy H:mma") || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-900">
+                  {format(issue.due_date, "MMMM do, yyyy H:mma") || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-900">
+                  <IssueReportedCard issue={issue} handleRefundAction={handleRefundAction} handleRejectAction={handleRejectAction}/>
                 </td>
               </tr>
             ))}

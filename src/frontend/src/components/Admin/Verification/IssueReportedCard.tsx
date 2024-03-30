@@ -4,14 +4,17 @@ import { Issue } from "@/types/issue";
 import { capitalizeFirstLetter } from "@/utils/string";
 import { format } from "date-fns";
 import BookingCard from "@/components/Booking/BookingCard";
+import { adminService } from "@/services";
 
 interface Props {
   issue: Issue;
+  handleRefundAction: Function;
+  handleRejectAction: Function;
 }
 
 const IssueReportedCard = (data: Props) => {
   const { openModal, closeModal } = useModal();
-  const showError = useErrorModal();
+
 
   const handleActionClick = (issue: Issue) => {
     openModal(
@@ -23,7 +26,13 @@ const IssueReportedCard = (data: Props) => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="">Reporter</div>
-            <div className="">{issue.reporter.email}</div>
+            <div className="">
+              <div className="">{issue.reporter.email}</div>
+              {
+                issue.reporter.name ? 
+                <div className="text-gray-400">{issue.reporter.name}</div> : ""
+              }
+            </div>
             <div className="">Created date</div>
             <div className="">
               {format(issue.created_at, "MMMM do, yyyy H:mma") || "N/A"}
@@ -37,8 +46,16 @@ const IssueReportedCard = (data: Props) => {
           <div className="rounded-md ring ring-slate-600 h-full">
             <article className="m-4">{issue.description}</article>
           </div>
-          {/* <BookingCard props={issue.}/> */}
+          <div className="grid grid-cols-2 gap-4">
+            <button onClick={() => {data.handleRefundAction}} className="bg-amber-500 text-white rounded-md p-2">
+              Refund
+            </button>
+            <button onClick={() => {data.handleRejectAction}} className="bg-red-600 text-white rounded-md p-2">
+              Reject
+            </button>
+          </div>
         </div>
+        {/* <BookingCard props={issue.}/> */}
       </div>,
       `${capitalizeFirstLetter(issue.subject)} request`
     );
