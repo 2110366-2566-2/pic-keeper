@@ -2,27 +2,26 @@ import { useModal } from "@/context/ModalContext";
 import { useErrorModal } from "@/hooks/useErrorModal";
 import { Issue } from "@/types/issue";
 
-const IssueReported = () => {
+const IssueReportedCard = () => {
   const { openModal, closeModal } = useModal();
   const showError = useErrorModal();
 
-  const handleActionClick = (issue: Issue) => {
+  const handleActionClick = () => {
     openModal(
-      <div className="flex flex-col">
-        <p className="text-standard text-gray-500">
-          This will delete your gallery from PicKeeper.
-        </p>
-        <div className="self-end flex gap-4">
-          <button onClick={closeModal} className="btn mt-4 px-4">
-            Cancel
-          </button>
-          <button className="btn-danger mt-4 px-4 ">Delete</button>
+      <div className="flex flex-row">
+        <div className="">
+            Hello this is testing button
         </div>
       </div>,
-      "Are you sure?"
+      "Test Modal"
     );
   };
-  return <div className=""></div>;
+
+return (
+    <button onClick={() => handleActionClick()}>
+            ...
+    </button>
+);
 };
 
-export default IssueReported;
+export default IssueReportedCard;
