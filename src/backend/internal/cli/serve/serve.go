@@ -142,7 +142,7 @@ var ServeCmd = &cobra.Command{
 		photographers := validated.Group("/photographers", handler.User.CheckVerificationStatus)
 		{
 			phtgGalleries := photographers.Group("/galleries/v1")
-			phtgGalleries.GET("/list", handler.Photographer.ListOwnGalleries)
+			phtgGalleries.GET("/", handler.Photographer.ListOwnGalleries)
 			phtgGalleries.POST("/", handler.Photographer.CreateGallery)
 			phtgGalleries.POST("/:id", handler.Photographer.UploadPhotoToGallery)
 			phtgGalleries.PUT("/:id", handler.Photographer.UpdateGallery)
