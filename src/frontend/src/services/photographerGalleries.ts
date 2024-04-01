@@ -14,7 +14,7 @@ const photographerGalleryBaseUrl = "/photographers/galleries/v1";
 const getAllMyGalleries = async () => {
   try {
     const { data } = await apiClientWithAuth.get<GalleryListResponse>(
-      `${photographerGalleryBaseUrl}/list`
+      `${photographerGalleryBaseUrl}`
     );
     return data;
   } catch (error) {
