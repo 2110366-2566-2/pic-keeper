@@ -4,7 +4,6 @@ import { Issue } from "@/types/issue";
 import { capitalizeFirstLetter } from "@/utils/string";
 import { format } from "date-fns";
 import BookingCard from "@/components/Booking/BookingCard";
-import { adminService } from "@/services";
 
 interface Props {
   issue: Issue;
@@ -13,8 +12,7 @@ interface Props {
 }
 
 const IssueReportedCard = (data: Props) => {
-  const { openModal, closeModal } = useModal();
-
+  const { openModal } = useModal();
 
   const handleActionClick = (issue: Issue) => {
     openModal(
@@ -28,10 +26,11 @@ const IssueReportedCard = (data: Props) => {
             <div className="">Reporter</div>
             <div className="">
               <div className="">{issue.reporter.email}</div>
-              {
-                issue.reporter.name ? 
-                <div className="text-gray-400">{issue.reporter.name}</div> : ""
-              }
+              {issue.reporter.name ? (
+                <div className="text-gray-400">{issue.reporter.name}</div>
+              ) : (
+                ""
+              )}
             </div>
             <div className="">Created date</div>
             <div className="">
@@ -47,10 +46,20 @@ const IssueReportedCard = (data: Props) => {
             <article className="m-4">{issue.description}</article>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <button onClick={() => {data.handleRefundAction}} className="bg-amber-500 text-white rounded-md p-2">
+            <button
+              onClick={() => {
+                data.handleRefundAction;
+              }}
+              className="bg-amber-500 text-white rounded-md p-2"
+            >
               Refund
             </button>
-            <button onClick={() => {data.handleRejectAction}} className="bg-red-600 text-white rounded-md p-2">
+            <button
+              onClick={() => {
+                data.handleRejectAction;
+              }}
+              className="bg-red-600 text-white rounded-md p-2"
+            >
               Reject
             </button>
           </div>
@@ -61,7 +70,11 @@ const IssueReportedCard = (data: Props) => {
     );
   };
 
-  return <button onClick={() => handleActionClick(data.issue)}>...</button>;
+  return (
+    <div className="">
+      <button onClick={() => handleActionClick(data.issue)}>...</button>
+    </div>
+  );
 };
 
 export default IssueReportedCard;

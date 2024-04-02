@@ -11,11 +11,12 @@ import IssueReportedCard from "./Verification/IssueReportedCard";
 
 const IssueReported = () => {
   const [reportList, setReportList] = useState<Issue[]>();
-  const { openModal, closeModal } = useModal();
+  const { closeModal } = useModal();
   const [filter, setFilter] = useState<IssueFilter>({});
   const showError = useErrorModal();
 
   const handleRefundAction = async (id: string) => {
+    console.log('handleRefundAction', id)
     try {
       const data = await adminService.rejectRefundBookings(id);
       if (data.data) {
@@ -27,6 +28,7 @@ const IssueReported = () => {
   };
 
   const handleRejectAction = async (id: string) => {
+    console.log('handleRejectAction', id)
     try {
       const data = await adminService.rejectRefundBookings(id);
       if (data.data) {
