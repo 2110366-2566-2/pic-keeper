@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { GalleryCard } from "@/components/Gallery";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { capitalizeFirstLetter } from "@/utils/string";
@@ -9,8 +8,7 @@ import { Gallery } from "@/types/gallery";
 import { userService, photographerGalleriesService } from "@/services";
 import { PhotographerStatus } from "@/types/user";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import ProfileImage from "@/components/shared/ProfileImage";
-import { profile } from "console";
+import GalleryPreview from "./GalleryPreview";
 
 const Home = ({ params }: { params: { userId: string } }) => {
   const { data: session } = useSession();
@@ -124,18 +122,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
         </div>
         {session?.user.data?.verification_status ===
           PhotographerStatus.Verified && (
-          <div className="w-full sm:w-9/12 shadow-md rounded-md">
-            <div className="text-amber-500 font-semibold text-xl p-4">
-              Galleries
-            </div>
-            <div className="grid grid-cols-auto-fill-300 2xl:grid-cols-auto-fill-400 gap-4 p-4">
-              {/* GALLERY COMPONENT */}
-              {listOfGalleries &&
-                listOfGalleries.map((Gallery, index) => (
-                  <GalleryCard key={index} galleryId={Gallery.id} />
-                ))}
-            </div>
-          </div>
+            <GalleryPreview listOfGalleries={listOfGalleries}/>
         )}
       </div>
     </main>
