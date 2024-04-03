@@ -2,6 +2,7 @@ CREATE TABLE galleries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
   photographer_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
   name varchar(255) NOT NULL,
+  avg_rating REAL,
   price integer NOT NULL,
   location varchar(255) NOT NULL,
   hours integer NOT NULL,
@@ -40,4 +41,13 @@ CREATE TABLE photos (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
   gallery_id UUID NOT NULL REFERENCES galleries (id) ON DELETE CASCADE,
   photo_key varchar(2000) NOT NULL
+);
+
+
+CREATE TABLE reviews (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+  customer_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+  booking_id UUID NOT NULL REFERENCES bookings (id) ON DELETE CASCADE,
+  rating INTEGER NOT NULL,
+  review_text varchar(2000)
 );

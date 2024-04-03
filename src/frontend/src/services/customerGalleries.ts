@@ -1,6 +1,11 @@
 import apiClient from "@/libs/apiClient";
 import { SearchFilter } from "@/types/gallery";
-import { GalleryListResponse, UrlsListResponse } from "@/types/response";
+import {
+  GalleryListResponse,
+  SuccessResponse,
+  UrlsListResponse,
+} from "@/types/response";
+import { Review } from "@/types/review";
 
 const customerGalleriesBaseUrl = "/customers/galleries/v1";
 
@@ -33,6 +38,21 @@ const getPhotoUrlsListInGallery = async (id: string) => {
   }
 };
 
-const customerGalleriesService = { search, getPhotoUrlsListInGallery };
+const listReviewByGalleryId = async (id: string) => {
+  try {
+    const { data } = await apiClient.get<SuccessResponse<Review[]>>(
+      `${customerGalleriesBaseUrl}/${id}/reviews`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const customerGalleriesService = {
+  search,
+  getPhotoUrlsListInGallery,
+  listReviewByGalleryId,
+};
 
 export default customerGalleriesService;
