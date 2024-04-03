@@ -14,7 +14,7 @@ interface Props {
 const IssueReportedCard = (data: Props) => {
   const { openModal } = useModal();
 
-  const handleActionClick = (issue: Issue) => {
+  const handleActionClick = ({ issue, handleRefundAction, handleRejectAction }: Props) => {
     openModal(
       <div className="flex flex-row">
         <div className="flex flex-col space-y-3">
@@ -48,7 +48,7 @@ const IssueReportedCard = (data: Props) => {
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => {
-                data.handleRefundAction;
+                data.handleRefundAction(data.issue.id);
               }}
               className="bg-amber-500 text-white rounded-md p-2"
             >
@@ -56,7 +56,7 @@ const IssueReportedCard = (data: Props) => {
             </button>
             <button
               onClick={() => {
-                data.handleRejectAction;
+                data.handleRejectAction(data.issue.id);
               }}
               className="bg-red-600 text-white rounded-md p-2"
             >

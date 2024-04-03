@@ -1,7 +1,5 @@
 "use client";
 import {
-  Header,
-  Verification,
   SideNavbar,
   TicketStatCard,
 } from "@/components/Admin";
@@ -49,22 +47,19 @@ export default function AdminLayout({
               <TicketStatCard
                 title="Pending Tickets"
                 count={issueCardHeader?.pending_tickets || 0}
-                color="green"
               />
               <TicketStatCard
                 title="Tickets Today"
                 count={issueCardHeader?.tickets_today || 0}
-                color="green"
               />
               <TicketStatCard
                 title="Tickets Due Today"
                 count={issueCardHeader?.tickets_dueToday || 0}
-                color="green"
+
               />
               <TicketStatCard
                 title="Closed Tickets"
                 count={issueCardHeader?.closed_tickets || 0}
-                color="green"
               />
             </div>
           </div>
