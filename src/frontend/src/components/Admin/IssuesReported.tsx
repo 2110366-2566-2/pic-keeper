@@ -18,7 +18,7 @@ const IssueReported = () => {
   const handleRefundAction = async (id: string) => {
     console.log('handleRefundAction', id)
     try {
-      const data = await adminService.rejectRefundBookings(id);
+      const data = await adminService.approveRefundBooking(id);
       if (data.data) {
         closeModal();
       }
