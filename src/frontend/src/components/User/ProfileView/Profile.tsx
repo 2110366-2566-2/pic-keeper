@@ -52,7 +52,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
           console.log(response.data.profile_picture_key);
         }
       } catch (error) {
-        console.log("error");
+        showError(error);
       }
     };
 
@@ -64,7 +64,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
       try {
         let response;
         if (
-          session?.user?.data?.verification_status !==
+          session?.user?.data?.verification_status ===
           PhotographerStatus.Verified
         ) {
           response = await photographerReviewService.listReceivedReviews();
@@ -75,7 +75,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
           setListOfReview(response.data);
         }
       } catch (error) {
-        console.error("Fetching reviews error:", error);
+        showError(error);
       }
     };
 
@@ -90,7 +90,7 @@ const Home = ({ params }: { params: { userId: string } }) => {
         profilePicture={profilePicture}
         userId={params.userId}
       />
-      <div className="flex flex-row space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
+      <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
         <ProfileUserInfo session={session} />
         <div className="flex flex-col w-full space-y-4">
           {session?.user.data?.verification_status ===
