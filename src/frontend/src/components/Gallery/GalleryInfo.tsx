@@ -1,9 +1,11 @@
 "use client";
 import { Gallery } from "@/types/gallery";
 import { useEffect, useState } from "react";
+import ReviewPreview from "@/components/User/ProfileView/ReviewPreview";
 import ImageViewer from "./ImageViewer";
 import ProfileImage from "../shared/ProfileImage";
 import { User } from "@/types/user";
+import { Review } from "@/types/review";
 import {
   userService,
   roomService,
@@ -28,7 +30,8 @@ const GalleryInfo = ({ galleryId }: Props) => {
   const [photographer, setPhotographer] = useState<User>();
   const [profilePicture, setProfilePicture] = useState<string>("");
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-
+  const [listOfReview, setListOfReview] = useState<Review[]>([]);
+  
   const { data: session } = useSession();
   const router = useRouter();
   const { openModal, closeModal } = useModal();
@@ -64,6 +67,22 @@ const GalleryInfo = ({ galleryId }: Props) => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [galleryId]);
+
+
+  // useEffect(() => {
+  //   const fetchAllReview = async () => {
+  //     try {
+  //       const response = await photographerReviewService.listReceivedReviews();
+  //       if (response?.data) {
+  //         setListOfReview(response.data);
+  //       }
+  //     } catch (error) {
+  //       showError(error);
+  //     }
+  //   };
+
+  //   fetchAllReview();
+  // }, []);
 
   const handleDeleteClick = () => {
     // Instead of using the `openModal` function, we're now setting the state to open the DeleteConfirmationModal
@@ -158,6 +177,7 @@ const GalleryInfo = ({ galleryId }: Props) => {
             <div className="rounded-xl ring-1 ring-gray-300 max-h-64 overflow-y-scroll">
               <PackageInfo gallery={gallery} />
             </div>
+            <ReviewPreview listOfReview={listOfReview} />
           </div>
           <div className="flex justify-end">
             {session && photographer.id !== session?.user.data?.id && (

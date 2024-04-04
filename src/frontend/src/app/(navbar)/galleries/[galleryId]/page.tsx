@@ -1,6 +1,7 @@
 import GalleryInfo from "@/components/Gallery/GalleryInfo";
 
 const Home = ({ params }: { params: { galleryId: string } }) => {
+
   if (!params.galleryId) {
     return <div>No room id specified</div>;
   }
@@ -12,3 +13,7 @@ const Home = ({ params }: { params: { galleryId: string } }) => {
 };
 
 export default Home;
+function showError(error: unknown) {
+  throw new Error("Function not implemented.");
+}
+
