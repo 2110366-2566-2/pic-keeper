@@ -1,9 +1,9 @@
 "use client";
-import ProfileInfo from "@/components/User/ProfileView/ProfileInfo";
+import Profile from "@/components/User/ProfileView/Profile";
 const Home = ({ params }: { params: { userId: string } }) => {
   return (
     <div className="">
-      <ProfileInfo params={params} />
+      <Profile params={params} />
     </div>
   );
 };
