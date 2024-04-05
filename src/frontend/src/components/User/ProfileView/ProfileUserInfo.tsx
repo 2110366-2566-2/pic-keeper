@@ -2,7 +2,7 @@ import { Session } from "next-auth";
 
 const ProfileInfo = ({session} : {session : Session | null}) => {
   return (
-    <div className="w-full shadow-md rounded-md p-4 space-y-4 sm:w-3/12">
+    <div className="w-full h-min shadow-md rounded-md p-4 space-y-4 sm:w-3/12">
       <div className="text-xl font-semibold text-amber-500">About</div>
       <article className="text-wrap text-md text-gray-600">
         <p>{session?.user.data?.about || "No description provided"}</p>

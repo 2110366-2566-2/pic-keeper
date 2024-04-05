@@ -69,20 +69,20 @@ const GalleryInfo = ({ galleryId }: Props) => {
   }, [galleryId]);
 
 
-  // useEffect(() => {
-  //   const fetchAllReview = async () => {
-  //     try {
-  //       const response = await photographerReviewService.listReceivedReviews();
-  //       if (response?.data) {
-  //         setListOfReview(response.data);
-  //       }
-  //     } catch (error) {
-  //       showError(error);
-  //     }
-  //   };
-
-  //   fetchAllReview();
-  // }, []);
+  useEffect(() => {
+    const fetchAllReview = async () => {
+      try {
+        const response = await customerGalleriesService.listReviewByGalleryId(galleryId);
+        if (response?.data) {
+          setListOfReview(response.data);
+        }
+      } catch (error) {
+        console.log(error)
+        // showError(error, 'An error occured while loading gallery reviews.');
+      }
+    };
+    fetchAllReview();
+  }, []);
 
   const handleDeleteClick = () => {
     // Instead of using the `openModal` function, we're now setting the state to open the DeleteConfirmationModal
@@ -138,12 +138,12 @@ const GalleryInfo = ({ galleryId }: Props) => {
   };
   return (
     <>
-      <div className="mx-auto rounded-lg shadow-lg p-6 grid grid-cols-1 md:grid-cols-4 gap-8 bg-white text-gray-800">
+      <div className="mx-auto rounded-lg shadow-lg p-6 grid grid-cols-1 md:grid-cols-4 gap-8 bg-white text-gray-800 ">
         <ImageViewer imageUrls={imageUrls} />
 
         <div className="md:col-span-2 space-y-6 flex flex-col justify-between">
-          <div className="space-y-6 flex flex-col">
-            <div className="flex justify-between">
+          <div className="space-y-6 flex flex-col max-h-[500px] overflow-y-scroll">
+            <div className="flex justify-between ">
               <h1 className="text-3xl font-bold text-gray-900 leading-tight">
                 {gallery.name}
               </h1>
@@ -174,7 +174,7 @@ const GalleryInfo = ({ galleryId }: Props) => {
                 {gallery.description}
               </p>
             </div>
-            <div className="rounded-xl ring-1 ring-gray-300 max-h-64 overflow-y-scroll">
+            <div className="rounded-xl ring-1 ring-gray-300 max-h-64 ">
               <PackageInfo gallery={gallery} />
             </div>
             <ReviewPreview listOfReview={listOfReview} />
