@@ -16,9 +16,9 @@ export interface Issue {
   reporter: User;
   status: string;
   subject: string;
-  dueDate: Date;
+  due_date: Date;
   description: string;
-  createdAt: Date;
+  created_at: Date;
 }
 
 export interface IssueInput {
