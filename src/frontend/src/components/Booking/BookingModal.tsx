@@ -83,9 +83,9 @@ export default function BookingModal(props: {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed bg-black bg-opacity-50 inset-0 flex items-center justify-center ">
+          <div className="absolute bg-black bg-opacity-50 inset-0 flex items-center justify-center ">
             <div
-              className={`modal max-w-md w-full max-h-full h-[500px] px-4 bg-white shadow-lg rounded-2xl overflow-hidden`}
+              className={`mb-16 modal max-w-md w-full max-h-full h-[500px] px-4 bg-white shadow-lg rounded-2xl overflow-hidden`}
             >
               {
                 <Info
@@ -95,6 +95,8 @@ export default function BookingModal(props: {
                   isOpen={page == ModalPage.Info}
                   refreshTrigger={props.refreshTrigger}
                   closeModal={handleAutoClose}
+                  renderButton={true}
+                  addElement={null}
                 />
               }
 
@@ -104,6 +106,9 @@ export default function BookingModal(props: {
                   isOwner={isPackageOwner()}
                   isOpen={page == ModalPage.FeedBack}
                   feedBackContent={null}
+                  booking_id={props.content.bookingOptions.id}
+                  refreshTrigger={props.refreshTrigger}
+                  closeModal={handleAutoClose}
                 />
               }
 

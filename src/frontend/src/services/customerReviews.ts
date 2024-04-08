@@ -16,10 +16,10 @@ const createReview = async (reviewInput: ReviewInput) => {
   }
 };
 
-const updateReview = async (reviewInput: ReviewInput) => {
+const updateReview = async (reviewInput: ReviewInput ,id:string) => {
   try {
     const { data } = await apiClientWithAuth.put<SuccessResponse<Review>>(
-      `${customerReviewBaseUrl}/:id`,
+      `${customerReviewBaseUrl}/${id}`,
       reviewInput
     );
     return data;
@@ -28,10 +28,10 @@ const updateReview = async (reviewInput: ReviewInput) => {
   }
 };
 
-const deleteReview = async () => {
+const deleteReview = async (id:string) => {
   try {
     const { data } = await apiClientWithAuth.delete<SuccessResponse<string>>(
-      `${customerReviewBaseUrl}/:id`
+      `${customerReviewBaseUrl}/${id}`
     );
     return data;
   } catch (error) {

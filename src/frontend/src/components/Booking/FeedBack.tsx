@@ -1,16 +1,114 @@
+"use client";
 import { Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
+import { ReviewInput, Review } from "@/types/review";
+import customerReviewService from "@/services/customerReviews";
+import { useErrorModal } from "@/hooks/useErrorModal";
+import { useEffect } from "react";
+import { photographerReviewService } from "@/services";
 
 export default function FeedBack(props: {
   togglePage: Function;
   isOwner: boolean;
   isOpen: boolean;
   feedBackContent: string | null;
+  booking_id: string;
+  closeModal: Function;
+  refreshTrigger: Function;
 }) {
-  const [rating, setRating] = useState(0);
+  const showError = useErrorModal();
+  const [rating, setRating] = useState<number>(0);
+  const [review, setReview] = useState<string>("");
+  const [reviewId, setReviewId] = useState<string | null>(null);
+  const [refreshFeedback,setRefreshFeedBack] = useState<boolean>(true);
+
+  const customerReview = async () => {
+    let result: Review[] | null;
+    try {
+      result = (await customerReviewService.myReviews()).data;
+      if (!result) {
+        result = [];
+        setReviewId(null);
+        setRating(0);
+        setReview("");
+      }
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].booking.id === props.booking_id) {
+          setReviewId(result[i].id);
+          setRating(result[i].rating);
+          setReview(result[i].review_text);
+        }
+      }
+    } catch (error) {
+      showError(error, "Fetch review failed.");
+    }
+  };
+
+  const photographerReview = async () => {
+    let result: Review[] | null;
+    try {
+      result = (await photographerReviewService.listReceivedReviews()).data;
+      if (!result) {
+        result = [];
+        setReviewId(null);
+        setRating(0);
+        setReview("");
+      }
+      for (let i = 0; i < result.length; i++) {
+        if (result[i].booking.id === props.booking_id) {
+          setReviewId(result[i].id);
+          setRating(result[i].rating);
+          setReview(result[i].review_text);
+        }
+      }
+    } catch (error) {
+      showError(error, "Fetch review failed.");
+    }
+  };
+
+  useEffect(() => {
+    if(refreshFeedback){
+      if (props.isOwner) {
+        photographerReview();
+      } else {
+        customerReview();
+      }
+      setRefreshFeedBack(false);
+    }
+  }, [refreshFeedback]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleStarHover = (index: number) => {
     setRating(index + 1);
+  };
+
+  const onSubmit = async () => {
+    const instance: ReviewInput = {
+      booking_id: props.booking_id,
+      rating: rating,
+      review_text: review,
+    };
+    try {
+      if (reviewId) {
+        const result = await customerReviewService.updateReview(
+          instance,
+          reviewId
+        );
+      } else {
+        const result = await customerReviewService.createReview(instance);
+      }
+    } catch (error) {
+      showError(error, "Cannot submit review.");
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      if (reviewId) {
+        const result = await customerReviewService.deleteReview(reviewId);
+      } 
+    } catch (error) {
+      showError(error, "Cannot delete review.");
+    }
   };
 
   return (
@@ -71,7 +169,7 @@ export default function FeedBack(props: {
             {[...Array(5)].map((_, index) => (
               <svg
                 key={index}
-                fill={index < 5 ? "#9edf26" : "#b3adad"}
+                fill={index < rating ? "#9edf26" : "#b3adad"}
                 width="64px"
                 height="64px"
                 viewBox="0 0 32 32"
@@ -128,7 +226,7 @@ export default function FeedBack(props: {
           {props.isOwner ? (
             <textarea
               readOnly
-              value={"Good"}
+              value={review}
               name=""
               id="message"
               rows={8}
@@ -138,28 +236,54 @@ export default function FeedBack(props: {
             <textarea
               name=""
               id="message"
-              rows={8}
+              rows={6}
+              value={review}
+              onChange={(e) => {
+                setReview(e.target.value);
+              }}
               className="w-full border-solid border-2 border-stone-300 rounded-md px-2"
             ></textarea>
           )}
 
           {!props.isOwner && (
-            <div className="flex justify-center gap-x-8 ">
-              <button
-                className="modal mt-4 px-4 py-2 rounded font-semibold text-lg text-stone-500"
-                onClick={() => {
+            <>
+              <div className="flex justify-center gap-x-8 ">
+                <button
+                  className="modal mt-4 px-4 py-2 rounded font-semibold text-lg text-stone-500"
+                  onClick={() => {
+                    props.togglePage("INFO");
+                    setRefreshFeedBack(true);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="mt-4 px-4 py-2 bg-orange-400 text-white rounded font-semibold text-lg"
+                  onClick={async () => {
+                    props.togglePage("LOADING");
+                    await onSubmit();
+                    props.togglePage("COMPLETE");
+                    props.refreshTrigger(true);
+                    setTimeout(() => {
+                      props.closeModal();
+                    }, 1000);
+                  }}
+                >
+                  Submit
+                </button>
+              </div>
+              <div
+                onClick={async () => {
+                  props.togglePage("LOADING");
+                  await onDelete();
+                  setRefreshFeedBack(true);
                   props.togglePage("INFO");
                 }}
+                className="mt-4 text-center text-base font-semibold text-red-600"
               >
-                Cancel
-              </button>
-              <button
-                className="mt-4 px-4 py-2 bg-orange-400 text-white rounded font-semibold text-lg"
-                onClick={() => {}}
-              >
-                Submit
-              </button>
-            </div>
+                Delete your existing review
+              </div>
+            </>
           )}
           <div className="h-4"></div>
         </div>

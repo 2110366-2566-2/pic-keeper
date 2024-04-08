@@ -3,17 +3,16 @@ import { BookingStatus, Booking } from "@/types/booking";
 import { transformDate } from "@/utils/date";
 import { Transition } from "@headlessui/react";
 import { useSession } from "next-auth/react";
-import { Fragment } from "react";
+import { Fragment, ReactNode } from "react";
 import { RenderStatus, RenderButtonByStatus } from "./RenderBySatus";
 import { useState, useEffect } from "react";
 import { GetUserInfoResponse } from "@/types/response";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { userService } from "@/services";
 
 interface Content {
   bookingOptions: Booking;
-  customer: GetUserInfoResponse;
-  photographer: GetUserInfoResponse;
 }
 
 export default function Info(props: {
@@ -23,8 +22,47 @@ export default function Info(props: {
   isOpen: boolean;
   refreshTrigger: Function;
   closeModal: Function;
+  renderButton: boolean;
+  addElement:ReactNode|null;
 }) {
   const router = useRouter();
+  const [customer, setCustomer] = useState<GetUserInfoResponse | null>();
+  const [photographer, setPhotoGrapher] =
+    useState<GetUserInfoResponse | null>();
+
+  const getCustomer = async () => {
+    const result = await userService.getUserById(
+      props.content.bookingOptions.customer_id
+    );
+    if (!result.profile_picture_url) {
+      result.profile_picture_url = "/images/nature.svg";
+    }
+
+    return result;
+  };
+
+  const getPhotographer = async () => {
+    const result = await userService.getUserById(
+      props.content.bookingOptions.room.gallery.photographer_id
+    );
+    if (!result.profile_picture_url) {
+      result.profile_picture_url = "/images/nature.svg";
+    }
+    return result;
+  };
+
+  useEffect(() => {
+    //Runs only on the first render
+    const initialFetch = async () => {
+      const customerFetch = await getCustomer();
+      setCustomer(customerFetch);
+
+      const photoGrapherFetch = await getPhotographer();
+      setPhotoGrapher(photoGrapherFetch);
+    };
+
+    initialFetch();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleClickChat = () => {
     // Navigate to the specified URL
@@ -229,18 +267,16 @@ export default function Info(props: {
                 <div className="relative w-12 h-12 ">
                   <Image
                     className="object-cover rounded-full"
-                    src={
-                      props.content.photographer.profile_picture_url as string
-                    }
+                    src={photographer?.profile_picture_url as string}
                     alt=""
                     fill={true}
                   />
                 </div>
                 <div className="text-sm font-semibold">
-                  <p>{props.content.photographer.data?.firstname}</p>
-                  <p>{props.content.photographer.data?.lastname}</p>
+                  <p>{photographer?.data?.firstname}</p>
+                  <p>{photographer?.data?.lastname}</p>
                   <p className="text-stone-400">
-                    @{props.content.photographer.data?.firstname}
+                    @{photographer?.data?.firstname}
                   </p>
                 </div>
               </div>
@@ -253,36 +289,40 @@ export default function Info(props: {
                   <Image
                     className="object-cover rounded-full"
                     fill={true}
-                    src={props.content.customer.profile_picture_url as string}
+                    src={customer?.profile_picture_url as string}
                     alt=""
                   />
                 </div>
                 <div className="text-sm font-semibold">
-                  <p>{props.content.customer.data?.firstname}</p>
-                  <p>{props.content.customer.data?.lastname}</p>
-                  <p className="text-stone-400">
-                    @{props.content.customer.data?.firstname}
-                  </p>
+                  <p>{customer?.data?.firstname}</p>
+                  <p>{customer?.data?.lastname}</p>
+                  <p className="text-stone-400">@{customer?.data?.firstname}</p>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col">
-            <button
-              className="mt-4 px-4 py-2 bg-orange-400 text-white rounded font-semibold text-lg"
-              onClick={handleClickChat}
-            >
-              Chat
-            </button>
-            <RenderButtonByStatus
-              status={props.content.bookingOptions.status as BookingStatus}
-              isOwner={props.isPackageOwner}
-              togglePage={props.togglePage}
-              bookingId={props.content.bookingOptions.id}
-              refreshTrigger={props.refreshTrigger}
-              closeModal={props.closeModal}
-            />
+            {props.renderButton && (
+              <>
+                <button
+                  className="mt-4 px-4 py-2 bg-orange-400 text-white rounded font-semibold text-lg"
+                  onClick={handleClickChat}
+                >
+                  Chat
+                </button>
+                <RenderButtonByStatus
+                  status={props.content.bookingOptions.status as BookingStatus}
+                  isOwner={props.isPackageOwner}
+                  togglePage={props.togglePage}
+                  bookingId={props.content.bookingOptions.id}
+                  refreshTrigger={props.refreshTrigger}
+                  closeModal={props.closeModal}
+                />
+                
+              </>
+            )}
+            {props.addElement}
           </div>
         </Transition.Child>
       </Transition>
