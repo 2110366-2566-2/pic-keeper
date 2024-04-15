@@ -21,7 +21,7 @@ const listPendingPhotographer = async () => {
     throw error;
   }
 };
-1
+1;
 const verify = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.put<UserResponse>(
@@ -57,7 +57,7 @@ const listPendingRefundBookings = async () => {
 
 const rejectRefundBookings = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${adminBaseUrl}/bookings/reject/${id}`
     );
     return data;
@@ -68,7 +68,7 @@ const rejectRefundBookings = async (id: string) => {
 
 const approveRefundBooking = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${adminBaseUrl}/bookings/refund/${id}`
     );
     return data;
@@ -85,9 +85,9 @@ const GetIssuesWithOption = async (issueFilter: IssueFilter) => {
         queryParams.append(key, value.toString());
       }
     });
-    const { data } = await apiClientWithAuth.get<
-      SuccessResponse<Issue[]>
-    >(`${adminBaseUrl}/issues?${queryParams.toString()}`);
+    const { data } = await apiClientWithAuth.get<SuccessResponse<Issue[]>>(
+      `${adminBaseUrl}/issues?${queryParams.toString()}`
+    );
     return data;
   } catch (error) {
     throw error;
