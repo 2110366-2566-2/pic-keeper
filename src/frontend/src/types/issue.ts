@@ -1,4 +1,5 @@
 import { User } from "next-auth";
+import { Booking } from "./booking";
 
 export enum IssueStatus {
   Open = "OPEN",
@@ -14,6 +15,8 @@ export interface Issue {
   id: string;
   reporterId: string;
   reporter: User;
+  bookingId?: string;
+  booking?: Booking;
   status: string;
   subject: string;
   due_date: Date;

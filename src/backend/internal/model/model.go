@@ -226,14 +226,16 @@ const (
 
 type Issue struct {
 	bun.BaseModel `bun:"table:issues,alias:issues"`
-	Id            uuid.UUID `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
-	ReporterId    uuid.UUID `bun:"reporter_id,type:uuid" json:"-"`
-	Reporter      User      `bun:"-" json:"reporter"`
-	Status        string    `bun:"status,type:varchar" json:"status"`
-	Subject       string    `bun:"subject,type:varchar" json:"subject"`
-	DueDate       time.Time `bun:"due_date,type:timestamptz,default:now()" json:"due_date"`
-	Description   string    `bun:"description,type:varchar" json:"description"`
-	CreatedAt     time.Time `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
+	Id            uuid.UUID  `bun:"id,pk,type:uuid,default:gen_random_uuid()" json:"id"`
+	ReporterId    uuid.UUID  `bun:"reporter_id,type:uuid" json:"-"`
+	Reporter      User       `bun:"-" json:"reporter"`
+	BookingId     *uuid.UUID `bun:"booking_id,type:uuid" json:"-"`
+	Booking       *Booking   `bun:"-" json:"booking"`
+	Status        string     `bun:"status,type:varchar" json:"status"`
+	Subject       string     `bun:"subject,type:varchar" json:"subject"`
+	DueDate       time.Time  `bun:"due_date,type:timestamptz,default:now()" json:"due_date"`
+	Description   string     `bun:"description,type:varchar" json:"description"`
+	CreatedAt     time.Time  `bun:"created_at,type:timestamptz,default:now()" json:"created_at"`
 }
 
 type IssueInput struct {

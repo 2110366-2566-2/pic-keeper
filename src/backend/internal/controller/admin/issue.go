@@ -50,6 +50,29 @@ func (r *Resolver) GetIssuesWithOption(c *gin.Context) {
 		}
 	}
 
+	bookingIdsToIssue := map[uuid.UUID][]*model.Issue{}
+	bookingIds := []uuid.UUID{}
+
+	for _, issue := range issues {
+		if issue.BookingId != nil {
+			if _, exist := bookingIdsToIssue[*issue.BookingId]; !exist {
+				bookingIds = append(bookingIds, *issue.BookingId)
+			}
+			bookingIdsToIssue[*issue.BookingId] = append(bookingIdsToIssue[*issue.BookingId], issue)
+		}
+	}
+
+	bookings, err := r.BookingUsecase.BookingRepo.FindByIds(c, bookingIds...)
+	if err != nil {
+		util.Raise500Error(c, err)
+		return
+	}
+	for _, booking := range bookings {
+		for _, issue := range bookingIdsToIssue[booking.Id] {
+			issue.Booking = booking
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
 		"data":   issues,
