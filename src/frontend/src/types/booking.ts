@@ -23,8 +23,6 @@ export interface BookingProposal {
 export interface Booking {
   id: string;
   customer_id: string;
-  gallery_id: string;
-  roomId: string;
   room: Room;
   resulted_price: number;
   start_time: string;

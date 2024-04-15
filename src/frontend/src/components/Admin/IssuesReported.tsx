@@ -7,7 +7,7 @@ import { useModal } from "@/context/ModalContext";
 import { IssueFilter } from "@/types/issue";
 import { Issue } from "@/types/issue";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import IssueReportedCard from "./Verification/IssueReportedCard";
+import IssueReportedCard from "./Verification/IssueReportedModal";
 
 const IssueReported = () => {
   const [reportList, setReportList] = useState<Issue[]>();
