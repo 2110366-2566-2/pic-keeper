@@ -168,7 +168,7 @@ const IssueReportedModal = ({
                       className="mt-4 modal px-4 py-2 bg-orange-400 text-white rounded font-semibold text-lg"
                       onClick={() => {}}
                     >
-                      BakHam Chat
+                      View Chat
                     </button>
                   }
                 />
