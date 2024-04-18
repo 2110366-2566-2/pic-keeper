@@ -2,9 +2,8 @@ package fieldvalidate
 
 import (
 	"errors"
-	"strings"
-
 	"regexp"
+	"strings"
 
 	"github.com/Roongkun/software-eng-ii/internal/model"
 )

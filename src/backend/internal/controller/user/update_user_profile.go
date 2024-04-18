@@ -22,7 +22,7 @@ func updateUserFieldsFromInput(userObj model.User, updatingUserInput model.UserU
 		updatedUser.Email = *updatingUserInput.Email
 	}
 	if updatingUserInput.Password != nil {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(*updatingUserInput.Password), rand.Intn(bcrypt.MaxCost-bcrypt.MinCost)+bcrypt.MinCost)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(*updatingUserInput.Password), rand.Intn(bcrypt.MinCost))
 		if err != nil {
 			return model.User{}, err // Return the error to be handled by the caller
 		}
@@ -52,7 +52,6 @@ func updateUserFieldsFromInput(userObj model.User, updatingUserInput model.UserU
 }
 
 func (r *Resolver) UpdateUserProfile(c *gin.Context) {
-
 	user := c.MustGet("user")
 	userObj, ok := user.(model.User)
 	if !ok {
@@ -100,5 +99,4 @@ func (r *Resolver) UpdateUserProfile(c *gin.Context) {
 
 	c.Set("user", updatedUser)
 	c.JSON(http.StatusOK, gin.H{"status": "success", "data": updatedUser})
-
 }
