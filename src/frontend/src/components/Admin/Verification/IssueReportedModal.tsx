@@ -30,7 +30,6 @@ const IssueReportedModal = ({
 }: Props) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const [bookingTarget, setBookingTarget] = useState<Booking | null>(null);
-  const router = useRouter();
 
   const handleOutsideClick = (event: any) => {
     // Close modals if the click occurred outside of them
@@ -50,10 +49,6 @@ const IssueReportedModal = ({
         }
       }
     }
-  };
-  const handleClickChat = () => {
-    // Navigate to the specified URL
-    router.push(`/chat/${issue.booking?.room.id}`);
   };
 
   useEffect(() => {
@@ -98,9 +93,9 @@ const IssueReportedModal = ({
                   issue.subject == Status.Refund && issue.status == "OPEN"
                     ? "max-w-[700px] grid-cols-2"
                     : "max-w-md grid-cols-1"
-                } bg-white  w-full max-h-full h-[500px] gap-x-4 rounded-2xl`}
+                } bg-white  w-full max-h-full  gap-x-4 rounded-2xl`}
               >
-                <div className="flex flex-col space-y-3 col-span-1 p-8">
+                <div className="flex flex-1 flex-col space-y-3 col-span-1 p-8 h-full">
                   <div className="flex flex-row space-x-3">
                     <h2 className="text-stone-400">#{issue.id.slice(0, 5)}</h2>
                     <div className="text-green-500">{issue.status}</div>
@@ -130,30 +125,56 @@ const IssueReportedModal = ({
                     </div>
                   </div>
                   <div className="">Details</div>
-                  <div className="rounded-md ring ring-slate-600 h-full">
-                    <article className="m-4">{issue.description}</article>
+                  <div className="rounded-md ring ring-slate-600">
+                    <article className="m-4 text-wrap">{issue.description}</article>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      onClick={async () => {
-                        await handleRefundAction(issue.id);
-                        document.removeEventListener("click", handleOutsideClick);
-                        setOpen(false);
-                      }}
-                      className="bg-amber-500 text-white rounded-md p-2"
-                    >
-                      Refund
-                    </button>
-                    <button
-                      onClick={async () => {
-                        await handleRejectAction(issue.id);
-                        document.removeEventListener("click", handleOutsideClick);
-                        setOpen(false);
-                      }}
-                      className="bg-red-600 text-white rounded-md p-2"
-                    >
-                      Reject
-                    </button>
+                  <div className="flex justify-end">
+                    {issue.subject == "REFUND" ? (
+                      <div className="grid grid-cols-2 gap-4">
+                        <button
+                          onClick={async () => {
+                            await handleRefundAction(issue.id);
+                            document.removeEventListener(
+                              "click",
+                              handleOutsideClick
+                            );
+                            setOpen(false);
+                          }}
+                          className="bg-amber-500 text-white rounded-md p-2"
+                        >
+                          Refund
+                        </button>
+                        <button
+                          onClick={async () => {
+                            await handleRejectAction(issue.id);
+                            document.removeEventListener(
+                              "click",
+                              handleOutsideClick
+                            );
+                            setOpen(false);
+                          }}
+                          className="bg-red-600 text-white rounded-md p-2"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex justify-end">
+                        <button
+                          onClick={async () => {
+                            await handleRejectAction(issue.id);
+                            document.removeEventListener(
+                              "click",
+                              handleOutsideClick
+                            );
+                            setOpen(false);
+                          }}
+                          className="bg-amber-500 text-white rounded-md p-2 w-screen"
+                        >
+                          Close Issue
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="overflow-hidden">
