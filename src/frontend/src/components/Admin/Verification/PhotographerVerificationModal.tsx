@@ -1,8 +1,9 @@
 "use client";
 
 import adminService from "@/services/admin";
-import React, { useState } from "react";
 import Image from "next/image";
+
+import React, { useState, useEffect, useRef } from "react";
 
 import { VerificationTicket } from "@/types/verification";
 
@@ -19,6 +20,8 @@ const PhotographerVerificationModal = ({
 }) => {
   const [status, setStatus] = useState("Open");
   const [isImagePreviewOpen, setImagePreviewOpen] = useState(false);
+  const modalContentRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
 
   const handleImageClick = () => {
     setImagePreviewOpen(true);
@@ -52,11 +55,30 @@ const PhotographerVerificationModal = ({
     }
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (backdropRef.current && backdropRef.current === event.target) {
+      closeModal();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-4xl mx-auto">
+    <div
+      ref={backdropRef}
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4"
+    >
+      <div
+        ref={modalContentRef}
+        className="bg-white rounded-2xl shadow-xl max-w-4xl mx-auto relative"
+      >
         {/* Header */}
         <h2 className="text-2xl mt-4 ml-6 font-bold text-gray-700">
           Photographer Verification
