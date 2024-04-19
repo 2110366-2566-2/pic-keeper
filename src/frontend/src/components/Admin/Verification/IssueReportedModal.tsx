@@ -28,7 +28,7 @@ const IssueReportedModal = ({
   issue,
   handleRefundAction,
   handleRejectAction,
-  handleCloseIssueAction
+  handleCloseIssueAction,
 }: Props) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const [bookingTarget, setBookingTarget] = useState<Booking | null>(null);
@@ -128,55 +128,59 @@ const IssueReportedModal = ({
                   </div>
                   <div className="">Details</div>
                   <div className="flex rounded-md ring ring-slate-600 h-64">
-                    <article className="m-4 text-wrap w-full overflow-hidden">{issue.description}</article>
+                    <article className="m-4 text-wrap w-full overflow-hidden">
+                      {issue.description}
+                    </article>
                   </div>
                   <div className="w-full">
-                    {issue.subject == "REFUND" ? (
-                      <div className="grid grid-cols-2 gap-4">
-                        <button
-                          onClick={async () => {
-                            await handleRefundAction(issue.id);
-                            document.removeEventListener(
-                              "click",
-                              handleOutsideClick
-                            );
-                            setOpen(false);
-                          }}
-                          className="bg-amber-500 text-white rounded-md p-2"
-                        >
-                          Refund
-                        </button>
-                        <button
-                          onClick={async () => {
-                            await handleRejectAction(issue.id);
-                            document.removeEventListener(
-                              "click",
-                              handleOutsideClick
-                            );
-                            setOpen(false);
-                          }}
-                          className="bg-red-600 text-white rounded-md p-2"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="">
-                        <button
-                          onClick={async () => {
-                            await handleCloseIssueAction(issue.id);
-                            document.removeEventListener(
-                              "click",
-                              handleOutsideClick
-                            );
-                            setOpen(false);
-                          }}
-                          className="bg-amber-500 text-white rounded-md p-2 w-full"
-                        >
-                          Close Issue
-                        </button>
-                      </div>
-                    )}
+                    {
+                      issue.status == "OPEN" ? issue.subject == "REFUND" ? (
+                        <div className="grid grid-cols-2 gap-4">
+                          <button
+                            onClick={async () => {
+                              await handleRefundAction(issue.id);
+                              document.removeEventListener(
+                                "click",
+                                handleOutsideClick
+                              );
+                              setOpen(false);
+                            }}
+                            className="bg-amber-500 text-white rounded-md p-2"
+                          >
+                            Refund
+                          </button>
+                          <button
+                            onClick={async () => {
+                              await handleRejectAction(issue.id);
+                              document.removeEventListener(
+                                "click",
+                                handleOutsideClick
+                              );
+                              setOpen(false);
+                            }}
+                            className="bg-red-600 text-white rounded-md p-2"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="">
+                          <button
+                            onClick={async () => {
+                              await handleCloseIssueAction(issue.id);
+                              document.removeEventListener(
+                                "click",
+                                handleOutsideClick
+                              );
+                              setOpen(false);
+                            }}
+                            className="bg-amber-500 text-white rounded-md p-2 w-full"
+                          >
+                            Close Issue
+                          </button>
+                        </div>
+                      ) : ""
+                    }
                   </div>
                 </div>
                 <div className="overflow-hidden">
