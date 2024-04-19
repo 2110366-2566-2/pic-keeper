@@ -18,6 +18,7 @@ interface Props {
   issue: Issue;
   handleRefundAction: Function;
   handleRejectAction: Function;
+  handleCloseIssueAction: Function;
 }
 enum Status {
   Refund = "REFUND",
@@ -27,6 +28,7 @@ const IssueReportedModal = ({
   issue,
   handleRefundAction,
   handleRejectAction,
+  handleCloseIssueAction
 }: Props) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const [bookingTarget, setBookingTarget] = useState<Booking | null>(null);
@@ -162,7 +164,7 @@ const IssueReportedModal = ({
                       <div className="">
                         <button
                           onClick={async () => {
-                            await handleRejectAction(issue.id);
+                            await handleCloseIssueAction(issue.id);
                             document.removeEventListener(
                               "click",
                               handleOutsideClick
