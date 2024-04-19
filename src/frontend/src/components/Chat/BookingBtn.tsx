@@ -75,13 +75,34 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
     }
   };
 
+  // const getPaymentQR = async (): Promise<string> => {
+  //   try {
+  //     const data = await paymentService.makeBookingPayment("bookingId");
+  //     return data.paymentBaseUrl;
+  //   } catch (error) {
+  //     console.error("Error fetching QR code URL:", error);
+  //     return "";
+  //   }
+  // };
+
+
   const handleCancelPayment = () => {
     closeModal();
   };
 
   const handleCompletePayment = () => {
-    
-    closeModal();
+    openModal(
+      <div>
+        <h2 className="my-5 text-2xl text-black">Payment Successful</h2>
+        <div className="flex justify-end">
+          <button className="btn-primary px-6" onClick={handleCancelPayment}>
+            Done
+          </button>
+        </div>
+
+      </div>
+
+      , "Payment complete")
   };
 
   const handlePayment = () => {
@@ -93,13 +114,21 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
           Please scan QR code using<br />
           Mobile Banking Application
         </div>
-        <Image
+        {/* <Image
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/640px-QR_code_for_mobile_English_Wikipedia.svg.png"
           alt="QR Code"
           width={400}
           height={400}
           className="w-[75%] h-auto mx-auto block"
-        />
+        /> */}
+
+        {/* <Image
+          src={await getPaymentQR() as string}
+          alt="QR Code"
+          width={400}
+          height={400}
+          className="w-[75%] h-auto mx-auto block"
+        /> */}
 
         <div className="flex justify-center gap-2">
           <button className="btn-cancel px-2" onClick={handleCancelPayment}>
