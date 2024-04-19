@@ -79,7 +79,7 @@ function Verification() {
                 <td className="px-6 py-4 text-gray-900">
                   {format(ticket.created_at, "MMMM do, yyyy H:mma") || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-green-500">open</td>
+                <td className={`px-6 py-4 ${ticket.user.verification_status === 'VERIFIED' ? 'text-green-500' : ticket.user.verification_status === 'PENDING' ? 'text-yellow-500' : 'text-red-500'}`}>{ticket.user.verification_status}</td>
                 <td className="px-6 py-4 text-gray-900">{format(ticket.due_date, "MMMM do, yyyy H:mma") || "N/A"}</td>
                 <td className="px-6 py-4 text-gray-900">
                   <button onClick={openPhotographerVerificationModal}>
