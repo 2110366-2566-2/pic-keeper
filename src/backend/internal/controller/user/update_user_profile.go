@@ -76,11 +76,8 @@ func (r *Resolver) UpdateUserProfile(c *gin.Context) {
 	}
 
 	if updatingUserInput.Username != nil {
-		exist, err := r.UserUsecase.CheckUsernameAlreadyBeenUsed(c, *updatingUserInput.Username, userObj.Id)
-		if err != nil {
-			util.Raise500Error(c, err)
-			return
-		} else if exist {
+		exist, _ := r.UserUsecase.CheckUsernameAlreadyBeenUsed(c, *updatingUserInput.Username, userObj.Id)
+		if exist {
 			util.Raise409Error(c, "username already exist")
 			return
 		}

@@ -66,6 +66,28 @@ func init() {
 	r.PUT("/updateUserProfile", resolver.UpdateUserProfile)
 }
 
+func TestInvalidUserModel(t *testing.T) {
+	w := httptest.NewRecorder()
+	updateField := []byte(`""`)
+	updateReader := bytes.NewReader(updateField)
+
+	invalid := r.Group("/invalid", func(c *gin.Context) {
+		c.Set("user", "")
+	})
+	invalid.PUT("/updateUserProfile", resolver.UpdateUserProfile)
+
+	req, _ := http.NewRequest(http.MethodPut, "/invalid/updateUserProfile", updateReader)
+	r.ServeHTTP(w, req)
+	response, _ := io.ReadAll(w.Body)
+
+	errResp := ErrorResponse{}
+	json.Unmarshal(response, &errResp)
+
+	assert.Equal(t, 500, w.Code)
+	assert.Equal(t, "failed", errResp.Status)
+	assert.Equal(t, "invalid user type in context", errResp.Error)
+}
+
 func TestInvalidJSON(t *testing.T) {
 	w := httptest.NewRecorder()
 	updateField := []byte(`"email": null`)
@@ -119,9 +141,75 @@ func TestUpdateInvalidEmail(t *testing.T) {
 	assert.Contains(t, fieldErrResp.Error, "invalid email format")
 }
 
+func TestUpdateExistedUsername(t *testing.T) {
+	w := httptest.NewRecorder()
+	updateField := []byte(`{"username": "existed"}`)
+	updateReader := bytes.NewReader(updateField)
+	req, _ := http.NewRequest(http.MethodPut, "/updateUserProfile", updateReader)
+
+	r.ServeHTTP(w, req)
+	response, _ := io.ReadAll(w.Body)
+
+	errResp := ErrorResponse{}
+	json.Unmarshal(response, &errResp)
+
+	assert.Equal(t, 409, w.Code)
+	assert.Equal(t, "failed", errResp.Status)
+	assert.Equal(t, errResp.Error, "username already exist")
+}
+
+func TestUpdateExistedEmail(t *testing.T) {
+	w := httptest.NewRecorder()
+	updateField := []byte(`{"email": "exist@mail.com"}`)
+	updateReader := bytes.NewReader(updateField)
+	req, _ := http.NewRequest(http.MethodPut, "/updateUserProfile", updateReader)
+
+	r.ServeHTTP(w, req)
+	response, _ := io.ReadAll(w.Body)
+
+	errResp := ErrorResponse{}
+	json.Unmarshal(response, &errResp)
+
+	assert.Equal(t, 500, w.Code)
+	assert.Equal(t, "failed", errResp.Status)
+}
+
+func TestUpdateInvalidGender(t *testing.T) {
+	w := httptest.NewRecorder()
+	updateField := []byte(`{"gender": "NONE"}`)
+	updateReader := bytes.NewReader(updateField)
+	req, _ := http.NewRequest(http.MethodPut, "/updateUserProfile", updateReader)
+
+	r.ServeHTTP(w, req)
+	response, _ := io.ReadAll(w.Body)
+
+	fieldErrResp := FieldErrorResponse{}
+	json.Unmarshal(response, &fieldErrResp)
+
+	assert.Equal(t, 400, w.Code)
+	assert.Equal(t, "failed", fieldErrResp.Status)
+	assert.Contains(t, fieldErrResp.Error, "gender must be MALE, FEMALE, or OTHER")
+}
+
+func TestUpdateTooLongPassword(t *testing.T) {
+	w := httptest.NewRecorder()
+	updateField := []byte(`{"password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}`)
+	updateReader := bytes.NewReader(updateField)
+	req, _ := http.NewRequest(http.MethodPut, "/updateUserProfile", updateReader)
+
+	r.ServeHTTP(w, req)
+	response, _ := io.ReadAll(w.Body)
+
+	errResp := ErrorResponse{}
+	json.Unmarshal(response, &errResp)
+
+	assert.Equal(t, 500, w.Code)
+	assert.Equal(t, "failed", errResp.Status)
+}
+
 func TestUpdateUserProfile(t *testing.T) {
 	w := httptest.NewRecorder()
-	updateField := []byte(`{"email": "hi@mail.com"}`)
+	updateField := []byte(`{"email": "pass@mail.com", "about": "nothing", "password": "secure", "phone_number": "0855555555", "firstname": "test", "lastname": "test", "gender": "MALE", "address": "nothing", "username": "new"}`)
 	updateReader := bytes.NewReader(updateField)
 	req, _ := http.NewRequest(http.MethodPut, "/updateUserProfile", updateReader)
 

@@ -1,11 +1,12 @@
-.PHONY test
+.PHONY: test
 test:
-	@dsn=${DSN} go test -v -coverprofile cover.out
+	dsn=$(DSN) go test -v -coverpkg=./... -coverprofile cover.out
 
-.PHONY report
+.PHONY: report
 report:
 	go tool cover -html cover.out -o cover.html
 
-.PHONY open
+.PHONY: open
 open:
 	open cover.html
+
