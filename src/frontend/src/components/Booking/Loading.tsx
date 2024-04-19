@@ -13,7 +13,7 @@ export default function Loading(props: { isOpen: boolean, content:string}) {
         leaveTo="opacity-0"
       >
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="p-4 rounded-lg">
+          <div className="p-4 rounded-lg mb-16">
             <div className="flex flex-col m-8 items-center gap-y-2">
               <svg
                 aria-hidden="true"

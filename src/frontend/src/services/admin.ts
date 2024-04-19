@@ -14,14 +14,14 @@ const adminBaseUrl = "/admin/v1";
 const listPendingPhotographer = async () => {
   try {
     const { data } = await apiClientWithAuth.get<
-      SuccessResponse<VerificationTicket>
+      SuccessResponse<VerificationTicket[]>
     >(`${adminBaseUrl}/pending-photographers`);
     return data;
   } catch (error) {
     throw error;
   }
 };
-
+1;
 const verify = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.put<UserResponse>(
@@ -57,7 +57,7 @@ const listPendingRefundBookings = async () => {
 
 const rejectRefundBookings = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${adminBaseUrl}/bookings/reject/${id}`
     );
     return data;
@@ -68,7 +68,7 @@ const rejectRefundBookings = async (id: string) => {
 
 const approveRefundBooking = async (id: string) => {
   try {
-    const { data } = await apiClientWithAuth.get<BookingResponse>(
+    const { data } = await apiClientWithAuth.put<BookingResponse>(
       `${adminBaseUrl}/bookings/refund/${id}`
     );
     return data;

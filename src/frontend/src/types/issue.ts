@@ -1,4 +1,5 @@
 import { User } from "next-auth";
+import { Booking } from "./booking";
 
 export enum IssueStatus {
   Open = "OPEN",
@@ -14,11 +15,13 @@ export interface Issue {
   id: string;
   reporterId: string;
   reporter: User;
+  bookingId?: string;
+  booking?: Booking;
   status: string;
   subject: string;
-  dueDate: Date;
+  due_date: Date;
   description: string;
-  createdAt: Date;
+  created_at: Date;
 }
 
 export interface IssueInput {
@@ -34,8 +37,8 @@ export interface IssueFilter {
 }
 
 export interface IssueHeaderMetadata {
-  pendingTickets: number;
-  ticketsToday: number;
-  ticketsDueToday: number;
-  closedTickets: number;
+  pending_tickets: number;
+  tickets_today: number;
+  tickets_dueToday: number;
+  closed_tickets: number;
 }

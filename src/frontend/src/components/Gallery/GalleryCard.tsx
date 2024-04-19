@@ -11,6 +11,7 @@ import { User } from "@/types/user";
 import { Gallery } from "@/types/gallery";
 import ProfileImage from "../shared/ProfileImage";
 import { useRouter } from "next/navigation";
+import StarBox from "../Miscellaneouos/StarBox";
 
 interface Props {
   galleryId: string;
@@ -138,9 +139,12 @@ const GalleryCard = ({ galleryId }: Props) => {
 
   return (
     <div
-      className="rounded-xl shadow-lg bg-white overflow-hidden cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl"
+      className="relative rounded-xl shadow-lg bg-white overflow-hidden cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl"
       onClick={handleCardClick}
     >
+      <div className="absolute top-0 right-0 m-3 z-50">
+        <StarBox rating={galleryInfo?.avg_rating || 0} />
+      </div>
       {renderImages()}
       <div className="relative flex flex-row space-x-4 p-4">
         <ProfileImage src={photographerProfile} size={8} />

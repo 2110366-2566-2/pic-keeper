@@ -3,6 +3,7 @@ export interface Gallery {
   photographer_id: string;
   location: string;
   name: string;
+  avg_rating: number;
   price: number;
   hours: number;
   description: string | null;

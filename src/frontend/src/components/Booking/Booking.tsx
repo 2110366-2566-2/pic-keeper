@@ -316,7 +316,7 @@ export default function BookingPage() {
         </div>
 
         <div
-          className={`transition-opacity flex flex-col h-full overflow-y-auto py-4 ${
+          className={`transition-opacity flex flex-col overflow-y-auto py-4 ${
             showContent ? "opacity-100" : "opacity-0"
           }`}
         >

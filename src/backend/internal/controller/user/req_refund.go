@@ -47,6 +47,7 @@ func (r *Resolver) RequestRefundBooking(c *gin.Context) {
 		DueDate:     booking.EndTime.Add(3 * 24 * time.Hour),
 		Status:      model.IssueOpenStatus,
 		ReporterId:  user.Id,
+		BookingId:   &bookingId,
 		Description: bookingId.String(),
 	}
 

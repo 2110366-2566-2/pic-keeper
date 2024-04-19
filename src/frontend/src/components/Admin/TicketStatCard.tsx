@@ -1,7 +1,6 @@
 interface Props {
     title: string;
     count: number;
-    color: string;
 }
 
 const TicketStat = (data : Props) => {

@@ -1,49 +1,58 @@
 "use client";
 import { useState } from "react";
-import { Booking } from "@/types/booking";
+import { format } from "date-fns";
 import { useEffect } from "react";
 import { adminService } from "@/services";
 import { useModal } from "@/context/ModalContext";
 import { IssueFilter } from "@/types/issue";
 import { Issue } from "@/types/issue";
+import { useErrorModal } from "@/hooks/useErrorModal";
+import IssueReportedCard from "./Verification/IssueReportedModal";
 
 const IssueReported = () => {
   const [reportList, setReportList] = useState<Issue[]>();
-  const { openModal, closeModal } = useModal();
+  const { closeModal } = useModal();
   const [filter, setFilter] = useState<IssueFilter>({});
+  const showError = useErrorModal();
+
+  const handleRefundAction = async (id: string) => {
+    console.log('handleRefundAction', id)
+    try {
+      const data = await adminService.approveRefundBooking(id);
+      if (data.data) {
+        closeModal();
+      }
+    } catch (error) {
+      showError(error);
+    }
+  };
+
+  const handleRejectAction = async (id: string) => {
+    console.log('handleRejectAction', id)
+    try {
+      const data = await adminService.rejectRefundBookings(id);
+      if (data.data) {
+        closeModal();
+      }
+    } catch (error) {
+      showError(error);
+    }
+  };
 
   const fetchData = async () => {
     try {
       const data = await adminService.GetIssuesWithOption(filter);
-      console.log(data.data);
       if (data.data) {
         setReportList(data.data);
       }
     } catch (error) {
-      console.error(error);
+      showError(error);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleActionClick = (issue : Issue) => {
-    openModal(
-      <div className="flex flex-col">
-        <p className="text-standard text-gray-500">
-          This will delete your gallery from PicKeeper.
-        </p>
-        <div className="self-end flex gap-4">
-          <button onClick={closeModal} className="btn mt-4 px-4">
-            Cancel
-          </button>
-          <button className="btn-danger mt-4 px-4 ">Delete</button>
-        </div>
-      </div>,
-      "Are you sure?"
-    );
-  };
 
   return (
     <div className="flex flex-col">
@@ -83,16 +92,20 @@ const IssueReported = () => {
                   #{issue.id.slice(0, 5)}
                 </td>
                 <td className="px-6 py-4 text-gray-900">
-                  {issue.reporter?.name}
+                  {issue.reporter.email || "N/A"}
                 </td>
                 <td className="px-6 py-4 text-gray-900">{issue.subject}</td>
-                <td className="px-6 py-4 text-green-500">{issue.status}</td>
+                {
+                  issue.status == "OPEN" ? <td className="px-6 py-4 text-green-500">{issue.status}</td> : <td className="px-6 py-4 text-red-500">{issue.status}</td>
+                }
                 <td className="px-6 py-4 text-gray-900">
-                  {issue.createdAt.toString()}
+                  {format(issue.created_at, "MMMM do, yyyy H:mma") || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-gray-900">{issue.dueDate.toString()}</td>
                 <td className="px-6 py-4 text-gray-900">
-                  <button onClick={() => handleActionClick(issue)}>...</button>
+                  {format(issue.due_date, "MMMM do, yyyy H:mma") || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-900">
+                  <IssueReportedCard issue={issue} handleRefundAction={handleRefundAction} handleRejectAction={handleRejectAction}/>
                 </td>
               </tr>
             ))}

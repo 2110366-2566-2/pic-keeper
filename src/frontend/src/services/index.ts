@@ -7,3 +7,5 @@ export { default as photographerBookingService } from "./photographerBooking";
 export { default as photographerGalleriesService } from "./photographerGalleries";
 export { default as roomService } from "./room";
 export { default as userService } from "./user";
+export { default as photographerReviewService } from "./photographerReview";
+export { default as customerReviewService } from "./customerReviews";

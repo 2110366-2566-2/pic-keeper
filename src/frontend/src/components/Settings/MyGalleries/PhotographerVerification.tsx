@@ -143,7 +143,7 @@ const PhotographerVerification = () => {
                 <div className="space-y-1 text-center flex flex-col justify-center">
                   <div className="flex justify-center items-center">
                     <Image
-                      src={"/images/UploadToCloud.png"}
+                      src={"/images/upload-to-cloud.png"}
                       alt="Upload icon"
                       width={100}
                       height={100}

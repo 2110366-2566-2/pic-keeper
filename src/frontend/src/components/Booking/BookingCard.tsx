@@ -58,8 +58,6 @@ export default function BookingCard(options: BookOptions) {
           options.openModal();
           const mergedObj = {
             bookingOptions: options.props,
-            customer: customer,
-            photographer: photoGrapher,
           };
           options.setModalProps(mergedObj);
         }}

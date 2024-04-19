@@ -51,7 +51,7 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
         const isoStartTime = formatISO(parsedStartTime);
         const isoEndTime = formatISO(parsedEndTime);
         const newBooking: BookingProposal = {
-          customer_id: session?.user.data?.id,
+          customer_id: room.other_users[0].id,
           room_id: room.id,
           negotiated_price: negotiatedPrice,
           start_time: isoStartTime,
