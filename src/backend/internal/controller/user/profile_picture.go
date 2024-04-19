@@ -32,9 +32,7 @@ func hashEmail(email string) string {
 // @Failure 500 {object} model.JSONErrorResult{status=string,error=nil} "Unhandled internal server error"
 // @Router /users/v1/upload-profile [post]
 func (r *Resolver) UploadProfilePicture(c *gin.Context) {
-
 	file, _, err := c.Request.FormFile("profilePicture")
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": "Could not retrieve the file"})
 		c.Abort()
@@ -98,6 +96,6 @@ func (r *Resolver) UploadProfilePicture(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":              "success",
 		"message":             "Profile picture uploaded successfully",
-		"profile_picture_url": fmt.Sprintf("http://localhost:4566/%s/%s", "profile-picture", objectKey),
+		"profile_picture_url": fmt.Sprintf("https://ls-pickeeper.ngrok.app/%s/%s", "profile-picture", objectKey),
 	})
 }

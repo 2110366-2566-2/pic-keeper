@@ -89,7 +89,7 @@ func (r *Resolver) RequestVerification(c *gin.Context) {
 	}
 
 	newVerificationInfo.User = *user
-	newVerificationInfo.IdCardPictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", s3utils.IdCardBucket, objectKey)
+	newVerificationInfo.IdCardPictureURL = fmt.Sprintf("https://ls-pickeeper.ngrok.app/%s/%s", s3utils.IdCardBucket, objectKey)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",

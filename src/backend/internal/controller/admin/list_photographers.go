@@ -58,7 +58,7 @@ func (r *Resolver) ListPendingPhotographers(c *gin.Context) {
 
 	for _, vrfTicket := range verificationTickets {
 		vrfTicket.User = *phtgIdsToPhtgEntities[vrfTicket.UserId]
-		vrfTicket.IdCardPictureURL = fmt.Sprintf("http://localhost:4566/%s/%s", s3utils.IdCardBucket, vrfTicket.IdCardPictureKey)
+		vrfTicket.IdCardPictureURL = fmt.Sprintf("https://ls-pickeeper.ngrok.app/%s/%s", s3utils.IdCardBucket, vrfTicket.IdCardPictureKey)
 	}
 
 	c.JSON(http.StatusOK, gin.H{

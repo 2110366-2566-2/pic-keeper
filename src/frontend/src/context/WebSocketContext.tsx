@@ -57,7 +57,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         singletonWebSocket.readyState > WebSocket.OPEN
       ) {
         singletonWebSocket = new WebSocket(
-          `ws://localhost:8080/chat/v1/ws/${token}`
+          `wss://back-pickeeper.ngrok.app/chat/v1/ws/${token}`,
         );
       }
 
@@ -71,7 +71,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             const refreshTokenResponse = await authService.refreshToken(token);
             const refreshedToken = refreshTokenResponse.refreshed_session_token;
             console.log(
-              "Token refreshed, trying to reconnect with new token..."
+              "Token refreshed, trying to reconnect with new token...",
             );
             const updatedSession = {
               ...session,
@@ -125,7 +125,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       sendMessage,
       messages,
     }),
-    [sendMessage, messages]
+    [sendMessage, messages],
   );
 
   return (

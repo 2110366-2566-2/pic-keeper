@@ -58,7 +58,7 @@ var ServeCmd = &cobra.Command{
 		r.Use(retrieveSecretConf(appCfg))
 
 		r.Use(cors.New(cors.Config{
-			AllowOrigins:     []string{"http://localhost:3000"},
+			AllowOrigins:     []string{"http://localhost:3000", "https://pickeeper.ngrok.app"},
 			AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"},
 			AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 			ExposeHeaders:    []string{"Content-Length"},

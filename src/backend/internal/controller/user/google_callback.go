@@ -3,6 +3,7 @@ package user
 import (
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/Roongkun/software-eng-ii/internal/controller/util"
 	"github.com/Roongkun/software-eng-ii/internal/model"
@@ -10,8 +11,6 @@ import (
 	"github.com/Roongkun/software-eng-ii/internal/third-party/oauth2"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-
-	"strings"
 )
 
 // @Summary      This will be automatically called when the Google OAuth2 login process is completed
@@ -153,7 +152,7 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 	// 	"session_token": token,
 	// })
 
-	c.SetCookie("session_token", token, 3600, "/", "localhost", false, true)
-	location := url.URL{Path: "http://localhost:3000/auth/handle-login"}
+	c.SetCookie("session_token", token, 3600, "/", "pickeeper.ngrok.app", false, true)
+	location := url.URL{Path: "https://pickeeper.ngrok.app/auth/handle-login"}
 	c.Redirect(http.StatusFound, location.RequestURI())
 }

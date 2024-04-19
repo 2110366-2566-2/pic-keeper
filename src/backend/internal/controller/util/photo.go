@@ -87,7 +87,7 @@ func FormatImage(file multipart.File) (*bytes.Buffer, string, error) {
 	return buf, contentType, nil
 }
 
-const baseUrl = "http://localhost:4566"
+const baseUrl = "https://ls-pickeeper.ngrok.app"
 
 func GetProfilePictureUrl(profilePictureKey *string) string {
 	if profilePictureKey == nil {
