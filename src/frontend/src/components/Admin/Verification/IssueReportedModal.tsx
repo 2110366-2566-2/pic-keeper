@@ -111,7 +111,7 @@ const IssueReportedModal = ({
                   <div className="grid grid-cols-2 gap-3">
                     <div className="">Reporter</div>
                     <div className="">
-                      <div className="">{issue.reporter.email}</div>
+                      <div className="truncate">{issue.reporter.email}</div>
                       {issue.reporter.name ? (
                         <div className="text-gray-400">
                           {issue.reporter.name}
@@ -121,11 +121,11 @@ const IssueReportedModal = ({
                       )}
                     </div>
                     <div className="">Created date</div>
-                    <div className="">
+                    <div className="truncate">
                       {format(issue.created_at, "MMMM do, yyyy H:mma") || "N/A"}
                     </div>
                     <div className="">Due date</div>
-                    <div className="">
+                    <div className="truncate">
                       {format(issue.due_date, "MMMM do, yyyy H:mma") || "N/A"}
                     </div>
                   </div>
