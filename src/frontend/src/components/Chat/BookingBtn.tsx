@@ -114,13 +114,13 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
           Please scan QR code using<br />
           Mobile Banking Application
         </div>
-        {/* <Image
+        <Image
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/640px-QR_code_for_mobile_English_Wikipedia.svg.png"
           alt="QR Code"
           width={400}
           height={400}
           className="w-[75%] h-auto mx-auto block"
-        /> */}
+        />
 
         {/* <Image
           src={await getPaymentQR() as string}
