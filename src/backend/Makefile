@@ -36,6 +36,10 @@ new-sql:
 clean: 
 	rm -rf ./internal/config/persistence-data; rm -rf ./bin; rm -rf ./tmp
 
+.PHONY: down
+down: 
+	cd ./internal/config/persistence-data; docker compose down
+
 .PHONY: up
 up:
 	air -c .air.toml

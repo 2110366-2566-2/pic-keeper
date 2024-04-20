@@ -41,13 +41,14 @@ func (u *UserDB) CheckExistenceByEmail(ctx context.Context, email string) (bool,
 }
 
 func (u *UserDB) ListPendingPhotographers(ctx context.Context) ([]*model.User, error) {
-	var pendingPhotographers []*model.User
-	if err := u.db.NewSelect().Model(&pendingPhotographers).Where("verification_status = ?", model.PhotographerPendingStatus).Scan(ctx, &pendingPhotographers); err != nil {
-		return nil, err
-	}
+    var pendingPhotographers []*model.User
+    if err := u.db.NewSelect().Model(&pendingPhotographers).Where("verification_status = ? OR verification_status = ? OR verification_status = ?", model.PhotographerPendingStatus, model.PhotographerVerifiedStatus, model.PhotographerRejectedStatus).Scan(ctx, &pendingPhotographers); err != nil {
+        return nil, err
+    }
 
-	return pendingPhotographers, nil
+    return pendingPhotographers, nil
 }
+
 
 func (u *UserDB) FindOneByUsername(ctx context.Context, username string) (*model.User, error) {
 	var user model.User

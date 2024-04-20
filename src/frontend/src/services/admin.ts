@@ -2,7 +2,6 @@ import {
   BookingListResponse,
   BookingResponse,
   SuccessResponse,
-  UserListResponse,
   UserResponse,
 } from "@/types/response";
 import apiClientWithAuth from "@/libs/apiClientWithAuth";
@@ -21,7 +20,7 @@ const listPendingPhotographer = async () => {
     throw error;
   }
 };
-1;
+
 const verify = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.put<UserResponse>(
@@ -37,6 +36,17 @@ const reject = async (id: string) => {
   try {
     const { data } = await apiClientWithAuth.put<UserResponse>(
       `${adminBaseUrl}/reject/${id}`
+    );
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const closeIssue = async (id: string) => {
+  try {
+    const { data } = await apiClientWithAuth.put<UserResponse>(
+      `${adminBaseUrl}/issues/${id}`
     );
     return data;
   } catch (error) {
@@ -109,6 +119,7 @@ const adminService = {
   listPendingPhotographer,
   verify,
   reject,
+  closeIssue,
   listPendingRefundBookings,
   rejectRefundBookings,
   approveRefundBooking,

@@ -132,6 +132,7 @@ var ServeCmd = &cobra.Command{
 			admin.GET("/pending-photographers", handler.Admin.ListPendingPhotographers)
 			admin.PUT("/verify/:id", handler.Admin.Verify)
 			admin.PUT("/reject/:id", handler.Admin.Reject)
+			admin.PUT("/issues/:id", handler.Admin.CloseIssue)
 			admin.GET("/pending-refund-bookings", handler.Admin.ListPendingRefundBookings)
 			admin.PUT("/bookings/reject/:id", handler.Admin.RejectRefundBooking)
 			admin.PUT("/bookings/refund/:id", handler.Admin.ApproveRefundBooking)

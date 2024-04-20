@@ -39,6 +39,18 @@ const IssueReported = () => {
     }
   };
 
+  const handleCloseIssueAction = async (id: string) => {
+    console.log('handleRejectAction', id)
+    try {
+      const data = await adminService.closeIssue(id);
+      if (data.data) {
+        closeModal();
+      }
+    } catch (error) {
+      showError(error);
+    }
+  };
+
   const fetchData = async () => {
     try {
       const data = await adminService.GetIssuesWithOption(filter);
@@ -105,7 +117,7 @@ const IssueReported = () => {
                   {format(issue.due_date, "MMMM do, yyyy H:mma") || "N/A"}
                 </td>
                 <td className="px-6 py-4 text-gray-900">
-                  <IssueReportedCard issue={issue} handleRefundAction={handleRefundAction} handleRejectAction={handleRejectAction}/>
+                  <IssueReportedCard issue={issue} handleRefundAction={handleRefundAction} handleRejectAction={handleRejectAction} handleCloseIssueAction={handleCloseIssueAction}/>
                 </td>
               </tr>
             ))}
