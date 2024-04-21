@@ -17,12 +17,12 @@ const PhotographerVerificationModal = ({
   photographer,
   isOpen,
   closeModal,
-}) => {
+} : PhotographerVerificationModalProps) => {
   const [status, setStatus] = useState("Open");
   const [isImagePreviewOpen, setImagePreviewOpen] = useState(false);
   const modalContentRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
-
+  
   const handleImageClick = () => {
     setImagePreviewOpen(true);
   };
@@ -33,7 +33,7 @@ const PhotographerVerificationModal = ({
 
   const handleApprove = async () => {
     try {
-      await adminService.verify(photographer.username); // Use username or another unique identifier
+      await adminService.verify(photographer.user.username); // Use username or another unique identifier
       setStatus("Approved");
       closeModal();
       // Add any other actions or notifications you'd like to perform post-approval
@@ -45,7 +45,7 @@ const PhotographerVerificationModal = ({
 
   const handleDecline = async () => {
     try {
-      await adminService.reject(photographer.username); // Use username or another unique identifier
+      await adminService.reject(photographer.user.username); // Use username or another unique identifier
       setStatus("Rejected");
       closeModal();
       // Add any other actions or notifications you'd like to perform post-rejection
@@ -88,14 +88,14 @@ const PhotographerVerificationModal = ({
         >
           <div>
             <h3 className="text-lg font-semibold text-stone-400">
-              #{photographer.username}
+              #{photographer.user.username}
             </h3>
 
             <p className="text-sm font-semibold text-gray-700">
-              Name : {photographer.name}
+              Name : {photographer.user.firstname} {photographer.user.lastname}
             </p>
             <p className="text-sm font-semibold text-gray-700">
-              Created Date : {photographer.createdDate}
+              Created Date : {photographer.created_at}
             </p>
           </div>
           <span
@@ -115,7 +115,7 @@ const PhotographerVerificationModal = ({
             <div>
               <p className="text-sm font-semibold text-gray-700">ID number :</p>
               <p className="p-2 bg-gray-200 rounded border">
-                {photographer.idNumber}
+                {photographer.id_card_number}
               </p>
             </div>
             <div>
@@ -123,7 +123,7 @@ const PhotographerVerificationModal = ({
                 Additional information :
               </p>
               <p className="p-2 bg-gray-200 rounded border">
-                {photographer.additionalInfo}
+                {photographer.additional_desc}
               </p>
             </div>
           </div>
@@ -132,7 +132,7 @@ const PhotographerVerificationModal = ({
             onClick={handleImageClick}
           >
             <img
-              src={photographer.idCardImage}
+              src={photographer.id_card_picture_url}
               alt="ID Card"
               className="w-full h-full object-cover rounded-lg shadow-lg"
             />
@@ -160,7 +160,7 @@ const PhotographerVerificationModal = ({
                   </svg>
                 </button>
                 <img
-                  src={photographer.idCardImage}
+                  src={photographer.id_card_picture_url}
                   alt="ID Card Preview"
                   className="max-w-xs max-h-full rounded-lg shadow-lg"
                 />

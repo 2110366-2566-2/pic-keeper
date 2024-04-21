@@ -88,15 +88,7 @@ function Verification() {
                   <PhotographerVerificationModal
                     isOpen={isPhotographerVerificationModalOpen}
                     closeModal={closePhotographerVerificationModal}
-                    // You would pass the actual photographer data here
-                    photographer={{
-                      name: ticket.user.firstname,
-                      username: ticket.user.id,
-                      createdDate: ticket.created_at,
-                      idNumber: ticket.id_card_number,
-                      additionalInfo: ticket.additional_desc,
-                      idCardImage: ticket.id_card_picture_url,
-                    }}
+                    photographer={ticket}
                   />
                 </td>
               </tr>
