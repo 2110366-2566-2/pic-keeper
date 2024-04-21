@@ -44,7 +44,7 @@ export const authOptions: AuthOptions = {
             } catch (error) {
               if (error instanceof AxiosError) {
                 throw new Error(
-                  error.response?.data.error || "Authentication failed"
+                  error.response?.data.error || "Authentication failed",
                 );
               } else {
                 throw new Error("An unexpected error occurred");
@@ -64,7 +64,7 @@ export const authOptions: AuthOptions = {
                   headers: { Authorization: `Bearer ${sessionToken}` },
                 });
                 const { data: userProfile } = await axiosInstance.get(
-                  `/users/v1/get-my-user-info`
+                  `/users/v1/get-my-user-info`,
                 );
                 return userProfile
                   ? { ...userProfile, session_token: sessionToken }
@@ -72,11 +72,12 @@ export const authOptions: AuthOptions = {
               } catch (error) {
                 if (error instanceof AxiosError) {
                   throw new Error(
-                    error.response?.data.error || "Google Authentication failed"
+                    error.response?.data.error ||
+                      "Google Authentication failed",
                   );
                 } else {
                   throw new Error(
-                    "An unexpected error occurred during Google authentication"
+                    "An unexpected error occurred during Google authentication",
                   );
                 }
               }

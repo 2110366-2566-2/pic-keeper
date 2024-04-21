@@ -147,12 +147,9 @@ func (r *Resolver) GoogleCallback(c *gin.Context) {
 		return
 	}
 
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"status":        "success",
-	// 	"session_token": token,
-	// })
+	q := url.Values{}
+	q.Set("session_token", token)
 
-	c.SetCookie("session_token", token, 3600, "/", "pickeeper.ngrok.app", false, true)
-	location := url.URL{Path: "https://pickeeper.ngrok.app/auth/handle-login"}
+	location := url.URL{Path: "https://pickeeper.ngrok.app/auth/handle-login", RawQuery: q.Encode()}
 	c.Redirect(http.StatusFound, location.RequestURI())
 }
