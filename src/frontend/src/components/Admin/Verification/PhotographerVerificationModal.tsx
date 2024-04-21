@@ -17,12 +17,12 @@ const PhotographerVerificationModal = ({
   photographer,
   isOpen,
   closeModal,
-} : PhotographerVerificationModalProps) => {
+}: PhotographerVerificationModalProps) => {
   const [status, setStatus] = useState("Open");
   const [isImagePreviewOpen, setImagePreviewOpen] = useState(false);
   const modalContentRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
-  
+
   const handleImageClick = () => {
     setImagePreviewOpen(true);
   };
@@ -33,7 +33,7 @@ const PhotographerVerificationModal = ({
 
   const handleApprove = async () => {
     try {
-      await adminService.verify(photographer.user.username); // Use username or another unique identifier
+      await adminService.verify(photographer.user.id); // Use username or another unique identifier
       setStatus("Approved");
       closeModal();
       // Add any other actions or notifications you'd like to perform post-approval
@@ -45,7 +45,7 @@ const PhotographerVerificationModal = ({
 
   const handleDecline = async () => {
     try {
-      await adminService.reject(photographer.user.username); // Use username or another unique identifier
+      await adminService.reject(photographer.user.id); // Use username or another unique identifier
       setStatus("Rejected");
       closeModal();
       // Add any other actions or notifications you'd like to perform post-rejection
