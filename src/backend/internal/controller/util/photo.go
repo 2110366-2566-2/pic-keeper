@@ -68,7 +68,31 @@ func processImage(img image.Image, contentType string) (*bytes.Buffer, error) {
 	return &buf, nil
 }
 
+func validateFileSize(file multipart.File) error {
+	// Seek to the end of the file to get the file size
+	size, err := file.Seek(0, io.SeekEnd)
+	if err != nil {
+		return fmt.Errorf("unable to seek file: %w", err)
+	}
+
+	// Seek back to the start of the file for further processing
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		return fmt.Errorf("failed to reset file read pointer: %w", err)
+	}
+
+	// Check if the file size is more than 5 MB
+	if size > 5*1024*1024 { // 5 MB
+		return fmt.Errorf("file size exceeds the maximum limit of 5MB")
+	}
+	return nil
+}
+
 func FormatImage(file multipart.File) (*bytes.Buffer, string, error) {
+
+	if err := validateFileSize(file); err != nil {
+		return nil, "", err
+	}
+
 	contentType, err := validateImage(file)
 	if err != nil {
 		return nil, "", err
