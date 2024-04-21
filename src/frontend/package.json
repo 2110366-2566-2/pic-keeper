@@ -33,6 +33,7 @@
     "@types/ws": "^8.5.10",
     "autoprefixer": "^10.0.1",
     "cypress": "^13.8.0",
+    "cypress-file-upload": "^5.0.8",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
     "postcss": "^8",

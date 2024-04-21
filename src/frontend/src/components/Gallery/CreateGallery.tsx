@@ -183,6 +183,7 @@ const CreateGallery = () => {
                 </label>
                 <div className="flex items-center gap-2">
                   <input
+                    id="price"
                     type="number"
                     className="form-input"
                     value={price}
