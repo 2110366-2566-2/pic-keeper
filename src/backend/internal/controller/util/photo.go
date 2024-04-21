@@ -80,9 +80,9 @@ func validateFileSize(file multipart.File) error {
 		return fmt.Errorf("failed to reset file read pointer: %w", err)
 	}
 
-	// Check if the file size is more than 5 MB
-	if size > 5*1024*1024 { // 5 MB
-		return fmt.Errorf("file size exceeds the maximum limit of 5MB")
+	// Check if the file size is more than 20 MB
+	if size > 20*1024*1024 { // 20 MB
+		return fmt.Errorf("file size exceeds the maximum limit of 20MB")
 	}
 	return nil
 }
