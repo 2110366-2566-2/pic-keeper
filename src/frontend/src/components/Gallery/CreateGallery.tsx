@@ -55,7 +55,7 @@ const CreateGallery = () => {
       const createdGallery = await photographerGalleriesService.createGallery(
         newGalleryData
       );
-      if (createdGallery.data) {
+      if (createdGallery.data) {4
         await Promise.all(
           files.map((file) =>
             photographerGalleriesService.uploadPhotoToGallery(
@@ -207,3 +207,4 @@ const CreateGallery = () => {
 };
 
 export default CreateGallery;
+
