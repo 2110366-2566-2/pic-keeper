@@ -13,7 +13,6 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
-    domains: ['upload.wikimedia.org'],
   },
 };
 

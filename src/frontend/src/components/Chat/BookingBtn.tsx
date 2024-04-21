@@ -75,18 +75,24 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
     }
   };
 
-
   const getPaymentQR = async (bookingId: string) => {
     try {
       const paymentQR = await customerBookingService.getQRCode(bookingId);
       console.log("check here");
       console.log(paymentQR);
+      console.log(paymentQR.data);
+      return paymentQR.data
     } catch (error) {
       console.error("Error making booking payment:", error);
     }
   };
-  //booking.id
+
   const handleCancelPayment = () => {
+    if (!booking) {
+      showError("No booking");
+      return
+    }
+    paymentService.makeBookingPayment(booking.id)
     closeModal();
   };
 
@@ -105,7 +111,17 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
       , "Payment complete")
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
+    if (!booking){
+      showError("error");
+      return
+    }
+    const paymentSrc = await getPaymentQR(booking.id) 
+    if (!paymentSrc){
+      showError("get payment failed");
+      return
+    }
+    console.log(paymentSrc);
     openModal(
       <div className="flex flex-col gap-4">
         <PackageSummary gallery={room.gallery} booking={booking} />
@@ -114,22 +130,13 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
           Please scan QR code using<br />
           Mobile Banking Application
         </div>
-        <Image
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/640px-QR_code_for_mobile_English_Wikipedia.svg.png"
-          alt="QR Code"
-          width={400}
-          height={400}
-          className="w-[75%] h-auto mx-auto block"
-        />
-
-        {/* <Image
-          src={await getPaymentQR() as string}
-          alt="QR Code"
-          width={400}
-          height={400}
-          className="w-[75%] h-auto mx-auto block"
-        /> */}
-
+          <Image
+            src={paymentSrc}
+            alt="QR Code"
+            width={400}
+            height={400}
+            className="w-[75%] h-auto mx-auto block"
+          />
         <div className="flex justify-center gap-2">
           <button className="btn-cancel px-2" onClick={handleCancelPayment}>
             Cancel
@@ -149,7 +156,7 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
 
   const handleCustomerBooking = () => {
     if (!booking) {
-      showError("No booking"); 
+      showError("No booking");
       return
     }
     getPaymentQR(booking.id);
