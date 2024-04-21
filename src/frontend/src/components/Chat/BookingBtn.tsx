@@ -74,18 +74,18 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
       showError(new Error("No user session"), "Error");
     }
   };
-  const bookingId = "";
+
 
   const getPaymentQR = async (bookingId: string) => {
     try {
-      const paymentQR = await paymentService.makeBookingPayment(bookingId);
+      const paymentQR = await customerBookingService.getQRCode(bookingId);
       console.log("check here");
       console.log(paymentQR);
     } catch (error) {
       console.error("Error making booking payment:", error);
     }
-  };  
-
+  };
+  //booking.id
   const handleCancelPayment = () => {
     closeModal();
   };
@@ -148,7 +148,12 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
   };
 
   const handleCustomerBooking = () => {
-    getPaymentQR(bookingId);
+    if (!booking) {
+      showError("No booking"); 
+      return
+    }
+    getPaymentQR(booking.id);
+
     openModal(
       <div>
         <PackageInfo gallery={room.gallery} booking={booking} />
