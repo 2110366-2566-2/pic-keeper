@@ -12,7 +12,7 @@ export default defineConfig({
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/integration/**/*.js',
     setupNodeEvents(on, config) {
-      require('./cypress/plugins')(on, config);
+      // require('./cypress/plugins')(on, config);
       return config;
     },
   },
