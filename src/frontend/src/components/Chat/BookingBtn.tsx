@@ -1,6 +1,6 @@
 import { useModal } from "@/context/ModalContext";
 import { useErrorModal } from "@/hooks/useErrorModal";
-import { photographerBookingService } from "@/services";
+import { customerBookingService, paymentService, photographerBookingService } from "@/services";
 import { Booking, BookingProposal, BookingStatus } from "@/types/booking";
 import { Room } from "@/types/room";
 import { useSession } from "next-auth/react";
@@ -10,6 +10,8 @@ import { Dialog } from "@headlessui/react";
 import { parseISO, formatISO } from "date-fns";
 import Link from "next/link";
 import { PackageInfo } from "../Gallery";
+import PackageSummary from "../Gallery/PackageSummary";
+import Image from "next/image";
 
 interface Props {
   room: Room;
@@ -73,13 +75,92 @@ const BookingBtn = ({ room, booking, setBooking }: Props) => {
     }
   };
 
-  const handlePayment = () => {};
+  const getPaymentQR = async (bookingId: string) => {
+    try {
+      const paymentQR = await customerBookingService.getQRCode(bookingId);
+      console.log("check here");
+      console.log(paymentQR);
+      console.log(paymentQR.data);
+      return paymentQR.data
+    } catch (error) {
+      console.error("Error making booking payment:", error);
+    }
+  };
+
+  const handleCancelPayment = () => {
+    if (!booking) {
+      showError("No booking");
+      return
+    }
+    paymentService.makeBookingPayment(booking.id)
+    closeModal();
+  };
+
+  const handleCompletePayment = () => {
+    openModal(
+      <div>
+        <h2 className="my-5 text-2xl text-black">Payment Successful</h2>
+        <div className="flex justify-end">
+          <button className="btn-primary px-6" onClick={handleCancelPayment}>
+            Done
+          </button>
+        </div>
+
+      </div>
+
+      , "Payment complete")
+  };
+
+  const handlePayment = async () => {
+    if (!booking){
+      showError("error");
+      return
+    }
+    const paymentSrc = await getPaymentQR(booking.id) 
+    if (!paymentSrc){
+      showError("get payment failed");
+      return
+    }
+    console.log(paymentSrc);
+    openModal(
+      <div className="flex flex-col gap-4">
+        <PackageSummary gallery={room.gallery} booking={booking} />
+        <div className=" h-[1px] bg-black/30"></div>
+        <div className="text-center text-gray-500 mt-6">
+          Please scan QR code using<br />
+          Mobile Banking Application
+        </div>
+          <Image
+            src={paymentSrc}
+            alt="QR Code"
+            width={400}
+            height={400}
+            className="w-[75%] h-auto mx-auto block"
+          />
+        <div className="flex justify-center gap-2">
+          <button className="btn-cancel px-2" onClick={handleCancelPayment}>
+            Cancel
+          </button>
+          <button className="btn-primary px-6" onClick={handleCompletePayment}>
+            Complete
+          </button>
+        </div>
+      </div>,
+      "Your package summary"
+    );
+  };
 
   const handleCancelBooking = () => {
     closeModal();
   };
 
   const handleCustomerBooking = () => {
+    if (!booking) {
+      showError("No booking");
+      return
+    }
+    getPaymentQR(booking.id);
+
     openModal(
       <div>
         <PackageInfo gallery={room.gallery} booking={booking} />
