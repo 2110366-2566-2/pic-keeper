@@ -20,6 +20,7 @@ const HandleLogin = () => {
       const newSessionToken = new URLSearchParams(window.location.search).get(
         "session_token"
       );
+      console.log(newSessionToken);
       if (newSessionToken) {
         const result = await signIn("credentials", {
           redirect: false,
