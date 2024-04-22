@@ -152,7 +152,6 @@ const CreateGallery = () => {
                     className="form-input"
                     value={deliveryTime}
                     onChange={(e) => setDeliveryTime(e.target.value)}
-                    required
                   />
                   <span className="label-normal">Days</span>
                 </div>

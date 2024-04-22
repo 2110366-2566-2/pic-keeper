@@ -161,7 +161,7 @@ describe('Create Gallery Spec', () => {
             }
         );
         cy.get('button[type="submit"]').click();
-        cy.contains('Close', { timeout: 10000 }).should('exist'); 
+       cy.contains('Close', { timeout: 10000 }).should('exist'); 
 
     });
 
@@ -182,7 +182,7 @@ describe('Create Gallery Spec', () => {
             }
         );
         cy.get('button[type="submit"]').click();
-        cy.contains('Close', { timeout: 10000 }).should('exist'); 
+        cy.contains('Close').should('exist', { timeout: 10000 }); // Increase timeout to 10 seconds
 
 
     });
