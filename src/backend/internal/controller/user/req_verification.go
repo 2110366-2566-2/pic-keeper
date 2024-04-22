@@ -40,6 +40,11 @@ func (r *Resolver) RequestVerification(c *gin.Context) {
 		return
 	}
 
+	if len(verificationTicketInput.IdCardNumber) != 13 {
+		util.Raise400Error(c, "length of id number must be exactly 13 digit")
+		return
+	}
+
 	idCardPictureFile, err := verificationTicketInput.IdCardPicture.Open()
 	if err != nil {
 		util.Raise500Error(c, err)

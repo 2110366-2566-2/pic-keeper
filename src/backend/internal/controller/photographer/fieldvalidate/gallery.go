@@ -9,22 +9,22 @@ import (
 func CreateGallery(input model.GalleryInput) []error {
 	fieldErrs := []error{}
 
-	if input.Name == nil {
+	if input.Name == nil || *input.Name == "" {
 		fieldErrs = append(fieldErrs, errors.New(
 			"the name of the new gallery must be provided",
 		))
 	}
-	if input.Location == nil {
+	if input.Location == nil || *input.Location == "" {
 		fieldErrs = append(fieldErrs, errors.New(
 			"the location of the new gallery must be provided",
 		))
 	}
-	if input.Price == nil {
+	if input.Price == nil || *input.Price == 0 {
 		fieldErrs = append(fieldErrs, errors.New(
 			"the price of the new gallery must be provided",
 		))
 	}
-	if input.Hours == nil {
+	if input.Hours == nil || *input.Hours == 0 {
 		fieldErrs = append(fieldErrs, errors.New(
 			"the hours of the new gallery must be provided",
 		))

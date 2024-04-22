@@ -39,6 +39,18 @@ const IssueReported = () => {
     }
   };
 
+  const handleCloseIssueAction = async (id: string) => {
+    console.log('handleRejectAction', id)
+    try {
+      const data = await adminService.closeIssue(id);
+      if (data.data) {
+        closeModal();
+      }
+    } catch (error) {
+      showError(error);
+    }
+  };
+
   const fetchData = async () => {
     try {
       const data = await adminService.GetIssuesWithOption(filter);
@@ -95,7 +107,9 @@ const IssueReported = () => {
                   {issue.reporter.email || "N/A"}
                 </td>
                 <td className="px-6 py-4 text-gray-900">{issue.subject}</td>
-                <td className="px-6 py-4 text-green-500">{issue.status}</td>
+                {
+                  issue.status == "OPEN" ? <td className="px-6 py-4 text-green-500">{issue.status}</td> : <td className="px-6 py-4 text-red-500">{issue.status}</td>
+                }
                 <td className="px-6 py-4 text-gray-900">
                   {format(issue.created_at, "MMMM do, yyyy H:mma") || "N/A"}
                 </td>
@@ -103,7 +117,7 @@ const IssueReported = () => {
                   {format(issue.due_date, "MMMM do, yyyy H:mma") || "N/A"}
                 </td>
                 <td className="px-6 py-4 text-gray-900">
-                  <IssueReportedCard issue={issue} handleRefundAction={handleRefundAction} handleRejectAction={handleRejectAction}/>
+                  <IssueReportedCard issue={issue} handleRefundAction={handleRefundAction} handleRejectAction={handleRejectAction} handleCloseIssueAction={handleCloseIssueAction}/>
                 </td>
               </tr>
             ))}

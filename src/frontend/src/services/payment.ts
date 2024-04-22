@@ -1,7 +1,7 @@
 import apiClient from "@/libs/apiClient";
 import { BookingResponse } from "@/types/response";
 
-const paymentBaseUrl = "/payment/v1";
+const paymentBaseUrl = "/payment";
 
 const makeBookingPayment = async (bookingId: string) => {
   try {

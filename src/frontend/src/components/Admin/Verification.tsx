@@ -1,7 +1,5 @@
-"use client";
-import { useEffect } from "react";
-import adminService from "../../services/admin";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import adminService from "@/services/admin";
 import PhotographerVerificationModal from "./Verification/PhotographerVerificationModal";
 import { VerificationTicket } from "@/types/verification";
 import { useErrorModal } from "@/hooks/useErrorModal";
@@ -9,16 +7,12 @@ import { format } from "date-fns";
 
 function Verification() {
   const [pendingList, setPendingList] = useState<VerificationTicket[]>([]);
+  const [activeModalId, setActiveModalId] = useState<string | null>(null);
   const showError = useErrorModal();
-  const [
-    isPhotographerVerificationModalOpen,
-    setIsPhotographerVerificationModalOpen,
-  ] = useState(false);
 
   const fetchData = async () => {
     try {
       const data = await adminService.listPendingPhotographer();
-      console.log(data.data);
       if (data.data) {
         setPendingList(data.data);
       }
@@ -27,13 +21,13 @@ function Verification() {
     }
   };
 
-  // Function to open the PhotographerVerificationModal
-  const openPhotographerVerificationModal = () =>
-    setIsPhotographerVerificationModalOpen(true);
-    
-  // Function to close the PhotographerVerificationModal
-  const closePhotographerVerificationModal = () =>
-    setIsPhotographerVerificationModalOpen(false);
+  const openPhotographerVerificationModal = (id: string) => {
+    setActiveModalId(id);
+  };
+
+  const closePhotographerVerificationModal = () => {
+    setActiveModalId(null);
+  };
 
   useEffect(() => {
     fetchData();
@@ -41,7 +35,6 @@ function Verification() {
 
   return (
     <div className="flex flex-col">
-      {/* Table */}
       <div className="overflow-x-auto bg-white shadow rounded-lg">
         <table className="min-w-full text-sm divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -67,7 +60,6 @@ function Verification() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {/* DATA */}
             {pendingList.map((ticket) => (
               <tr key={ticket.id}>
                 <td className="px-6 py-4 text-gray-900 underline underline-offset-1">
@@ -79,26 +71,34 @@ function Verification() {
                 <td className="px-6 py-4 text-gray-900">
                   {format(ticket.created_at, "MMMM do, yyyy H:mma") || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-green-500">open</td>
-                <td className="px-6 py-4 text-gray-900">{format(ticket.due_date, "MMMM do, yyyy H:mma") || "N/A"}</td>
+                <td
+                  className={`px-6 py-4 ${
+                    ticket.user.verification_status === "VERIFIED"
+                      ? "text-green-500"
+                      : ticket.user.verification_status === "PENDING"
+                      ? "text-yellow-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {ticket.user.verification_status}
+                </td>
                 <td className="px-6 py-4 text-gray-900">
-                  <button onClick={openPhotographerVerificationModal}>
+                  {format(ticket.due_date, "MMMM do, yyyy H:mma") || "N/A"}
+                </td>
+                <td className="px-6 py-4 text-gray-900">
+                  <button
+                    onClick={() => openPhotographerVerificationModal(ticket.id)}
+                  >
                     ...
                   </button>
-                  <PhotographerVerificationModal
-                    isOpen={isPhotographerVerificationModalOpen}
-                    closeModal={closePhotographerVerificationModal}
-                    // You would pass the actual photographer data here
-                    photographer={{
-                      name: ticket.user.firstname,
-                      username: ticket.user.id,
-                      createdDate: ticket.created_at,
-                      idNumber: ticket.id_card_number,
-                      additionalInfo: ticket.additional_desc,
-                      idCardImage: ticket.id_card_picture_url,
-                    }}
-                  />
                 </td>
+                {activeModalId === ticket.id && (
+                  <PhotographerVerificationModal
+                    isOpen={activeModalId === ticket.id}
+                    closeModal={closePhotographerVerificationModal}
+                    photographer={ticket}
+                  />
+                )}
               </tr>
             ))}
           </tbody>
