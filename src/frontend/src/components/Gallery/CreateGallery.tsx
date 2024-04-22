@@ -42,6 +42,10 @@ const CreateGallery = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (deliveryTime === "") {
+      showError("Delivery Time cant be empty");
+      return;
+    }
     const newGalleryData = {
       name,
       location,
@@ -55,7 +59,8 @@ const CreateGallery = () => {
       const createdGallery = await photographerGalleriesService.createGallery(
         newGalleryData
       );
-      if (createdGallery.data) {4
+      if (createdGallery.data) {
+        4;
         await Promise.all(
           files.map((file) =>
             photographerGalleriesService.uploadPhotoToGallery(
@@ -147,6 +152,7 @@ const CreateGallery = () => {
                     className="form-input"
                     value={deliveryTime}
                     onChange={(e) => setDeliveryTime(e.target.value)}
+                    required
                   />
                   <span className="label-normal">Days</span>
                 </div>
@@ -208,4 +214,3 @@ const CreateGallery = () => {
 };
 
 export default CreateGallery;
-
