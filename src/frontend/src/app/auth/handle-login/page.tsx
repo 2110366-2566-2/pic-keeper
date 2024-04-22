@@ -24,7 +24,7 @@ const HandleLogin = () => {
       if (newSessionToken) {
         const result = await signIn("credentials", {
           redirect: false,
-          session_token: newSessionToken,
+          sessionToken: newSessionToken,
           callbackUrl: "/",
         });
         if (result?.url) {
