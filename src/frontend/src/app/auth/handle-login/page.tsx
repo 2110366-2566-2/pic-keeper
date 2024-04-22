@@ -17,16 +17,22 @@ const HandleLogin = () => {
     }
 
     const initiateLogin = async () => {
-      const result = await signIn("credentials", {
-        redirect: false,
-        callbackUrl: "/",
-      });
-      if (result?.url) {
-        // Successfully authenticated, redirect to the callbackUrl or home
-        router.replace(result.url);
-      } else {
-        // Handle failed login attempt, maybe redirect to login page or show an error
-        router.replace("/auth/login");
+      const newSessionToken = new URLSearchParams(window.location.search).get(
+        "session_token"
+      );
+      if (newSessionToken) {
+        const result = await signIn("credentials", {
+          redirect: false,
+          session_token: newSessionToken,
+          callbackUrl: "/",
+        });
+        if (result?.url) {
+          // Successfully authenticated, redirect to the callbackUrl or home
+          router.replace(result.url);
+        } else {
+          // Handle failed login attempt, maybe redirect to login page or show an error
+          router.replace("/auth/login");
+        }
       }
     };
 
