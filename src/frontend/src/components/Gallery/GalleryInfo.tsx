@@ -156,7 +156,7 @@ const GalleryInfo = ({ galleryId }: Props) => {
               <h1 className="text-3xl font-bold text-gray-900 leading-tight">
                 {gallery.name}
               </h1>
-              {photographer.id === session?.user.data?.id && (
+              {/* {photographer.id === session?.user.data?.id && (
                 <button
                   className="self-end btn-primary px-6 flex items-center gap-2"
                   onClick={handleEditClick}
@@ -164,7 +164,7 @@ const GalleryInfo = ({ galleryId }: Props) => {
                   <MdModeEdit className="inline" />
                   Edit
                 </button>
-              )}
+              )} */}
             </div>
             <div className="flex items-center gap-4">
               <ProfileImage src={profilePicture} size={16} />
