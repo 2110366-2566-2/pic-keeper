@@ -25,6 +25,7 @@ export const authOptions: AuthOptions = {
           type: "text",
           placeholder: "user/admin (leave empty for Google login)",
         },
+        sessionToken: { label: "SessionToken", type: "text" },
       },
       async authorize(credentials, req) {
         if (!credentials) return null;
@@ -54,9 +55,7 @@ export const authOptions: AuthOptions = {
 
           case "google":
             // Attempt Google login via cookie
-            const cookies = parse(req.headers?.cookie || "");
-            const sessionToken = cookies["session_token"];
-
+            const sessionToken = credentials.sessionToken;
             if (sessionToken) {
               try {
                 const axiosInstance = axios.create({

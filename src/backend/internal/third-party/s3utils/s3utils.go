@@ -39,7 +39,7 @@ var (
 )
 
 func createS3Client() (*s3.Client, error) {
-	awsEndpoint := "http://localhost:4566"
+	awsEndpoint := "https://ls-pickeeper.ngrok.app"
 
 	customResolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 		if awsEndpoint != "" {

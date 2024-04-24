@@ -113,11 +113,11 @@ const ChatSystem = ({ roomId }: Props) => {
                     {room.other_users[0].lastname}
                   </div>
                   <div>{room.gallery.name}</div>
-                  <div className="text-gray-400">Lastest Message</div>
+                  {/* <div className="text-gray-400">Lastest Message</div> */}
                 </div>
                 <div className="w-[20%] flex flex-col items-center my-4">
-                  <div className="text-gray-400">17:00</div>
-                  <div className="w-5 h-5 rounded-full bg-amber-500 mt-2"></div>
+                  {/* <div className="text-gray-400">17:00</div>
+                  <div className="w-5 h-5 rounded-full bg-amber-500 mt-2"></div> */}
                 </div>
               </div>
             </div>

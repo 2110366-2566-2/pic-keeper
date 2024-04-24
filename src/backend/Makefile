@@ -38,7 +38,7 @@ clean:
 
 .PHONY: down
 down: 
-	cd ./internal/config/persistence-data; docker compose down
+	cd ./internal/config; docker compose down
 
 .PHONY: up
 up:
